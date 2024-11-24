@@ -428,7 +428,7 @@ export default {
 
 		if (navigator.canShare && navigator.canShare({ text: resultText })) {
 			navigator.share({
-				title: 'Foorballdle Result',
+				title: 'Footballdle Result',
 				text: resultText,
 				url: window.location.href
 			})
