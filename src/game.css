@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Alumni+Sans+Pinstripe:ital@0;1&family=Inter:wght@100..900&display=swap');
+
+
+
+:root {
+  --background-color: #ffffff;
+  --text-color: #131313;
+}
+
+[data-theme="dark"] {
+  --background-color: #3e3e3e;
+  --text-color: #ffffff;
+}
+
+body {
+  background-color: var(--background-color);
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  text-align: center;
+  max-width: 500px;
+  margin: 0px auto;
+  color: var(--text-color)
+}
+
+svg {
+  line,
+  circle {
+    stroke: var(--text-color) !important;
+  }
+
+  path {
+    fill: var(--text-color);
+  }
+}
+
+.modal-content,
+.message-content {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "Alumni Sans Pinstripe", sans-serif;
+}
+
+p {
+  font-family: "Inter", serif;
+  font-weight: 300;
+}
+
+h1 {
+  margin: 0;
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.2rem;
+  margin: 0;
+  padding: .75rem;
+}
+
+h3 {
+  border-bottom: 1px solid #ccc;
+  font-size: 2rem;
+  margin: 0 0 .5rem 0;
+  padding: .75rem 0 .25rem;
+  width: 100%;
+}
+
+h4 {
+  border-bottom: 1px solid #ccc;
+  font-size: 1.5rem;
+  margin: 0 0 .5rem 0;
+  padding: .75rem 0 .25rem;
+  width: 100%;
+}
+
+header {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.stat-button {
+  top: 1rem;
+  right: 1rem;
+  position: absolute;
+}
+
+.info-button {
+  top: 1rem;
+  left: 1rem;
+  position: absolute;
+}
+#source-link {
+  position: absolute;
+  right: 1em;
+  top: 0.5em;
+}
+
+.correct,
+.present,
+.absent {
+  color: var(--text-color) !important;
+}
+
+.correct {
+  background-color: #6aaa64 !important;
+}
+
+.present {
+  background-color: #c9b458 !important;
+}
+
+.absent {
+  background-color: #787c7e !important;
+}
