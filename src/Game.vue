@@ -502,7 +502,7 @@ export default {
 				this.currentRowIndex = gameState.currentRowIndex;
 				this.success = gameState.success;
 
-				this.showMessage('Congratulations! You won!', 100000);
+				this.showMessage('You won!', 100000);
 				this.grid = this.genResultGrid(); // Generate the result grid
 				this.allowInput = false; // Disable further input
 			}
