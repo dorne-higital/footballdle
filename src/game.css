@@ -33,7 +33,8 @@ svg {
 }
 
 .modal-content,
-.message-content {
+.message-content,
+.info-content {
   background-color: var(--background-color) !important;
   color: var(--text-color) !important;
 }
