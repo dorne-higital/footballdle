@@ -254,6 +254,28 @@ export default {
 		}
 	},
 	methods: {
+		resetGameForNewDay() {
+			this.answer = getWordOfTheDay(); // Fetch today's answer
+			this.board = Array.from({ length: 6 }, () =>
+				Array.from({ length: 6 }, () => ({
+					letter: '',
+					state: LetterState.INITIAL,
+				}))
+			);
+			this.currentRowIndex = 0;
+			this.success = false;
+			this.allowInput = true;
+			this.letterStates = {};
+			this.message = '';
+			this.shakeRowIndex = -1;
+
+			const currentUKDate = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' });
+			localStorage.setItem('lastPlayedDate', currentUKDate);
+
+			// Clear previous game state
+			localStorage.removeItem('gameState');
+		},
+
 		onKeyup(e: KeyboardEvent) {
 			this.onKey(e.key)
 		},
@@ -465,51 +487,26 @@ export default {
 			this.stats = JSON.parse(storedStats);
 		}
 
-		const lastPlayedDate = localStorage.getItem('lastPlayedDate');
+		const storedGameState = localStorage.getItem('gameState');
 		const currentUKDate = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' });
 
-		console.log("Last played........", lastPlayedDate);
-		console.log("Today........", currentUKDate);
+		if (storedGameState) {
+			const { lastPlayedDate, ...gameState } = JSON.parse(storedGameState);
 
-		// Allow play if it's a new UK day
-		if (lastPlayedDate === currentUKDate) {
-			this.showMessage("You've already played today. Please come back tomorrow!");
-			this.allowInput = false;
-		} else {
-			this.allowInput = true;
-			// localStorage.setItem('lastPlayedDate', currentUKDate); // Update to the new day
-			// Reset game state
-			this.board = Array.from({ length: 6 }, () =>
-				Array.from({ length: 6 }, () => ({
-					letter: '',
-					state: LetterState.INITIAL,
-				}))
-			);
-			this.currentRowIndex = 0;
-			this.success = false;
-			this.allowInput = true;
-			this.letterStates = {};
-			this.message = '';
-			this.shakeRowIndex = -1;
-		}
-
-		const savedGameState = localStorage.getItem('gameState');
-		if (savedGameState) {
-			const gameState = JSON.parse(savedGameState);
-
-			if (gameState.success) {
-				this.board = gameState.board; // Load the saved board
-				this.currentRowIndex = gameState.currentRowIndex;
-				this.success = gameState.success;
-
-				this.showMessage('You won!', 100000);
-				this.grid = this.genResultGrid(); // Generate the result grid
-				this.allowInput = false; // Disable further input
+			// Check if the current UK date matches the last played date
+			if (lastPlayedDate === currentUKDate) {
+				// Restore game state if it's the same day
+				Object.assign(this, gameState);
+			} else {
+				// Reset the game for a new day
+				this.resetGameForNewDay();
 			}
+		} else {
+			// First-time load or no saved game state
+			this.resetGameForNewDay();
 		}
-
-		window.addEventListener('keyup', this.onKeyup);
 	},
+
 
 	beforeUnmount() {
 		window.removeEventListener('keyup', this.onKeyup);
