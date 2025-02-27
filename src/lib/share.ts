@@ -17,12 +17,12 @@ export const shareStatus = (
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void
 ) => {
-  const textToShare =
-    `Footballdle ${solutionIndex} ${
-      lost ? 'X' : guesses.length
-    }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
+  const textToShare = `Footballdle ${solutionIndex} ${
+    lost ? 'X' : guesses.length
+  }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
     generateEmojiGrid(guesses, getEmojiTiles(isDarkMode, isHighContrastMode)) +
-    '\n\n www.footballdle.co.uk' + '\n\n #footballdle'
+    `\n\nwww.footballdle.co.uk\n\n#footballdle`;
+  
 
   const shareData = { text: textToShare }
 
