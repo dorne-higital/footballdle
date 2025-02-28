@@ -17,7 +17,10 @@ export const shareStatus = (
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void
 ) => {
-  const textToShare = `Footballdle ${solutionIndex} ${
+  const today = new Date();
+  const formattedDate = today.toLocaleDateString('en-GB').replace(/\//g, '-'); // Formats as DD-MM-YY
+
+  const textToShare = `Footballdle ${formattedDate} ${
     lost ? 'X' : guesses.length
   }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
     generateEmojiGrid(guesses, getEmojiTiles(isDarkMode, isHighContrastMode)) +
