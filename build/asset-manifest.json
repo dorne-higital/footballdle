@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/footballdle/build/static/css/main.42864139.css",
-    "main.js": "/footballdle/build/static/js/main.7329bebb.js",
-    "static/js/787.b3f9d252.chunk.js": "/footballdle/build/static/js/787.b3f9d252.chunk.js",
-    "index.html": "/footballdle/build/index.html",
-    "main.42864139.css.map": "/footballdle/build/static/css/main.42864139.css.map",
-    "main.7329bebb.js.map": "/footballdle/build/static/js/main.7329bebb.js.map",
-    "787.b3f9d252.chunk.js.map": "/footballdle/build/static/js/787.b3f9d252.chunk.js.map"
+    "main.css": "/footballdle/static/css/main.42864139.css",
+    "main.js": "/footballdle/static/js/main.d9cdd9f8.js",
+    "static/js/787.b3f9d252.chunk.js": "/footballdle/static/js/787.b3f9d252.chunk.js",
+    "index.html": "/footballdle/index.html",
+    "main.42864139.css.map": "/footballdle/static/css/main.42864139.css.map",
+    "main.d9cdd9f8.js.map": "/footballdle/static/js/main.d9cdd9f8.js.map",
+    "787.b3f9d252.chunk.js.map": "/footballdle/static/js/787.b3f9d252.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.42864139.css",
-    "static/js/main.7329bebb.js"
+    "static/js/main.d9cdd9f8.js"
   ]
 }
