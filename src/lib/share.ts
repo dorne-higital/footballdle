@@ -1,5 +1,5 @@
 import { getGuessStatuses } from './statuses'
-import { unicodeSplit } from './words'
+import { solutionIndex, unicodeSplit } from './words'
 import { MAX_CHALLENGES } from '../constants/settings'
 import { UAParser } from 'ua-parser-js'
 import copy from 'copy-to-clipboard';
@@ -17,10 +17,7 @@ export const shareStatus = (
   isHighContrastMode: boolean,
   handleShareToClipboard: () => void
 ) => {
-  const today = new Date();
-  const formattedDate = today.toLocaleDateString('en-GB').replace(/\//g, '-'); // Formats as DD-MM-YY
-
-  const textToShare = `Footballdle ${formattedDate} ${
+  const textToShare = `Footballdle ${solutionIndex} ${
     lost ? 'X' : guesses.length
   }/${MAX_CHALLENGES}${isHardMode ? '*' : ''}\n\n` +
     generateEmojiGrid(guesses, getEmojiTiles(isDarkMode, isHighContrastMode)) +
