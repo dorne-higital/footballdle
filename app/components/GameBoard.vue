@@ -77,7 +77,7 @@
 
 <style scoped lang="scss">
 	.game-board {
-		padding: 2rem 0;
+		padding: 1rem 0;
 
 		.guess-row {
 			display: flex;
