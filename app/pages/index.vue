@@ -182,10 +182,6 @@
 <script setup lang="ts">
 	import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 	import { footballers, getAnswerForDay } from '../composables/useFootballers'
-	// import HeaderNav from '../components/HeaderNav.vue'
-	// import BaseModal from '../components/BaseModal.vue'
-	// import Keyboard from '../components/Keyboard.vue'
-	// import GameBoard from '../components/GameBoard.vue'
 
 	function getUKDateString() {
 		const now = new Date()
