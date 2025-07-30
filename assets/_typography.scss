@@ -24,7 +24,9 @@ body {
     font-family: $body-font;
     font-size: $base-font-size;
     line-height: $line-height;
-    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
