@@ -126,32 +126,30 @@
 }
 
 .flex-between {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
 }
 
-// Prevent zoom on double tap
 html {
-  touch-action: manipulation;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	touch-action: manipulation;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 body {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
 }
 
-// Prevent zoom on specific interactive elements
 button, 
 input, 
 textarea,
 select {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
 }

@@ -80,21 +80,21 @@
 							<span class="letter">D</span>
 							<span class="letter">E</span>
 							<span class="letter">L</span>
-							<span class="letter present">I</span>
-							<span class="letter">G</span>
+							<span class="letter">I</span>
+							<span class="letter present">G</span>
 							<span class="letter">T</span>
 						</span>
-						<p class="caption">The letter <strong>I</strong> is in the answer but in the wrong position.</p>
+						<p class="caption">The letter <strong>G</strong> is in the answer but in the wrong position.</p>
 
 						<span class="example">
 							<span class="letter">E</span>
 							<span class="letter">L</span>
 							<span class="letter">A</span>
-							<span class="letter">N</span>
+							<span class="letter absent">N</span>
 							<span class="letter">G</span>
-							<span class="letter absent">A</span>
+							<span class="letter">A</span>
 						</span>
-						<p class="caption">The letter <strong>A</strong> is not in the answer.</p>
+						<p class="caption">The letter <strong>N</strong> is not in the answer.</p>
 					</div>
 
 					<p>A new player is revealed every day at midnight.</p>
