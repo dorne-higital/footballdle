@@ -35,7 +35,7 @@
 					<h4 v-if="isWin">You win!</h4>
 					<h4 v-else>You lose!</h4>
 					<p>The answer was <strong class="answer">{{ answer }}</strong></p>
-					<button @click="onShare" class="button primary">Share</button>
+					<button @click="onShare" class="button primary share">Share</button>
 				</div>
 			</template>
 
@@ -471,6 +471,11 @@
 
 		.answer {
 			text-transform: uppercase;
+		}
+
+		.share {
+			border-radius: 100px;
+			padding: .5rem 2rem;
 		}
 	}
 
