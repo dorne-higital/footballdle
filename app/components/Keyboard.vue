@@ -162,6 +162,10 @@
 					padding: 0 2px;
 				}
 
+				&[data-key='BACKSPACE'] {
+					font-size: 1.4rem;
+				}
+
 				&.correct {
 					background: var(--color-success);
 					color: #fff;
