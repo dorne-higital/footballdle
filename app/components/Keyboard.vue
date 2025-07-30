@@ -120,13 +120,8 @@
 		gap: 0.5rem;
 		width: 100%;
 		max-width: 500px;
-		margin: 2rem auto 0 auto;
+		margin: 0 auto;
 		padding: 0 .5rem;
-		position: absolute;
-		bottom: 1rem;
-		left: 0;
-		right: 0;
-		z-index: 100;
 
 		.row {
 			display: flex;
