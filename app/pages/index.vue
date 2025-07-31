@@ -2,77 +2,77 @@
 	<div>
 		<!-- Intro Screen -->
 		<IntroScreen
-			v-if="showIntro"
-			:can-play="!gameOver"
-			:countdown="countdown"
-			:stats="stats"
-			:win-percentage="winPercentage"
-			@start-game="startGame"
-			@show-info="showInfo = true"
-			@show-settings="showSettings = true"
+			v-if="gameStore.showIntro"
+			:can-play="gameStore.canPlay"
+			:countdown="gameStore.countdown"
+			:stats="statsStore.stats"
+			:win-percentage="statsStore.winPercentage"
+			@start-game="gameStore.startGame"
+			@show-info="modalsStore.openInfo"
+			@show-settings="modalsStore.openSettings"
 		/>
 
 		<!-- Game Screen -->
 		<div v-else>
 			<HeaderNav 
-				@show-info="showInfo = true" 
-				@show-settings="showSettings = true" 
-				@show-stats="showStats = true" 
+				@show-info="modalsStore.openInfo" 
+				@show-settings="modalsStore.openSettings" 
+				@show-stats="modalsStore.openStats" 
 			/>
 			
-			<button @click="showIntro = true" class="back-to-menu">
+			<button @click="gameStore.showIntro = true" class="back-to-menu">
 				← Back to Menu
 			</button>
 
 			<GameBoard 
-				:guesses="guesses" 
-				:answer="answer || ''" 
-				:maxGuesses="maxGuesses" 
-				:currentGuess="currentGuess" 
+				:guesses="gameStore.guesses" 
+				:answer="gameStore.answer" 
+				:maxGuesses="gameStore.maxGuesses" 
+				:currentGuess="gameStore.currentGuess" 
 			/>
 
 			<Keyboard 
-				:disabled="gameOver" 
-				:guesses="guesses" 
-				:answer="answer || ''" 
-				:maxGuesses="maxGuesses"
-				:currentGuess="currentGuess"
-				@key="onKeyboardKey" 
+				:disabled="gameStore.gameOver" 
+				:guesses="gameStore.guesses" 
+				:answer="gameStore.answer" 
+				:maxGuesses="gameStore.maxGuesses"
+				:currentGuess="gameStore.currentGuess"
+				@key="handleKeyboardKey" 
 			/>
 		</div>
 
 		<!-- Game Over Modal -->
 		<BaseModal
-			v-if="showGameOverModal"
-			:show="showGameOverModal"
-			:heading="isWin ? 'Well played!' : 'Better luck next time!'"
+			v-if="gameStore.showGameOverModal"
+			:show="gameStore.showGameOverModal"
+			:heading="gameStore.isWin ? 'Well played!' : 'Better luck next time!'"
 			variant="small"
-			@close="showGameOverModal = false"
+			@close="gameStore.closeGameOverModal"
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="isWin">You win!</h4>
+					<h4 v-if="gameStore.isWin">You win!</h4>
 					<h4 v-else>You lose!</h4>
-					<p>The answer was <strong class="answer">{{ answer }}</strong></p>
-					<button @click="onShare" class="button primary share">Share</button>
+					<p>The answer was <strong class="answer">{{ gameStore.answer }}</strong></p>
+					<button @click="handleShare" class="button primary share">Share</button>
 				</div>
 			</template>
 
 			<template #footer>
-				<div v-if="nextGameTime">
+				<div v-if="gameStore.getNextGameTime">
 					<p class="caption">Next game in:</p>
-					<h3>{{ countdown }}</h3>
+					<h3>{{ gameStore.countdown }}</h3>
 				</div>
 			</template>
 		</BaseModal>
 
 		<!-- Info Modal -->
 		<BaseModal
-			v-if="showInfo"
+			v-if="modalsStore.showInfo"
 			heading="How to play"
 			variant="small"
 			align="left"
-			@close="showInfo = false"
+			@close="modalsStore.closeInfo"
 		>
 			<template #body>
 				<div class="info-section">
@@ -123,31 +123,32 @@
 
 		<!-- Settings Modal -->
 		<BaseModal
-			v-if="showSettings"
+			v-if="modalsStore.showSettings"
 			heading="Settings"
 			variant="small"
-			@close="showSettings = false"
+			@close="modalsStore.closeSettings"
 		>
 			<template #body>
 				<div class="settings-section">
 					<div class="setting-item">
 						<label for="theme-toggle">Dark Mode</label>
+
 						<button 
-							id="theme-toggle"
-							@click="toggleTheme" 
-							:class="['theme-toggle', { 'active': isDarkTheme }]"
+							:class="['theme-toggle', { active: themeStore.isDarkTheme }]"
+							@click="themeStore.toggleTheme"
 						>
-							<span class="toggle-slider"></span>
+							<div class="toggle-slider"></div>
 						</button>
 					</div>
+
 					<div class="setting-item">
-						<label for="high-contrast-toggle">High Contrast</label>
+						<label for="theme-toggle">High Contrast</label>
+
 						<button 
-							id="high-contrast-toggle"
-							@click="toggleHighContrast" 
-							:class="['theme-toggle', { 'active': isHighContrast }]"
+							:class="['theme-toggle', { active: themeStore.isHighContrast }]"
+							@click="themeStore.toggleHighContrast"
 						>
-							<span class="toggle-slider"></span>
+							<div class="toggle-slider"></div>
 						</button>
 					</div>
 				</div>
@@ -156,41 +157,41 @@
 
 		<!-- Stats Modal -->
 		<BaseModal
-			v-if="showStats"
+			v-if="modalsStore.showStats"
 			heading="Statistics"
 			variant="small"
-			@close="showStats = false"
+			@close="modalsStore.closeStats"
 		>
 			<template #body>
-				<div class="stats-grid">
-					<div class="stat-card">
-						<h3 class="stat-number">{{ stats.gamesPlayed }}</h3>
-						<p class="caption">Games Played</p>
+				<div class="stats-section">
+					<div class="stats-grid">
+						<div class="stat-card">
+							<h3>{{ statsStore.stats.gamesPlayed }}</h3>
+							<p>Games Played</p>
+						</div>
+						<div class="stat-card">
+							<h3>{{ statsStore.stats.wins }}</h3>
+							<p>Wins</p>
+						</div>
+						<div class="stat-card">
+							<h3>{{ statsStore.stats.currentStreak }}</h3>
+							<p>Current Streak</p>
+						</div>
+						<div class="stat-card">
+							<h3>{{ statsStore.stats.maxStreak }}</h3>
+							<p>Max Streak</p>
+						</div>
 					</div>
 					
-					<div class="stat-card">
-						<h3 class="stat-number">{{ stats.wins }}</h3>
-						<p class="caption">Wins</p>
-					</div>
-					
-					<div class="stat-card">
-						<h3 class="stat-number">{{ stats.losses }}</h3>
-						<p class="caption">Losses</p>
-					</div>
-					
-					<div class="stat-card">
-						<h3 class="stat-number">{{ winPercentage }}%</h3>
-						<p class="caption">Win Rate</p>
-					</div>
-
-					<div class="stat-card">
-						<h3 class="stat-number">{{ stats.currentStreak }}</h3>
-						<p class="caption">Current Streak</p>
-					</div>
-					
-					<div class="stat-card">
-						<h3 class="stat-number">{{ stats.maxStreak }}</h3>
-						<p class="caption">Best Streak</p>
+					<div class="win-rate">
+						<h3>Win Rate</h3>
+						<div class="progress-bar">
+							<div 
+								class="progress-fill" 
+								:style="{ width: `${statsStore.winPercentage}%` }"
+							></div>
+						</div>
+						<p>{{ statsStore.winPercentage }}%</p>
 					</div>
 				</div>
 			</template>
@@ -199,308 +200,105 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
-	import { footballers, getAnswerForDay } from '../composables/useFootballers'
-	import HeaderNav from '../components/HeaderNav.vue'
-	import GameBoard from '../components/GameBoard.vue'
-	import Keyboard from '../components/Keyboard.vue'
-	import BaseModal from '../components/BaseModal.vue'
-	import IntroScreen from '../components/IntroScreen.vue'
+	import { watch, onMounted, onUnmounted } from 'vue'
+	import { useGameStore } from '../stores/game'
+	import { useStatsStore } from '../stores/stats'
+	import { useThemeStore } from '../stores/theme'
+	import { useModalsStore } from '../stores/modals'
+	import { useShare } from '../composables/useShare'
 
-	function getUKDateString() {
-		const now = new Date()
-		return now.toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
-	}
+	// ============================================================================
+	// STORES
+	// ============================================================================
+	const gameStore = useGameStore()
+	const statsStore = useStatsStore()
+	const themeStore = useThemeStore()
+	const modalsStore = useModalsStore()
+	const { onShare } = useShare()
 
-	function getNextGameTime() {
-		// Get current time in UK
-		const now = new Date()
-		const ukNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		// Set to next midnight UK time
-		ukNow.setHours(0, 0, 0, 0)
-		ukNow.setDate(ukNow.getDate() + 1)
-		return ukNow
-	}
-
-	const todayStr = getUKDateString() || ''
-	const answer = getAnswerForDay(todayStr) || ''
-	const nextGameTime = getNextGameTime()
-
-	// Game state
-	const guesses = ref<string[]>([])
-	const currentGuess = ref('')
-	const maxGuesses = 6
-	const gameOver = ref(false)
-	const isWin = ref(false)
-	const showGameOverModal = ref(false)
-	const showIntro = ref(true)
-
-	// Modal state
-	const showInfo = ref(false)
-	const showSettings = ref(false)
-	const showStats = ref(false)
-
-	// Stats state
-	const stats = ref({
-		gamesPlayed: 0,
-		wins: 0,
-		losses: 0,
-		currentStreak: 0,
-		maxStreak: 0,
-	})
-
-	// Theme state
-	const isDarkTheme = ref(false)
-	const isHighContrast = ref(false)
-
-	// Countdown state
-	const countdown = ref('')
-	let countdownInterval: any
-
-	const winPercentage = computed(() => {
-		if (stats.value.gamesPlayed === 0) return 0
-		return Math.round((stats.value.wins / stats.value.gamesPlayed) * 100)
-	})
-
+	// ============================================================================
+	// LIFECYCLE HOOKS
+	// ============================================================================
 	onMounted(() => {
-		updateCountdown()
-		countdownInterval = setInterval(updateCountdown, 1000)
-		
-		// Load saved theme settings
-		const savedTheme = localStorage.getItem('footballdle-theme')
-		const savedHighContrast = localStorage.getItem('footballdle-high-contrast')
-		
-		if (savedTheme === 'dark') {
-			isDarkTheme.value = true
-		}
-		
-		if (savedHighContrast === 'true') {
-			isHighContrast.value = true
-		}
-		
-		applyTheme()
-		
-		// Load saved game state
-		const savedStats = localStorage.getItem('footballdle-stats')
-		if (savedStats) {
-			stats.value = JSON.parse(savedStats)
-		}
-		
-		const savedGame = localStorage.getItem('footballdle-game')
-		if (savedGame) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin } = JSON.parse(savedGame)
-			if (date === todayStr) {
-				guesses.value = savedGuesses
-				gameOver.value = savedOver
-				isWin.value = savedWin
-				// Don't show game over modal on load - let the intro screen handle it
-				showGameOverModal.value = false
-			}
-		}
+		themeStore.loadThemeSettings()
+		statsStore.loadStats()
+		gameStore.loadState()
+		gameStore.startCountdown()
 	})
 
 	onUnmounted(() => {
-		clearInterval(countdownInterval)
+		gameStore.stopCountdown()
 	})
 
-	function updateCountdown() {
-		if (!nextGameTime) return
-		const now = new Date()
-		const nextGame = typeof nextGameTime === 'string'
-			? new Date(nextGameTime)
-			: nextGameTime
-		const diff = nextGame.getTime() - now.getTime()
-		if (diff <= 0) {
-			countdown.value = '00:00:00'
-			return
-		}
-		const hours = Math.floor(diff / 1000 / 60 / 60)
-		const minutes = Math.floor((diff / 1000 / 60) % 60)
-		const seconds = Math.floor((diff / 1000) % 60)
-		countdown.value = `${hours.toString().padStart(2, '0')}:${minutes
-			.toString()
-			.padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-	}
-
-	function saveState() {
-		localStorage.setItem('footballdle-stats', JSON.stringify(stats.value))
-		localStorage.setItem('footballdle-game', JSON.stringify({
-			date: todayStr,
-			guesses: guesses.value,
-			gameOver: gameOver.value,
-			isWin: isWin.value,
-		}))
-	}
-
-	function submitGuess(guess: string) {
-		if (gameOver.value) return // Prevent guess if game is over
-		guess = guess.trim().toUpperCase()
-		if (guess.length !== 6) {
-			alert('Guess must be 6 letters!')
-			return
-		}
-		// Case-insensitive check for valid footballer
-		const validNames = footballers.map(name => name.toUpperCase())
-		if (!validNames.includes(guess)) {
-			alert('Not a valid footballer surname!')
-			return
-		}
-		// Case-insensitive duplicate guess check
-		if (guesses.value.map(g => g.toUpperCase()).includes(guess)) {
-			alert('Already guessed!')
-			return
-		}
-		guesses.value.push(guess)
-		// Case-insensitive win check
-		if (guess === answer.toUpperCase()) {
-			isWin.value = true
-			gameOver.value = true
-			showGameOverModal.value = true
-			updateStats(true)
-		} else if (guesses.value.length >= maxGuesses) {
-			isWin.value = false
-			gameOver.value = true
-			showGameOverModal.value = true
-			updateStats(false)
-		}
-		currentGuess.value = ''
-		saveState()
-	}
-
-	function updateStats(win: boolean) {
-		stats.value.gamesPlayed++
-		if (win) {
-			stats.value.wins++
-			stats.value.currentStreak++
-			if (stats.value.currentStreak > stats.value.maxStreak) {
-				stats.value.maxStreak = stats.value.currentStreak
-			}
-		} else {
-			stats.value.losses++
-			stats.value.currentStreak = 0
-		}
-	}
-
-	function onKeyboardKey(key: string) {
-		if (gameOver.value) return // Prevent input if game is over
-		if (key === 'ENTER') {
-			submitGuess(currentGuess.value)
-		} else if (key === 'BACKSPACE') {
-			currentGuess.value = currentGuess.value.slice(0, -1)
-		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < 6) {
-			currentGuess.value += key
-		}
-	}
-
-	function onShare() {
-		// Build emoji grid
-		const grid = guesses.value.map(guess => {
-			return guess.split('').map((char, i) => {
-				if ((answer || '')[i] && char === (answer || '')[i]) return '🟩'
-				if ((answer || '').includes(char)) return '🟨'
-				return '⬛'
-			}).join('')
-		}).join('\n')
-		const text = `Footballdle ${todayStr}\n${isWin.value ? guesses.value.length : 'X'}/6\n${grid}`
-		navigator.clipboard.writeText(text)
-		alert('Result copied to clipboard!')
-	}
-
-	function startGame() {
-		showIntro.value = false
-	}
-
-	function toggleTheme() {
-		isDarkTheme.value = !isDarkTheme.value
-		applyTheme()
-		saveThemeSettings()
-	}
-
-	function toggleHighContrast() {
-		isHighContrast.value = !isHighContrast.value
-		applyTheme()
-		saveThemeSettings()
-	}
-
-	function applyTheme() {
-		const root = document.documentElement
-  
-		// Remove all theme classes first
-		root.classList.remove('dark', 'high-contrast')
-  
-		// Apply dark theme
-		if (isDarkTheme.value) {
-			root.classList.add('dark')
-		}
-  
-		// Apply high contrast theme
-		if (isHighContrast.value) {
-			root.classList.add('high-contrast')
-		}
-	}
-
-	function saveThemeSettings() {
-		localStorage.setItem('footballdle-theme', isDarkTheme.value ? 'dark' : 'light')
-		localStorage.setItem('footballdle-high-contrast', isHighContrast.value ? 'true' : 'false')
-	}
-
-	function resetGameHistory() {
-		if (confirm('Are you sure you want to reset all game history? This cannot be undone.')) {
-			localStorage.removeItem('footballdle-stats')
-			localStorage.removeItem('footballdle-game')
-			localStorage.removeItem('footballdle-theme')
-			
-			// Reset all state
-			stats.value = {
-				gamesPlayed: 0,
-				wins: 0,
-				losses: 0,
-				currentStreak: 0,
-				maxStreak: 0,
-			}
-			guesses.value = []
-			currentGuess.value = ''
-			gameOver.value = false
-			isWin.value = false
-			showGameOverModal.value = false
-			isDarkTheme.value = false
-			applyTheme()
-			
-			alert('Game history has been reset!')
-		}
-	}
-
-	watch(() => getUKDateString(), (newDate, oldDate) => {
+	// ============================================================================
+	// WATCHERS
+	// ============================================================================
+	watch(() => gameStore.getUKDateString(), (newDate, oldDate) => {
 		if (newDate !== oldDate) {
-			guesses.value = []
-			gameOver.value = false
-			isWin.value = false
-			showGameOverModal.value = false
-			showIntro.value = true
-			saveState()
+			gameStore.resetGame()
 			location.reload()
 		}
 	})
+
+	// ============================================================================
+	// EVENT HANDLERS
+	// ============================================================================
+	function handleShare() {
+		onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+	}
+
+	function handleKeyboardKey(key: string) {
+		gameStore.onKeyboardKey(key)
+		// Update stats when game ends
+		if (gameStore.gameOver && gameStore.showGameOverModal) {
+			statsStore.updateStats(gameStore.isWin)
+		}
+	}
 </script>
 
 <style scoped lang="scss">
 	// ============================================================================
+	// BACK TO MENU BUTTON
+	// ============================================================================
+	.back-to-menu {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		color: var(--text-primary);
+		padding: 0.5rem 1rem;
+		border-radius: var(--global-border-radius);
+		cursor: pointer;
+		font-size: 0.9rem;
+		transition: all 0.2s;
+		z-index: 10;
+		
+		&:hover {
+			background: var(--bg-primary);
+			border-color: var(--border-hover);
+		}
+	}
+
+	// ============================================================================
 	// GAME OVER MODAL
 	// ============================================================================
 	.game-over-section {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-
-		.answer {
-			text-transform: uppercase;
+		text-align: center;
+		
+		h4 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
+			font-size: 1.5rem;
 		}
-
+		
+		.answer {
+			color: var(--primary-color);
+			font-weight: 700;
+		}
+		
 		.share {
-			border-radius: 100px;
-			padding: .5rem 2rem;
+			margin-top: 1rem;
 		}
 	}
 
@@ -508,55 +306,47 @@
 	// INFO MODAL
 	// ============================================================================
 	.info-section {
-		display: flex;
-		flex-direction: column;
-		gap: .5rem;
-
+		p {
+			margin-bottom: 1rem;
+			line-height: 1.6;
+		}
+		
 		.examples {
-			display: flex;
-			flex-direction: column;
-			gap: .5rem;
-
+			margin: 1.5rem 0;
+			
 			.example {
 				display: flex;
-				gap: .25rem;
-
+				gap: 0.25rem;
+				margin-bottom: 0.5rem;
+				
 				.letter {
-					align-items: center;
-					background: var(--bg-secondary);
-					border: 1px solid var(--border);
-					border-radius: var(--global-border-radius);
-					display: flex;
-					height: 2rem;
-					justify-content: center;
-					line-height: 3rem;
-					margin: 0 0.1rem;
-					transition: background 0.2s, color 0.2s;
 					width: 2rem;
-
+					height: 2rem;
+					border: 2px solid var(--border);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-weight: 700;
+					font-size: 0.9rem;
+					
 					&.correct {
 						background: var(--color-success);
 						border-color: var(--color-success);
-						color: #fff;
+						color: white;
 					}
-
+					
 					&.present {
 						background: var(--color-present);
 						border-color: var(--color-present);
-						color: #fff;
+						color: white;
 					}
-
+					
 					&.absent {
 						background: var(--color-absent);
 						border-color: var(--color-absent);
-						color: #fff;
+						color: white;
 					}
 				}
-			}
-
-			.caption {
-				border-bottom: 1px solid var(--border);
-				padding-bottom: .5rem;
 			}
 		}
 	}
@@ -565,20 +355,14 @@
 	// SETTINGS MODAL
 	// ============================================================================
 	.settings-section {
-		margin-bottom: 2rem;
 		width: 100%;
-		
-		h3 {
-			margin-bottom: 1rem;
-			font-size: 1.2rem;
-			font-weight: 600;
-		}
 
 		.setting-item {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			margin-bottom: 1rem;
+			width: 100%;
 			
 			label {
 				font-weight: 500;
@@ -618,57 +402,6 @@
 					transform: translateX(26px);
 				}
 			}
-
-			.button {
-				color: var(--border);
-				padding: 0.5rem 1rem;
-				border: none;
-				border-radius: var(--global-border-radius);
-				font-weight: 500;
-				cursor: pointer;
-				transition: all 0.2s;
-				
-				&.danger {
-					background: #dc3545;
-					color: white;
-					
-					&:hover {
-						background: #c82333;
-					}
-				}
-				
-				&.tertiary {
-					background: var(--tertiary-color);
-					color: white;
-					
-					&:hover {
-						background: var(--accent-color);
-					}
-				}
-			}
-		}
-	}
-
-	// ============================================================================
-	// BACK TO MENU BUTTON
-	// ============================================================================
-	.back-to-menu {
-		position: absolute;
-		top: 1rem;
-		left: 1rem;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
-		color: var(--text-primary);
-		padding: 0.5rem 1rem;
-		border-radius: var(--global-border-radius);
-		cursor: pointer;
-		font-size: 0.9rem;
-		transition: all 0.2s;
-		z-index: 10;
-		
-		&:hover {
-			background: var(--bg-primary);
-			border-color: var(--border-hover);
 		}
 	}
 
