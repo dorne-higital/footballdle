@@ -1,13 +1,12 @@
 <template>
 	<div class="intro-screen">
 		<div class="intro-content">
-			<div class="logo-section">
-				<h1 class="game-title">Footballdle</h1>
-				<p class="game-subtitle">Guess the Premier League footballer</p>
+			<div class="heading-section">
+				<h1 class="heading">Footballdle</h1>
+				<p class="subheading">Guess the Premier League footballer</p>
 			</div>
 
 			<div v-if="canPlay" class="play-section">
-				<p class="intro-text">Ready to test your Premier League knowledge?</p>
 				<button @click="$emit('start-game')" class="button primary play-button">
 					Play Now
 				</button>
@@ -77,147 +76,115 @@ const emit = defineEmits(['start-game'])
 </script>
 
 <style scoped lang="scss">
-.intro-screen {
-	min-height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: var(--bg-gradient);
-	padding: 2rem;
-}
+	.intro-screen {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--bg-gradient);
+		padding: 1rem;
 
-.intro-content {
-	max-width: 500px;
-	width: 100%;
-	text-align: center;
-	background: var(--bg-secondary);
-	border-radius: var(--global-border-radius);
-	padding: 3rem 2rem;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-	border: 1px solid var(--border);
-}
+		.intro-content {
+			align-content: center;
+			background: var(--bg-secondary);
+			border-radius: var(--global-border-radius);
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+			border: 1px solid var(--border);
+			display: flex;
+			gap: 1rem;
+			flex-direction: column;
+			justify-content: center;
+			padding: 2rem;
+			text-align: center;
+			width: 100%;
 
-.logo-section {
-	margin-bottom: 3rem;
-}
+			.heading-section {
+				.heading {
+					font-weight: 700;
+					background: var(--color-gradient);
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+					background-clip: text;
+				}
 
-.game-title {
-	font-size: 3rem;
-	font-weight: 700;
-	background: var(--color-gradient);
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-clip: text;
-	margin-bottom: 0.5rem;
-}
+				.subheading {
+					color: var(--text-secondary);
+					margin: 0;
+				}
+			}
 
-.game-subtitle {
-	font-size: 1.1rem;
-	color: var(--text-secondary);
-	margin: 0;
-}
+			.play-section {
+				.play-button {
+					font-size: 1.3rem;
+					padding: 1rem 3rem;
+					border-radius: var(--global-border-radius);
+					font-weight: 600;
+					transition: all 0.3s ease;
+					margin-top: 2rem;
+					
+					&:hover {
+						transform: translateY(-2px);
+						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+					}
+				}
+			}
 
-.play-section {
-	margin-bottom: 3rem;
-}
+			.already-played-section {
+				padding: 2rem;
+				background: var(--color-gradient);
+				border-radius: var(--global-border-radius);
+				border: 1px solid var(--border);
 
-.intro-text {
-	font-size: 1.2rem;
-	color: var(--text-primary);
-	margin-bottom: 2rem;
-}
+				.countdown {
+					font-weight: 900;
+				}
 
-.play-button {
-	font-size: 1.3rem;
-	padding: 1rem 3rem;
-	border-radius: var(--global-border-radius);
-	font-weight: 600;
-	transition: all 0.3s ease;
-	
-	&:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+				h3 {
+					color: white;
+					margin-bottom: 1rem;
+					font-size: 1.5rem;
+				}
+
+				p {
+					color: white;
+					line-height: 1.5;
+					margin: 0;
+				}
+			}
+
+			.stats-preview {	
+				h4 {
+					color: var(--text-primary);
+					margin-bottom: 1.5rem;
+					font-size: 1.2rem;
+				}
+
+				.stats-grid {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: 1rem;
+
+					.stat-item {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+
+						.stat-number {
+							font-size: 1.5rem;
+							font-weight: 700;
+							color: var(--primary-color);
+							margin-bottom: 0.25rem;
+						}
+						
+						.stat-label {
+							font-size: 0.8rem;
+							color: var(--text-secondary);
+							text-transform: uppercase;
+							letter-spacing: 0.5px;
+						}
+					}
+				}
+			}
+		}
 	}
-}
-
-.already-played-section {
-	margin-bottom: 3rem;
-	padding: 2rem;
-	background: var(--color-gradient);
-	border-radius: var(--global-border-radius);
-	border: 1px solid var(--border);
-
-	.countdown {
-		font-weight: 900;
-	}
-}
-
-.played-icon {
-	font-size: 3rem;
-	margin-bottom: 1rem;
-}
-
-.already-played-section h3 {
-	color: white;
-	margin-bottom: 1rem;
-	font-size: 1.5rem;
-}
-
-.already-played-section p {
-	color: white;
-	line-height: 1.5;
-	margin: 0;
-}
-
-.stats-preview {
-	border-top: 1px solid var(--border);
-	padding-top: 2rem;
-}
-
-.stats-preview h4 {
-	color: var(--text-primary);
-	margin-bottom: 1.5rem;
-	font-size: 1.2rem;
-}
-
-.stats-grid {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	gap: 1rem;
-}
-
-.stat-item {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
-.stat-number {
-	font-size: 1.5rem;
-	font-weight: 700;
-	color: var(--primary-color);
-	margin-bottom: 0.25rem;
-}
-
-.stat-label {
-	font-size: 0.8rem;
-	color: var(--text-secondary);
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
-}
-
-@media (max-width: 768px) {
-	.intro-content {
-		padding: 2rem 1.5rem;
-	}
-	
-	.game-title {
-		font-size: 2.5rem;
-	}
-	
-	.stats-grid {
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1.5rem;
-	}
-}
 </style> 
