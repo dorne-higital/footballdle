@@ -1,26 +1,43 @@
 <template>
 	<div>
-		<HeaderNav 
-			@show-info="showInfo = true" 
-			@show-settings="showSettings = true" 
-			@show-stats="showStats = true" 
+		<!-- Intro Screen -->
+		<IntroScreen
+			v-if="showIntro"
+			:can-play="!gameOver"
+			:countdown="countdown"
+			:stats="stats"
+			:win-percentage="winPercentage"
+			@start-game="startGame"
 		/>
 
-		<GameBoard 
-			:guesses="guesses" 
-			:answer="answer || ''" 
-			:maxGuesses="maxGuesses" 
-			:currentGuess="currentGuess" 
-		/>
+		<!-- Game Screen -->
+		<div v-else>
+			<HeaderNav 
+				@show-info="showInfo = true" 
+				@show-settings="showSettings = true" 
+				@show-stats="showStats = true" 
+			/>
+			
+			<button @click="showIntro = true" class="back-to-menu">
+				← Back to Menu
+			</button>
 
-		<Keyboard 
-			:disabled="gameOver" 
-			:guesses="guesses" 
-			:answer="answer || ''" 
-			:maxGuesses="maxGuesses"
-			:currentGuess="currentGuess"
-			@key="onKeyboardKey" 
-		/>
+			<GameBoard 
+				:guesses="guesses" 
+				:answer="answer || ''" 
+				:maxGuesses="maxGuesses" 
+				:currentGuess="currentGuess" 
+			/>
+
+			<Keyboard 
+				:disabled="gameOver" 
+				:guesses="guesses" 
+				:answer="answer || ''" 
+				:maxGuesses="maxGuesses"
+				:currentGuess="currentGuess"
+				@key="onKeyboardKey" 
+			/>
+		</div>
 
 		<!-- Game Over Modal -->
 		<BaseModal
@@ -182,6 +199,11 @@
 <script setup lang="ts">
 	import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
 	import { footballers, getAnswerForDay } from '../composables/useFootballers'
+	import HeaderNav from '../components/HeaderNav.vue'
+	import GameBoard from '../components/GameBoard.vue'
+	import Keyboard from '../components/Keyboard.vue'
+	import BaseModal from '../components/BaseModal.vue'
+	import IntroScreen from '../components/IntroScreen.vue'
 
 	function getUKDateString() {
 		const now = new Date()
@@ -209,6 +231,7 @@
 	const gameOver = ref(false)
 	const isWin = ref(false)
 	const showGameOverModal = ref(false)
+	const showIntro = ref(true)
 
 	// Modal state
 	const showInfo = ref(false)
@@ -382,6 +405,10 @@
 		alert('Result copied to clipboard!')
 	}
 
+	function startGame() {
+		showIntro.value = false
+	}
+
 	function toggleTheme() {
 		isDarkTheme.value = !isDarkTheme.value
 		applyTheme()
@@ -448,6 +475,7 @@
 			gameOver.value = false
 			isWin.value = false
 			showGameOverModal.value = false
+			showIntro.value = true
 			saveState()
 			location.reload()
 		}
@@ -617,6 +645,29 @@
 					}
 				}
 			}
+		}
+	}
+
+	// ============================================================================
+	// BACK TO MENU BUTTON
+	// ============================================================================
+	.back-to-menu {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		color: var(--text-primary);
+		padding: 0.5rem 1rem;
+		border-radius: var(--global-border-radius);
+		cursor: pointer;
+		font-size: 0.9rem;
+		transition: all 0.2s;
+		z-index: 10;
+		
+		&:hover {
+			background: var(--bg-primary);
+			border-color: var(--border-hover);
 		}
 	}
 
