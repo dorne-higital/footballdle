@@ -137,7 +137,7 @@ const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 				}
 
 				.subheading {
-					color: var(--text-secondary);
+					color: var(--text-primary);
 					margin: 0;
 				}
 			}
