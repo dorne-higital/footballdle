@@ -27,8 +27,12 @@
 			</div>
 
 			<div v-else class="already-played-section">
-				<h3>Already played today!</h3>
-				<p>Looks like you have played today, come back in <strong class="countdown">{{ countdown }}</strong> to play again</p>
+				<h3 class="heading">Already played today!</h3>
+				<p>Looks like you have played today, come back tomorrow to play again</p>
+
+				<div class="countdown">
+					<h4>{{ countdown }}</h4>
+				</div>
 			</div>
 
 			<div class="stats-preview" v-if="stats.gamesPlayed > 0">
@@ -160,20 +164,27 @@ const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 				border-radius: var(--global-border-radius);
 				border: 1px solid var(--border);
 
-				.countdown {
-					font-weight: 900;
+				.heading {
+					border-bottom: 1px solid var(--border);
+					color: white;
+					font-size: 1.5rem;
+					margin-bottom: .5rem;
+					padding-bottom: .5rem;
 				}
 
-				h3 {
+				.countdown {
+					border-top: 1px solid var(--border);
+					font-weight: 900;
+					padding: .5rem 0 0;
+				}
+
+				p, h4 {
 					color: white;
-					margin-bottom: 1rem;
-					font-size: 1.5rem;
+					line-height: 1.5;
 				}
 
 				p {
-					color: white;
-					line-height: 1.5;
-					margin: 0;
+					margin-bottom: .5rem;
 				}
 			}
 
