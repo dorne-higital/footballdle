@@ -77,12 +77,12 @@ const emit = defineEmits(['start-game'])
 
 <style scoped lang="scss">
 	.intro-screen {
-		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		background: var(--bg-gradient);
 		padding: 1rem;
+		height: 100vh;
 
 		.intro-content {
 			align-content: center;
