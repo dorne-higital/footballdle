@@ -3,8 +3,15 @@ export function useShare() {
 		// Build emoji grid
 		const grid = guesses.map(guess => {
 			return guess.split('').map((char, i) => {
-				if (answer[i] && char === answer[i]) return '🟩'
-				if (answer.includes(char)) return '🟨'
+				// Check if letter is in correct position
+				if (answer[i] && char.toUpperCase() === answer[i].toUpperCase()) {
+					return '🟩'
+				}
+				// Check if letter exists in answer but wrong position
+				if (answer.toUpperCase().includes(char.toUpperCase())) {
+					return '🟨'
+				}
+				// Letter not in answer
 				return '⬛'
 			}).join('')
 		}).join('\n')
