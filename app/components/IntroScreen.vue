@@ -82,7 +82,7 @@ const emit = defineEmits(['start-game'])
 		justify-content: center;
 		background: var(--bg-gradient);
 		padding: 1rem;
-		height: 100vh;
+		height: 100dvh;
 
 		.intro-content {
 			align-content: center;
