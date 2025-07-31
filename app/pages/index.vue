@@ -291,9 +291,8 @@
 				guesses.value = savedGuesses
 				gameOver.value = savedOver
 				isWin.value = savedWin
-				if (savedOver) {
-					showGameOverModal.value = true
-				}
+				// Don't show game over modal on load - let the intro screen handle it
+				showGameOverModal.value = false
 			}
 		}
 	})
