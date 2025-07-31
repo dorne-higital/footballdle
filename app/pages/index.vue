@@ -8,6 +8,8 @@
 			:stats="stats"
 			:win-percentage="winPercentage"
 			@start-game="startGame"
+			@show-info="showInfo = true"
+			@show-settings="showSettings = true"
 		/>
 
 		<!-- Game Screen -->

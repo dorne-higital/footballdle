@@ -1,5 +1,19 @@
 <template>
 	<div class="intro-screen">
+		<div class="intro-header">
+			<Icon 
+				name="uil:info-circle" 
+				@click="$emit('show-info')" 
+				size="1.5rem" 
+			/>
+
+			<Icon 
+				name="uil:setting" 
+				@click="$emit('show-settings')" 
+				size="1.5rem" 
+			/>
+		</div>
+		
 		<div class="intro-content">
 			<div class="heading-section">
 				<h1 class="heading">Footballdle</h1>
@@ -72,7 +86,7 @@ const props = withDefaults(
 	}
 )
 
-const emit = defineEmits(['start-game'])
+const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 </script>
 
 <style scoped lang="scss">
@@ -83,6 +97,16 @@ const emit = defineEmits(['start-game'])
 		background: var(--bg-gradient);
 		padding: 1rem;
 		height: 100dvh;
+		position: relative;
+		
+		.intro-header {
+			position: absolute;
+			top: 2rem;
+			right: 2rem;
+			display: flex;
+			gap: 1rem;
+			z-index: 10;
+		}
 
 		.intro-content {
 			align-content: center;
