@@ -83,6 +83,7 @@ const props = withDefaults(
 			display: flex;
 			flex-direction: column;
 			max-width: 90vw;
+			max-height: 90vh;
 			padding: .5rem;
 			position: relative;
 			transition: box-shadow 0.2s;
@@ -115,6 +116,9 @@ const props = withDefaults(
 
 			.body {
 				padding: 1rem .5rem;
+				flex: 1;
+				overflow-y: auto;
+				min-height: 0;
 
 				&.left {
 					align-items: flex-start;
@@ -127,6 +131,25 @@ const props = withDefaults(
 
 				&.right {
 					align-items: flex-end;
+				}
+
+				// Custom scrollbar styling
+				&::-webkit-scrollbar {
+					width: 6px;
+				}
+
+				&::-webkit-scrollbar-track {
+					background: var(--bg-primary);
+					border-radius: 3px;
+				}
+
+				&::-webkit-scrollbar-thumb {
+					background: var(--border);
+					border-radius: 3px;
+				}
+
+				&::-webkit-scrollbar-thumb:hover {
+					background: var(--border-hover);
 				}
 			}
 
