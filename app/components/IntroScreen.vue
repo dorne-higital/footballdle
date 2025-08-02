@@ -35,6 +35,30 @@
 			<p class="subheading">Guess the Premier League footballer</p>
 
 			<div v-if="canPlay" class="play-section">
+				<div class="usp-tiles">
+					<div class="tile">
+						<Icon name="solar:calendar-linear" size="1.5rem" />
+						<h6>New player to guess every day</h6>
+					</div>
+
+					<div class="tile">
+						<Icon name="solar:football-outline" size="1.5rem" />
+						<h6>Current Premier League players 25/26 season</h6>
+					</div>
+
+					<div class="tile">
+						<Icon name="solar:letter-linear" size="1.5rem" />
+						<h6>Only layers with 6 letter surnames</h6>
+					</div>
+
+					<div class="tile">
+						<Icon name="solar:target-linear" size="1.5rem" />
+						<h6>Maximum 6 guesses</h6>
+					</div>
+				</div>
+
+				<h5 class="heading">Ready to play?</h5>
+
 				<button @click="$emit('start-game')" class="button primary play-button">
 					Play Now
 				</button>
@@ -212,13 +236,66 @@ const isLoading = ref(false) // Start with no loading
 			}
 
 			.play-section {
+				background: var(--color-gradient);
+				border-radius: var(--global-border-radius);
+				border: 1px solid var(--border);
+				color: white;
+				padding: 1rem;
+				margin-top: 1rem;
+
+				.heading {
+					margin-bottom: 0.5rem;
+				}
+
+				.caption {
+					margin-bottom: 1.5rem;
+					line-height: 1.5;
+				}
+
+				.usp-tiles {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: 1rem;
+					margin: 1rem 0;
+				
+					@media (max-width: 600px) {
+						grid-template-columns: repeat(1, 1fr);
+					}
+					
+					.tile {
+						background: rgba(255, 255, 255, 0.1);
+						backdrop-filter: blur(10px);
+						border: 1px solid rgba(255, 255, 255, 0.2);
+						border-radius: var(--global-border-radius);
+						color: white;
+						padding: 1rem;
+						text-align: center;
+				
+						@media (max-width: 600px) {
+							align-items: center;
+							display: flex;
+							flex-direction: row;
+							gap: .5rem;
+							padding: .5rem;
+							text-align: left;
+						}
+						
+						h6 {
+							font-size: 0.8rem;
+						}
+					}
+				}
+
 				.play-button {
-					font-size: 1.3rem;
+					font-size: 1.1rem;
 					padding: 1rem 3rem;
 					border-radius: var(--global-border-radius);
 					font-weight: 600;
+					justify-content: center;
 					transition: all 0.3s ease;
-					margin-top: 2rem;
+					text-align: center;
+					margin-top: 1rem;
+					width: 75%;
 					
 					&:hover {
 						transform: translateY(-2px);
