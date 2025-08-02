@@ -1,5 +1,11 @@
 <template>
 	<div>
+		<!-- Loading Overlay -->
+		<div v-if="isLoading" class="loading-overlay">
+			<div class="loading-content">
+				<Loader />
+			</div>
+		</div>
 		<!-- Intro Screen -->
 		<IntroScreen
 			v-if="gameStore.showIntro"
@@ -23,7 +29,7 @@
 				@show-stats="modalsStore.openStats" 
 			/>
 			
-			<button @click="gameStore.showIntro = true" class="back-to-menu">
+			<button @click="handleBackToMenu" class="back-to-menu">
 				← Back to Menu
 			</button>
 
@@ -276,8 +282,6 @@
 			</template>
 		</BaseModal>
 
-
-
 		<!-- Challenge Game Over Modal -->
 		<BaseModal
 			v-if="challengeStore.showGameOverModal"
@@ -306,7 +310,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted } from 'vue'
+	import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 	import HeaderNav from '../components/HeaderNav.vue'
 	import GameBoard from '../components/GameBoard.vue'
 	import Keyboard from '../components/Keyboard.vue'
@@ -334,6 +338,7 @@
 	// REACTIVE STATE
 	// ============================================================================
 	const activeStatsTab = ref('daily')
+	const isLoading = ref(false)
 
 	// ============================================================================
 	// LIFECYCLE HOOKS
@@ -408,9 +413,67 @@
 	function handleChallengeKey(key: string) {
 		challengeStore.onKeyboardKey(key)
 	}
+
+	function handleBackToMenu() {
+		isLoading.value = true
+		setTimeout(() => {
+			location.reload()
+		}, 1000)
+	}
 </script>
 
 <style scoped lang="scss">
+	// ============================================================================
+	// LOADING OVERLAY
+	// ============================================================================
+	.loading-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: var(--bg-gradient);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 10000;
+
+		.loading-content {
+			text-align: center;
+			color: var(--text-primary);
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translate(-50%, -50%) translateY(0);
+		}
+		40% {
+			transform: translate(-50%, -50%) translateY(-80px);
+		}
+		60% {
+			transform: translate(-50%, -50%) translateY(-40px);
+		}
+	}
+
+	@keyframes shadow {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translate(-50%, -50%) scaleX(1);
+			opacity: 0.3;
+		}
+		40% {
+			transform: translate(-50%, -50%) scaleX(0.3);
+			opacity: 0.1;
+		}
+		60% {
+			transform: translate(-50%, -50%) scaleX(0.6);
+			opacity: 0.2;
+		}
+	}
+
 	// ============================================================================
 	// BACK TO MENU BUTTON
 	// ============================================================================

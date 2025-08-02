@@ -1,5 +1,12 @@
 <template>
 	<div class="intro-screen">
+		<!-- Loading State -->
+		<div v-if="isLoading" class="loading-overlay">
+			<div class="loading-content">
+				<Loader />
+			</div>
+		</div>
+
 		<div class="intro-header">
 			<Icon 
 				name="uil:info-circle" 
@@ -40,7 +47,6 @@
 					<h4>{{ countdown }}</h4>
 				</div>
 
-				<!-- Challenge Mode - only show if unlocked (after completing daily game) -->
 				<div v-if="challengeUnlocked" class="challenge-section">
 					<div class="challenge-divider">
 						<p class="caption">or</p>
@@ -95,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { withDefaults } from 'vue'
+import { withDefaults, ref, onMounted, nextTick, watch } from 'vue'
 
 const props = withDefaults(
 	defineProps<{
@@ -127,6 +133,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-settings', 'show-stats'])
+
+const isLoading = ref(false) // Start with no loading
 </script>
 
 <style scoped lang="scss">
@@ -138,6 +146,27 @@ const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-se
 		padding: 1rem;
 		height: 100dvh;
 		position: relative;
+
+		.loading-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: var(--bg-gradient);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 10000;
+
+			.loading-content {
+				text-align: center;
+				color: var(--text-primary);
+				position: relative;
+				width: 100%;
+				height: 100%;
+			}
+		}
 		
 		.intro-header {
 			position: absolute;
@@ -195,13 +224,13 @@ const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-se
 			}
 
 			.already-played-section {
-				padding: 2rem;
 				background: var(--color-gradient);
 				border-radius: var(--global-border-radius);
 				border: 1px solid var(--border);
+				color: white;
+				padding: 2rem;
 
 				.heading {
-					color: white;
 					font-size: 1.5rem;
 					margin-bottom: .5rem;
 					padding-bottom: .5rem;
@@ -212,7 +241,6 @@ const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-se
 				}
 
 				p, h4 {
-					color: white;
 					line-height: 1.5;
 				}
 
@@ -248,7 +276,6 @@ const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-se
 						
 						p {
 							padding: 0 1rem;
-							color: white;
 							text-transform: uppercase;
 							position: relative;
 							z-index: 1;

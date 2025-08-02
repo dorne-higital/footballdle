@@ -111,6 +111,7 @@ export const useGameStore = defineStore('game', () => {
 
 	function closeGameOverModal() {
 		showGameOverModal.value = false
+		// Don't change showIntro - let the user decide when to go back to menu
 	}
 
 	// ============================================================================
