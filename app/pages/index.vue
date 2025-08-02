@@ -5,15 +5,18 @@
 			v-if="gameStore.showIntro"
 			:can-play="gameStore.canPlay"
 			:countdown="gameStore.countdown"
+			:challenge-unlocked="challengeStore.isUnlocked"
 			:stats="statsStore.stats"
 			:win-percentage="statsStore.winPercentage"
 			@start-game="gameStore.startGame"
+			@start-challenge="handleStartChallenge"
 			@show-info="modalsStore.openInfo"
 			@show-settings="modalsStore.openSettings"
+			@show-stats="modalsStore.openStats"
 		/>
 
 		<!-- Game Screen -->
-		<div v-else>
+		<div v-else-if="!challengeStore.isActive">
 			<HeaderNav 
 				@show-info="modalsStore.openInfo" 
 				@show-settings="modalsStore.openSettings" 
@@ -38,6 +41,25 @@
 				:maxGuesses="gameStore.maxGuesses"
 				:currentGuess="gameStore.currentGuess"
 				@key="handleKeyboardKey" 
+			/>
+		</div>
+
+		<!-- Challenge Screen -->
+		<div v-else-if="challengeStore.isActive">
+			<ChallengeModal
+				:guesses="challengeStore.guesses"
+				:current-guess="challengeStore.currentGuess"
+				:max-guesses="challengeStore.maxGuesses"
+				:answer="challengeStore.currentAnswer"
+				:time-remaining="challengeStore.timeRemaining"
+				:time-formatted="challengeStore.timeFormatted"
+				:can-play="challengeStore.canPlay"
+				:is-paused="challengeStore.isPaused"
+				:game-over="challengeStore.gameOver"
+				@key="handleChallengeKey"
+				@end-challenge="handleEndChallenge"
+				@toggle-pause="challengeStore.togglePause"
+				@play-again="challengeStore.startChallenge"
 			/>
 		</div>
 
@@ -164,34 +186,118 @@
 		>
 			<template #body>
 				<div class="stats-section">
-					<div class="stats-grid">
-						<div class="stat-card">
-							<h3>{{ statsStore.stats.gamesPlayed }}</h3>
-							<p>Games Played</p>
+					<!-- Stats Toggle -->
+					<div class="stats-toggle">
+						<button 
+							:class="['toggle-btn', { active: activeStatsTab === 'daily' }]"
+							@click="activeStatsTab = 'daily'"
+						>
+							Daily
+						</button>
+						<button 
+							v-if="challengeStore.challengeStats.gamesPlayed > 0"
+							:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
+							@click="activeStatsTab = 'challenge'"
+						>
+							Challenge
+						</button>
+					</div>
+
+					<!-- Daily Game Stats -->
+					<div v-if="activeStatsTab === 'daily'" class="stats-content">
+						<div class="stats-grid">
+							<div class="stat-card">
+								<h3>{{ statsStore.stats.gamesPlayed }}</h3>
+								<p class="caption">Games Played</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ statsStore.stats.wins }}</h3>
+								<p class="caption">Wins</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ statsStore.stats.currentStreak }}</h3>
+								<p class="caption">Current Streak</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ statsStore.stats.maxStreak }}</h3>
+								<p class="caption">Max Streak</p>
+							</div>
 						</div>
-						<div class="stat-card">
-							<h3>{{ statsStore.stats.wins }}</h3>
-							<p>Wins</p>
-						</div>
-						<div class="stat-card">
-							<h3>{{ statsStore.stats.currentStreak }}</h3>
-							<p>Current Streak</p>
-						</div>
-						<div class="stat-card">
-							<h3>{{ statsStore.stats.maxStreak }}</h3>
-							<p>Max Streak</p>
+						
+						<div class="win-rate">
+							<h3>Win Rate</h3>
+							<div class="progress-bar">
+								<div 
+									class="progress-fill" 
+									:style="{ width: `${statsStore.winPercentage}%` }"
+								></div>
+							</div>
+							<p>{{ statsStore.winPercentage }}%</p>
 						</div>
 					</div>
-					
-					<div class="win-rate">
-						<h3>Win Rate</h3>
-						<div class="progress-bar">
-							<div 
-								class="progress-fill" 
-								:style="{ width: `${statsStore.winPercentage}%` }"
-							></div>
+
+					<!-- Challenge Stats -->
+					<div v-if="activeStatsTab === 'challenge'" class="stats-content">
+						<div class="stats-grid">
+							<div class="stat-card">
+								<h3>{{ challengeStore.challengeStats.gamesPlayed }}</h3>
+								<p class="caption">Challenges</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ challengeStore.challengeStats.wins }}</h3>
+								<p class="caption">Wins</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ challengeStore.challengeStats.maxStreak }}</h3>
+								<p class="caption">Best Streak</p>
+							</div>
+							<div class="stat-card">
+								<h3>{{ challengeStore.challengeStats.bestTime }}s</h3>
+								<p class="caption">Best Time</p>
+							</div>
+							<!-- <div class="stat-card">
+								<h3>{{ Math.floor(challengeStore.challengeStats.totalTime / 60) }}m {{ challengeStore.challengeStats.totalTime % 60 }}s</h3>
+								<p>Total Time</p>
+							</div> -->
 						</div>
-						<p>{{ statsStore.winPercentage }}%</p>
+						
+						<div class="win-rate">
+							<h3>Challenge Win Rate</h3>
+							<div class="progress-bar">
+								<div 
+									class="progress-fill" 
+									:style="{ width: `${challengeStore.winPercentage}%` }"
+								></div>
+							</div>
+							<p>{{ challengeStore.winPercentage }}%</p>
+						</div>
+					</div>
+				</div>
+			</template>
+		</BaseModal>
+
+
+
+		<!-- Challenge Game Over Modal -->
+		<BaseModal
+			v-if="challengeStore.showGameOverModal"
+			:show="challengeStore.showGameOverModal"
+			:heading="challengeStore.isWin ? 'Challenge Complete!' : 'Time\'s Up!'"
+			variant="small"
+			@close="challengeStore.closeGameOverModal"
+		>
+			<template #body>
+				<div class="challenge-game-over-section">
+					<h4 v-if="challengeStore.isWin">You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!</h4>
+					<h4 v-else>Better luck next time!</h4>
+					<p>The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong></p>
+					<div class="challenge-buttons">
+						<button @click="challengeStore.startChallenge" class="button primary">
+							Play Again
+						</button>
+						<button @click="handleEndChallenge" class="button secondary">
+							Back to Menu
+						</button>
 					</div>
 				</div>
 			</template>
@@ -200,11 +306,18 @@
 </template>
 
 <script setup lang="ts">
-	import { watch, onMounted, onUnmounted } from 'vue'
+	import { ref, watch, onMounted, onUnmounted } from 'vue'
+	import HeaderNav from '../components/HeaderNav.vue'
+	import GameBoard from '../components/GameBoard.vue'
+	import Keyboard from '../components/Keyboard.vue'
+	import BaseModal from '../components/BaseModal.vue'
+	import IntroScreen from '../components/IntroScreen.vue'
+	import ChallengeModal from '../components/ChallengeModal.vue'
 	import { useGameStore } from '../stores/game'
 	import { useStatsStore } from '../stores/stats'
 	import { useThemeStore } from '../stores/theme'
 	import { useModalsStore } from '../stores/modals'
+	import { useChallengeStore } from '../stores/challenge'
 	import { useShare } from '../composables/useShare'
 
 	// ============================================================================
@@ -214,7 +327,13 @@
 	const statsStore = useStatsStore()
 	const themeStore = useThemeStore()
 	const modalsStore = useModalsStore()
+	const challengeStore = useChallengeStore()
 	const { onShare } = useShare()
+
+	// ============================================================================
+	// REACTIVE STATE
+	// ============================================================================
+	const activeStatsTab = ref('daily')
 
 	// ============================================================================
 	// LIFECYCLE HOOKS
@@ -224,6 +343,10 @@
 		statsStore.loadStats()
 		gameStore.loadState()
 		gameStore.startCountdown()
+		
+		// Load challenge state
+		challengeStore.loadChallengeState()
+		challengeStore.loadChallengeStats()
 	})
 
 	onUnmounted(() => {
@@ -236,7 +359,22 @@
 	watch(() => gameStore.getUKDateString(), (newDate, oldDate) => {
 		if (newDate !== oldDate) {
 			gameStore.resetGame()
+			challengeStore.resetDaily()
 			location.reload()
+		}
+	})
+
+	// Watch for game completion to unlock challenge mode
+	watch(() => gameStore.gameOver, (isGameOver) => {
+		if (isGameOver) {
+			challengeStore.unlockChallenge()
+		}
+	})
+
+	// Reset stats tab to daily when stats modal opens
+	watch(() => modalsStore.showStats, (showStats) => {
+		if (showStats) {
+			activeStatsTab.value = 'daily'
 		}
 	})
 
@@ -249,10 +387,26 @@
 
 	function handleKeyboardKey(key: string) {
 		gameStore.onKeyboardKey(key)
-		// Update stats when game ends
+		// Update stats when game ends and unlock challenge mode
 		if (gameStore.gameOver && gameStore.showGameOverModal) {
 			statsStore.updateStats(gameStore.isWin)
+			// Unlock challenge mode when game is completed
+			challengeStore.unlockChallenge()
 		}
+	}
+
+	function handleStartChallenge() {
+		challengeStore.startChallenge()
+		gameStore.showIntro = false
+	}
+
+	function handleEndChallenge() {
+		challengeStore.endChallenge()
+		gameStore.showIntro = true
+	}
+
+	function handleChallengeKey(key: string) {
+		challengeStore.onKeyboardKey(key)
 	}
 </script>
 
@@ -408,25 +562,85 @@
 	// ============================================================================
 	// STATS MODAL
 	// ============================================================================
-	.stats-grid {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1rem;
+	.stats-toggle {
+		display: flex;
+		gap: 0.5rem;
 		margin-bottom: 2rem;
-
-		.stat-card {
-			background: var(--bg-secondary);
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 1rem;
+		
+		.toggle-btn {
+			flex: 1;
+			padding: 0.75rem 1rem;
+			background: var(--bg-primary);
 			border: 1px solid var(--border);
 			border-radius: var(--global-border-radius);
-			padding: 1.5rem;
-			text-align: center;
+			color: var(--text-secondary);
+			cursor: pointer;
 			transition: all 0.2s;
+			font-weight: 500;
 			
 			&:hover {
+				background: var(--bg-secondary);
 				border-color: var(--border-hover);
-				transform: translateY(-2px);
-				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 			}
+			
+			&.active {
+				background: var(--primary-color);
+				border-color: var(--primary-color);
+				color: white;
+			}
+		}
+	}
+
+	.stats-content {
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1rem;
+			margin-bottom: 2rem;
+
+			.stat-card {
+				background: var(--bg-secondary);
+				border: 1px solid var(--border);
+				border-radius: var(--global-border-radius);
+				padding: 1.5rem;
+				text-align: center;
+				transition: all 0.2s;
+				
+				&:hover {
+					border-color: var(--border-hover);
+					transform: translateY(-2px);
+					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				}
+			}
+		}
+	}
+
+
+
+	// ============================================================================
+	// CHALLENGE GAME OVER MODAL
+	// ============================================================================
+	.challenge-game-over-section {
+		text-align: center;
+		
+		h4 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
+			font-size: 1.5rem;
+		}
+		
+		.answer {
+			color: var(--tertiary-color);
+			font-weight: 700;
+		}
+		
+		.challenge-buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+			margin-top: 1.5rem;
 		}
 	}
 </style> 

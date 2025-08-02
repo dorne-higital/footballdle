@@ -12,6 +12,12 @@
 				@click="$emit('show-settings')" 
 				size="1.5rem" 
 			/>
+
+			<Icon 
+				name="uil:statistics" 
+				@click="$emit('show-stats')" 
+				size="1.5rem" 
+			/>
 		</div>
 		
 		<div class="intro-content">
@@ -28,32 +34,60 @@
 
 			<div v-else class="already-played-section">
 				<h3 class="heading">Already played today!</h3>
-				<p>Looks like you have played today, come back tomorrow to play again</p>
+				<p class="caption">Looks like you have played today, come back tomorrow to play again</p>
 
 				<div class="countdown">
 					<h4>{{ countdown }}</h4>
 				</div>
-			</div>
 
-			<div class="stats-preview" v-if="stats.gamesPlayed > 0">
-				<h4>Your Stats</h4>
-				<div class="stats-grid">
-					<div class="stat-item">
-						<span class="stat-number">{{ stats.gamesPlayed }}</span>
-						<span class="stat-label">Played</span>
+				<!-- Challenge Mode - only show if unlocked (after completing daily game) -->
+				<div v-if="challengeUnlocked" class="challenge-section">
+					<div class="challenge-divider">
+						<p class="caption">or</p>
 					</div>
-					<div class="stat-item">
-						<span class="stat-number">{{ stats.wins }}</span>
-						<span class="stat-label">Wins</span>
+
+					<h3>Challenge mode</h3>
+
+					<div class="usp-tiles">
+						<div class="tile">
+							<Icon 
+								name="solar:rewind-5-seconds-forward-bold"
+								size="1.5rem" 
+							/>
+
+							<h6>Only 5 letters</h6>
+						</div>
+
+						<div class="tile">
+							<Icon 
+								name="solar:earth-linear"
+								size="1.5rem" 
+							/>
+
+							<h6>Any current footballer</h6>
+						</div>
+
+						<div class="tile">
+							<Icon 
+								name="solar:alarm-outline"
+								size="1.5rem" 
+							/>
+
+							<h6>Play against the clock</h6>
+						</div>
+
+						<div class="tile">
+							<Icon 
+								name="solar:refresh-linear"
+								size="1.5rem" 
+							/>
+
+							<h6>Unlimed plays</h6>
+						</div>
 					</div>
-					<div class="stat-item">
-						<span class="stat-number">{{ stats.currentStreak }}</span>
-						<span class="stat-label">Streak</span>
-					</div>
-					<div class="stat-item">
-						<span class="stat-number">{{ winPercentage }}%</span>
-						<span class="stat-label">Win Rate</span>
-					</div>
+					<button @click="$emit('start-challenge')" class="button primary full challenge play-button">
+						Play now!
+					</button>
 				</div>
 			</div>
 		</div>
@@ -67,6 +101,7 @@ const props = withDefaults(
 	defineProps<{
 		canPlay?: boolean
 		countdown?: string
+		challengeUnlocked?: boolean
 		stats?: {
 			gamesPlayed: number
 			wins: number
@@ -79,6 +114,7 @@ const props = withDefaults(
 	{
 		canPlay: true,
 		countdown: '',
+		challengeUnlocked: false,
 		stats: () => ({
 			gamesPlayed: 0,
 			wins: 0,
@@ -90,7 +126,7 @@ const props = withDefaults(
 	}
 )
 
-const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
+const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-settings', 'show-stats'])
 </script>
 
 <style scoped lang="scss">
@@ -165,7 +201,6 @@ const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 				border: 1px solid var(--border);
 
 				.heading {
-					border-bottom: 1px solid var(--border);
 					color: white;
 					font-size: 1.5rem;
 					margin-bottom: .5rem;
@@ -173,9 +208,7 @@ const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 				}
 
 				.countdown {
-					border-top: 1px solid var(--border);
 					font-weight: 900;
-					padding: .5rem 0 0;
 				}
 
 				p, h4 {
@@ -186,37 +219,56 @@ const emit = defineEmits(['start-game', 'show-info', 'show-settings'])
 				p {
 					margin-bottom: .5rem;
 				}
-			}
-
-			.stats-preview {	
-				h4 {
-					color: var(--text-primary);
-					margin-bottom: 1.5rem;
-					font-size: 1.2rem;
-				}
-
-				.stats-grid {
-					display: grid;
-					grid-template-columns: repeat(2, 1fr);
-					gap: 1rem;
-
-					.stat-item {
-						display: flex;
-						flex-direction: column;
-						align-items: center;
-
-						.stat-number {
-							font-size: 1.5rem;
-							font-weight: 700;
-							color: var(--primary-color);
-							margin-bottom: 0.25rem;
+				
+				.challenge-section {
+					.challenge-divider {
+						text-align: center;
+						margin: 1rem 0;
+						position: relative;
+						
+						&::before {
+							content: '';
+							position: absolute;
+							top: 50%;
+							left: 0;
+							width: calc(50% - 1rem);
+							height: 1px;
+							background: white;
 						}
 						
-						.stat-label {
-							font-size: 0.8rem;
-							color: var(--text-secondary);
+						&::after {
+							content: '';
+							position: absolute;
+							top: 50%;
+							right: 0;
+							width: calc(50% - 1rem);
+							height: 1px;
+							background: white;
+						}
+						
+						p {
+							padding: 0 1rem;
+							color: white;
 							text-transform: uppercase;
-							letter-spacing: 0.5px;
+							position: relative;
+							z-index: 1;
+						}
+					}
+
+					.usp-tiles {
+						display: flex;
+						flex-direction: column;
+						gap: 1rem;
+						justify-content: center;
+						padding: 1rem 0;
+
+						.tile {
+							align-items: center;
+							display: flex;
+							flex-direction: row;
+							gap: 1rem;
+							justify-content: flex-start;
+							text-align: left;
 						}
 					}
 				}

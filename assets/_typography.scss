@@ -202,6 +202,11 @@ button {
         &.large {
             padding: .75rem 2rem;
         }
+
+        &.full {
+            justify-content: center;
+            width: 100%;
+        }
     }
 }
 

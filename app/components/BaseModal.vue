@@ -47,7 +47,7 @@ const props = withDefaults(
 		theme?: string // e.g. 'dark', 'light', or custom
 		style?: string // custom class
 		align?: 'left' | 'center' | 'right'
-		variant?: 'small' | 'medium' | 'large'
+		variant?: 'small' | 'medium' | 'large' | 'fullscreen'
 		image?: string
 	}>(),
 	{
@@ -98,6 +98,14 @@ const props = withDefaults(
 
 			&.large {
 				max-width: 900px;
+			}
+
+			&.fullscreen {
+				max-width: 100vw;
+				max-height: 100vh;
+				width: 100vw;
+				height: 100vh;
+				border-radius: 0;
 			}
 
 			.header {

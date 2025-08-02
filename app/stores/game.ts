@@ -44,7 +44,19 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
-	const canPlay = computed(() => !gameOver.value)
+	const canPlay = computed(() => {
+		// Check if we have a saved game for today
+		const savedGame = localStorage.getItem('footballdle-game')
+		if (savedGame) {
+			const { date } = JSON.parse(savedGame)
+			// If we have a saved game for today, we can't play again
+			if (date === todayStr) {
+				return false
+			}
+		}
+		// If no saved game for today, we can play
+		return true
+	})
 
 	// ============================================================================
 	// GAME LOGIC FUNCTIONS
