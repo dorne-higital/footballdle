@@ -84,6 +84,7 @@ const props = withDefaults(
 			flex-direction: column;
 			max-width: 90vw;
 			max-height: 90vh;
+			overflow: hidden;
 			padding: .5rem;
 			position: relative;
 			transition: box-shadow 0.2s;
