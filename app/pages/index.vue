@@ -98,7 +98,7 @@
 		<BaseModal
 			v-if="modalsStore.showInfo"
 			heading="How to play"
-			variant="small"
+			variant="fullscreen"
 			align="left"
 			@close="modalsStore.closeInfo"
 		>

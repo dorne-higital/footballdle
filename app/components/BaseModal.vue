@@ -103,11 +103,15 @@ const props = withDefaults(
 			}
 
 			&.fullscreen {
-				max-width: 100vw;
-				max-height: 100vh;
-				width: 100vw;
-				height: 100vh;
-				border-radius: 0;
+				max-width: 900px;
+				
+				@media (max-width: 600px) {
+					max-width: 100vw;
+					max-height: 100vh;
+					width: 100vw;
+					height: 100vh;
+					border-radius: 0;
+				}
 			}
 
 			.header {

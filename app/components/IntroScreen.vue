@@ -6,32 +6,33 @@
 				<Loader />
 			</div>
 		</div>
-
-		<div class="intro-header">
-			<Icon 
-				name="uil:info-circle" 
-				@click="$emit('show-info')" 
-				size="1.5rem" 
-			/>
-
-			<Icon 
-				name="uil:setting" 
-				@click="$emit('show-settings')" 
-				size="1.5rem" 
-			/>
-
-			<Icon 
-				name="uil:statistics" 
-				@click="$emit('show-stats')" 
-				size="1.5rem" 
-			/>
-		</div>
 		
 		<div class="intro-content">
-			<div class="heading-section">
+			<div class="intro-header">
 				<h1 class="heading">Footballdle</h1>
-				<p class="subheading">Guess the Premier League footballer</p>
+
+				<div class="icons">
+					<Icon 
+						name="uil:info-circle" 
+						@click="$emit('show-info')" 
+						size="1.5rem" 
+					/>
+
+					<Icon 
+						name="uil:setting" 
+						@click="$emit('show-settings')" 
+						size="1.5rem" 
+					/>
+
+					<Icon 
+						name="uil:statistics" 
+						@click="$emit('show-stats')" 
+						size="1.5rem" 
+					/>
+				</div>
 			</div>
+
+			<p class="subheading">Guess the Premier League footballer</p>
 
 			<div v-if="canPlay" class="play-section">
 				<button @click="$emit('start-game')" class="button primary play-button">
@@ -167,15 +168,6 @@ const isLoading = ref(false) // Start with no loading
 				height: 100%;
 			}
 		}
-		
-		.intro-header {
-			position: absolute;
-			top: 2rem;
-			right: 2rem;
-			display: flex;
-			gap: 1rem;
-			z-index: 10;
-		}
 
 		.intro-content {
 			align-content: center;
@@ -184,15 +176,20 @@ const isLoading = ref(false) // Start with no loading
 			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 			border: 1px solid var(--border);
 			display: flex;
-			gap: 1rem;
 			flex-direction: column;
-			justify-content: center;
+			justify-content: flex-start;
 			max-width: 500px;
-			padding: 2rem;
+			padding: 1rem;
 			text-align: center;
 			width: 100%;
+		
+			.intro-header {
+				align-items: flex-start;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
 
-			.heading-section {
 				.heading {
 					font-weight: 700;
 					background: var(--color-gradient);
@@ -201,10 +198,17 @@ const isLoading = ref(false) // Start with no loading
 					background-clip: text;
 				}
 
-				.subheading {
-					color: var(--text-primary);
-					margin: 0;
+				.icons {
+					display: flex;
+					flex-direction: row;
+					gap: .5rem;
 				}
+			}
+
+			.subheading {
+				color: var(--text-primary);
+				margin: 0;
+				text-align: left;
 			}
 
 			.play-section {
@@ -228,7 +232,8 @@ const isLoading = ref(false) // Start with no loading
 				border-radius: var(--global-border-radius);
 				border: 1px solid var(--border);
 				color: white;
-				padding: 2rem;
+				padding: 1rem;
+				margin-top: 1rem;
 
 				.heading {
 					font-size: 1.5rem;
