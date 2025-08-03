@@ -199,88 +199,95 @@
 				<div class="stats-section">
 					<!-- Stats Toggle -->
 					<div class="stats-toggle">
-						<button 
-							:class="['toggle-btn', { active: activeStatsTab === 'daily' }]"
-							@click="activeStatsTab = 'daily'"
-						>
-							Daily
-						</button>
-						<button 
-							v-if="challengeStore.challengeStats.gamesPlayed > 0"
-							:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
-							@click="activeStatsTab = 'challenge'"
-						>
-							Challenge
-						</button>
-					</div>
-
-					<!-- Daily Game Stats -->
-					<div v-if="activeStatsTab === 'daily'" class="stats-content">
-						<div class="stats-grid">
-							<div class="stat-card">
-								<h3>{{ statsStore.stats.gamesPlayed }}</h3>
-								<p class="caption">Games Played</p>
-							</div>
-							<div class="stat-card">
-								<h3>{{ statsStore.stats.wins }}</h3>
-								<p class="caption">Wins</p>
-							</div>
-							<div class="stat-card">
-								<h3>{{ statsStore.stats.currentStreak }}</h3>
-								<p class="caption">Current Streak</p>
-							</div>
-							<div class="stat-card">
-								<h3>{{ statsStore.stats.maxStreak }}</h3>
-								<p class="caption">Max Streak</p>
-							</div>
-						</div>
-						
-						<div class="win-rate">
-							<h3>Win Rate</h3>
-							<div class="progress-bar">
-								<div 
-									class="progress-fill" 
-									:style="{ width: `${statsStore.winPercentage}%` }"
-								></div>
-							</div>
-							<p>{{ statsStore.winPercentage }}%</p>
+						<div class="toggle-container">
+							<button 
+								:class="['toggle-btn', { active: activeStatsTab === 'daily' }]"
+								@click="activeStatsTab = 'daily'"
+							>
+								<Icon name="solar:calendar-linear" size="1rem" />
+								<span>Daily</span>
+							</button>
+							<button 
+								v-if="challengeStore.challengeStats.gamesPlayed > 0"
+								:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
+								@click="activeStatsTab = 'challenge'"
+							>
+								<Icon name="solar:lightning-linear" size="1rem" />
+								<span>Challenge</span>
+							</button>
 						</div>
 					</div>
 
-					<!-- Challenge Stats -->
-					<div v-if="activeStatsTab === 'challenge'" class="stats-content">
-						<div class="stats-grid">
-							<div class="stat-card">
-								<h3>{{ challengeStore.challengeStats.gamesPlayed }}</h3>
-								<p class="caption">Challenges</p>
+					<!-- Stats Content Container -->
+					<div class="stats-content-container">
+						<!-- Daily Game Stats -->
+						<div 
+							:class="['stats-content', { active: activeStatsTab === 'daily' }]"
+						>
+							<div class="stats-grid">
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.gamesPlayed }}</h3>
+									<p class="caption">Games</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.wins }}</h3>
+									<p class="caption">Wins</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.currentStreak }}</h3>
+									<p class="caption">Streak</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.maxStreak }}</h3>
+									<p class="caption">Max Streak</p>
+								</div>
 							</div>
-							<div class="stat-card">
-								<h3>{{ challengeStore.challengeStats.wins }}</h3>
-								<p class="caption">Wins</p>
+							
+							<div class="win-rate">
+								<h3>Win Rate</h3>
+								<div class="progress-bar">
+									<div 
+										class="progress-fill" 
+										:style="{ width: `${statsStore.winPercentage}%` }"
+									></div>
+								</div>
+								<p>{{ statsStore.winPercentage }}%</p>
 							</div>
-							<div class="stat-card">
-								<h3>{{ challengeStore.challengeStats.maxStreak }}</h3>
-								<p class="caption">Best Streak</p>
-							</div>
-							<div class="stat-card">
-								<h3>{{ challengeStore.challengeStats.bestTime }}s</h3>
-								<p class="caption">Best Time</p>
-							</div>
-							<!-- <div class="stat-card">
-								<h3>{{ Math.floor(challengeStore.challengeStats.totalTime / 60) }}m {{ challengeStore.challengeStats.totalTime % 60 }}s</h3>
-								<p>Total Time</p>
-							</div> -->
 						</div>
-						
-						<div class="win-rate">
-							<h3>Challenge Win Rate</h3>
-							<div class="progress-bar">
-								<div 
-									class="progress-fill" 
-									:style="{ width: `${challengeStore.winPercentage}%` }"
-								></div>
+
+						<!-- Challenge Stats -->
+						<div 
+							:class="['stats-content', { active: activeStatsTab === 'challenge' }]"
+						>
+							<div class="stats-grid">
+								<div class="stat-card">
+									<h3>{{ challengeStore.challengeStats.gamesPlayed }}</h3>
+									<p class="caption">Challenges</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ challengeStore.challengeStats.wins }}</h3>
+									<p class="caption">Wins</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ challengeStore.challengeStats.maxStreak }}</h3>
+									<p class="caption">Best Streak</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ challengeStore.challengeStats.bestTime }}s</h3>
+									<p class="caption">Best Time</p>
+								</div>
 							</div>
-							<p>{{ challengeStore.winPercentage }}%</p>
+							
+							<div class="win-rate">
+								<h3>Challenge Win Rate</h3>
+								<div class="progress-bar">
+									<div 
+										class="progress-fill" 
+										:style="{ width: `${challengeStore.winPercentage}%` }"
+									></div>
+								</div>
+								<p>{{ challengeStore.winPercentage }}%</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -301,16 +308,16 @@
 					<h4 v-else>Better luck next time!</h4>
 					<p>The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong></p>
 					<div class="challenge-buttons">
-						<button @click="handleEndChallenge" class="button secondary">
+						<nuxt-link @click="handleEndChallenge" class="button link">
 							<Icon 
 								name="solar:alt-arrow-left-linear"
 								size="1rem" 
 							/>
 
 							Home
-						</button>
-						
-						<button @click="challengeStore.startChallenge" class="button primary">
+						</nuxt-link>
+
+						<button @click="challengeStore.startChallenge" class="button primary full">
 							Play Again
 						</button>
 					</div>
@@ -636,62 +643,178 @@
 	// ============================================================================
 	// STATS MODAL
 	// ============================================================================
-	.stats-toggle {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 2rem;
-		border-bottom: 1px solid var(--border);
-		padding-bottom: 1rem;
-		
-		.toggle-btn {
-			flex: 1;
-			padding: 0.75rem 1rem;
-			background: var(--bg-primary);
-			border: 1px solid var(--border);
-			border-radius: var(--global-border-radius);
-			color: var(--text-secondary);
-			cursor: pointer;
-			transition: all 0.2s;
-			font-weight: 500;
-			
-			&:hover {
-				background: var(--bg-secondary);
-				border-color: var(--border-hover);
-			}
-			
-			&.active {
-				background: var(--primary-color);
-				border-color: var(--primary-color);
-				color: white;
-			}
-		}
-	}
+	.stats-section {
+		width: 80%;
 
-	.stats-content {
-		.stats-grid {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: 1rem;
-			margin-bottom: 2rem;
-
-			.stat-card {
+		.stats-toggle {
+			margin-bottom: .5rem;
+			border-bottom: 1px solid var(--border);
+			padding-bottom: .5rem;
+			
+			.toggle-container {
+				display: flex;
 				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
-				padding: 1.5rem;
-				text-align: center;
-				transition: all 0.2s;
+				padding: 0.25rem;
+				gap: 0.25rem;
 				
-				&:hover {
-					border-color: var(--border-hover);
-					transform: translateY(-2px);
-					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+				.toggle-btn {
+					flex: 1;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 0.5rem;
+					padding: 0.75rem 1rem;
+					background: transparent;
+					border: none;
+					border-radius: calc(var(--global-border-radius) - 2px);
+					color: var(--text-secondary);
+					cursor: pointer;
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+					font-weight: 500;
+					font-size: 0.9rem;
+					position: relative;
+					overflow: hidden;
+					
+					&::before {
+						content: '';
+						position: absolute;
+						top: 0;
+						left: 0;
+						right: 0;
+						bottom: 0;
+						background: var(--primary-color);
+						opacity: 0;
+						transition: opacity 0.3s ease;
+						z-index: 0;
+					}
+					
+					svg, span {
+						position: relative;
+						z-index: 1;
+						transition: all 0.3s ease;
+					}
+					
+					&:hover {
+						color: var(--text-primary);
+						transform: translateY(-1px);
+						
+						&::before {
+							opacity: 0.1;
+						}
+					}
+					
+					&.active {
+						color: white;
+						
+						&::before {
+							opacity: 1;
+						}
+						
+						svg {
+							transform: scale(1.1);
+						}
+					}
+				}
+			}
+		}
+
+		.stats-content-container {
+			position: relative;
+			min-height: 300px;
+
+			.stats-content {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				opacity: 0;
+				visibility: hidden;
+				transform: translateX(20px);
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+				
+				&.active {
+					opacity: 1;
+					visibility: visible;
+					transform: translateX(0);
+				}
+				
+				.stats-grid {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: .5rem;
+					margin-bottom: .5rem;
+
+					.stat-card {
+						background: var(--bg-secondary);
+						border: 1px solid var(--border);
+						border-radius: var(--global-border-radius);
+						padding: 1rem;
+						text-align: center;
+						transition: all 0.2s;
+						position: relative;
+						overflow: hidden;
+						
+						&:hover {
+							border-color: var(--border-hover);
+							transform: translateY(-2px);
+							box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+							
+							&::before {
+								opacity: 1;
+							}
+						}
+						
+						h3 {
+							font-size: 2rem;
+							font-weight: 700;
+							margin: 0 0 0.5rem 0;
+							color: var(--text-primary);
+						}
+					}
+				}
+				
+				.win-rate {
+					background: var(--bg-secondary);
+					border: 1px solid var(--border);
+					border-radius: var(--global-border-radius);
+					padding: 1.5rem;
+					
+					h3 {
+						margin: 0 0 1rem 0;
+						color: var(--text-primary);
+						font-size: 1.2rem;
+						font-weight: 600;
+					}
+					
+					.progress-bar {
+						width: 100%;
+						height: 8px;
+						background: var(--bg-primary);
+						border-radius: 4px;
+						overflow: hidden;
+						margin-bottom: 0.5rem;
+						
+						.progress-fill {
+							height: 100%;
+							background: var(--color-gradient);
+							border-radius: 4px;
+							transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+						}
+					}
+					
+					p {
+						margin: 0;
+						color: var(--text-secondary);
+						font-size: 0.9rem;
+						font-weight: 500;
+						text-align: center;
+					}
 				}
 			}
 		}
 	}
-
-
 
 	// ============================================================================
 	// CHALLENGE GAME OVER MODAL

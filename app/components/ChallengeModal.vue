@@ -2,52 +2,34 @@
 	<div class="challenge-game">
 		<!-- Navigation Header -->
 		<div class="challenge-nav">
-			<button @click="endChallenge" class="nav-button">
-				<Icon 
-					name="solar:alt-arrow-left-linear"
-					size="1rem" 
-				/>
-
-				Home
-			</button>
-			<button 
-				v-if="!gameOver" 
-				@click="togglePause" 
-				class="pause-button" 
-				:class="{ 'paused': isPaused }"
-			>
-				<Icon 
-					v-if="!isPaused"
-					name="solar:alarm-pause-linear"
-					size="1rem" 
-				/>
-				<Icon 
-					v-else
-					name="solar:play-circle-linear"
-					size="1rem" 
-				/>
-
-				{{ isPaused ? 'Play' : 'Pause' }}
-			</button>
-
-			<button 
-				v-else 
-				@click="playAgain" 
-				class="play-again-button"
-			>
-				Play Again
-
-				<Icon 
-					name="solar:play-circle-linear"
-					size="1rem" 
-				/>
-			</button>
-		</div>
-
-		<!-- Header with timer -->
-		<div class="challenge-header">
+			<!-- Countdown-->
 			<div class="timer" :class="{ 'warning': timeRemaining <= 10, 'danger': timeRemaining <= 5 }">
 				{{ timeFormatted }}
+			</div>
+
+			<!-- Icons (pause / play / home) -->
+			<div class="cta-buttons">
+				<template v-if="!gameOver">
+					<Icon 
+						name="solar:alarm-pause-linear"
+						size="1.5rem" 
+						@click="togglePause"
+					/>
+				</template>
+
+				<template v-else>
+					<Icon 
+						name="solar:play-circle-linear"
+						size="1.5rem" 
+						@click="playAgain"
+					/>
+				</template>
+
+				<Icon 
+					name="solar:home-smile-linear"
+					size="1.5rem" 
+					@click="endChallenge"
+				/>
 			</div>
 		</div>
 
@@ -164,185 +146,140 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 </script>
 
 <style scoped lang="scss">
-.challenge-game {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 1rem;
-	gap: 1rem;
-	background: var(--bg-gradient);
-	position: relative;
-}
-
-.challenge-nav {
-	position: absolute;
-	top: 1rem;
-	left: 1rem;
-	right: 1rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	z-index: 10;
-
-	.nav-button, .pause-button, .play-again-button {
+	.challenge-game {
+		display: flex;
+		flex-direction: column;
 		align-items: center;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
-		color: var(--text-primary);
-		padding: 0.5rem 1rem;
-		border-radius: var(--global-border-radius);
-		cursor: pointer;
-		display: flex;
-		gap: 0.5rem;
-		font-size: 0.9rem;
-		transition: all 0.2s;
-		
-		&:hover {
-			background: var(--bg-primary);
-			border-color: var(--border-hover);
-		}
-	}
-}
-
-.challenge-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
-	max-width: 400px;
-	
-	h1 {
-		margin: 0;
-		color: var(--text-primary);
-		font-size: 1.5rem;
-		font-weight: 700;
-	}
-	
-	.timer {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: var(--text-primary);
-		font-family: monospace;
-		
-		&.warning {
-			color: var(--color-present);
-		}
-		
-		&.danger {
-			color: #dc2626;
-			animation: pulse 1s 10s;
-		}
-	}
-}
-
-.game-board {
-	.guess-row {
-		display: flex;
-		gap: 0.25rem;
-		margin-bottom: 0.25rem;
 		justify-content: center;
+		padding: 1rem;
+		gap: 1rem;
+		background: var(--bg-gradient);
+
+		.challenge-nav {
+			align-items: center;
+			display: flex;
+			justify-content: space-between;
+			padding: .5rem 1rem;
+			width: 100%;
+
+			.timer {
+				font-size: 1.2rem;
+
+				&.warning {
+					color: var(--tertiary-color);
+				}
+
+				&.danger {
+					color: var(--primary-color);
+				}
+			}
+
+			.cta-buttons {
+				align-items: center;
+				display: flex;
+				gap: .5rem;
+				justify-content: center;
+			}
+		}
+
+		.game-board {
+			.guess-row {
+				display: flex;
+				gap: 0.25rem;
+				margin-bottom: 0.25rem;
+				justify-content: center;
+				
+				.letter {
+					width: 3rem;
+					height: 3rem;
+					border: 2px solid var(--border);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-weight: 700;
+					font-size: 1.2rem;
+					text-transform: uppercase;
+					background: var(--bg-secondary);
+					color: var(--text-primary);
+					transition: all 0.2s;
+					transform-style: preserve-3d;
+					perspective: 1000px;
+					
+					&.animate {
+						animation: flipIn 0.6s ease-in-out forwards;
+					}
+					
+					&.correct {
+						background: var(--color-success);
+						border-color: var(--color-success);
+						color: white;
+					}
+					
+					&.present {
+						background: var(--color-present);
+						border-color: var(--color-present);
+						color: white;
+					}
+					
+					&.absent {
+						background: var(--color-absent);
+						border-color: var(--color-absent);
+						color: white;
+					}
+				}
+			}
+		}
 		
-		.letter {
-			width: 3rem;
-			height: 3rem;
-			border: 2px solid var(--border);
+		.pause-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.8);
+			backdrop-filter: blur(8px);
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			font-weight: 700;
-			font-size: 1.2rem;
-			text-transform: uppercase;
-			background: var(--bg-secondary);
-			color: var(--text-primary);
-			transition: all 0.2s;
-			transform-style: preserve-3d;
-			perspective: 1000px;
-			
-			&.animate {
-				animation: flipIn 0.6s ease-in-out forwards;
-			}
-			
-			&.correct {
-				background: var(--color-success);
-				border-color: var(--color-success);
-				color: white;
-			}
-			
-			&.present {
-				background: var(--color-present);
-				border-color: var(--color-present);
-				color: white;
-			}
-			
-			&.absent {
-				background: var(--color-absent);
-				border-color: var(--color-absent);
-				color: white;
+			z-index: 1000;
+			cursor: pointer;
+
+			.pause-content {
+				align-items: center;
+				background: var(--bg-secondary);
+				border: 1px solid var(--border);
+				border-radius: var(--global-border-radius);
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+				padding: 2rem;
+				text-align: center;
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+				h2 {
+					align-items: center;
+					color: var(--text-primary);
+					display: flex;
+					gap: .5rem;
+					margin-bottom: 0.5rem;
+
+					svg {
+						width: 1.5rem;
+					}
+				}
+
+				p {
+					color: var(--text-secondary);
+					margin: 0;
+					font-size: 1rem;
+				}
 			}
 		}
 	}
-}
 
-
-
-
-
-
-@keyframes flipIn {
-	0% { transform: rotateX(0deg); }
-	50% { transform: rotateX(90deg); }
-	100% { transform: rotateX(0deg); }
-}
-
-.pause-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.8);
-	backdrop-filter: blur(8px);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 1000;
-	cursor: pointer;
-
-	.pause-content {
-		align-items: center;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
-		border-radius: var(--global-border-radius);
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		padding: 2rem;
-		text-align: center;
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-
-		h2 {
-			align-items: center;
-			color: var(--text-primary);
-			display: flex;
-			gap: .5rem;
-			margin-bottom: 0.5rem;
-
-			svg {
-				width: 1.5rem;
-			}
-		}
-
-		p {
-			color: var(--text-secondary);
-			margin: 0;
-			font-size: 1rem;
-		}
+	@keyframes flipIn {
+		0% { transform: rotateX(0deg); }
+		50% { transform: rotateX(90deg); }
+		100% { transform: rotateX(0deg); }
 	}
-}
-
-@keyframes pulse {
-	0%, 100% { opacity: 1; }
-	50% { opacity: 0.5; }
-}
 </style> 
