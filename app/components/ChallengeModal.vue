@@ -150,10 +150,11 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
 		padding: 1rem;
 		gap: 1rem;
 		background: var(--bg-gradient);
+		min-height: 100vh;
 
 		.challenge-nav {
 			align-items: center;
