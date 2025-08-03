@@ -103,7 +103,7 @@
 		<BaseModal
 			v-if="modalsStore.showInfo"
 			heading="How to play"
-			variant="fullscreen"
+			variant="small"
 			align="left"
 			@close="modalsStore.closeInfo"
 		>
@@ -327,12 +327,6 @@
 
 <script setup lang="ts">
 	import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
-	import HeaderNav from '../components/HeaderNav.vue'
-	import GameBoard from '../components/GameBoard.vue'
-	import Keyboard from '../components/Keyboard.vue'
-	import BaseModal from '../components/BaseModal.vue'
-	import IntroScreen from '../components/IntroScreen.vue'
-	import ChallengeModal from '../components/ChallengeModal.vue'
 	import { useGameStore } from '../stores/game'
 	import { useStatsStore } from '../stores/stats'
 	import { useThemeStore } from '../stores/theme'
