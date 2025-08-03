@@ -217,10 +217,9 @@ const isLoading = ref(false) // Start with no loading
 
 				.heading {
 					font-weight: 700;
-					background: var(--subtle-gradient);
+					background: var(--color-gradient);
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
-					-webkit-text-stroke: 1px white;
 					background-clip: text;
 				}
 
