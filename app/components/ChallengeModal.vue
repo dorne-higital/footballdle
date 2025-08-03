@@ -46,7 +46,6 @@
 
 		<!-- Header with timer -->
 		<div class="challenge-header">
-			<h1>⚡ Challenge Mode</h1>
 			<div class="timer" :class="{ 'warning': timeRemaining <= 10, 'danger': timeRemaining <= 5 }">
 				{{ timeFormatted }}
 			</div>
@@ -170,7 +169,6 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	min-height: 100vh;
 	padding: 1rem;
 	gap: 1rem;
 	background: var(--bg-gradient);
