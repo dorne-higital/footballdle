@@ -95,8 +95,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 		
 		guesses.value.push(guess)
 		
-		// Check win condition
-		if (guess === currentAnswer.value) {
+		// Check win condition (case-insensitive comparison)
+		if (guess.toUpperCase() === currentAnswer.value.toUpperCase()) {
 			isWin.value = true
 			gameOver.value = true
 			showGameOverModal.value = true
