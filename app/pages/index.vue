@@ -533,6 +533,8 @@
 	// INFO MODAL
 	// ============================================================================
 	.info-section {
+		max-height: 75vh;
+		
 		p {
 			margin-bottom: 1rem;
 			line-height: 1.6;
