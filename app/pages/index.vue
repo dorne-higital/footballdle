@@ -244,14 +244,13 @@
 							</div>
 							
 							<div class="win-rate">
-								<h3>Win Rate</h3>
 								<div class="progress-bar">
 									<div 
 										class="progress-fill" 
 										:style="{ width: `${statsStore.winPercentage}%` }"
 									></div>
 								</div>
-								<p>{{ statsStore.winPercentage }}%</p>
+								<p>{{ statsStore.winPercentage }}% win rate</p>
 							</div>
 						</div>
 
@@ -279,14 +278,13 @@
 							</div>
 							
 							<div class="win-rate">
-								<h3>Challenge Win Rate</h3>
 								<div class="progress-bar">
 									<div 
 										class="progress-fill" 
 										:style="{ width: `${challengeStore.winPercentage}%` }"
 									></div>
 								</div>
-								<p>{{ challengeStore.winPercentage }}%</p>
+								<p>{{ challengeStore.winPercentage }}% win rate</p>
 							</div>
 						</div>
 					</div>
@@ -779,7 +777,7 @@
 					background: var(--bg-secondary);
 					border: 1px solid var(--border);
 					border-radius: var(--global-border-radius);
-					padding: 1.5rem;
+					padding: 1rem;
 					
 					h3 {
 						margin: 0 0 1rem 0;
