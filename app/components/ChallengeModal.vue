@@ -177,7 +177,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 			.cta-buttons {
 				align-items: center;
 				display: flex;
-				gap: .5rem;
+				gap: 1rem;
 				justify-content: center;
 			}
 		}
