@@ -118,7 +118,7 @@
 						</div>
 					</div>
 
-					<button @click="$emit('start-challenge')" class="button primary full challenge play-button">
+					<button @click="$emit('start-challenge')" class="button primary full large challenge play-button">
 						Play now!
 					</button>
 				</div>
