@@ -30,7 +30,12 @@
 			/>
 			
 			<button @click="handleBackToMenu" class="back-to-menu">
-				← Back to Menu
+				<Icon 
+					name="solar:alt-arrow-left-linear"
+					size="1rem" 
+				/>
+
+				Home
 			</button>
 
 			<GameBoard 
@@ -296,11 +301,17 @@
 					<h4 v-else>Better luck next time!</h4>
 					<p>The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong></p>
 					<div class="challenge-buttons">
+						<button @click="handleEndChallenge" class="button secondary">
+							<Icon 
+								name="solar:alt-arrow-left-linear"
+								size="1rem" 
+							/>
+
+							Home
+						</button>
+						
 						<button @click="challengeStore.startChallenge" class="button primary">
 							Play Again
-						</button>
-						<button @click="handleEndChallenge" class="button secondary">
-							Back to Menu
 						</button>
 					</div>
 				</div>

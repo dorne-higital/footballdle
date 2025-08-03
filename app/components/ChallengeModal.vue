@@ -8,7 +8,7 @@
 					size="1rem" 
 				/>
 
-				Back to Menu
+				Home
 			</button>
 			<button 
 				v-if="!gameOver" 
@@ -172,7 +172,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 	justify-content: center;
 	min-height: 100vh;
 	padding: 1rem;
-	gap: 2rem;
+	gap: 1rem;
 	background: var(--bg-gradient);
 	position: relative;
 }
@@ -246,8 +246,8 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		justify-content: center;
 		
 		.letter {
-			width: 3.5rem;
-			height: 3.5rem;
+			width: 3rem;
+			height: 3rem;
 			border: 2px solid var(--border);
 			display: flex;
 			align-items: center;
