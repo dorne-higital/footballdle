@@ -38,21 +38,22 @@
 				<div class="usp-tiles">
 					<div class="tile">
 						<Icon name="solar:calendar-linear" size="1.5rem" />
+
 						<h6>New player to guess every day</h6>
 					</div>
 
 					<div class="tile">
 						<Icon name="solar:football-outline" size="1.5rem" />
-						<h6>Current Premier League players 25/26 season</h6>
+						<h6>25/26 Premier League players</h6>
 					</div>
 
 					<div class="tile">
-						<Icon name="solar:letter-linear" size="1.5rem" />
-						<h6>Only layers with 6 letter surnames</h6>
+						<Icon name="solar:magnifer-linear" size="1.5rem" />
+						<h6>Only players with 6 letter surnames</h6>
 					</div>
 
 					<div class="tile">
-						<Icon name="solar:target-linear" size="1.5rem" />
+						<Icon name="solar:shield-warning-linear" size="1.5rem" />
 						<h6>Maximum 6 guesses</h6>
 					</div>
 				</div>
@@ -216,9 +217,10 @@ const isLoading = ref(false) // Start with no loading
 
 				.heading {
 					font-weight: 700;
-					background: var(--color-gradient);
+					background: var(--subtle-gradient);
 					-webkit-background-clip: text;
 					-webkit-text-fill-color: transparent;
+					-webkit-text-stroke: 1px white;
 					background-clip: text;
 				}
 
@@ -236,7 +238,7 @@ const isLoading = ref(false) // Start with no loading
 			}
 
 			.play-section {
-				background: var(--color-gradient);
+				background: var(--subtle-gradient);
 				border-radius: var(--global-border-radius);
 				border: 1px solid var(--border);
 				color: white;
@@ -290,12 +292,16 @@ const isLoading = ref(false) // Start with no loading
 					font-size: 1.1rem;
 					padding: 1rem 3rem;
 					border-radius: var(--global-border-radius);
-					font-weight: 600;
 					justify-content: center;
 					transition: all 0.3s ease;
 					text-align: center;
+					text-transform: uppercase;
 					margin-top: 1rem;
 					width: 75%;
+				
+					@media (max-width: 600px) {
+						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+					}
 					
 					&:hover {
 						transform: translateY(-2px);

@@ -17,7 +17,7 @@
 	--color-absent: #6b7280;
 
 	--color-gradient: linear-gradient(135deg, #dc2626 0%, #1e40af 100%);
-	--subtle-gradient: linear-gradient(135deg, #ef6363 0%, #e63535 100%);
+	--subtle-gradient: linear-gradient(135deg, var(--secondary-color) 0%, color-mix(in srgb, var(--secondary-color) 25%, #000) 100%);
 
 	--global-border-radius: 8px;
 	--border: #e5e7eb;
@@ -42,6 +42,7 @@
 	--color-absent: #64748b;
 
 	--color-gradient: linear-gradient(135deg, #ef4444 0%, #3b82f6 100%);
+	--subtle-gradient: linear-gradient(135deg, var(--secondary-color) 0%, color-mix(in srgb, var(--secondary-color) 25%, #000) 100%);
 
 	--global-border-radius: 8px;
 	--border: #334155;
@@ -49,51 +50,53 @@
 }
 
 .high-contrast {
-  --text-primary: #000000;
-  --text-secondary: #333333;
+	--text-primary: #000000;
+	--text-secondary: #333333;
 
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0f0f0;
-  --bg-gradient: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+	--bg-primary: #ffffff;
+	--bg-secondary: #f0f0f0;
+	--bg-gradient: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
 
-  --primary-color: #dc2626;
-  --secondary-color: #1e40af;
-  --accent-color: #059669;
-  --tertiary-color: #f59e0b;
+	--primary-color: #dc2626;
+	--secondary-color: #1e40af;
+	--accent-color: #059669;
+	--tertiary-color: #f59e0b;
 
-  --color-success: #059669;
-  --color-present: #f59e0b;
-  --color-absent: #6b7280;
+	--color-success: #059669;
+	--color-present: #f59e0b;
+	--color-absent: #6b7280;
 
-  --color-gradient: linear-gradient(135deg, #dc2626 0%, #1e40af 100%);
+	--color-gradient: linear-gradient(135deg, #dc2626 0%, #1e40af 100%);
+	--subtle-gradient: linear-gradient(135deg, var(--secondary-color) 0%, color-mix(in srgb, var(--secondary-color) 25%, #000) 100%);
 
-  --global-border-radius: 8px;
-  --border: #000000;
-  --border-hover: #333333;
+	--global-border-radius: 8px;
+	--border: #000000;
+	--border-hover: #333333;
 }
 
 .dark.high-contrast {
-  --text-primary: #ffffff;
-  --text-secondary: #cccccc;
+	--text-primary: #ffffff;
+	--text-secondary: #cccccc;
 
-  --bg-primary: #000000;
-  --bg-secondary: #1a1a1a;
-  --bg-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
+	--bg-primary: #000000;
+	--bg-secondary: #1a1a1a;
+	--bg-gradient: linear-gradient(135deg, #000000 0%, #333333 100%);
 
-  --primary-color: #ef4444;
-  --secondary-color: #3b82f6;
-  --accent-color: #10b981;
-  --tertiary-color: #fbbf24;
+	--primary-color: #ef4444;
+	--secondary-color: #3b82f6;
+	--accent-color: #10b981;
+	--tertiary-color: #fbbf24;
 
-  --color-success: #10b981;
-  --color-present: #fbbf24;
-  --color-absent: #64748b;
+	--color-success: #10b981;
+	--color-present: #fbbf24;
+	--color-absent: #64748b;
 
-  --color-gradient: linear-gradient(135deg, #ef4444 0%, #3b82f6 100%);
+	--color-gradient: linear-gradient(135deg, #ef4444 0%, #3b82f6 100%);
+	--subtle-gradient: linear-gradient(135deg, var(--secondary-color) 0%, color-mix(in srgb, var(--secondary-color) 25%, #000) 100%);
 
-  --global-border-radius: 8px;
-  --border: #ffffff;
-  --border-hover: #cccccc;
+	--global-border-radius: 8px;
+	--border: #ffffff;
+	--border-hover: #cccccc;
 }
 
 .sw {
