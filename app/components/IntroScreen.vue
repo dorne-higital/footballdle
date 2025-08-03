@@ -96,7 +96,7 @@
 								size="1.5rem" 
 							/>
 
-							<h6>Any current footballer</h6>
+							<h6>Current Premier League player</h6>
 						</div>
 
 						<div class="tile">
