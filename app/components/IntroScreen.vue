@@ -117,6 +117,7 @@
 							<h6>Unlimed plays</h6>
 						</div>
 					</div>
+
 					<button @click="$emit('start-challenge')" class="button primary full challenge play-button">
 						Play now!
 					</button>
@@ -319,7 +320,6 @@ const isLoading = ref(false) // Start with no loading
 
 				.heading {
 					font-size: 1.5rem;
-					margin-bottom: .5rem;
 					padding-bottom: .5rem;
 				}
 
@@ -338,7 +338,7 @@ const isLoading = ref(false) // Start with no loading
 				.challenge-section {
 					.challenge-divider {
 						text-align: center;
-						margin: 1rem 0;
+						margin: .5rem 0;
 						position: relative;
 						
 						&::before {
@@ -369,20 +369,38 @@ const isLoading = ref(false) // Start with no loading
 						}
 					}
 
-					.usp-tiles {
-						display: flex;
-						flex-direction: column;
-						gap: 1rem;
-						justify-content: center;
-						padding: 1rem 0;
 
+					.usp-tiles {
+						display: grid;
+						grid-template-columns: repeat(2, 1fr);
+						gap: .5rem;
+						margin: 1rem 0;
+					
+						@media (max-width: 600px) {
+							grid-template-columns: repeat(1, 1fr);
+						}
+						
 						.tile {
-							align-items: center;
-							display: flex;
-							flex-direction: row;
-							gap: 1rem;
-							justify-content: flex-start;
-							text-align: left;
+							background: rgba(255, 255, 255, 0.1);
+							backdrop-filter: blur(10px);
+							border: 1px solid rgba(255, 255, 255, 0.2);
+							border-radius: var(--global-border-radius);
+							color: white;
+							padding: 1rem;
+							text-align: center;
+					
+							@media (max-width: 600px) {
+								align-items: center;
+								display: flex;
+								flex-direction: row;
+								gap: .5rem;
+								padding: .5rem;
+								text-align: left;
+							}
+							
+							h6 {
+								font-size: 0.8rem;
+							}
 						}
 					}
 				}
