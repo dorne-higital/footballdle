@@ -3,7 +3,9 @@
 		:class="componentName" 
 		class="sw-small"
 	>
-		<h3>Footballdle</h3>
+		<h3>
+			
+		</h3>
 		
 		<div class="button-container">
 			<Icon 

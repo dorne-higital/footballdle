@@ -29,14 +29,12 @@
 				@show-stats="modalsStore.openStats" 
 			/>
 			
-			<button @click="handleBackToMenu" class="back-to-menu">
-				<Icon 
-					name="solar:alt-arrow-left-linear"
-					size="1rem" 
-				/>
-
-				Home
-			</button>
+			<Icon 
+				name="solar:home-smile-linear"
+				size="1.5rem" 
+				@click="handleBackToMenu"
+				class="back-to-menu"
+			/>
 
 			<GameBoard 
 				:guesses="gameStore.guesses" 
@@ -491,8 +489,6 @@
 		position: absolute;
 		top: 1rem;
 		left: 1rem;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
 		color: var(--text-primary);
 		padding: 0.5rem 1rem;
 		border-radius: var(--global-border-radius);

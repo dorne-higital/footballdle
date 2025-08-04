@@ -69,11 +69,14 @@
 		
 		for (const guess of props.guesses) {
 			const guessUpper = guess.toUpperCase()
+			const result = processWordFeedback(guessUpper, answerUpper)
+			
+			// Check if this key appears in the result
 			for (let i = 0; i < guessUpper.length; i++) {
 				if (guessUpper[i] === keyUpper) {
-					if (keyUpper === answerUpper[i]) {
+					if (result[i] === 'correct') {
 						isCorrect = true
-					} else if (answerUpper.includes(keyUpper)) {
+					} else if (result[i] === 'present') {
 						isPresent = true
 					} else {
 						isAbsent = true
@@ -88,6 +91,35 @@
 		if (isAbsent) return 'absent'
 		
 		return ''
+	}
+	
+	function processWordFeedback(guess: string, answer: string): string[] {
+		const result = new Array(guess.length).fill('absent')
+		const answerArray = answer.split('')
+		
+		// Step 1: Mark all correct positions first
+		for (let i = 0; i < guess.length; i++) {
+			if (guess[i] === answerArray[i]) {
+				result[i] = 'correct'
+				answerArray[i] = 'USED' // Mark as used
+			}
+		}
+		
+		// Step 2: Mark present positions (only for letters not already used)
+		for (let i = 0; i < guess.length; i++) {
+			if (result[i] !== 'correct') { // Skip already correct positions
+				const letter = guess[i]
+				if (letter) { // TypeScript safety check
+					const index = answerArray.indexOf(letter)
+					if (index !== -1) {
+						result[i] = 'present'
+						answerArray[index] = 'USED' // Mark this instance as used
+					}
+				}
+			}
+		}
+		
+		return result
 	}
 
 	function press(key: string) {

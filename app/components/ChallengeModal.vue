@@ -112,10 +112,10 @@ function playAgain() {
 
 function getRowGuess(guessIdx: number) {
 	if (guessIdx < props.guesses.length) {
-		return props.guesses[guessIdx]
+		return props.guesses[guessIdx] || ''
 	}
 	if (guessIdx === props.guesses.length) {
-		return props.currentGuess
+		return props.currentGuess || ''
 	}
 	return ''
 }
@@ -127,11 +127,44 @@ function feedbackClass(guessIdx: number, charIdx: number) {
 	if (!char) return ''
 	// Only color submitted guesses
 	if (guessIdx >= props.guesses.length) return ''
+	
 	const answerUpper = props.answer.toUpperCase()
-	const charUpper = char.toUpperCase()
-	if (charUpper === answerUpper[charIdx]) return 'correct'
-	if (answerUpper.includes(charUpper)) return 'present'
-	return 'absent'
+	const guessUpper = guess.toUpperCase()
+	
+	// Process the entire word to get the correct feedback for each position
+	const result = processWordFeedback(guessUpper, answerUpper)
+	return result[charIdx]
+}
+
+function processWordFeedback(guess: string, answer: string): string[] {
+	const result = new Array(guess.length).fill('absent')
+	const answerArray = answer.split('')
+	
+	// Step 1: Mark all correct positions first
+	for (let i = 0; i < guess.length; i++) {
+		if (guess[i] === answerArray[i]) {
+			result[i] = 'correct'
+			answerArray[i] = 'USED' // Mark as used
+		}
+	}
+	
+	// Step 2: Mark present positions (only for letters not already used)
+	for (let i = 0; i < guess.length; i++) {
+		if (result[i] !== 'correct') { // Skip already correct positions
+			const letter = guess[i]
+			if (letter) { // TypeScript safety check
+				// Check if this letter exists in unused positions of the answer
+				const index = answerArray.indexOf(letter)
+				if (index !== -1) {
+					result[i] = 'present'
+					answerArray[index] = 'USED' // Mark this instance as used
+				}
+				// If not found, it remains 'absent' (which is the default)
+			}
+		}
+	}
+	
+	return result
 }
 
 function shouldAnimate(guessIdx: number, charIdx: number) {
