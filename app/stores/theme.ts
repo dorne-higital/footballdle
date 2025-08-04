@@ -5,20 +5,13 @@ export const useThemeStore = defineStore('theme', () => {
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
-	const isDarkTheme = ref(false)
-	const isHighContrast = ref(false)
+	const currentTheme = ref('light') // 'light', 'dark', 'high-contrast', 'pastel', 'chrome', 'glass'
 
 	// ============================================================================
 	// THEME FUNCTIONS
 	// ============================================================================
-	function toggleTheme() {
-		isDarkTheme.value = !isDarkTheme.value
-		applyTheme()
-		saveThemeSettings()
-	}
-
-	function toggleHighContrast() {
-		isHighContrast.value = !isHighContrast.value
+	function setTheme(theme: string) {
+		currentTheme.value = theme
 		applyTheme()
 		saveThemeSettings()
 	}
@@ -27,55 +20,55 @@ export const useThemeStore = defineStore('theme', () => {
 		const root = document.documentElement
 
 		// Remove all theme classes first
-		root.classList.remove('dark', 'high-contrast')
+		root.classList.remove('dark', 'high-contrast', 'theme-pastel', 'theme-chrome', 'theme-glass')
 
-		// Apply dark theme
-		if (isDarkTheme.value) {
-			root.classList.add('dark')
-		}
-
-		// Apply high contrast theme
-		if (isHighContrast.value) {
-			root.classList.add('high-contrast')
+		// Apply the selected theme
+		switch (currentTheme.value) {
+			case 'dark':
+				root.classList.add('dark')
+				break
+			case 'high-contrast':
+				root.classList.add('high-contrast')
+				break
+			case 'pastel':
+				root.classList.add('theme-pastel')
+				break
+			case 'chrome':
+				root.classList.add('theme-chrome')
+				break
+			case 'glass':
+				root.classList.add('theme-glass')
+				break
+			default:
+				// Light theme (default) - no additional classes needed
+				break
 		}
 	}
 
 	function saveThemeSettings() {
-		localStorage.setItem('footballdle-theme', isDarkTheme.value ? 'dark' : 'light')
-		localStorage.setItem('footballdle-high-contrast', isHighContrast.value ? 'true' : 'false')
+		localStorage.setItem('footballdle-theme', currentTheme.value)
 	}
 
 	function loadThemeSettings() {
 		const savedTheme = localStorage.getItem('footballdle-theme')
-		const savedHighContrast = localStorage.getItem('footballdle-high-contrast')
-
-		if (savedTheme === 'dark') {
-			isDarkTheme.value = true
+		if (savedTheme && ['light', 'dark', 'high-contrast', 'pastel', 'chrome', 'glass'].includes(savedTheme)) {
+			currentTheme.value = savedTheme
 		}
-
-		if (savedHighContrast === 'true') {
-			isHighContrast.value = true
-		}
-
 		applyTheme()
 	}
 
 	function resetThemeSettings() {
 		localStorage.removeItem('footballdle-theme')
-		localStorage.removeItem('footballdle-high-contrast')
-		isDarkTheme.value = false
-		isHighContrast.value = false
+		currentTheme.value = 'light'
 		applyTheme()
 	}
 
 	return {
 		// State
-		isDarkTheme,
-		isHighContrast,
+		currentTheme,
 		
 		// Functions
-		toggleTheme,
-		toggleHighContrast,
+		setTheme,
 		applyTheme,
 		saveThemeSettings,
 		loadThemeSettings,

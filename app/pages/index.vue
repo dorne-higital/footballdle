@@ -161,26 +161,101 @@
 		>
 			<template #body>
 				<div class="settings-section">
-					<div class="setting-item">
-						<label for="theme-toggle">Dark Mode</label>
-
-						<button 
-							:class="['theme-toggle', { active: themeStore.isDarkTheme }]"
-							@click="themeStore.toggleTheme"
-						>
-							<div class="toggle-slider"></div>
-						</button>
-					</div>
-
-					<div class="setting-item">
-						<label for="theme-toggle">High Contrast</label>
-
-						<button 
-							:class="['theme-toggle', { active: themeStore.isHighContrast }]"
-							@click="themeStore.toggleHighContrast"
-						>
-							<div class="toggle-slider"></div>
-						</button>
+					<div class="setting-group">
+						<label>Choose Theme</label>
+						<p>Select your preferred theme</p>
+						
+						<div class="theme-grid">
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'light' }]"
+								@click="themeStore.setTheme('light')"
+							>
+								<div class="theme-preview light">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Light</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'dark' }]"
+								@click="themeStore.setTheme('dark')"
+							>
+								<div class="theme-preview dark">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Dark</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'high-contrast' }]"
+								@click="themeStore.setTheme('high-contrast')"
+							>
+								<div class="theme-preview high-contrast">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">High Contrast</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'pastel' }]"
+								@click="themeStore.setTheme('pastel')"
+							>
+								<div class="theme-preview pastel">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Pastel</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'chrome' }]"
+								@click="themeStore.setTheme('chrome')"
+							>
+								<div class="theme-preview chrome">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Chrome</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'glass' }]"
+								@click="themeStore.setTheme('glass')"
+							>
+								<div class="theme-preview glass">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Glass</span>
+							</button>
+						</div>
 					</div>
 				</div>
 			</template>
@@ -582,49 +657,209 @@
 	.settings-section {
 		width: 100%;
 
-		.setting-item {
+		.setting-group {
 			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-bottom: 1rem;
+			flex-direction: column;
+			align-items: flex-start;
+			margin-bottom: 2rem;
 			width: 100%;
 			
 			label {
-				font-weight: 500;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+				color: var(--text-primary);
+				font-size: 1.1rem;
 			}
 			
 			p {
-				margin: 0;
+				margin: 0 0 1rem 0;
 				color: var(--text-secondary);
+				font-size: 0.9rem;
 			}
 
-			.theme-toggle {
-				position: relative;
-				width: 50px;
-				height: 24px;
-				background: #ccc;
-				border: none;
-				border-radius: 12px;
-				cursor: pointer;
-				transition: background 0.3s;
+			.theme-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+				gap: 1rem;
+				width: 100%;
 				
-				&.active {
-					background: var(--primary-color);
-				}
-				
-				.toggle-slider {
-					position: absolute;
-					top: 2px;
-					left: 2px;
-					width: 20px;
-					height: 20px;
-					background: var(--bg-gradient);
-					border-radius: 50%;
-					transition: transform 0.3s;
-				}
-				
-				&.active .toggle-slider {
-					transform: translateX(26px);
+				.theme-option {
+					background: var(--bg-secondary);
+					border: 2px solid var(--border);
+					border-radius: var(--global-border-radius);
+					padding: 1rem;
+					cursor: pointer;
+					transition: all 0.3s ease;
+					text-align: center;
+					position: relative;
+					overflow: hidden;
+					
+					&:hover {
+						border-color: var(--primary-color);
+						transform: translateY(-2px);
+						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+					}
+					
+					&.active {
+						border-color: var(--primary-color);
+						background: var(--primary-color);
+						color: white;
+						font-weight: 600;
+						transform: translateY(-2px);
+						box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+					}
+					
+					.theme-preview {
+						width: 100%;
+						height: 60px;
+						border-radius: calc(var(--global-border-radius) - 2px);
+						overflow: hidden;
+						margin-bottom: 0.5rem;
+						
+						.preview-header {
+							height: 20px;
+							background: var(--bg-primary);
+							border-bottom: 1px solid var(--border);
+						}
+						
+						.preview-content {
+							height: 40px;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							gap: 0.25rem;
+							padding: 0.5rem;
+							background: var(--bg-secondary);
+							
+							.preview-tile {
+								width: 1.5rem;
+								height: 1.5rem;
+								border: 1px solid var(--border);
+								border-radius: 2px;
+								background: var(--bg-primary);
+								
+								&.correct {
+									background: var(--primary-color);
+									border-color: var(--primary-color);
+								}
+							}
+						}
+						
+						// Theme-specific preview colors
+						&.light {
+							.preview-header {
+								background: #f8fafc;
+							}
+							.preview-content {
+								background: #ffffff;
+								.preview-tile {
+									background: #f8fafc;
+									border-color: #e5e7eb;
+									&.correct {
+										background: #dc2626;
+										border-color: #dc2626;
+									}
+								}
+							}
+						}
+						
+						&.dark {
+							.preview-header {
+								background: #0f172a;
+							}
+							.preview-content {
+								background: #1e293b;
+								.preview-tile {
+									background: #0f172a;
+									border-color: #334155;
+									&.correct {
+										background: #ef4444;
+										border-color: #ef4444;
+									}
+								}
+							}
+						}
+						
+						&.high-contrast {
+							.preview-header {
+								background: #ffffff;
+							}
+							.preview-content {
+								background: #f0f0f0;
+								.preview-tile {
+									background: #ffffff;
+									border-color: #000000;
+									&.correct {
+										background: #dc2626;
+										border-color: #dc2626;
+									}
+								}
+							}
+						}
+						
+						&.pastel {
+							.preview-header {
+								background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+							}
+							.preview-content {
+								background: linear-gradient(135deg, #fefcff 0%, #faf5ff 100%);
+								.preview-tile {
+									background: #faf5ff;
+									border-color: #e9d8fd;
+									&.correct {
+										background: linear-gradient(135deg, #d53f8c 0%, #805ad5 100%);
+										border-color: #d53f8c;
+									}
+								}
+							}
+						}
+						
+						&.chrome {
+							.preview-header {
+								background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+							}
+							.preview-content {
+								background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+								.preview-tile {
+									background: #f7fafc;
+									border-color: #e2e8f0;
+									&.correct {
+										background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+										border-color: #2d3748;
+									}
+								}
+							}
+						}
+						
+						&.glass {
+							.preview-header {
+								background: rgba(255, 255, 255, 0.1);
+								backdrop-filter: blur(10px);
+								-webkit-backdrop-filter: blur(10px);
+							}
+							.preview-content {
+								background: rgba(255, 255, 255, 0.2);
+								backdrop-filter: blur(10px);
+								-webkit-backdrop-filter: blur(10px);
+								.preview-tile {
+									background: rgba(255, 255, 255, 0.1);
+									border-color: rgba(255, 255, 255, 0.2);
+									backdrop-filter: blur(5px);
+									-webkit-backdrop-filter: blur(5px);
+									&.correct {
+										background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+										border-color: #3182ce;
+									}
+								}
+							}
+						}
+					}
+					
+					.theme-name {
+						font-size: 0.9rem;
+						font-weight: 500;
+						display: block;
+					}
 				}
 			}
 		}
