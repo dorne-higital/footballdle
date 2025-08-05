@@ -8,18 +8,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 		
 		if (gaId) {
 			const gtag = createGtag({
+				tagId: gaId,
 				config: {
-					id: gaId,
-					// Optional: Configure additional settings
 					debug_mode: process.env.NODE_ENV === 'development',
 					send_page_view: true,
 				},
 			})
 			
 			nuxtApp.vueApp.use(gtag)
-			
-			// Log when ready
-			console.log('Google Analytics is ready!')
+		} else {
+			console.warn('Google Analytics ID not found. Please check your .env file.')
 		}
 	}
 }) 
