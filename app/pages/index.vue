@@ -16,17 +16,17 @@
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
 			@start-challenge="handleStartChallenge"
-			@show-info="modalsStore.openInfo"
-			@show-settings="modalsStore.openSettings"
-			@show-stats="modalsStore.openStats"
+			@show-info="handleShowInfo"
+			@show-settings="handleShowSettings"
+			@show-stats="handleShowStats"
 		/>
 
 		<!-- Game Screen -->
 		<div v-else-if="!challengeStore.isActive">
 			<HeaderNav 
-				@show-info="modalsStore.openInfo" 
-				@show-settings="modalsStore.openSettings" 
-				@show-stats="modalsStore.openStats" 
+				@show-info="handleShowInfo" 
+				@show-settings="handleShowSettings" 
+				@show-stats="handleShowStats" 
 			/>
 			
 			<Icon 
@@ -416,10 +416,46 @@
 		}
 	}
 	
+	const trackGameAbandon = (guesses: number) => {
+		try {
+			const { trackGameAbandon: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
 	const trackChallengeStart = () => {
 		try {
 			const { trackChallengeStart: track } = useAnalytics()
 			track()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeWin = (timeUsed: number) => {
+		try {
+			const { trackChallengeWin: track } = useAnalytics()
+			track(timeUsed)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeLoss = (timeUsed: number) => {
+		try {
+			const { trackChallengeLoss: track } = useAnalytics()
+			track(timeUsed)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeAbandon = (timeUsed: number) => {
+		try {
+			const { trackChallengeAbandon: track } = useAnalytics()
+			track(timeUsed)
 		} catch (error) {
 			// Silently fail if analytics is not available
 		}
@@ -442,12 +478,31 @@
 			// Silently fail if analytics is not available
 		}
 	}
+	
+	const trackHomeClick = (location: string) => {
+		try {
+			const { trackHomeClick: track } = useAnalytics()
+			track(location)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackSessionTime = (duration: number) => {
+		try {
+			const { trackSessionTime: track } = useAnalytics()
+			track(duration)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
 
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
 	const activeStatsTab = ref('daily')
 	const isLoading = ref(false)
+	const sessionStartTime = ref(Date.now())
 
 	// ============================================================================
 	// LIFECYCLE HOOKS
@@ -461,6 +516,15 @@
 		// Load challenge state
 		challengeStore.loadChallengeState()
 		challengeStore.loadChallengeStats()
+		
+		// Track session start
+		sessionStartTime.value = Date.now()
+	})
+	
+	// Track session time when leaving
+	onUnmounted(() => {
+		const sessionDuration = Math.floor((Date.now() - sessionStartTime.value) / 1000)
+		trackSessionTime(sessionDuration)
 	})
 
 	onUnmounted(() => {
@@ -527,15 +591,54 @@
 	}
 
 	function handleEndChallenge() {
+		// Track challenge abandonment if not completed
+		if (challengeStore.isActive && !challengeStore.gameOver && challengeStore.timeRemaining > 0) {
+			const timeUsed = 45 - challengeStore.timeRemaining
+			trackChallengeAbandon(timeUsed)
+		}
+		
 		challengeStore.endChallenge()
 		gameStore.showIntro = true
 	}
 
 	function handleChallengeKey(key: string) {
 		challengeStore.onKeyboardKey(key)
+		
+		// Track challenge completion
+		if (challengeStore.gameOver && challengeStore.showGameOverModal) {
+			const timeUsed = 45 - challengeStore.timeRemaining
+			if (challengeStore.isWin) {
+				trackChallengeWin(timeUsed)
+			} else {
+				trackChallengeLoss(timeUsed)
+			}
+		}
 	}
 
+	function handleShowInfo() {
+		modalsStore.openInfo()
+		trackModalOpen('info')
+	}
+	
+	function handleShowSettings() {
+		modalsStore.openSettings()
+		trackModalOpen('settings')
+	}
+	
+	function handleShowStats() {
+		modalsStore.openStats()
+		trackModalOpen('stats')
+	}
+	
 	function handleBackToMenu() {
+		// Track game abandonment if game is in progress
+		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
+			trackGameAbandon(gameStore.guesses.length)
+		}
+		
+		// Track home click
+		trackHomeClick('game_screen')
+		
 		isLoading.value = true
 		setTimeout(() => {
 			location.reload()

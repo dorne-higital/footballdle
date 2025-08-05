@@ -45,6 +45,16 @@ export const useAnalytics = () => {
 		}
 	}
 
+	const trackGameAbandon = (guesses: number) => {
+		if (process.client) {
+			event('game_abandon', {
+				event_category: 'game',
+				event_label: 'daily_game',
+				value: guesses,
+			})
+		}
+	}
+
 	const trackChallengeStart = () => {
 		if (process.client) {
 			event('challenge_start', {
@@ -67,6 +77,16 @@ export const useAnalytics = () => {
 	const trackChallengeLoss = (timeUsed: number) => {
 		if (process.client) {
 			event('challenge_loss', {
+				event_category: 'challenge',
+				event_label: 'challenge_mode',
+				value: timeUsed,
+			})
+		}
+	}
+
+	const trackChallengeAbandon = (timeUsed: number) => {
+		if (process.client) {
+			event('challenge_abandon', {
 				event_category: 'challenge',
 				event_label: 'challenge_mode',
 				value: timeUsed,
@@ -104,15 +124,40 @@ export const useAnalytics = () => {
 		}
 	}
 
+	// Track home button clicks
+	const trackHomeClick = (location: string) => {
+		if (process.client) {
+			event('home_click', {
+				event_category: 'navigation',
+				event_label: location,
+			})
+		}
+	}
+
+	// Track session timing
+	const trackSessionTime = (duration: number) => {
+		if (process.client) {
+			event('session_time', {
+				event_category: 'engagement',
+				event_label: 'session_duration',
+				value: duration,
+			})
+		}
+	}
+
 	return {
 		trackGameStart,
 		trackGameWin,
 		trackGameLoss,
+		trackGameAbandon,
 		trackChallengeStart,
 		trackChallengeWin,
 		trackChallengeLoss,
+		trackChallengeAbandon,
 		trackThemeChange,
 		trackShare,
 		trackModalOpen,
+		trackHomeClick,
+		trackSessionTime,
 	}
 } 

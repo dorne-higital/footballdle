@@ -102,12 +102,14 @@ export const useChallengeStore = defineStore('challenge', () => {
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(true)
+			// Track challenge win - will be handled in main component
 		} else if (guesses.value.length >= maxGuesses) {
 			isWin.value = false
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(false)
+			// Track challenge loss - will be handled in main component
 		}
 		
 		currentGuess.value = ''
@@ -127,6 +129,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function endChallenge() {
+		// Track challenge abandonment if not completed
+		if (isActive.value && !gameOver.value && timeRemaining.value > 0) {
+			const timeUsed = 45 - timeRemaining.value
+			// We'll track this in the main component
+		}
+		
 		isActive.value = false
 		gameOver.value = false
 		isWin.value = false
