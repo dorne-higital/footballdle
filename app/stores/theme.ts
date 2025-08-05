@@ -16,10 +16,15 @@ export const useThemeStore = defineStore('theme', () => {
 		applyTheme()
 		saveThemeSettings()
 		
-		// Track theme change in analytics
+		// Track theme change in analytics (client-side only)
 		if (process.client) {
-			const { trackThemeChange } = useAnalytics()
-			trackThemeChange(theme)
+			try {
+				const { trackThemeChange } = useAnalytics()
+				trackThemeChange(theme)
+			} catch (error) {
+				// Silently fail if analytics is not available
+				console.warn('Analytics not available for theme tracking:', error)
+			}
 		}
 	}
 

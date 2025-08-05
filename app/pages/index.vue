@@ -387,7 +387,61 @@
 	const modalsStore = useModalsStore()
 	const challengeStore = useChallengeStore()
 	const { onShare } = useShare()
-	const { trackGameStart, trackGameWin, trackGameLoss, trackChallengeStart, trackShare, trackModalOpen } = useAnalytics()
+	
+	// Analytics tracking functions (client-side only)
+	const trackGameStart = () => {
+		try {
+			const { trackGameStart: track } = useAnalytics()
+			track()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackGameWin = (guesses: number) => {
+		try {
+			const { trackGameWin: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackGameLoss = (guesses: number) => {
+		try {
+			const { trackGameLoss: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeStart = () => {
+		try {
+			const { trackChallengeStart: track } = useAnalytics()
+			track()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackShare = (platform?: string) => {
+		try {
+			const { trackShare: track } = useAnalytics()
+			track(platform)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackModalOpen = (modalName: string) => {
+		try {
+			const { trackModalOpen: track } = useAnalytics()
+			track(modalName)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
 
 	// ============================================================================
 	// REACTIVE STATE
