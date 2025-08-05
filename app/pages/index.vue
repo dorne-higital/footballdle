@@ -225,36 +225,6 @@
 								</div>
 								<span class="theme-name">Pastel</span>
 							</button>
-							
-							<button 
-								:class="['theme-option', { active: themeStore.currentTheme === 'chrome' }]"
-								@click="themeStore.setTheme('chrome')"
-							>
-								<div class="theme-preview chrome">
-									<div class="preview-header"></div>
-									<div class="preview-content">
-										<div class="preview-tile"></div>
-										<div class="preview-tile correct"></div>
-										<div class="preview-tile"></div>
-									</div>
-								</div>
-								<span class="theme-name">Chrome</span>
-							</button>
-							
-							<button 
-								:class="['theme-option', { active: themeStore.currentTheme === 'glass' }]"
-								@click="themeStore.setTheme('glass')"
-							>
-								<div class="theme-preview glass">
-									<div class="preview-header"></div>
-									<div class="preview-content">
-										<div class="preview-tile"></div>
-										<div class="preview-tile correct"></div>
-										<div class="preview-tile"></div>
-									</div>
-								</div>
-								<span class="theme-name">Glass</span>
-							</button>
 						</div>
 					</div>
 				</div>
@@ -453,8 +423,8 @@
 	})
 
 	// Watch for game completion to unlock challenge mode
-	watch(() => gameStore.gameOver, (isGameOver) => {
-		if (isGameOver) {
+	watch(() => gameStore.showGameOverModal, (showModal) => {
+		if (showModal) {
 			challengeStore.unlockChallenge()
 		}
 	})
@@ -475,11 +445,9 @@
 
 	function handleKeyboardKey(key: string) {
 		gameStore.onKeyboardKey(key)
-		// Update stats when game ends and unlock challenge mode
+		// Update stats when game ends
 		if (gameStore.gameOver && gameStore.showGameOverModal) {
 			statsStore.updateStats(gameStore.isWin)
-			// Unlock challenge mode when game is completed
-			challengeStore.unlockChallenge()
 		}
 	}
 
@@ -799,56 +767,16 @@
 						
 						&.pastel {
 							.preview-header {
-								background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+								background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 							}
 							.preview-content {
-								background: linear-gradient(135deg, #fefcff 0%, #faf5ff 100%);
+								background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
 								.preview-tile {
-									background: #faf5ff;
-									border-color: #e9d8fd;
+									background: #f0f9ff;
+									border-color: #bae6fd;
 									&.correct {
-										background: linear-gradient(135deg, #d53f8c 0%, #805ad5 100%);
-										border-color: #d53f8c;
-									}
-								}
-							}
-						}
-						
-						&.chrome {
-							.preview-header {
-								background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-							}
-							.preview-content {
-								background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
-								.preview-tile {
-									background: #f7fafc;
-									border-color: #e2e8f0;
-									&.correct {
-										background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-										border-color: #2d3748;
-									}
-								}
-							}
-						}
-						
-						&.glass {
-							.preview-header {
-								background: rgba(255, 255, 255, 0.1);
-								backdrop-filter: blur(10px);
-								-webkit-backdrop-filter: blur(10px);
-							}
-							.preview-content {
-								background: rgba(255, 255, 255, 0.2);
-								backdrop-filter: blur(10px);
-								-webkit-backdrop-filter: blur(10px);
-								.preview-tile {
-									background: rgba(255, 255, 255, 0.1);
-									border-color: rgba(255, 255, 255, 0.2);
-									backdrop-filter: blur(5px);
-									-webkit-backdrop-filter: blur(5px);
-									&.correct {
-										background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
-										border-color: #3182ce;
+										background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+										border-color: #0ea5e9;
 									}
 								}
 							}

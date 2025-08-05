@@ -5,7 +5,7 @@ export const useThemeStore = defineStore('theme', () => {
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
-	const currentTheme = ref('light') // 'light', 'dark', 'high-contrast', 'pastel', 'chrome', 'glass'
+	const currentTheme = ref('light') // 'light', 'dark', 'high-contrast', 'pastel'
 
 	// ============================================================================
 	// THEME FUNCTIONS
@@ -20,7 +20,7 @@ export const useThemeStore = defineStore('theme', () => {
 		const root = document.documentElement
 
 		// Remove all theme classes first
-		root.classList.remove('dark', 'high-contrast', 'theme-pastel', 'theme-chrome', 'theme-glass')
+		root.classList.remove('dark', 'high-contrast', 'theme-pastel')
 
 		// Apply the selected theme
 		switch (currentTheme.value) {
@@ -32,12 +32,6 @@ export const useThemeStore = defineStore('theme', () => {
 				break
 			case 'pastel':
 				root.classList.add('theme-pastel')
-				break
-			case 'chrome':
-				root.classList.add('theme-chrome')
-				break
-			case 'glass':
-				root.classList.add('theme-glass')
 				break
 			default:
 				// Light theme (default) - no additional classes needed
@@ -51,7 +45,7 @@ export const useThemeStore = defineStore('theme', () => {
 
 	function loadThemeSettings() {
 		const savedTheme = localStorage.getItem('footballdle-theme')
-		if (savedTheme && ['light', 'dark', 'high-contrast', 'pastel', 'chrome', 'glass'].includes(savedTheme)) {
+		if (savedTheme && ['light', 'dark', 'high-contrast', 'pastel'].includes(savedTheme)) {
 			currentTheme.value = savedTheme
 		}
 		applyTheme()
