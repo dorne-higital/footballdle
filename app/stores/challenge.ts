@@ -102,14 +102,38 @@ export const useChallengeStore = defineStore('challenge', () => {
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(true)
-			// Track challenge win - will be handled in main component
+			// Track challenge win
+			if (process.client) {
+				try {
+					const timeUsed = 45 - timeRemaining.value
+					;(window as any).gtag('event', 'challenge_win', {
+						event_category: 'challenge',
+						event_label: 'challenge_mode',
+						value: timeUsed,
+					})
+				} catch (error) {
+					// Silently fail if analytics is not available
+				}
+			}
 		} else if (guesses.value.length >= maxGuesses) {
 			isWin.value = false
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(false)
-			// Track challenge loss - will be handled in main component
+			// Track challenge loss
+			if (process.client) {
+				try {
+					const timeUsed = 45 - timeRemaining.value
+					;(window as any).gtag('event', 'challenge_loss', {
+						event_category: 'challenge',
+						event_label: 'challenge_mode',
+						value: timeUsed,
+					})
+				} catch (error) {
+					// Silently fail if analytics is not available
+				}
+			}
 		}
 		
 		currentGuess.value = ''
@@ -178,6 +202,19 @@ export const useChallengeStore = defineStore('challenge', () => {
 				showGameOverModal.value = true
 				stopTimer()
 				updateChallengeStats(false)
+				// Track challenge loss due to time
+				if (process.client) {
+					try {
+						const timeUsed = 45 - timeRemaining.value
+						;(window as any).gtag('event', 'challenge_loss', {
+							event_category: 'challenge',
+							event_label: 'challenge_mode',
+							value: timeUsed,
+						})
+					} catch (error) {
+						// Silently fail if analytics is not available
+					}
+				}
 				saveChallengeState()
 			}
 		}, 1000)

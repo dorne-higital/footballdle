@@ -603,16 +603,6 @@
 
 	function handleChallengeKey(key: string) {
 		challengeStore.onKeyboardKey(key)
-		
-		// Track challenge completion
-		if (challengeStore.gameOver && challengeStore.showGameOverModal) {
-			const timeUsed = 45 - challengeStore.timeRemaining
-			if (challengeStore.isWin) {
-				trackChallengeWin(timeUsed)
-			} else {
-				trackChallengeLoss(timeUsed)
-			}
-		}
 	}
 
 	function handleShowInfo() {
