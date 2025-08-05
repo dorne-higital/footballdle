@@ -7,7 +7,7 @@ export default defineNuxtConfig({
 	// Google Analytics configuration
 	runtimeConfig: {
 		public: {
-			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
+			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || 'G-815CJXKCVW',
 		},
 	},
 	
@@ -16,7 +16,7 @@ export default defineNuxtConfig({
 		head: {
 			script: [
 				{
-					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
+					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || 'G-815CJXKCVW'),
 					async: true,
 				},
 			],
