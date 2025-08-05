@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useAnalytics } from '../composables/useAnalytics'
 
 export const useThemeStore = defineStore('theme', () => {
 	// ============================================================================
@@ -14,6 +15,12 @@ export const useThemeStore = defineStore('theme', () => {
 		currentTheme.value = theme
 		applyTheme()
 		saveThemeSettings()
+		
+		// Track theme change in analytics
+		if (process.client) {
+			const { trackThemeChange } = useAnalytics()
+			trackThemeChange(theme)
+		}
 	}
 
 	function applyTheme() {

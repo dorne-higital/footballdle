@@ -14,7 +14,7 @@
 			:challenge-unlocked="challengeStore.isUnlocked"
 			:stats="statsStore.stats"
 			:win-percentage="statsStore.winPercentage"
-			@start-game="gameStore.startGame"
+			@start-game="handleStartGame"
 			@start-challenge="handleStartChallenge"
 			@show-info="modalsStore.openInfo"
 			@show-settings="modalsStore.openSettings"
@@ -376,6 +376,7 @@
 	import { useModalsStore } from '../stores/modals'
 	import { useChallengeStore } from '../stores/challenge'
 	import { useShare } from '../composables/useShare'
+	import { useAnalytics } from '../composables/useAnalytics'
 
 	// ============================================================================
 	// STORES
@@ -386,6 +387,7 @@
 	const modalsStore = useModalsStore()
 	const challengeStore = useChallengeStore()
 	const { onShare } = useShare()
+	const { trackGameStart, trackGameWin, trackGameLoss, trackChallengeStart, trackShare, trackModalOpen } = useAnalytics()
 
 	// ============================================================================
 	// REACTIVE STATE
@@ -441,6 +443,7 @@
 	// ============================================================================
 	function handleShare() {
 		onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		trackShare('native')
 	}
 
 	function handleKeyboardKey(key: string) {
@@ -448,12 +451,25 @@
 		// Update stats when game ends
 		if (gameStore.gameOver && gameStore.showGameOverModal) {
 			statsStore.updateStats(gameStore.isWin)
+			
+			// Track game completion
+			if (gameStore.isWin) {
+				trackGameWin(gameStore.guesses.length)
+			} else {
+				trackGameLoss(gameStore.guesses.length)
+			}
 		}
+	}
+
+	function handleStartGame() {
+		gameStore.startGame()
+		trackGameStart()
 	}
 
 	function handleStartChallenge() {
 		challengeStore.startChallenge()
 		gameStore.showIntro = false
+		trackChallengeStart()
 	}
 
 	function handleEndChallenge() {
