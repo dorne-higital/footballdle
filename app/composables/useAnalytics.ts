@@ -120,6 +120,35 @@ export const useAnalytics = () => {
 			event('modal_open', {
 				event_category: 'ui',
 				event_label: modalName,
+				custom_parameter_1: modalName, // Additional parameter for easier filtering
+			})
+		}
+	}
+
+	// Individual modal tracking functions for clearer separation
+	const trackInfoModal = () => {
+		if (process.client) {
+			event('modal_info_open', {
+				event_category: 'ui',
+				event_label: 'info_modal',
+			})
+		}
+	}
+
+	const trackSettingsModal = () => {
+		if (process.client) {
+			event('modal_settings_open', {
+				event_category: 'ui',
+				event_label: 'settings_modal',
+			})
+		}
+	}
+
+	const trackStatsModal = () => {
+		if (process.client) {
+			event('modal_stats_open', {
+				event_category: 'ui',
+				event_label: 'stats_modal',
 			})
 		}
 	}
@@ -157,6 +186,9 @@ export const useAnalytics = () => {
 		trackThemeChange,
 		trackShare,
 		trackModalOpen,
+		trackInfoModal,
+		trackSettingsModal,
+		trackStatsModal,
 		trackHomeClick,
 		trackSessionTime,
 	}

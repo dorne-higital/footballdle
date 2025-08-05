@@ -617,17 +617,32 @@
 
 	function handleShowInfo() {
 		modalsStore.openInfo()
-		trackModalOpen('info')
+		try {
+			const { trackInfoModal } = useAnalytics()
+			trackInfoModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
 	
 	function handleShowSettings() {
 		modalsStore.openSettings()
-		trackModalOpen('settings')
+		try {
+			const { trackSettingsModal } = useAnalytics()
+			trackSettingsModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
 	
 	function handleShowStats() {
 		modalsStore.openStats()
-		trackModalOpen('stats')
+		try {
+			const { trackStatsModal } = useAnalytics()
+			trackStatsModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
 	
 	function handleBackToMenu() {
