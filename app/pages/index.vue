@@ -197,10 +197,10 @@
 							</button>
 							
 							<button 
-								:class="['theme-option', { active: themeStore.currentTheme === 'high-contrast' }]"
-								@click="themeStore.setTheme('high-contrast')"
+								:class="['theme-option', { active: themeStore.currentTheme === 'greyscale' }]"
+								@click="themeStore.setTheme('greyscale')"
 							>
-								<div class="theme-preview high-contrast">
+								<div class="theme-preview greyscale">
 									<div class="preview-header"></div>
 									<div class="preview-content">
 										<div class="preview-tile"></div>
@@ -208,7 +208,7 @@
 										<div class="preview-tile"></div>
 									</div>
 								</div>
-								<span class="theme-name">High Contrast</span>
+								<span class="theme-name">Greyscale</span>
 							</button>
 							
 							<button 
@@ -748,7 +748,7 @@
 							}
 						}
 						
-						&.high-contrast {
+						&.greyscale {
 							.preview-header {
 								background: #ffffff;
 							}

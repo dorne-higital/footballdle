@@ -17,7 +17,7 @@
 
 		<div class="shadow"></div>
 
-		<p class="text">Warming up...</p>
+		<p class="text">Cooling down...</p>
 	</div>
 </template>
 
