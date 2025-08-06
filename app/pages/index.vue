@@ -393,6 +393,22 @@
 				name: 'robots',
 				content: 'index, follow'
 			},
+			{
+				name: 'og:title',
+				content: 'Footballdle | Guess the Premier League footballer'
+			},
+			{
+				name: 'og:description',
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+			},
+			{
+			property: 'og:image',
+			content: 'https://footballdle.co.uk/og-image.png'
+			},
+			{
+			property: 'og:url',
+			content: 'https://footballdle.co.uk'
+			}
 		],
 	})
 
