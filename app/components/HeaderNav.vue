@@ -3,9 +3,15 @@
 		:class="componentName" 
 		class="sw-small"
 	>
-		<h3>
-			
-		</h3>
+		<div class="left-section">
+			<Icon 
+				v-if="showBackButton"
+				name="solar:home-smile-linear"
+				size="1.5rem" 
+				@click="$emit('back-to-menu')"
+				class="back-to-menu"
+			/>
+		</div>
 		
 		<div class="button-container">
 			<Icon 
@@ -33,9 +39,11 @@
 	const props = withDefaults(
 		defineProps<{
 			componentName?: string
+			showBackButton?: boolean
 		}>(),
 		{
-			componentName: 'header-nav'
+			componentName: 'header-nav',
+			showBackButton: false
 		}
 	)
 </script>
@@ -47,12 +55,27 @@
 		align-items: center;
 		padding: 1rem;
 
+		.left-section {
+			display: flex;
+			align-items: center;
+		}
+
 		.button-container {
 			display: flex;
 			gap: .5rem;
 
 			span {
 				cursor: pointer;
+			}
+		}
+
+		.back-to-menu {
+			color: var(--text-primary);
+			cursor: pointer;
+			transition: all 0.2s;
+			
+			&:hover {
+				transform: scale(1.1);
 			}
 		}
 	}

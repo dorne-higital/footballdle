@@ -24,16 +24,11 @@
 		<!-- Game Screen -->
 		<div v-else-if="!challengeStore.isActive">
 			<HeaderNav 
+				:show-back-button="true"
 				@show-info="handleShowInfo" 
 				@show-settings="handleShowSettings" 
 				@show-stats="handleShowStats" 
-			/>
-			
-			<Icon 
-				name="solar:home-smile-linear"
-				size="1.5rem" 
-				@click="handleBackToMenu"
-				class="back-to-menu"
+				@back-to-menu="handleBackToMenu"
 			/>
 
 			<GameBoard 
@@ -703,32 +698,14 @@
 		}
 	}
 
-	// ============================================================================
-	// BACK TO MENU BUTTON
-	// ============================================================================
-	.back-to-menu {
-		position: absolute;
-		top: 1rem;
-		left: 1rem;
-		color: var(--text-primary);
-		padding: 0.5rem 1rem;
-		border-radius: var(--global-border-radius);
-		cursor: pointer;
-		font-size: 0.9rem;
-		transition: all 0.2s;
-		z-index: 10;
-		
-		&:hover {
-			background: var(--bg-primary);
-			border-color: var(--border-hover);
-		}
-	}
+
 
 	// ============================================================================
 	// GAME OVER MODAL
 	// ============================================================================
 	.game-over-section {
 		text-align: center;
+		width: 100%;
 		
 		h4 {
 			color: var(--text-primary);
@@ -739,10 +716,14 @@
 		.answer {
 			color: var(--primary-color);
 			font-weight: 700;
+			letter-spacing: .05rem;
+			text-transform: uppercase;
 		}
 		
 		.share {
+			justify-content: center;
 			margin-top: 1rem;
+			width: 50%;
 		}
 	}
 
