@@ -372,6 +372,29 @@
 	import { useChallengeStore } from '../stores/challenge'
 	import { useShare } from '../composables/useShare'
 	import { useAnalytics } from '../composables/useAnalytics'
+	import { useHead } from 'nuxt/app'
+
+	useHead({
+		title: 'Footballdle',
+		meta: [
+			{
+				name: 'description',
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+			},
+			{
+				name: 'keywords',
+				content: 'Premier League, Wordle, Football Game, Soccer Puzzle, Daily Game'
+			},
+			{
+				name: 'author',
+				content: 'Footballdle'
+			},
+			{
+				name: 'robots',
+				content: 'index, follow'
+			},
+		],
+	})
 
 	// ============================================================================
 	// STORES
