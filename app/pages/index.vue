@@ -642,7 +642,7 @@
 		isLoading.value = true
 		setTimeout(() => {
 			location.reload()
-		}, 1000)
+		}, 500)
 	}
 </script>
 
