@@ -19,8 +19,31 @@ export const useThemeStore = defineStore('theme', () => {
 		// Track theme change in analytics (client-side only)
 		if (process.client) {
 			try {
-				const { trackThemeChange } = useAnalytics()
-				trackThemeChange(theme)
+				const { 
+					trackThemeLight, 
+					trackThemeDark, 
+					trackThemeGreyscale, 
+					trackThemePastel 
+				} = useAnalytics()
+				
+				// Track specific theme based on selection
+				switch (theme) {
+					case 'light':
+						trackThemeLight()
+						break
+					case 'dark':
+						trackThemeDark()
+						break
+					case 'greyscale':
+						trackThemeGreyscale()
+						break
+					case 'pastel':
+						trackThemePastel()
+						break
+					default:
+						trackThemeLight() // Default to light theme tracking
+						break
+				}
 			} catch (error) {
 				// Silently fail if analytics is not available
 				console.warn('Analytics not available for theme tracking:', error)

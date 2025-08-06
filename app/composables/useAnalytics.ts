@@ -104,6 +104,43 @@ export const useAnalytics = () => {
 		}
 	}
 
+	// Individual theme tracking functions for clearer separation
+	const trackThemeLight = () => {
+		if (process.client) {
+			event('theme_set_light', {
+				event_category: 'ui',
+				event_label: 'light_theme',
+			})
+		}
+	}
+
+	const trackThemeDark = () => {
+		if (process.client) {
+			event('theme_set_dark', {
+				event_category: 'ui',
+				event_label: 'dark_theme',
+			})
+		}
+	}
+
+	const trackThemeGreyscale = () => {
+		if (process.client) {
+			event('theme_set_greyscale', {
+				event_category: 'ui',
+				event_label: 'greyscale_theme',
+			})
+		}
+	}
+
+	const trackThemePastel = () => {
+		if (process.client) {
+			event('theme_set_pastel', {
+				event_category: 'ui',
+				event_label: 'pastel_theme',
+			})
+		}
+	}
+
 	// Track share events
 	const trackShare = (platform?: string) => {
 		if (process.client) {
@@ -184,6 +221,10 @@ export const useAnalytics = () => {
 		trackChallengeLoss,
 		trackChallengeAbandon,
 		trackThemeChange,
+		trackThemeLight,
+		trackThemeDark,
+		trackThemeGreyscale,
+		trackThemePastel,
 		trackShare,
 		trackModalOpen,
 		trackInfoModal,
