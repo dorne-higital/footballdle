@@ -143,6 +143,17 @@
 					</div>
 
 					<p>A new player is revealed every day at midnight.</p>
+				
+					<div class="info-footer">
+						<p class="caption">
+							Footballdle is a word game inspired by Wordle. It is not affiliated with the Premier League or any other football club.
+						</p>
+
+						<p class="caption">
+							If you spot any missing players, get in touch and I can add them right away.
+						</p>
+
+					</div>
 				</div>
 			</template>
 		</BaseModal>
@@ -814,6 +825,11 @@
 					}
 				}
 			}
+		}
+
+		.info-footer {
+			border-top: 1px solid var(--border);
+			padding-top: 1rem;
 		}
 	}
 
