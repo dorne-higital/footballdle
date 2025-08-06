@@ -375,7 +375,7 @@
 	import { useHead } from 'nuxt/app'
 
 	useHead({
-		title: 'Footballdle',
+		title: 'Footballdle | Guess the Premier League footballer',
 		meta: [
 			{
 				name: 'description',
