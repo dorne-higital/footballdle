@@ -86,6 +86,7 @@ const challengeFootballers = [
 	'RODON',
 	'RUBEN',
 	'RUSYN',
+	'SALAH',
 	'SAMBI',
 	'SCHAR',
 	'SCOTT',

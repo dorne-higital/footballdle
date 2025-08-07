@@ -15,7 +15,7 @@ export function useShare() {
 				return '⬛'
 			}).join('')
 		}).join('\n')
-		const text = `Footballdle ${todayStr}\n${isWin ? guesses.length : 'X'}/6\n${grid}`
+		const text = `Footballdle ${todayStr}\n${isWin ? guesses.length : 'X'}/6\n${grid}\n\nwww.footballdle.co.uk`
 		navigator.clipboard.writeText(text)
 		alert('Result copied to clipboard!')
 	}
