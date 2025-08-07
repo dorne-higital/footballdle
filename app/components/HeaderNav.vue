@@ -54,6 +54,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 1rem;
+		width: 100%;
 
 		.left-section {
 			display: flex;

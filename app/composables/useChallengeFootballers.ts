@@ -112,14 +112,17 @@ const challengeFootballers = [
 	'YOUNG',
 ]
 
+// Create a Set for O(1) lookups
+const challengeFootballerSet = new Set(challengeFootballers)
+
 export function useChallengeFootballers() {
 	function getRandomChallengeFootballer(): string {
 		const randomIndex = Math.floor(Math.random() * challengeFootballers.length)
-		return challengeFootballers[randomIndex]
+		return challengeFootballers[randomIndex] || ''
 	}
 
 	function isValidChallengeFootballer(name: string): boolean {
-		return challengeFootballers.includes(name.toUpperCase())
+		return challengeFootballerSet.has(name.toUpperCase())
 	}
 
 	return {

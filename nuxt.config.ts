@@ -4,6 +4,27 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 	
+	// Build optimizations
+	nitro: {
+		compressPublicAssets: true,
+		minify: true,
+	},
+	
+	vite: {
+		build: {
+			rollupOptions: {
+				output: {
+					manualChunks: {
+						vendor: ['vue', 'pinia'],
+					},
+				},
+			},
+		},
+		optimizeDeps: {
+			include: ['vue', 'pinia'],
+		},
+	},
+	
 	// Google Analytics configuration
 	runtimeConfig: {
 		public: {

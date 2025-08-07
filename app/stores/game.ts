@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { footballers, getAnswerForDay } from '../composables/useFootballers'
+import { footballers, getAnswerForDay, isValidFootballer } from '../composables/useFootballers'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -68,9 +68,8 @@ export const useGameStore = defineStore('game', () => {
 			alert('Guess must be 6 letters!')
 			return
 		}
-		// Case-insensitive check for valid footballer
-		const validNames = footballers.map(name => name.toUpperCase())
-		if (!validNames.includes(guess)) {
+		// Use optimized validation function
+		if (!isValidFootballer(guess)) {
 			alert('Not a valid footballer surname!')
 			return
 		}

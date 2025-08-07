@@ -180,14 +180,19 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 
 <style scoped lang="scss">
 	.challenge-game {
+		align-content: center;
+		background: var(--bg-secondary);
+		border-radius: var(--global-border-radius);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+		border: 1px solid var(--border);
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		height: 100%;
 		justify-content: flex-start;
+		max-width: 500px;
 		padding: 1rem;
-		gap: 1rem;
-		background: var(--bg-gradient);
-		min-height: 100vh;
+		text-align: center;
+		width: 100%;
 
 		.challenge-nav {
 			align-items: center;
@@ -217,6 +222,8 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		}
 
 		.game-board {
+			padding: 1rem 0;
+
 			.guess-row {
 				display: flex;
 				gap: 0.25rem;
@@ -263,6 +270,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 				}
 			}
 		}
+		
 		
 		.pause-overlay {
 			position: fixed;

@@ -132,7 +132,28 @@ export const footballers = [
 	'wilson',
 ]
 
+// Create a Set for O(1) lookups instead of O(n) array searches
+const footballerSet = new Set(footballers.map(name => name.toUpperCase()))
+
+// Cache for memoized answers
+const answerCache = new Map<string, string>()
+
 export function getAnswerForDay(dateStr: string) {
+	// Check cache first
+	if (answerCache.has(dateStr)) {
+		return answerCache.get(dateStr)!
+	}
+	
 	const hash = Array.from(dateStr).reduce((acc, c) => acc + c.charCodeAt(0), 0)
-	return footballers[hash % footballers.length]
+	const answer = footballers[hash % footballers.length] || ''
+	
+	// Cache the result
+	answerCache.set(dateStr, answer)
+	
+	return answer
+}
+
+// Fast validation function using Set
+export function isValidFootballer(name: string): boolean {
+	return footballerSet.has(name.toUpperCase())
 } 

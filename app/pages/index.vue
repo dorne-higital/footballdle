@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="page-container">
 		<!-- Loading Overlay -->
 		<div v-if="isLoading" class="loading-overlay">
 			<div class="loading-content">
@@ -22,7 +22,7 @@
 		/>
 
 		<!-- Game Screen -->
-		<div v-else-if="!challengeStore.isActive">
+		<div v-else-if="!challengeStore.isActive" class="game-screen">
 			<HeaderNav 
 				:show-back-button="true"
 				@show-info="handleShowInfo" 
@@ -697,6 +697,32 @@
 </script>
 
 <style scoped lang="scss">
+	.page-container {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		background: var(--bg-gradient);
+		padding: 1rem;
+		height: 100dvh;
+		position: relative;
+
+		.game-screen {
+			align-content: center;
+			background: var(--bg-secondary);
+			border-radius: var(--global-border-radius);
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+			border: 1px solid var(--border);
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			max-width: 500px;
+			padding: 1rem;
+			text-align: center;
+			width: 100%;
+		}
+	}
+
+	
 	// ============================================================================
 	// LOADING OVERLAY
 	// ============================================================================
@@ -747,7 +773,6 @@
 			opacity: 0.2;
 		}
 	}
-
 
 
 	// ============================================================================

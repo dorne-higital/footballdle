@@ -162,7 +162,7 @@
 
 			button {
 				flex: 1 1 0;
-				max-width: 48px;
+				width: 48px;
 				height: 58px;
 				background: #d3d6da;
 				border: none;

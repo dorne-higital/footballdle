@@ -170,8 +170,7 @@ const isLoading = ref(false) // Start with no loading
 		align-items: stretch;
 		justify-content: center;
 		background: var(--bg-gradient);
-		padding: 1rem;
-		height: 100dvh;
+		height: 100%;
 		position: relative;
 
 		.loading-overlay {
