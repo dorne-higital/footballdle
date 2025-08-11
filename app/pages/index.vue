@@ -105,33 +105,39 @@
 				</div>
 
 				<!-- Challenge Section -->
-				<div v-if="challengeStore.isUnlocked && !authStore.isGuest" class="game-section">
-					<div class="game-info">
-						<Icon name="solar:lightning-linear" size="2rem" class="game-icon" />
-						<h3>Speed Challenge</h3>
-						<p class="caption">Unlimited attempts, 45 second timer</p>
-					</div>
-
-					<div class="usp-tiles">
-						<div class="tile">
-							<Icon name="solar:rewind-5-seconds-forward-bold" size="1.5rem" />
-							<h6>Only 5 letters</h6>
+				<div v-if="challengeStore.isUnlocked && !authStore.isGuest" class="game-section challenge-section">
+					<div class="challenge-header">
+						<div class="challenge-icon-container">
+							<Icon name="solar:lightning-linear" size="2rem" class="challenge-icon" />
+							<div class="challenge-glow"></div>
 						</div>
-						<div class="tile">
-							<Icon name="solar:football-outline" size="1.5rem" />
-							<h6>Current Premier League player</h6>
-						</div>
-						<div class="tile">
-							<Icon name="solar:alarm-outline" size="1.5rem" />
-							<h6>45 second time limit</h6>
-						</div>
-						<div class="tile">
-							<Icon name="solar:refresh-linear" size="1.5rem" />
-							<h6>Unlimited plays</h6>
+						<div class="challenge-title">
+							<h3>Speed Challenge</h3>
+							<p class="caption">45 second timer • Unlimited plays</p>
 						</div>
 					</div>
 
-					<button @click="navigateToChallenge" class="button secondary full">
+					<div class="challenge-grid">
+						<div class="challenge-tile">
+							<Icon name="solar:rewind-5-seconds-forward-bold" size="1rem" />
+							<span>5 Letters</span>
+						</div>
+						<div class="challenge-tile">
+							<Icon name="solar:football-outline" size="1rem" />
+							<span>Current Players</span>
+						</div>
+						<div class="challenge-tile">
+							<Icon name="solar:alarm-outline" size="1rem" />
+							<span>45s Timer</span>
+						</div>
+						<div class="challenge-tile">
+							<Icon name="solar:refresh-linear" size="1rem" />
+							<span>Unlimited</span>
+						</div>
+					</div>
+
+					<button @click="navigateToChallenge" class="button challenge-btn full">
+						<Icon name="solar:lightning-linear" size="1rem" />
 						Start Challenge
 					</button>
 				</div>
@@ -1285,6 +1291,179 @@ async function handleLogout() {
 				}
 			}
 		}
+	}
+}
+
+// ============================================================================
+// CHALLENGE SECTION STYLES
+// ============================================================================
+.challenge-section {
+	.challenge-header {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1rem;
+		
+		.challenge-icon-container {
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			.challenge-icon {
+				color: var(--tertiary-color);
+				filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.3));
+				animation: challenge-pulse 2s ease-in-out infinite;
+			}
+			
+			.challenge-glow {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 3rem;
+				height: 3rem;
+				background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+				border-radius: 50%;
+				animation: challenge-glow 3s ease-in-out infinite;
+			}
+		}
+		
+		.challenge-title {
+			flex: 1;
+			
+			h3 {
+				margin: 0 0 0.25rem 0;
+				font-size: 1.25rem;
+			}
+			
+			.caption {
+				margin: 0;
+				font-size: 0.8rem;
+			}
+		}
+	}
+	
+	.challenge-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.5rem;
+		margin-bottom: 1rem;
+		
+		@media (max-width: 480px) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+		
+		.challenge-tile {
+			background: var(--card-bg);
+			backdrop-filter: blur(5px);
+			border: 1px solid var(--card-border);
+			border-radius: var(--global-border-radius);
+			padding: 0.75rem 0.5rem;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 0.5rem;
+			transition: all 0.3s ease;
+			box-shadow: var(--shadow-sm);
+			position: relative;
+			overflow: hidden;
+			min-width: 0;
+			
+			&::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 2px;
+				background: var(--color-gradient);
+				opacity: 0;
+				transition: opacity 0.3s ease;
+			}
+			
+			&:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-md);
+				border-color: var(--border-hover);
+				
+				&::before {
+					opacity: 1;
+				}
+			}
+			
+			.icon {
+				color: var(--text-secondary);
+				transition: color 0.3s ease;
+			}
+			
+			span {
+				font-size: 0.7rem;
+				font-weight: 600;
+				color: var(--text-primary);
+				text-align: center;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				line-height: 1.2;
+			}
+		}
+	}
+	
+	.challenge-btn {
+		background: var(--color-gradient);
+		border: 2px solid transparent;
+		color: white;
+		font-weight: 700;
+		font-size: 0.9rem;
+		padding: 0.75rem 1rem;
+		transition: all 0.3s ease;
+		box-shadow: var(--shadow-md);
+		position: relative;
+		overflow: hidden;
+		
+		&::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+			transition: left 0.5s ease;
+		}
+		
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-lg);
+			
+			&::before {
+				left: 100%;
+			}
+		}
+		
+		&:active {
+			transform: translateY(0);
+		}
+	}
+}
+
+@keyframes challenge-pulse {
+	0%, 100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.05);
+	}
+}
+
+@keyframes challenge-glow {
+	0%, 100% {
+		opacity: 0.3;
+		transform: translate(-50%, -50%) scale(1);
+	}
+	50% {
+		opacity: 0.6;
+		transform: translate(-50%, -50%) scale(1.1);
 	}
 }
 

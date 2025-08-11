@@ -611,8 +611,8 @@ function handleShowStats() {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
-	gap: 2rem;
+	justify-content: flex-start;
+	gap: 1rem;
 }
 
 // ============================================================================
