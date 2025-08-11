@@ -32,9 +32,38 @@
 				</div>
 			</div>
 
+			<!-- User Status -->
+			<div class="user-status">
+				<div class="user-info">
+					<Icon name="solar:user-linear" size="1rem" />
+					<!-- <span>{{ authStore.displayName }}</span> -->
+					<span>Signed in</span>
+					<span v-if="authStore.isGuest" class="guest-badge">Guest</span>
+				</div>
+				<button v-if="authStore.isLoggedIn" @click="handleLogout" class="logout-btn">
+					<Icon name="solar:logout-2-linear" size="1rem" />
+					Logout
+				</button>
+			</div>
+
 			<p class="subheading">Guess the Premier League footballer</p>
 
-			<div v-if="canPlay" class="play-section">
+			<div v-if="gameStore.hasGameInProgress" class="game-in-progress-section">
+				<div class="game-status">
+					<Icon name="solar:gamepad-linear" size="2rem" class="game-icon" />
+					<h3>Game in Progress</h3>
+					<p class="caption">
+						You have a game in progress with {{ gameStore.guesses.length }} guess{{ gameStore.guesses.length !== 1 ? 'es' : '' }} made.
+					</p>
+				</div>
+
+				<button @click="$emit('resume-game')" class="button primary play-button">
+					<Icon name="solar:play-linear" size="1rem" />
+					Resume Game
+				</button>
+			</div>
+
+			<div v-else-if="gameStore.canPlay" class="play-section">
 				<div class="usp-tiles">
 					<div class="tile">
 						<Icon name="solar:calendar-linear" size="1.5rem" />
@@ -105,7 +134,7 @@
 								size="1.5rem" 
 							/>
 
-							<h6>Play against the clock</h6>
+							<h6>45 second time limit</h6>
 						</div>
 
 						<div class="tile">
@@ -114,12 +143,12 @@
 								size="1.5rem" 
 							/>
 
-							<h6>Unlimed plays</h6>
+							<h6>Unlimited attempts</h6>
 						</div>
 					</div>
 
-					<button @click="$emit('start-challenge')" class="button primary full large challenge play-button">
-						Play now!
+					<button @click="$emit('start-challenge')" class="button secondary challenge-button">
+						Start Challenge
 					</button>
 				</div>
 			</div>
@@ -129,10 +158,11 @@
 
 <script setup lang="ts">
 import { withDefaults, ref, onMounted, nextTick, watch } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import { useGameStore } from '../stores/game'
 
 const props = withDefaults(
 	defineProps<{
-		canPlay?: boolean
 		countdown?: string
 		challengeUnlocked?: boolean
 		stats?: {
@@ -145,7 +175,6 @@ const props = withDefaults(
 		winPercentage?: number
 	}>(),
 	{
-		canPlay: true,
 		countdown: '',
 		challengeUnlocked: false,
 		stats: () => ({
@@ -159,9 +188,21 @@ const props = withDefaults(
 	}
 )
 
-const emit = defineEmits(['start-game', 'start-challenge', 'show-info', 'show-settings', 'show-stats'])
+const emit = defineEmits(['start-game', 'start-challenge', 'resume-game', 'show-info', 'show-settings', 'show-stats'])
 
+const authStore = useAuthStore()
+const gameStore = useGameStore()
 const isLoading = ref(false) // Start with no loading
+
+async function handleLogout() {
+	try {
+		await authStore.signOutUser()
+		// Reload the page to reset game state
+		window.location.reload()
+	} catch (error) {
+		console.error('Logout error:', error)
+	}
+}
 </script>
 
 <style scoped lang="scss">
@@ -226,86 +267,127 @@ const isLoading = ref(false) // Start with no loading
 				.icons {
 					display: flex;
 					flex-direction: row;
-					gap: .5rem;
+					gap: 1rem;
+					color: var(--text-secondary);
+					
+					svg {
+						cursor: pointer;
+						transition: all 0.3s ease;
+						
+						&:hover {
+							color: var(--text-primary);
+							transform: scale(1.1);
+						}
+					}
+				}
+			}
+
+			.user-status {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin: 1rem 0;
+				padding: 0.75rem;
+				background: var(--bg-primary);
+				border-radius: var(--global-border-radius);
+				border: 1px solid var(--border);
+
+				.user-info {
+					display: flex;
+					align-items: center;
+					gap: 0.5rem;
+					color: var(--text-primary);
+					font-weight: 500;
+
+					.guest-badge {
+						background: var(--text-secondary);
+						color: var(--bg-primary);
+						padding: 0.25rem 0.5rem;
+						border-radius: 0.25rem;
+						font-size: 0.75rem;
+						font-weight: 600;
+					}
+				}
+
+				.logout-btn {
+					display: flex;
+					align-items: center;
+					gap: 0.25rem;
+					background: transparent;
+					border: 1px solid var(--border);
+					color: var(--text-secondary);
+					padding: 0.5rem 0.75rem;
+					border-radius: var(--global-border-radius);
+					cursor: pointer;
+					transition: all 0.3s ease;
+					font-size: 0.875rem;
+
+					&:hover {
+						background: var(--primary-color);
+						border-color: var(--primary-color);
+					}
 				}
 			}
 
 			.subheading {
-				color: var(--text-primary);
-				margin: 0;
-				text-align: left;
+				color: var(--text-secondary);
+				margin-bottom: 2rem;
 			}
 
 			.play-section {
-				background: var(--subtle-gradient);
-				border-radius: var(--global-border-radius);
-				border: 1px solid var(--border);
-				color: white;
-				padding: 1rem;
-				margin-top: 1rem;
-
-				.heading {
-					margin-bottom: 0.5rem;
-				}
-
-				.caption {
-					margin-bottom: 1.5rem;
-					line-height: 1.5;
-				}
-
 				.usp-tiles {
 					display: grid;
 					grid-template-columns: repeat(2, 1fr);
 					gap: 1rem;
-					margin: 1rem 0;
+					margin-bottom: 2rem;
 				
 					@media (max-width: 600px) {
 						grid-template-columns: repeat(1, 1fr);
 					}
 					
 					.tile {
-						background: rgba(255, 255, 255, 0.1);
-						backdrop-filter: blur(10px);
-						border: 1px solid rgba(255, 255, 255, 0.2);
+						background: var(--bg-primary);
+						border: 1px solid var(--border);
 						border-radius: var(--global-border-radius);
-						color: white;
 						padding: 1rem;
 						text-align: center;
+						transition: all 0.3s ease;
 				
 						@media (max-width: 600px) {
 							align-items: center;
 							display: flex;
 							flex-direction: row;
-							gap: .5rem;
-							padding: .5rem;
+							gap: 1rem;
+							padding: 1rem;
 							text-align: left;
 						}
 						
+						&:hover {
+							border-color: var(--border-hover);
+							transform: translateY(-2px);
+							box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+						}
+						
 						h6 {
-							font-size: 0.8rem;
+							font-size: 0.9rem;
+							margin-top: 0.5rem;
+							color: var(--text-primary);
+							font-weight: 600;
 						}
 					}
 				}
 
+				.heading {
+					font-size: 1.5rem;
+					margin-bottom: 1rem;
+					color: var(--text-primary);
+				}
+
 				.play-button {
-					font-size: 1.1rem;
-					padding: 1rem 3rem;
-					border-radius: var(--global-border-radius);
 					justify-content: center;
-					transition: all 0.3s ease;
-					text-align: center;
-					text-transform: uppercase;
-					margin-top: 1rem;
-					width: 75%;
-				
-					@media (max-width: 600px) {
-						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-					}
-					
-					&:hover {
-						transform: translateY(-2px);
-						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-					}
+					width: 100%;
+					font-size: 1.1rem;
+					padding: 1rem;
 				}
 			}
 
@@ -368,7 +450,6 @@ const isLoading = ref(false) // Start with no loading
 						}
 					}
 
-
 					.usp-tiles {
 						display: grid;
 						grid-template-columns: repeat(2, 1fr);
@@ -402,7 +483,53 @@ const isLoading = ref(false) // Start with no loading
 							}
 						}
 					}
+
+					.challenge-button {
+						justify-content: center;
+						width: 100%;
+						margin-top: 1rem;
+					}
 				}
+			}
+		}
+		
+		.game-in-progress-section {
+			text-align: center;
+			padding: 2rem;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: var(--global-border-radius);
+			margin: 1rem 0;
+			
+			.game-status {
+				margin-bottom: 1.5rem;
+				
+				.game-icon {
+					color: var(--primary-color);
+					margin-bottom: 1rem;
+				}
+				
+				h3 {
+					color: var(--text-primary);
+					margin-bottom: 0.5rem;
+					font-size: 1.3rem;
+				}
+				
+				.caption {
+					color: var(--text-secondary);
+					font-size: 0.9rem;
+				}
+			}
+			
+			.play-button {
+				margin-bottom: 1rem;
+			}
+			
+			.button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.5rem;
 			}
 		}
 	}

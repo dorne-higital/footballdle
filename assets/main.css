@@ -362,7 +362,6 @@ body {
   line-height: 1.2;
   min-height: 100dvh;
   max-height: 100dvh;
-  overflow: hidden;
   background-attachment: fixed;
   background-size: cover;
   background-position: center;

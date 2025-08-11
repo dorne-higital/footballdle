@@ -211,6 +211,158 @@ export const useAnalytics = () => {
 		}
 	}
 
+	// Track authentication events
+	const trackSignup = (method: 'email' | 'google' | 'guest') => {
+		if (process.client) {
+			event('signup', {
+				event_category: 'authentication',
+				event_label: method,
+				method: method,
+			})
+		}
+	}
+
+	const trackLogin = (method: 'email' | 'google' | 'guest') => {
+		if (process.client) {
+			event('login', {
+				event_category: 'authentication',
+				event_label: method,
+				method: method,
+			})
+		}
+	}
+
+	const trackLogout = () => {
+		if (process.client) {
+			event('logout', {
+				event_category: 'authentication',
+				event_label: 'user_logout',
+			})
+		}
+	}
+
+	// Track user engagement
+	const trackPageView = (page: string) => {
+		if (process.client) {
+			event('page_view', {
+				event_category: 'navigation',
+				event_label: page,
+				page: page,
+			})
+		}
+	}
+
+	const trackButtonClick = (button: string, location: string) => {
+		if (process.client) {
+			event('button_click', {
+				event_category: 'ui',
+				event_label: button,
+				button: button,
+				location: location,
+			})
+		}
+	}
+
+	const trackKeyboardInput = (key: string, context: string) => {
+		if (process.client) {
+			event('keyboard_input', {
+				event_category: 'interaction',
+				event_label: key,
+				key: key,
+				context: context,
+			})
+		}
+	}
+
+	// Track game progression
+	const trackGuessSubmit = (guessNumber: number, isCorrect: boolean, gameType: 'daily' | 'challenge') => {
+		if (process.client) {
+			event('guess_submit', {
+				event_category: 'game',
+				event_label: gameType,
+				guess_number: guessNumber,
+				is_correct: isCorrect,
+				game_type: gameType,
+			})
+		}
+	}
+
+	const trackGameResume = () => {
+		if (process.client) {
+			event('game_resume', {
+				event_category: 'game',
+				event_label: 'daily_game',
+			})
+		}
+	}
+
+	const trackGameQuit = (guesses: number) => {
+		if (process.client) {
+			event('game_quit', {
+				event_category: 'game',
+				event_label: 'daily_game',
+				value: guesses,
+			})
+		}
+	}
+
+	// Track challenge specific events
+	const trackChallengePause = () => {
+		if (process.client) {
+			event('challenge_pause', {
+				event_category: 'challenge',
+				event_label: 'challenge_mode',
+			})
+		}
+	}
+
+	const trackChallengeResume = () => {
+		if (process.client) {
+			event('challenge_resume', {
+				event_category: 'challenge',
+				event_label: 'challenge_mode',
+			})
+		}
+	}
+
+	const trackChallengeTimeout = () => {
+		if (process.client) {
+			event('challenge_timeout', {
+				event_category: 'challenge',
+				event_label: 'challenge_mode',
+			})
+		}
+	}
+
+	// Track user journey
+	const trackFirstTimeUser = () => {
+		if (process.client) {
+			event('first_time_user', {
+				event_category: 'user_journey',
+				event_label: 'new_user',
+			})
+		}
+	}
+
+	const trackReturningUser = () => {
+		if (process.client) {
+			event('returning_user', {
+				event_category: 'user_journey',
+				event_label: 'returning_user',
+			})
+		}
+	}
+
+	const trackDailyStreak = (streak: number) => {
+		if (process.client) {
+			event('daily_streak', {
+				event_category: 'engagement',
+				event_label: 'streak_count',
+				value: streak,
+			})
+		}
+	}
+
 	return {
 		trackGameStart,
 		trackGameWin,
@@ -232,5 +384,20 @@ export const useAnalytics = () => {
 		trackStatsModal,
 		trackHomeClick,
 		trackSessionTime,
+		trackSignup,
+		trackLogin,
+		trackLogout,
+		trackPageView,
+		trackButtonClick,
+		trackKeyboardInput,
+		trackGuessSubmit,
+		trackGameResume,
+		trackGameQuit,
+		trackChallengePause,
+		trackChallengeResume,
+		trackChallengeTimeout,
+		trackFirstTimeUser,
+		trackReturningUser,
+		trackDailyStreak,
 	}
 } 
