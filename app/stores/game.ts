@@ -48,10 +48,11 @@ export const useGameStore = defineStore('game', () => {
 		// Check if we have a saved game for today
 		const savedGame = localStorage.getItem('footballdle-game')
 		if (savedGame) {
-			const { date } = JSON.parse(savedGame)
-			// If we have a saved game for today, we can't play again
+			const { date, gameOver: savedGameOver } = JSON.parse(savedGame)
+			// If we have a saved game for today, check if it's completed
 			if (date === todayStr) {
-				return false
+				// Only prevent playing if the game is actually completed (won or lost)
+				return !savedGameOver
 			}
 		}
 		// If no saved game for today, we can play
@@ -169,6 +170,10 @@ export const useGameStore = defineStore('game', () => {
 				isWin.value = savedWin
 				// Don't show game over modal on load - let the intro screen handle it
 				showGameOverModal.value = false
+				
+				// If game is completed, show intro screen
+				// If game is not completed, keep intro hidden so user can continue
+				showIntro.value = savedOver
 			}
 		}
 	}

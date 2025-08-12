@@ -12,6 +12,7 @@
 			:can-play="gameStore.canPlay"
 			:countdown="gameStore.countdown"
 			:challenge-unlocked="challengeStore.isUnlocked"
+			:has-incomplete-game="hasIncompleteGame"
 			:stats="statsStore.stats"
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
@@ -375,7 +376,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+	import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
 	import { useGameStore } from '../stores/game'
 	import { useStatsStore } from '../stores/stats'
 	import { useThemeStore } from '../stores/theme'
@@ -550,6 +551,18 @@
 	const sessionStartTime = ref(Date.now())
 
 	// ============================================================================
+	// COMPUTED PROPERTIES
+	// ============================================================================
+	const hasIncompleteGame = computed(() => {
+		// Check if there's a saved game for today that's not completed
+		// Use the game store state instead of reading from localStorage for reactivity
+		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
+			return true
+		}
+		return false
+	})
+
+	// ============================================================================
 	// LIFECYCLE HOOKS
 	// ============================================================================
 	onMounted(() => {
@@ -589,7 +602,7 @@
 
 	// Watch for game completion to unlock challenge mode
 	watch(() => gameStore.showGameOverModal, (showModal) => {
-		if (showModal) {
+		if (showModal && gameStore.gameOver) {
 			challengeStore.unlockChallenge()
 		}
 	})
@@ -689,10 +702,16 @@
 		// Track home click
 		trackHomeClick('game_screen')
 		
-		isLoading.value = true
-		setTimeout(() => {
-			location.reload()
-		}, 500)
+		// If game is completed, force refresh to ensure proper state
+		if (gameStore.gameOver) {
+			isLoading.value = true
+			setTimeout(() => {
+				location.reload()
+			}, 500)
+		} else {
+			// Show intro screen for incomplete games
+			gameStore.showIntro = true
+		}
 	}
 </script>
 

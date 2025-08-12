@@ -61,7 +61,16 @@
 				<h5 class="heading">Ready to play?</h5>
 
 				<button @click="$emit('start-game')" class="button primary play-button">
-					Play Now
+					{{ hasIncompleteGame ? 'Resume Game' : 'Play Now' }}
+				</button>
+			</div>
+
+			<div v-else-if="hasIncompleteGame" class="incomplete-game-section">
+				<h3 class="heading">Continue your game?</h3>
+				<p class="caption">You have an unfinished game from today. Would you like to continue where you left off?</p>
+
+				<button @click="$emit('start-game')" class="button primary play-button">
+					Continue Game
 				</button>
 			</div>
 
@@ -135,6 +144,7 @@ const props = withDefaults(
 		canPlay?: boolean
 		countdown?: string
 		challengeUnlocked?: boolean
+		hasIncompleteGame?: boolean
 		stats?: {
 			gamesPlayed: number
 			wins: number
@@ -148,6 +158,7 @@ const props = withDefaults(
 		canPlay: true,
 		countdown: '',
 		challengeUnlocked: false,
+		hasIncompleteGame: false,
 		stats: () => ({
 			gamesPlayed: 0,
 			wins: 0,
@@ -285,6 +296,49 @@ const isLoading = ref(false) // Start with no loading
 							font-size: 0.8rem;
 						}
 					}
+				}
+
+				.play-button {
+					font-size: 1.1rem;
+					padding: 1rem 3rem;
+					border-radius: var(--global-border-radius);
+					justify-content: center;
+					transition: all 0.3s ease;
+					text-align: center;
+					text-transform: uppercase;
+					margin-top: 1rem;
+					width: 75%;
+				
+					@media (max-width: 600px) {
+						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+					}
+					
+					&:hover {
+						transform: translateY(-2px);
+						box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+					}
+				}
+			}
+
+			.incomplete-game-section {
+				background: linear-gradient(135deg, var(--tertiary-color) 0%, color-mix(in srgb, var(--tertiary-color) 25%, #000) 100%);
+				border-radius: var(--global-border-radius);
+				border: 1px solid var(--border);
+				color: white;
+				padding: 1rem;
+				margin-top: 1rem;
+
+				.heading {
+					font-size: 1.5rem;
+					padding-bottom: .5rem;
+				}
+
+				p, h4 {
+					line-height: 1.5;
+				}
+
+				p {
+					margin-bottom: .5rem;
 				}
 
 				.play-button {
