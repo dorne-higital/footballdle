@@ -183,6 +183,7 @@ const isLoading = ref(false) // Start with no loading
 		background: var(--bg-gradient);
 		height: 100%;
 		position: relative;
+		width: 100%;
 
 		.loading-overlay {
 			position: fixed;
