@@ -50,7 +50,7 @@
 		</div>
 
 		<!-- Challenge Screen -->
-		<div v-else-if="challengeStore.isActive">
+		<div v-else-if="challengeStore.isActive" class="challenge-screen">
 			<ChallengeModal
 				:guesses="challengeStore.guesses"
 				:current-guess="challengeStore.currentGuess"
@@ -725,7 +725,8 @@
 		height: 100dvh;
 		position: relative;
 
-		.game-screen {
+		.game-screen,
+		.challenge-screen {
 			align-content: center;
 			background: var(--bg-secondary);
 			border-radius: var(--global-border-radius);
@@ -735,7 +736,7 @@
 			flex-direction: column;
 			justify-content: flex-start;
 			max-width: 500px;
-			padding: 1rem;
+			padding: 1rem .5rem;
 			text-align: center;
 			width: 100%;
 		}

@@ -180,19 +180,6 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 
 <style scoped lang="scss">
 	.challenge-game {
-		align-content: center;
-		background: var(--bg-secondary);
-		border-radius: var(--global-border-radius);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-		border: 1px solid var(--border);
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		justify-content: flex-start;
-		max-width: 500px;
-		padding: 1rem;
-		text-align: center;
-		width: 100%;
 
 		.challenge-nav {
 			align-items: center;
