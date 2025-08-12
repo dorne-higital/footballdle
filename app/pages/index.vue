@@ -1,169 +1,98 @@
 <template>
-	<div class="home-page">
+	<div class="page-container">
 		<!-- Loading Overlay -->
 		<div v-if="isLoading" class="loading-overlay">
 			<div class="loading-content">
-				<Loader variant="dots" text="Loading..." />
+				<Loader />
 			</div>
 		</div>
-		<!-- Header -->
-		<div class="home-header">
-			<h1 class="heading">Footballdle</h1>
-			
-			<div class="header-actions">
-				<Icon 
-					name="uil:info-circle" 
-					@click="modalsStore.openInfo()" 
-					size="1.5rem" 
-					class="header-icon"
-				/>
-				<Icon 
-					name="uil:setting" 
-					@click="modalsStore.openSettings()" 
-					size="1.5rem" 
-					class="header-icon"
-				/>
-				<Icon 
-					name="uil:statistics" 
-					@click="modalsStore.openStats()" 
-					size="1.5rem" 
-					class="header-icon"
-				/>
-			</div>
+		<!-- Intro Screen -->
+		<IntroScreen
+			v-if="gameStore.showIntro"
+			:can-play="gameStore.canPlay"
+			:countdown="gameStore.countdown"
+			:challenge-unlocked="challengeStore.isUnlocked"
+			:stats="statsStore.stats"
+			:win-percentage="statsStore.winPercentage"
+			@start-game="handleStartGame"
+			@start-challenge="handleStartChallenge"
+			@show-info="handleShowInfo"
+			@show-settings="handleShowSettings"
+			@show-stats="handleShowStats"
+		/>
+
+		<!-- Game Screen -->
+		<div v-else-if="!challengeStore.isActive" class="game-screen">
+			<HeaderNav 
+				:show-back-button="true"
+				@show-info="handleShowInfo" 
+				@show-settings="handleShowSettings" 
+				@show-stats="handleShowStats" 
+				@back-to-menu="handleBackToMenu"
+			/>
+
+			<GameBoard 
+				:guesses="gameStore.guesses" 
+				:answer="gameStore.answer" 
+				:maxGuesses="gameStore.maxGuesses" 
+				:currentGuess="gameStore.currentGuess" 
+			/>
+
+			<Keyboard 
+				:disabled="gameStore.gameOver" 
+				:guesses="gameStore.guesses" 
+				:answer="gameStore.answer" 
+				:maxGuesses="gameStore.maxGuesses"
+				:currentGuess="gameStore.currentGuess"
+				@key="handleKeyboardKey" 
+			/>
 		</div>
 
-		<!-- User Status -->
-		<div class="user-status">
-			<div class="user-info">
-				<Icon name="solar:user-linear" size="1rem" />
-					<!-- <span>{{ authStore.displayName }}</span> -->
-					<span>Signed in</span>
-				<span v-if="authStore.isGuest" class="guest-badge">Guest</span>
-			</div>
-			<div class="user-actions">
-				<button v-if="authStore.isGuest" @click="navigateToLogin" class="signup-btn">
-					<Icon name="solar:login-linear" size="1rem" />
-					Sign Up
-				</button>
-				<button v-if="authStore.isLoggedIn" @click="handleLogout" class="logout-btn">
-					<Icon name="solar:logout-2-linear" size="1rem" />
-					Logout
-				</button>
-			</div>
+		<!-- Challenge Screen -->
+		<div v-else-if="challengeStore.isActive">
+			<ChallengeModal
+				:guesses="challengeStore.guesses"
+				:current-guess="challengeStore.currentGuess"
+				:max-guesses="challengeStore.maxGuesses"
+				:answer="challengeStore.currentAnswer"
+				:time-remaining="challengeStore.timeRemaining"
+				:time-formatted="challengeStore.timeFormatted"
+				:can-play="challengeStore.canPlay"
+				:is-paused="challengeStore.isPaused"
+				:game-over="challengeStore.gameOver"
+				@key="handleChallengeKey"
+				@end-challenge="handleEndChallenge"
+				@toggle-pause="challengeStore.togglePause"
+				@play-again="challengeStore.startChallenge"
+			/>
 		</div>
 
-		<!-- Main Content -->
-		<div class="home-content">
-			<p class="subheading">Guess the Premier League footballer</p>
-
-			<!-- Game Options -->
-			<div class="game-options">
-				<!-- Daily Game Section -->
-				<div class="game-section">
-					<div class="game-info">
-						<Icon name="solar:calendar-linear" size="2rem" class="game-icon" />
-						<h3>Daily Challenge</h3>
-						<p class="caption">New player every day at midnight</p>
-					</div>
-
-					<div v-if="gameStore.hasGameInProgress" class="game-in-progress">
-						<p class="progress-text">
-							You have a game in progress with {{ gameStore.guesses.length }} guess{{ gameStore.guesses.length !== 1 ? 'es' : '' }} made.
-						</p>
-						<button @click="navigateToGame" class="button primary full">
-							<Icon name="solar:play-linear" size="1rem" />
-							Resume Game
-						</button>
-					</div>
-
-					<div v-else-if="gameStore.canPlay" class="game-available">
-						<div class="usp-tiles">
-							<div class="tile">
-								<Icon name="solar:football-outline" size="1.5rem" />
-								<h6>25/26 Premier League players</h6>
-							</div>
-							<div class="tile">
-								<Icon name="solar:magnifer-linear" size="1.5rem" />
-								<h6>Only players with 6 letter surnames</h6>
-							</div>
-							<div class="tile">
-								<Icon name="solar:shield-warning-linear" size="1.5rem" />
-								<h6>Maximum 6 guesses</h6>
-							</div>
-						</div>
-						<button @click="navigateToGame" class="button primary full">
-							Play Now
-						</button>
-					</div>
-
-					<div v-else class="game-completed">
-						<div class="countdown">
-							<p class="caption">Next game in:</p>
-							<h4>{{ gameStore.countdown }}</h4>
-						</div>
-					</div>
+		<!-- Game Over Modal -->
+		<BaseModal
+			v-if="gameStore.showGameOverModal"
+			:show="gameStore.showGameOverModal"
+			:heading="gameStore.isWin ? 'Well played!' : 'Better luck next time!'"
+			variant="small"
+			@close="gameStore.closeGameOverModal"
+		>
+			<template #body>
+				<div class="game-over-section">
+					<h4 v-if="gameStore.isWin">You win!</h4>
+					<h4 v-else>You lose!</h4>
+					<p>The answer was <strong class="answer">{{ gameStore.answer }}</strong></p>
+					<button @click="handleShare" class="button primary share">Share</button>
 				</div>
+			</template>
 
-				<!-- Challenge Section -->
-				<div v-if="challengeStore.isUnlocked && !authStore.isGuest" class="game-section challenge-section">
-					<div class="challenge-header">
-						<div class="challenge-icon-container">
-							<Icon name="solar:lightning-linear" size="2rem" class="challenge-icon" />
-							<div class="challenge-glow"></div>
-						</div>
-						<div class="challenge-title">
-							<h3>Speed Challenge</h3>
-							<p class="caption">45 second timer • Unlimited plays</p>
-						</div>
-					</div>
-
-					<div class="challenge-grid">
-						<div class="challenge-tile">
-							<Icon name="solar:rewind-5-seconds-forward-bold" size="1rem" />
-							<span>5 Letters</span>
-						</div>
-						<div class="challenge-tile">
-							<Icon name="solar:football-outline" size="1rem" />
-							<span>Current Players</span>
-						</div>
-						<div class="challenge-tile">
-							<Icon name="solar:alarm-outline" size="1rem" />
-							<span>45s Timer</span>
-						</div>
-						<div class="challenge-tile">
-							<Icon name="solar:refresh-linear" size="1rem" />
-							<span>Unlimited</span>
-						</div>
-					</div>
-
-					<button @click="navigateToChallenge" class="button challenge-btn full">
-						<Icon name="solar:lightning-linear" size="1rem" />
-						Start Challenge
-					</button>
+			<template #footer>
+				<div v-if="gameStore.getNextGameTime">
+					<p class="caption">Next game in:</p>
+					<h3>{{ gameStore.countdown }}</h3>
 				</div>
+			</template>
+		</BaseModal>
 
-				<!-- Guest Challenge Message -->
-				<div v-if="challengeStore.isUnlocked && authStore.isGuest" class="game-section">
-					<div class="game-info">
-						<Icon name="solar:lightning-linear" size="2rem" class="game-icon" />
-						<h3>Speed Challenge</h3>
-						<p class="caption">Unlock challenge mode by signing up</p>
-					</div>
-
-					<div class="guest-challenge-message">
-						<Icon name="solar:lock-linear" size="3rem" />
-						<h4>Sign up to unlock challenge mode</h4>
-						<p>Create an account to access unlimited challenge games and track your best times.</p>
-						<button @click="navigateToLogin" class="button primary full">
-							<Icon name="solar:login-linear" size="1rem" />
-							Sign Up Now
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Modals -->
+		<!-- Info Modal -->
 		<BaseModal
 			v-if="modalsStore.showInfo"
 			heading="How to play"
@@ -174,9 +103,13 @@
 			<template #body>
 				<div class="info-section">
 					<p>Guess the 6-letter Premier League footballer in 6 tries.</p>
+
 					<p>Each guess much be a valid Premier League footballer playing in the 25/26 season.</p>
+
 					<p>The colour of the letter indicates how close your guess is to the answer:</p>
+
 					<p class="caption"><strong>Examples</strong></p>
+
 					<div class="examples">
 						<span class="example">
 							<span class="letter">P</span>
@@ -187,6 +120,7 @@
 							<span class="letter">R</span>
 						</span>
 						<p class="caption">The letter <strong>A</strong> is in the answer and in the correct position.</p>
+
 						<span class="example">
 							<span class="letter">D</span>
 							<span class="letter">E</span>
@@ -196,6 +130,7 @@
 							<span class="letter">T</span>
 						</span>
 						<p class="caption">The letter <strong>G</strong> is in the answer but in the wrong position.</p>
+
 						<span class="example">
 							<span class="letter">E</span>
 							<span class="letter">L</span>
@@ -206,19 +141,24 @@
 						</span>
 						<p class="caption">The letter <strong>N</strong> is not in the answer.</p>
 					</div>
+
 					<p>A new player is revealed every day at midnight.</p>
+				
 					<div class="info-footer">
 						<p class="caption">
 							Footballdle is a word game inspired by Wordle. It is not affiliated with the Premier League or any other football club.
 						</p>
+
 						<p class="caption">
 							If you spot any missing players, get in touch and I can add them right away.
 						</p>
+
 					</div>
 				</div>
 			</template>
 		</BaseModal>
 
+		<!-- Settings Modal -->
 		<BaseModal
 			v-if="modalsStore.showSettings"
 			heading="Settings"
@@ -244,7 +184,7 @@
 										<div class="preview-tile"></div>
 									</div>
 								</div>
-								<span>Light</span>
+								<span class="theme-name">Light</span>
 							</button>
 							
 							<button 
@@ -259,7 +199,37 @@
 										<div class="preview-tile"></div>
 									</div>
 								</div>
-								<span>Dark</span>
+								<span class="theme-name">Dark</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'greyscale' }]"
+								@click="themeStore.setTheme('greyscale')"
+							>
+								<div class="theme-preview greyscale">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Greyscale</span>
+							</button>
+							
+							<button 
+								:class="['theme-option', { active: themeStore.currentTheme === 'pastel' }]"
+								@click="themeStore.setTheme('pastel')"
+							>
+								<div class="theme-preview pastel">
+									<div class="preview-header"></div>
+									<div class="preview-content">
+										<div class="preview-tile"></div>
+										<div class="preview-tile correct"></div>
+										<div class="preview-tile"></div>
+									</div>
+								</div>
+								<span class="theme-name">Pastel</span>
 							</button>
 						</div>
 					</div>
@@ -267,6 +237,7 @@
 			</template>
 		</BaseModal>
 
+		<!-- Stats Modal -->
 		<BaseModal
 			v-if="modalsStore.showStats"
 			heading="Statistics"
@@ -275,90 +246,60 @@
 		>
 			<template #body>
 				<div class="stats-section">
-					<div class="stats-tabs">
-						<button 
-							:class="['tab-btn', { active: activeStatsTab === 'daily' }]"
-							@click="activeStatsTab = 'daily'"
-						>
-							<Icon name="solar:calendar-linear" size="1rem" />
-							<span>Daily</span>
-						</button>
-						
-						<button 
-							v-if="challengeStore.challengeStats.gamesPlayed > 0"
-							:class="['tab-btn', { active: activeStatsTab === 'challenge' }]"
-							@click="activeStatsTab = 'challenge'"
-						>
-							<Icon name="solar:lightning-linear" size="1rem" />
-							<span>Challenge</span>
-						</button>
+					<!-- Stats Toggle -->
+					<div class="stats-toggle">
+						<div class="toggle-container">
+							<button 
+								:class="['toggle-btn', { active: activeStatsTab === 'daily' }]"
+								@click="activeStatsTab = 'daily'"
+							>
+								<Icon name="solar:calendar-linear" size="1rem" />
+								<span>Daily</span>
+							</button>
+							<button 
+								v-if="challengeStore.challengeStats.gamesPlayed > 0"
+								:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
+								@click="activeStatsTab = 'challenge'"
+							>
+								<Icon name="solar:lightning-linear" size="1rem" />
+								<span>Challenge</span>
+							</button>
+						</div>
 					</div>
 
 					<!-- Stats Content Container -->
 					<div class="stats-content-container">
-						<!-- Loading State -->
-						<div v-if="statsStore.isLoading" class="stats-loading">
-							<Loader />
-							<p>Loading stats...</p>
-						</div>
-						
 						<!-- Daily Game Stats -->
 						<div 
-							v-else
 							:class="['stats-content', { active: activeStatsTab === 'daily' }]"
 						>
-							<!-- Guest Stats Message -->
-							<div v-if="authStore.isGuest" class="guest-stats-message">
-								<Icon name="solar:user-linear" size="3rem" />
-								<h3>Sign up to see your stats</h3>
-								<p>Create an account to track your progress across devices and unlock challenge mode.</p>
-								<button @click="navigateToLogin" class="button primary">
-									<Icon name="solar:login-linear" size="1rem" />
-									Sign Up Now
-								</button>
+							<div class="stats-grid">
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.gamesPlayed }}</h3>
+									<p class="caption">Games</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.wins }}</h3>
+									<p class="caption">Wins</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.currentStreak }}</h3>
+									<p class="caption">Streak</p>
+								</div>
+								<div class="stat-card">
+									<h3>{{ statsStore.stats.maxStreak }}</h3>
+									<p class="caption">Max Streak</p>
+								</div>
 							</div>
 							
-							<!-- Authenticated User Stats -->
-							<div v-else>
-								<div class="stats-grid">
-									<div class="stat-card">
-										<h3>{{ statsStore.stats.gamesPlayed }}</h3>
-										<p class="caption">Games</p>
-									</div>
-									<div class="stat-card">
-										<h3>{{ statsStore.stats.wins }}</h3>
-										<p class="caption">Wins</p>
-									</div>
-									<div class="stat-card">
-										<h3>{{ statsStore.stats.currentStreak }}</h3>
-										<p class="caption">Streak</p>
-									</div>
-									<div class="stat-card">
-										<h3>{{ statsStore.stats.maxStreak }}</h3>
-										<p class="caption">Max Streak</p>
-									</div>
+							<div class="win-rate">
+								<div class="progress-bar">
+									<div 
+										class="progress-fill" 
+										:style="{ width: `${statsStore.winPercentage}%` }"
+									></div>
 								</div>
-								
-								<div class="win-rate">
-									<div class="progress-bar">
-										<div 
-											class="progress-fill" 
-											:style="{ width: `${statsStore.winPercentage}%` }"
-										></div>
-									</div>
-									<p>{{ statsStore.winPercentage }}% win rate</p>
-								</div>
-								
-								<!-- Stats Storage Indicator -->
-								<div class="stats-storage">
-									<p class="caption">
-										<Icon 
-											:name="authStore.isAuthenticated ? 'solar:cloud-linear' : 'solar:device-linear'" 
-											size="0.8rem" 
-										/>
-										{{ authStore.isAuthenticated ? 'Stats saved to cloud' : 'Stats saved locally' }}
-									</p>
-								</div>
+								<p>{{ statsStore.winPercentage }}% win rate</p>
 							</div>
 						</div>
 
@@ -399,763 +340,734 @@
 				</div>
 			</template>
 		</BaseModal>
+
+		<!-- Challenge Game Over Modal -->
+		<BaseModal
+			v-if="challengeStore.showGameOverModal"
+			:show="challengeStore.showGameOverModal"
+			:heading="challengeStore.isWin ? 'Challenge Complete!' : 'Time\'s Up!'"
+			variant="small"
+			@close="challengeStore.closeGameOverModal"
+		>
+			<template #body>
+				<div class="challenge-game-over-section">
+					<h4 v-if="challengeStore.isWin">You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!</h4>
+					<h4 v-else>Better luck next time!</h4>
+					<p>The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong></p>
+					<div class="challenge-buttons">
+						<nuxt-link @click="handleEndChallenge" class="button link">
+							<Icon 
+								name="solar:alt-arrow-left-linear"
+								size="1rem" 
+							/>
+
+							Home
+						</nuxt-link>
+
+						<button @click="challengeStore.startChallenge" class="button primary full">
+							Play Again
+						</button>
+					</div>
+				</div>
+			</template>
+		</BaseModal>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useGameStore } from '../stores/game'
-import { useStatsStore } from '../stores/stats'
-import { useChallengeStore } from '../stores/challenge'
-import { useModalsStore } from '../stores/modals'
-import { useThemeStore } from '../stores/theme'
-import { useAuthStore } from '../stores/auth'
-import { useAnalytics } from '../composables/useAnalytics'
-import { useFirestore } from '../composables/useFirestore'
+	import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+	import { useGameStore } from '../stores/game'
+	import { useStatsStore } from '../stores/stats'
+	import { useThemeStore } from '../stores/theme'
+	import { useModalsStore } from '../stores/modals'
+	import { useChallengeStore } from '../stores/challenge'
+	import { useShare } from '../composables/useShare'
+	import { useAnalytics } from '../composables/useAnalytics'
+	import { useHead } from 'nuxt/app'
 
-// ============================================================================
-// STORES
-// ============================================================================
-const gameStore = useGameStore()
-const statsStore = useStatsStore()
-const challengeStore = useChallengeStore()
-const modalsStore = useModalsStore()
-const themeStore = useThemeStore()
-const authStore = useAuthStore()
+	useHead({
+		title: 'Footballdle | Guess the Premier League footballer',
+		meta: [
+			{
+				name: 'description',
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+			},
+			{
+				name: 'keywords',
+				content: 'Premier League, Wordle, Football Game, Soccer Puzzle, Daily Game'
+			},
+			{
+				name: 'author',
+				content: 'Footballdle'
+			},
+			{
+				name: 'robots',
+				content: 'index, follow'
+			},
+			{
+				name: 'og:title',
+				content: 'Footballdle | Guess the Premier League footballer'
+			},
+			{
+				name: 'og:description',
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+			},
+			{
+			property: 'og:image',
+			content: 'https://footballdle.co.uk/og-image.png'
+			},
+			{
+			property: 'og:url',
+			content: 'https://footballdle.co.uk'
+			}
+		],
+	})
 
-// ============================================================================
-// COMPOSABLES
-// ============================================================================
-const { trackHomeClick, trackLogout, trackPageView } = useAnalytics()
-
-// ============================================================================
-// REACTIVE STATE
-// ============================================================================
-const activeStatsTab = ref('daily')
-const isLoading = ref(true)
-
-// ============================================================================
-// LIFECYCLE HOOKS
-// ============================================================================
-onMounted(async () => {
-	// Track page view
-	trackPageView('home')
+	// ============================================================================
+	// STORES
+	// ============================================================================
+	const gameStore = useGameStore()
+	const statsStore = useStatsStore()
+	const themeStore = useThemeStore()
+	const modalsStore = useModalsStore()
+	const challengeStore = useChallengeStore()
+	const { onShare } = useShare()
 	
-	// Load theme settings
-	themeStore.loadThemeSettings()
-	
-	// Load game state
-	gameStore.loadState()
-	gameStore.startCountdown()
-	
-	// Wait for auth to be initialized before loading stats
-	while (!authStore.isInitialized) {
-		await new Promise(resolve => setTimeout(resolve, 100))
-	}
-	
-	// Load stats
-	try {
-		await statsStore.loadStats()
-		
-		if (authStore.isAuthenticated && authStore.user) {
-			await statsStore.migrateLocalStatsToFirebase()
+	// Analytics tracking functions (client-side only)
+	const trackGameStart = () => {
+		try {
+			const { trackGameStart: track } = useAnalytics()
+			track()
+		} catch (error) {
+			// Silently fail if analytics is not available
 		}
-	} catch (error) {
-		// Silent fail
 	}
 	
-	// Load challenge state and stats
-	challengeStore.loadChallengeState()
-	try {
-		await challengeStore.loadChallengeStats()
-		
-		if (authStore.isAuthenticated && authStore.user) {
-			await challengeStore.migrateLocalChallengeStatsToFirebase()
+	const trackGameWin = (guesses: number) => {
+		try {
+			const { trackGameWin: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
 		}
-	} catch (error) {
-		// Silent fail
 	}
 	
-	// Check if today's game was completed (for cross-device sync)
-	if (authStore.isAuthenticated && authStore.user && statsStore.stats.lastGameCompleted) {
-		const today = new Date().toDateString()
-		if (statsStore.stats.lastGameCompleted === today) {
-			// Today's game was completed on another device
-			gameStore.gameOver = true
-			gameStore.isWin = true
-			gameStore.gameInProgress = false
-			gameStore.showIntro = false
+	const trackGameLoss = (guesses: number) => {
+		try {
+			const { trackGameLoss: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackGameAbandon = (guesses: number) => {
+		try {
+			const { trackGameAbandon: track } = useAnalytics()
+			track(guesses)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeStart = () => {
+		try {
+			const { trackChallengeStart: track } = useAnalytics()
+			track()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeWin = (timeUsed: number) => {
+		try {
+			const { trackChallengeWin: track } = useAnalytics()
+			track(timeUsed)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeLoss = (timeUsed: number) => {
+		try {
+			const { trackChallengeLoss: track } = useAnalytics()
+			track(timeUsed)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackChallengeAbandon = (timeUsed: number) => {
+		try {
+			const { trackChallengeAbandon: track } = useAnalytics()
+			track(timeUsed)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackShare = (platform?: string) => {
+		try {
+			const { trackShare: track } = useAnalytics()
+			track(platform)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackModalOpen = (modalName: string) => {
+		try {
+			const { trackModalOpen: track } = useAnalytics()
+			track(modalName)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackHomeClick = (location: string) => {
+		try {
+			const { trackHomeClick: track } = useAnalytics()
+			track(location)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+	
+	const trackSessionTime = (duration: number) => {
+		try {
+			const { trackSessionTime: track } = useAnalytics()
+			track(duration)
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
+	}
+
+	// ============================================================================
+	// REACTIVE STATE
+	// ============================================================================
+	const activeStatsTab = ref('daily')
+	const isLoading = ref(false)
+	const sessionStartTime = ref(Date.now())
+
+	// ============================================================================
+	// LIFECYCLE HOOKS
+	// ============================================================================
+	onMounted(() => {
+		themeStore.loadThemeSettings()
+		statsStore.loadStats()
+		gameStore.loadState()
+		gameStore.startCountdown()
+		
+		// Load challenge state
+		challengeStore.loadChallengeState()
+		challengeStore.loadChallengeStats()
+		
+		// Track session start
+		sessionStartTime.value = Date.now()
+	})
+	
+	// Track session time when leaving
+	onUnmounted(() => {
+		const sessionDuration = Math.floor((Date.now() - sessionStartTime.value) / 1000)
+		trackSessionTime(sessionDuration)
+	})
+
+	onUnmounted(() => {
+		gameStore.stopCountdown()
+	})
+
+	// ============================================================================
+	// WATCHERS
+	// ============================================================================
+	watch(() => gameStore.getUKDateString(), (newDate, oldDate) => {
+		if (newDate !== oldDate) {
+			gameStore.resetGame()
+			challengeStore.resetDaily()
+			location.reload()
+		}
+	})
+
+	// Watch for game completion to unlock challenge mode
+	watch(() => gameStore.showGameOverModal, (showModal) => {
+		if (showModal) {
+			challengeStore.unlockChallenge()
+		}
+	})
+
+	// Reset stats tab to daily when stats modal opens
+	watch(() => modalsStore.showStats, (showStats) => {
+		if (showStats) {
+			activeStatsTab.value = 'daily'
+		}
+	})
+
+	// ============================================================================
+	// EVENT HANDLERS
+	// ============================================================================
+	function handleShare() {
+		onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		trackShare('native')
+	}
+
+	function handleKeyboardKey(key: string) {
+		gameStore.onKeyboardKey(key)
+		// Update stats when game ends
+		if (gameStore.gameOver && gameStore.showGameOverModal) {
+			statsStore.updateStats(gameStore.isWin)
 			
-			// Unlock challenge if not already unlocked
-			if (!challengeStore.isUnlocked) {
-				challengeStore.unlockChallenge()
+			// Track game completion
+			if (gameStore.isWin) {
+				trackGameWin(gameStore.guesses.length)
+			} else {
+				trackGameLoss(gameStore.guesses.length)
 			}
 		}
 	}
-	
-	// Hide loading spinner
-	isLoading.value = false
-})
 
-// ============================================================================
-// EVENT HANDLERS
-// ============================================================================
-function navigateToGame() {
-	// Check authentication first (allow both authenticated users and guests)
-	if (!authStore.isAuthenticated && !authStore.isGuest) {
-		window.location.href = '/login'
-		return
+	function handleStartGame() {
+		gameStore.startGame()
+		trackGameStart()
+	}
+
+	function handleStartChallenge() {
+		challengeStore.startChallenge()
+		gameStore.showIntro = false
+		trackChallengeStart()
+	}
+
+	function handleEndChallenge() {
+		// Track challenge abandonment if not completed
+		if (challengeStore.isActive && !challengeStore.gameOver && challengeStore.timeRemaining > 0) {
+			const timeUsed = 45 - challengeStore.timeRemaining
+			trackChallengeAbandon(timeUsed)
+		}
+		
+		challengeStore.endChallenge()
+		gameStore.showIntro = true
+	}
+
+	function handleChallengeKey(key: string) {
+		challengeStore.onKeyboardKey(key)
+	}
+
+	function handleShowInfo() {
+		modalsStore.openInfo()
+		try {
+			const { trackInfoModal } = useAnalytics()
+			trackInfoModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
 	
-	// Navigate to game
-	window.location.href = '/game'
-}
-
-function navigateToChallenge() {
-	// Check authentication first (only allow authenticated users for challenge)
-	if (!authStore.isAuthenticated) {
-		window.location.href = '/login'
-		return
+	function handleShowSettings() {
+		modalsStore.openSettings()
+		try {
+			const { trackSettingsModal } = useAnalytics()
+			trackSettingsModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
 	
-	// Navigate to challenge
-	window.location.href = '/challenge'
-}
-
-function navigateToLogin() {
-	window.location.href = '/login'
-}
-
-async function handleLogout() {
-	try {
-		await authStore.signOutUser()
-		// Track logout
-		trackLogout()
-		// Redirect to login page after logout
-		window.location.href = '/login'
-	} catch (error) {
-		console.error('Logout error:', error)
+	function handleShowStats() {
+		modalsStore.openStats()
+		try {
+			const { trackStatsModal } = useAnalytics()
+			trackStatsModal()
+		} catch (error) {
+			// Silently fail if analytics is not available
+		}
 	}
-}
+	
+	function handleBackToMenu() {
+		// Track game abandonment if game is in progress
+		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
+			trackGameAbandon(gameStore.guesses.length)
+		}
+		
+		// Track home click
+		trackHomeClick('game_screen')
+		
+		isLoading.value = true
+		setTimeout(() => {
+			location.reload()
+		}, 500)
+	}
 </script>
 
 <style scoped lang="scss">
-.home-page {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	background: var(--bg-gradient);
-	padding: 1.5rem;
-	position: relative;
-	overflow-x: hidden;
+	.page-container {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		background: var(--bg-gradient);
+		padding: 1rem;
+		height: 100dvh;
+		position: relative;
+
+		.game-screen {
+			align-content: center;
+			background: var(--bg-secondary);
+			border-radius: var(--global-border-radius);
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+			border: 1px solid var(--border);
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			max-width: 500px;
+			padding: 1rem;
+			text-align: center;
+			width: 100%;
+		}
+	}
+
 	
-	/* Enhanced background with subtle pattern */
-	&::before {
-		content: '';
+	// ============================================================================
+	// LOADING OVERLAY
+	// ============================================================================
+	.loading-overlay {
 		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background-image: 
-			radial-gradient(circle at 20% 80%, rgba(30, 64, 175, 0.08) 0%, transparent 50%),
-			radial-gradient(circle at 80% 20%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
-		pointer-events: none;
-		z-index: -1;
-	}
-}
-
-// ============================================================================
-// LOADING OVERLAY
-// ============================================================================
-.loading-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: var(--bg-gradient);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 10000;
-
-	.loading-content {
-		text-align: center;
-		color: var(--text-primary);
-		
-		p {
-			margin-top: 1rem;
-			color: var(--text-secondary);
-			font-size: 0.9rem;
-		}
-	}
-}
-
-.home-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 1.5rem;
-	
-	.heading {
-		font-size: 2.5rem;
-		font-weight: 800;
-		background: var(--color-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		margin: 0;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		letter-spacing: -0.02em;
-	}
-	
-	.header-actions {
-		display: flex;
-		gap: 1rem;
-		
-		.header-icon {
-			color: var(--text-secondary);
-			cursor: pointer;
-			transition: color 0.2s;
-			
-			&:hover {
-				color: var(--text-primary);
-			}
-		}
-	}
-}
-
-.user-status {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background: var(--card-bg);
-	backdrop-filter: blur(10px);
-	border: 1px solid var(--card-border);
-	border-radius: var(--global-border-radius);
-	padding: 1rem 1.25rem;
-	margin-bottom: 2rem;
-	box-shadow: var(--card-shadow);
-	transition: all 0.3s ease;
-	
-	&:hover {
-		transform: translateY(-2px);
-		box-shadow: var(--shadow-lg);
-	}
-	
-	.user-info {
+		background: var(--bg-gradient);
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
-		color: var(--text-primary);
-		
-		.guest-badge {
-			background: var(--warning-color);
-			color: white;
-			padding: 0.25rem 0.5rem;
-			border-radius: 12px;
-			font-size: 0.7rem;
-			font-weight: 600;
-		}
-	}
-	
-	.user-actions {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	
-	.signup-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		background: var(--primary-color);
-		border: 1px solid var(--primary-color);
-		border-radius: var(--global-border-radius);
-		padding: 0.5rem 1rem;
-		color: white;
-		cursor: pointer;
-		transition: all 0.2s;
-		font-size: 0.9rem;
-		font-weight: 600;
-		
-		&:hover {
-			background: var(--primary-hover);
-			border-color: var(--primary-hover);
-			transform: translateY(-1px);
-		}
-	}
-	
-	.logout-btn {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		background: var(--bg-primary);
-		border: 1px solid var(--border);
-		border-radius: var(--global-border-radius);
-		padding: 0.5rem 1rem;
-		color: var(--text-primary);
-		cursor: pointer;
-		transition: all 0.2s;
-		font-size: 0.9rem;
-		
-		&:hover {
-			border-color: var(--border-hover);
-			background: var(--error-color);
-		}
-	}
-}
+		justify-content: center;
+		z-index: 10000;
 
-.home-content {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	
-	.subheading {
-		text-align: center;
-		color: var(--text-secondary);
-		font-size: 1.1rem;
-		margin-bottom: 2rem;
-	}
-}
-
-.game-options {
-	display: flex;
-	flex-direction: column;
-	gap: 2rem;
-	max-width: 600px;
-	margin: 0 auto;
-	width: 100%;
-}
-
-.game-section {
-	background: var(--card-bg);
-	backdrop-filter: blur(10px);
-	border: 1px solid var(--card-border);
-	border-radius: var(--global-border-radius);
-	padding: 2.5rem;
-	box-shadow: var(--card-shadow);
-	transition: all 0.3s ease;
-	position: relative;
-	overflow: hidden;
-	
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 4px;
-		background: var(--color-gradient);
-	}
-	
-	&:hover {
-		transform: translateY(-4px);
-		box-shadow: var(--shadow-xl);
-	}
-	
-	.game-info {
-		text-align: center;
-		margin-bottom: 1.5rem;
-		
-		.game-icon {
-			color: var(--primary-color);
-			margin-bottom: 1rem;
-			filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-		}
-		
-		h3 {
+		.loading-content {
+			text-align: center;
 			color: var(--text-primary);
-			margin-bottom: 0.5rem;
+			position: relative;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	@keyframes bounce {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translate(-50%, -50%) translateY(0);
+		}
+		40% {
+			transform: translate(-50%, -50%) translateY(-80px);
+		}
+		60% {
+			transform: translate(-50%, -50%) translateY(-40px);
+		}
+	}
+
+	@keyframes shadow {
+		0%, 20%, 50%, 80%, 100% {
+			transform: translate(-50%, -50%) scaleX(1);
+			opacity: 0.3;
+		}
+		40% {
+			transform: translate(-50%, -50%) scaleX(0.3);
+			opacity: 0.1;
+		}
+		60% {
+			transform: translate(-50%, -50%) scaleX(0.6);
+			opacity: 0.2;
+		}
+	}
+
+
+	// ============================================================================
+	// GAME OVER MODAL
+	// ============================================================================
+	.game-over-section {
+		text-align: center;
+		width: 100%;
+		
+		h4 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
 			font-size: 1.5rem;
 		}
 		
-		.caption {
-			color: var(--text-secondary);
-			font-size: 0.9rem;
+		.answer {
+			color: var(--primary-color);
+			font-weight: 700;
+			letter-spacing: .05rem;
+			text-transform: uppercase;
 		}
-	}
-	
-	.game-in-progress {
-		text-align: center;
 		
-		.progress-text {
-			color: var(--text-secondary);
-			margin-bottom: 1rem;
-			font-size: 0.9rem;
-		}
-	}
-	
-	.game-available {
-		.usp-tiles {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: 1rem;
-			margin-bottom: 1.5rem;
-			
-			@media (max-width: 600px) {
-				grid-template-columns: repeat(1, 1fr);
-			}
-			
-			.tile {
-				background: var(--card-bg);
-				backdrop-filter: blur(5px);
-				border: 1px solid var(--card-border);
-				border-radius: var(--global-border-radius);
-				padding: 1.25rem;
-				text-align: center;
-				transition: all 0.3s ease;
-				box-shadow: var(--shadow-sm);
-				
-				&:hover {
-					border-color: var(--border-hover);
-					transform: translateY(-3px);
-					box-shadow: var(--shadow-md);
-				}
-				
-				h6 {
-					font-size: 0.8rem;
-					margin: 0.5rem 0 0 0;
-					color: var(--text-primary);
-				}
-			}
-		}
-	}
-	
-	.game-completed {
-		text-align: center;
-		
-		.countdown {
-			background: var(--card-bg);
-			backdrop-filter: blur(5px);
-			border: 1px solid var(--card-border);
-			border-radius: var(--global-border-radius);
-			padding: 1.5rem;
-			margin: 1rem 0;
-			box-shadow: var(--shadow-sm);
-			
-			.caption {
-				color: var(--text-secondary);
-				font-size: 0.9rem;
-				margin-bottom: 0.5rem;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
-			}
-			
-			h4 {
-				font-size: 2.5rem;
-				font-weight: 800;
-				color: var(--text-primary);
-				margin: 0.5rem 0;
-				background: var(--color-gradient);
-				-webkit-background-clip: text;
-				-webkit-text-fill-color: transparent;
-				background-clip: text;
-			}
-		}
-	}
-}
-
-// ============================================================================
-// INFO MODAL
-// ============================================================================
-.info-section {
-	p {
-		margin-bottom: 1rem;
-		line-height: 1.6;
-	}
-	
-	.caption {
-		color: var(--text-secondary);
-		font-size: 0.9rem;
-	}
-	
-	.examples {
-		margin: 1.5rem 0;
-		
-		.example {
-			display: flex;
-			gap: 0.25rem;
-			margin-bottom: 0.5rem;
+		.share {
 			justify-content: center;
-			
-			.letter {
-				width: 2rem;
-				height: 2rem;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				background: var(--bg-primary);
-				border: 1px solid var(--border);
-				border-radius: 4px;
-				font-weight: 600;
-				font-size: 0.9rem;
-				
-				&.correct {
-					background: var(--success-color);
-					border-color: var(--success-color);
-					color: white;
-				}
-				
-				&.present {
-					background: var(--warning-color);
-					border-color: var(--warning-color);
-					color: white;
-				}
-				
-				&.absent {
-					background: var(--error-color);
-					border-color: var(--error-color);
-					color: white;
-				}
-			}
+			margin-top: 1rem;
+			width: 50%;
 		}
 	}
-	
-	.info-footer {
-		margin-top: 2rem;
-		padding-top: 1rem;
-		border-top: 1px solid var(--border);
-	}
-}
 
-// ============================================================================
-// SETTINGS MODAL
-// ============================================================================
-.settings-section {
-	.setting-group {
-		margin-bottom: 2rem;
-		
-		label {
-			display: block;
-			font-weight: 600;
-			margin-bottom: 0.5rem;
-			color: var(--text-primary);
-		}
-		
+	// ============================================================================
+	// INFO MODAL
+	// ============================================================================
+	.info-section {
+		max-height: 60vh;
+
 		p {
-			color: var(--text-secondary);
 			margin-bottom: 1rem;
-			font-size: 0.9rem;
+			line-height: 1.6;
 		}
 		
-		.theme-grid {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: 1rem;
+		.examples {
+			margin: 1.5rem 0;
 			
-			.theme-option {
+			.example {
 				display: flex;
-				flex-direction: column;
-				align-items: center;
-				gap: 0.5rem;
-				padding: 1rem;
-				border: 2px solid var(--border);
-				border-radius: var(--global-border-radius);
-				background: var(--bg-secondary);
-				cursor: pointer;
-				transition: all 0.2s;
+				gap: 0.25rem;
+				margin-bottom: 0.5rem;
 				
-				&:hover {
-					border-color: var(--border-hover);
-				}
-				
-				&.active {
-					border-color: var(--primary-color);
-					background: var(--primary-color);
-					color: white;
-				}
-				
-				.theme-preview {
-					width: 100%;
-					height: 60px;
-					border-radius: 8px;
-					overflow: hidden;
-					
-					&.light {
-						background: #ffffff;
-						border: 1px solid #e5e7eb;
-						
-						.preview-header {
-							height: 20px;
-							background: #f3f4f6;
-						}
-						
-						.preview-content {
-							height: 40px;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							gap: 4px;
-							padding: 8px;
-							
-							.preview-tile {
-								width: 16px;
-								height: 16px;
-								border: 1px solid #d1d5db;
-								border-radius: 2px;
-								
-								&.correct {
-									background: #10b981;
-									border-color: #10b981;
-								}
-							}
-						}
-					}
-					
-					&.dark {
-						background: #1f2937;
-						border: 1px solid #374151;
-						
-						.preview-header {
-							height: 20px;
-							background: #111827;
-						}
-						
-						.preview-content {
-							height: 40px;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							gap: 4px;
-							padding: 8px;
-							
-							.preview-tile {
-								width: 16px;
-								height: 16px;
-								border: 1px solid #4b5563;
-								border-radius: 2px;
-								background: #374151;
-								
-								&.correct {
-									background: #10b981;
-									border-color: #10b981;
-								}
-							}
-						}
-					}
-				}
-				
-				span {
+				.letter {
+					width: 2rem;
+					height: 2rem;
+					border: 2px solid var(--border);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-weight: 700;
 					font-size: 0.9rem;
-					font-weight: 500;
+					
+					&.correct {
+						background: var(--color-success);
+						border-color: var(--color-success);
+						color: white;
+					}
+					
+					&.present {
+						background: var(--color-present);
+						border-color: var(--color-present);
+						color: white;
+					}
+					
+					&.absent {
+						background: var(--color-absent);
+						border-color: var(--color-absent);
+						color: white;
+					}
 				}
 			}
 		}
-	}
-}
 
-// ============================================================================
-// STATS MODAL
-// ============================================================================
-	.stats-section {
-		width: 100%;
-		overflow-x: hidden;
-	.stats-tabs {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 1.5rem;
-		background: var(--card-bg);
-		backdrop-filter: blur(5px);
-		border: 1px solid var(--card-border);
-		border-radius: var(--global-border-radius);
-		padding: 0.25rem;
-		box-shadow: var(--shadow-sm);
-		width: 100%;
-		max-width: 100%;
-		
-		.tab-btn {
-			display: flex;
-			align-items: center;
-			gap: 0.5rem;
-			padding: 0.5rem 0.5rem;
-			background: transparent;
-			border: none;
-			border-radius: calc(var(--global-border-radius) - 2px);
-			color: var(--text-secondary);
-			cursor: pointer;
-			transition: all 0.3s ease;
-			font-weight: 600;
-			font-size: 0.8rem;
-			flex: 1;
-			justify-content: center;
-			min-width: 0;
-			
-			&:hover {
-				color: var(--text-primary);
-				background: rgba(0, 0, 0, 0.05);
-			}
-			
-			&.active {
-				background: var(--color-gradient);
-				color: white;
-				box-shadow: var(--shadow-sm);
-				transform: translateY(-1px);
-			}
-			
-			.icon {
-				font-size: 0.8rem;
-				flex-shrink: 0;
-			}
+		.info-footer {
+			border-top: 1px solid var(--border);
+			padding-top: 1rem;
 		}
 	}
-	
-	.stats-content-container {
-		position: relative;
-		min-height: 280px;
-		overflow-x: hidden;
+
+	// ============================================================================
+	// SETTINGS MODAL
+	// ============================================================================
+	.settings-section {
 		width: 100%;
 
-		.stats-loading {
-			text-align: center;
-			padding: 2rem;
+		.setting-group {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: 1rem;
-		}
-		
-		.stats-content {
-			position: absolute;
-			top: 0;
-			left: 0;
-			right: 0;
-			opacity: 0;
-			visibility: hidden;
-			transform: translateX(20px);
-			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			align-items: flex-start;
+			margin-bottom: 2rem;
 			width: 100%;
-			overflow-x: hidden;
 			
-			&.active {
-				opacity: 1;
-				visibility: visible;
-				transform: translateX(0);
+			label {
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+				color: var(--text-primary);
+				font-size: 1.1rem;
 			}
 			
-			.stats-grid {
-				display: grid;
-				grid-template-columns: repeat(2, 1fr);
-				gap: 0.75rem;
-				margin-bottom: 1rem;
-				width: 100%;
-				max-width: 100%;
+			p {
+				margin: 0 0 1rem 0;
+				color: var(--text-secondary);
+				font-size: 0.9rem;
+			}
 
-				.stat-card {
-					background: var(--card-bg);
-					backdrop-filter: blur(5px);
-					border: 1px solid var(--card-border);
+			.theme-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+				gap: 1rem;
+				width: 100%;
+				
+				.theme-option {
+					background: var(--bg-secondary);
+					border: 2px solid var(--border);
 					border-radius: var(--global-border-radius);
-					padding: 1.25rem 0.5rem;
-					text-align: center;
+					padding: 1rem;
+					cursor: pointer;
 					transition: all 0.3s ease;
+					text-align: center;
 					position: relative;
 					overflow: hidden;
-					box-shadow: var(--shadow-sm);
-					min-width: 0;
+					
+					&:hover {
+						border-color: var(--primary-color);
+						transform: translateY(-2px);
+						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+					}
+					
+					&.active {
+						border-color: var(--primary-color);
+						background: var(--primary-color);
+						color: white;
+						font-weight: 600;
+						transform: translateY(-2px);
+						box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+					}
+					
+					.theme-preview {
+						width: 100%;
+						height: 60px;
+						border-radius: calc(var(--global-border-radius) - 2px);
+						overflow: hidden;
+						margin-bottom: 0.5rem;
+						
+						.preview-header {
+							height: 20px;
+							background: var(--bg-primary);
+							border-bottom: 1px solid var(--border);
+						}
+						
+						.preview-content {
+							height: 40px;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							gap: 0.25rem;
+							padding: 0.5rem;
+							background: var(--bg-secondary);
+							
+							.preview-tile {
+								width: 1.5rem;
+								height: 1.5rem;
+								border: 1px solid var(--border);
+								border-radius: 2px;
+								background: var(--bg-primary);
+								
+								&.correct {
+									background: var(--primary-color);
+									border-color: var(--primary-color);
+								}
+							}
+						}
+						
+						// Theme-specific preview colors
+						&.light {
+							.preview-header {
+								background: #f8fafc;
+							}
+							.preview-content {
+								background: #ffffff;
+								.preview-tile {
+									background: #f8fafc;
+									border-color: #e5e7eb;
+									&.correct {
+										background: #dc2626;
+										border-color: #dc2626;
+									}
+								}
+							}
+						}
+						
+						&.dark {
+							.preview-header {
+								background: #0f172a;
+							}
+							.preview-content {
+								background: #1e293b;
+								.preview-tile {
+									background: #0f172a;
+									border-color: #334155;
+									&.correct {
+										background: #ef4444;
+										border-color: #ef4444;
+									}
+								}
+							}
+						}
+						
+						&.greyscale {
+							.preview-header {
+								background: #ffffff;
+							}
+							.preview-content {
+								background: #f0f0f0;
+								.preview-tile {
+									background: #ffffff;
+									border-color: #000000;
+									&.correct {
+										background: #dc2626;
+										border-color: #dc2626;
+									}
+								}
+							}
+						}
+						
+						&.pastel {
+							.preview-header {
+								background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+							}
+							.preview-content {
+								background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+								.preview-tile {
+									background: #f0f9ff;
+									border-color: #bae6fd;
+									&.correct {
+										background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+										border-color: #0ea5e9;
+									}
+								}
+							}
+						}
+					}
+					
+					.theme-name {
+						font-size: 0.9rem;
+						font-weight: 500;
+						display: block;
+					}
+				}
+			}
+		}
+	}
+
+	// ============================================================================
+	// STATS MODAL
+	// ============================================================================
+	.stats-section {
+		width: 80%;
+
+		.stats-toggle {
+			margin-bottom: .5rem;
+			border-bottom: 1px solid var(--border);
+			padding-bottom: .5rem;
+			
+			.toggle-container {
+				display: flex;
+				background: var(--bg-secondary);
+				border: 1px solid var(--border);
+				border-radius: var(--global-border-radius);
+				padding: 0.25rem;
+				gap: 0.25rem;
+				
+				.toggle-btn {
+					flex: 1;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 0.5rem;
+					padding: 0.75rem 1rem;
+					background: transparent;
+					border: none;
+					border-radius: calc(var(--global-border-radius) - 2px);
+					color: var(--text-secondary);
+					cursor: pointer;
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+					font-weight: 500;
+					font-size: 0.9rem;
+					position: relative;
+					overflow: hidden;
 					
 					&::before {
 						content: '';
@@ -1163,403 +1075,161 @@ async function handleLogout() {
 						top: 0;
 						left: 0;
 						right: 0;
-						height: 2px;
-						background: var(--color-gradient);
+						bottom: 0;
+						background: var(--primary-color);
 						opacity: 0;
 						transition: opacity 0.3s ease;
+						z-index: 0;
+					}
+					
+					svg, span {
+						position: relative;
+						z-index: 1;
+						transition: all 0.3s ease;
 					}
 					
 					&:hover {
-						border-color: var(--border-hover);
-						transform: translateY(-3px);
-						box-shadow: var(--shadow-md);
+						color: var(--text-primary);
+						transform: translateY(-1px);
+						
+						&::before {
+							opacity: 0.1;
+						}
+					}
+					
+					&.active {
+						color: white;
 						
 						&::before {
 							opacity: 1;
 						}
-					}
-					
-					h3 {
-						font-size: 1.5rem;
-						font-weight: 800;
-						margin: 0 0 0.25rem 0;
-						color: var(--text-primary);
-						background: var(--color-gradient);
-						-webkit-background-clip: text;
-						-webkit-text-fill-color: transparent;
-						background-clip: text;
-						word-break: break-word;
-						overflow-wrap: break-word;
-					}
-					
-					.caption {
-						font-size: 0.8rem;
-						font-weight: 600;
-						color: var(--text-secondary);
-						text-transform: uppercase;
-						letter-spacing: 0.05em;
-						margin: 0;
-					}
-				}
-			}
-			
-			.win-rate {
-				background: var(--card-bg);
-				backdrop-filter: blur(5px);
-				border: 1px solid var(--card-border);
-				border-radius: var(--global-border-radius);
-				padding: 1rem;
-				box-shadow: var(--shadow-sm);
-				position: relative;
-				overflow: hidden;
-				width: 100%;
-				max-width: 100%;
-				
-				&::before {
-					content: '';
-					position: absolute;
-					top: 0;
-					left: 0;
-					right: 0;
-					height: 2px;
-					background: var(--color-gradient);
-				}
-				
-				h3 {
-					margin: 0 0 1rem 0;
-					color: var(--text-primary);
-					font-size: 1.1rem;
-					font-weight: 700;
-				}
-				
-				.progress-bar {
-					width: 100%;
-					height: 10px;
-					background: var(--bg-primary);
-					border-radius: 6px;
-					overflow: hidden;
-					margin-bottom: 0.75rem;
-					box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-					
-					.progress-fill {
-						height: 100%;
-						background: var(--color-gradient);
-						border-radius: 6px;
-						transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-						box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-					}
-				}
-				
-				p {
-					margin: 0;
-					color: var(--text-secondary);
-					font-size: 0.9rem;
-					font-weight: 600;
-					text-align: center;
-					text-transform: uppercase;
-					letter-spacing: 0.05em;
-				}
-			}
-			
-			.stats-storage {
-				margin-top: 1rem;
-				text-align: center;
-				width: 100%;
-				
-				p {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					gap: 0.5rem;
-					color: var(--text-secondary);
-					font-size: 0.75rem;
-					font-weight: 500;
-					padding: 0.5rem;
-					background: var(--card-bg);
-					backdrop-filter: blur(5px);
-					border: 1px solid var(--card-border);
-					border-radius: var(--global-border-radius);
-					box-shadow: var(--shadow-sm);
-					width: 100%;
-					max-width: 100%;
-					word-break: break-word;
-					
-					.icon {
-						color: var(--accent-color);
-						flex-shrink: 0;
+						
+						svg {
+							transform: scale(1.1);
+						}
 					}
 				}
 			}
 		}
-	}
-}
 
-// ============================================================================
-// CHALLENGE SECTION STYLES
-// ============================================================================
-.challenge-section {
-	.challenge-header {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin-bottom: 1rem;
-		
-		.challenge-icon-container {
+		.stats-content-container {
 			position: relative;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			
-			.challenge-icon {
-				color: var(--tertiary-color);
-				filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.3));
-				animation: challenge-pulse 2s ease-in-out infinite;
-			}
-			
-			.challenge-glow {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				width: 3rem;
-				height: 3rem;
-				background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
-				border-radius: 50%;
-				animation: challenge-glow 3s ease-in-out infinite;
-			}
-		}
-		
-		.challenge-title {
-			flex: 1;
-			
-			h3 {
-				margin: 0 0 0.25rem 0;
-				font-size: 1.25rem;
-			}
-			
-			.caption {
-				margin: 0;
-				font-size: 0.8rem;
-			}
-		}
-	}
-	
-	.challenge-grid {
-		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 0.5rem;
-		margin-bottom: 1rem;
-		
-		@media (max-width: 480px) {
-			grid-template-columns: repeat(2, 1fr);
-		}
-		
-		.challenge-tile {
-			background: var(--card-bg);
-			backdrop-filter: blur(5px);
-			border: 1px solid var(--card-border);
-			border-radius: var(--global-border-radius);
-			padding: 0.75rem 0.5rem;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 0.5rem;
-			transition: all 0.3s ease;
-			box-shadow: var(--shadow-sm);
-			position: relative;
-			overflow: hidden;
-			min-width: 0;
-			
-			&::before {
-				content: '';
+			min-height: 300px;
+
+			.stats-content {
 				position: absolute;
 				top: 0;
 				left: 0;
 				right: 0;
-				height: 2px;
-				background: var(--color-gradient);
 				opacity: 0;
-				transition: opacity 0.3s ease;
-			}
-			
-			&:hover {
-				transform: translateY(-2px);
-				box-shadow: var(--shadow-md);
-				border-color: var(--border-hover);
+				visibility: hidden;
+				transform: translateX(20px);
+				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 				
-				&::before {
+				&.active {
 					opacity: 1;
+					visibility: visible;
+					transform: translateX(0);
+				}
+				
+				.stats-grid {
+					display: grid;
+					grid-template-columns: repeat(2, 1fr);
+					gap: .5rem;
+					margin-bottom: .5rem;
+
+					.stat-card {
+						background: var(--bg-secondary);
+						border: 1px solid var(--border);
+						border-radius: var(--global-border-radius);
+						padding: 1rem;
+						text-align: center;
+						transition: all 0.2s;
+						position: relative;
+						overflow: hidden;
+						
+						&:hover {
+							border-color: var(--border-hover);
+							transform: translateY(-2px);
+							box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+							
+							&::before {
+								opacity: 1;
+							}
+						}
+						
+						h3 {
+							font-size: 2rem;
+							font-weight: 700;
+							margin: 0 0 0.5rem 0;
+							color: var(--text-primary);
+						}
+					}
+				}
+				
+				.win-rate {
+					background: var(--bg-secondary);
+					border: 1px solid var(--border);
+					border-radius: var(--global-border-radius);
+					padding: 1rem;
+					
+					h3 {
+						margin: 0 0 1rem 0;
+						color: var(--text-primary);
+						font-size: 1.2rem;
+						font-weight: 600;
+					}
+					
+					.progress-bar {
+						width: 100%;
+						height: 8px;
+						background: var(--bg-primary);
+						border-radius: 4px;
+						overflow: hidden;
+						margin-bottom: 0.5rem;
+						
+						.progress-fill {
+							height: 100%;
+							background: var(--color-gradient);
+							border-radius: 4px;
+							transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+						}
+					}
+					
+					p {
+						margin: 0;
+						color: var(--text-secondary);
+						font-size: 0.9rem;
+						font-weight: 500;
+						text-align: center;
+					}
 				}
 			}
-			
-			.icon {
-				color: var(--text-secondary);
-				transition: color 0.3s ease;
-			}
-			
-			span {
-				font-size: 0.7rem;
-				font-weight: 600;
-				color: var(--text-primary);
-				text-align: center;
-				text-transform: uppercase;
-				letter-spacing: 0.05em;
-				line-height: 1.2;
-			}
 		}
 	}
-	
-	.challenge-btn {
-		background: var(--color-gradient);
-		border: 2px solid transparent;
-		color: white;
-		font-weight: 700;
-		font-size: 0.9rem;
-		padding: 0.75rem 1rem;
-		transition: all 0.3s ease;
-		box-shadow: var(--shadow-md);
-		position: relative;
-		overflow: hidden;
+
+	// ============================================================================
+	// CHALLENGE GAME OVER MODAL
+	// ============================================================================
+	.challenge-game-over-section {
+		text-align: center;
 		
-		&::before {
-			content: '';
-			position: absolute;
-			top: 0;
-			left: -100%;
-			width: 100%;
-			height: 100%;
-			background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-			transition: left 0.5s ease;
+		h4 {
+			color: var(--text-primary);
+			margin-bottom: 1rem;
+			font-size: 1.5rem;
 		}
 		
-		&:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-lg);
-			
-			&::before {
-				left: 100%;
-			}
+		.answer {
+			color: var(--tertiary-color);
+			font-weight: 700;
 		}
 		
-		&:active {
-			transform: translateY(0);
+		.challenge-buttons {
+			display: flex;
+			gap: 1rem;
+			justify-content: center;
+			margin-top: 1.5rem;
 		}
 	}
-}
-
-@keyframes challenge-pulse {
-	0%, 100% {
-		transform: scale(1);
-	}
-	50% {
-		transform: scale(1.05);
-	}
-}
-
-@keyframes challenge-glow {
-	0%, 100% {
-		opacity: 0.3;
-		transform: translate(-50%, -50%) scale(1);
-	}
-	50% {
-		opacity: 0.6;
-		transform: translate(-50%, -50%) scale(1.1);
-	}
-}
-
-// ============================================================================
-// GUEST MESSAGES
-// ============================================================================
-.guest-stats-message {
-	text-align: center;
-	padding: 2rem;
-	background: var(--card-bg);
-	backdrop-filter: blur(10px);
-	border: 1px solid var(--card-border);
-	border-radius: var(--global-border-radius);
-	margin: 1rem 0;
-	box-shadow: var(--shadow-md);
-	position: relative;
-	overflow: hidden;
-	width: 100%;
-	max-width: 100%;
-	
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 3px;
-		background: var(--color-gradient);
-	}
-	
-	.icon {
-		color: var(--text-secondary);
-		margin-bottom: 0.75rem;
-		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-	}
-	
-	h3 {
-		color: var(--text-primary);
-		margin-bottom: 0.75rem;
-		font-size: 1.25rem;
-		font-weight: 700;
-	}
-	
-	p {
-		color: var(--text-secondary);
-		margin-bottom: 1.25rem;
-		line-height: 1.5;
-		font-size: 0.9rem;
-	}
-	
-	.button {
-		font-size: 0.875rem;
-		padding: 0.5rem 1rem;
-	}
-}
-
-.guest-challenge-message {
-	text-align: center;
-	padding: 2.5rem;
-	background: var(--card-bg);
-	backdrop-filter: blur(10px);
-	border: 1px solid var(--card-border);
-	border-radius: var(--global-border-radius);
-	margin: 1.5rem 0;
-	box-shadow: var(--shadow-md);
-	position: relative;
-	overflow: hidden;
-	
-	&::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 3px;
-		background: var(--color-gradient);
-	}
-	
-	.icon {
-		color: var(--text-secondary);
-		margin-bottom: 1rem;
-		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-	}
-	
-	h4 {
-		color: var(--text-primary);
-		margin-bottom: 1rem;
-		font-size: 1.5rem;
-		font-weight: 700;
-	}
-	
-	p {
-		color: var(--text-secondary);
-		margin-bottom: 1.5rem;
-		line-height: 1.6;
-		font-size: 1rem;
-	}
-}
 </style> 

@@ -1,8 +1,7 @@
+
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useChallengeFootballers } from '../composables/useChallengeFootballers'
-import { useAuthStore } from './auth'
-import { useFirestore } from '../composables/useFirestore'
 
 const { challengeFootballers, getRandomChallengeFootballer, isValidChallengeFootballer } = useChallengeFootballers()
 
@@ -22,7 +21,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 	const timerInterval = ref<any>(null)
 	const showGameOverModal = ref(false)
 	const isPaused = ref(false)
-	const isLoading = ref(false)
 
 	// Challenge stats (separate from regular stats)
 	const challengeStats = ref({
@@ -105,12 +103,38 @@ export const useChallengeStore = defineStore('challenge', () => {
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(true)
+			// Track challenge win
+			if (process.client) {
+				try {
+					const timeUsed = 45 - timeRemaining.value
+					;(window as any).gtag('event', 'challenge_win', {
+						event_category: 'challenge',
+						event_label: 'challenge_mode',
+						value: timeUsed,
+					})
+				} catch (error) {
+					// Silently fail if analytics is not available
+				}
+			}
 		} else if (guesses.value.length >= maxGuesses) {
 			isWin.value = false
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(false)
+			// Track challenge loss
+			if (process.client) {
+				try {
+					const timeUsed = 45 - timeRemaining.value
+					;(window as any).gtag('event', 'challenge_loss', {
+						event_category: 'challenge',
+						event_label: 'challenge_mode',
+						value: timeUsed,
+					})
+				} catch (error) {
+					// Silently fail if analytics is not available
+				}
+			}
 		}
 		
 		currentGuess.value = ''
@@ -118,26 +142,29 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function onKeyboardKey(key: string) {
-		if (gameOver.value || timeRemaining.value <= 0) return
+		if (gameOver.value || timeRemaining.value <= 0 || isPaused.value) return
 		
 		if (key === 'ENTER') {
 			submitGuess(currentGuess.value)
 		} else if (key === 'BACKSPACE') {
 			currentGuess.value = currentGuess.value.slice(0, -1)
-		} else if (currentGuess.value.length < 5) {
+		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < 5) {
 			currentGuess.value += key
 		}
-		
-		saveChallengeState()
 	}
 
 	function endChallenge() {
+		// Track challenge abandonment if not completed
+		if (isActive.value && !gameOver.value && timeRemaining.value > 0) {
+			const timeUsed = 45 - timeRemaining.value
+			// We'll track this in the main component
+		}
+		
 		isActive.value = false
 		gameOver.value = false
 		isWin.value = false
 		guesses.value = []
 		currentGuess.value = ''
-		timeRemaining.value = 45
 		showGameOverModal.value = false
 		isPaused.value = false
 		stopTimer()
@@ -149,16 +176,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function togglePause() {
-		if (!isActive.value || gameOver.value) return
-		
 		isPaused.value = !isPaused.value
-		
 		if (isPaused.value) {
 			stopTimer()
 		} else {
 			startTimer()
 		}
-		
 		saveChallengeState()
 	}
 
@@ -166,22 +189,34 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// TIMER FUNCTIONS
 	// ============================================================================
 	function startTimer() {
-		if (timerInterval.value) {
-			clearInterval(timerInterval.value)
-		}
+		stopTimer() // Clear any existing timer
+		if (isPaused.value) return // Don't start timer if paused
 		
 		timerInterval.value = setInterval(() => {
-			if (timeRemaining.value > 0 && !isPaused.value) {
-				timeRemaining.value--
-				saveChallengeState()
-			} else if (timeRemaining.value <= 0) {
+			if (isPaused.value) return // Don't countdown if paused
+			
+			timeRemaining.value--
+			if (timeRemaining.value <= 0) {
+				// Time's up!
+				isWin.value = false
+				gameOver.value = true
+				showGameOverModal.value = true
 				stopTimer()
-				if (!gameOver.value) {
-					isWin.value = false
-					gameOver.value = true
-					showGameOverModal.value = true
-					updateChallengeStats(false)
+				updateChallengeStats(false)
+				// Track challenge loss due to time
+				if (process.client) {
+					try {
+						const timeUsed = 45 - timeRemaining.value
+						;(window as any).gtag('event', 'challenge_loss', {
+							event_category: 'challenge',
+							event_label: 'challenge_mode',
+							value: timeUsed,
+						})
+					} catch (error) {
+						// Silently fail if analytics is not available
+					}
 				}
+				saveChallengeState()
 			}
 		}, 1000)
 	}
@@ -196,7 +231,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	// STATS FUNCTIONS
 	// ============================================================================
-	async function updateChallengeStats(win: boolean) {
+	function updateChallengeStats(win: boolean) {
 		challengeStats.value.gamesPlayed++
 		
 		if (win) {
@@ -219,10 +254,10 @@ export const useChallengeStore = defineStore('challenge', () => {
 		// Update total time
 		challengeStats.value.totalTime += (45 - timeRemaining.value)
 		
-		await saveChallengeStats()
+		saveChallengeStats()
 	}
 
-	async function resetChallengeStats() {
+	function resetChallengeStats() {
 		challengeStats.value = {
 			gamesPlayed: 0,
 			wins: 0,
@@ -232,89 +267,14 @@ export const useChallengeStore = defineStore('challenge', () => {
 			bestTime: 0,
 			totalTime: 0,
 		}
-		await saveChallengeStats()
+		saveChallengeStats()
 	}
 
 	// ============================================================================
-	// SAVE/LOAD FUNCTIONS
-	// ============================================================================
-	async function saveChallengeStats() {
-		const authStore = useAuthStore()
-		
-		if (authStore.isAuthenticated && authStore.user) {
-			// Save to Firebase for authenticated users
-			try {
-				const { saveChallengeStats: saveToFirebase } = useFirestore()
-				await saveToFirebase(authStore.user.uid, challengeStats.value)
-			} catch (error) {
-				// Fallback to localStorage if Firebase fails
-				saveChallengeStatsToLocal()
-			}
-		} else {
-			// Save to localStorage for guests
-			saveChallengeStatsToLocal()
-		}
-	}
-
-	async function loadChallengeStats() {
-		const authStore = useAuthStore()
-		
-		if (authStore.isAuthenticated && authStore.user) {
-			// Load from Firebase for authenticated users
-			try {
-				isLoading.value = true
-				const { getChallengeStats } = useFirestore()
-				const firebaseStats = await getChallengeStats(authStore.user.uid)
-				
-				if (firebaseStats) {
-					challengeStats.value = {
-						gamesPlayed: firebaseStats.gamesPlayed || 0,
-						wins: firebaseStats.wins || 0,
-						losses: firebaseStats.losses || 0,
-						currentStreak: firebaseStats.currentStreak || 0,
-						maxStreak: firebaseStats.maxStreak || 0,
-						bestTime: firebaseStats.bestTime || 0,
-						totalTime: firebaseStats.totalTime || 0,
-					}
-				} else {
-					// Initialize with default values for new users
-					challengeStats.value = {
-						gamesPlayed: 0,
-						wins: 0,
-						losses: 0,
-						currentStreak: 0,
-						maxStreak: 0,
-						bestTime: 0,
-						totalTime: 0,
-					}
-				}
-			} catch (error) {
-				// For authenticated users, don't fallback to localStorage
-				// Initialize with default values instead
-				challengeStats.value = {
-					gamesPlayed: 0,
-					wins: 0,
-					losses: 0,
-					currentStreak: 0,
-					maxStreak: 0,
-					bestTime: 0,
-					totalTime: 0,
-				}
-			} finally {
-				isLoading.value = false
-			}
-		} else {
-			// Load from localStorage for guests only
-			loadChallengeStatsFromLocal()
-		}
-	}
-
-	// ============================================================================
-	// LOCAL STORAGE FUNCTIONS (for guests and fallback)
+	// LOCAL STORAGE FUNCTIONS
 	// ============================================================================
 	function saveChallengeState() {
 		const state = {
-			date: new Date().toDateString(),
 			isUnlocked: isUnlocked.value,
 			isActive: isActive.value,
 			currentAnswer: currentAnswer.value,
@@ -332,84 +292,36 @@ export const useChallengeStore = defineStore('challenge', () => {
 		const saved = localStorage.getItem('footballdle-challenge')
 		if (saved) {
 			const state = JSON.parse(saved)
+			isUnlocked.value = state.isUnlocked || false
+			isActive.value = state.isActive || false
+			currentAnswer.value = state.currentAnswer || ''
+			guesses.value = state.guesses || []
+			currentGuess.value = state.currentGuess || ''
+			gameOver.value = state.gameOver || false
+			isWin.value = state.isWin || false
+			timeRemaining.value = state.timeRemaining || 45
+			isPaused.value = state.isPaused || false
 			
-			// Check if the saved state is from today
-			const today = new Date().toDateString()
-			const savedDate = state.date || ''
-			
-			if (savedDate === today) {
-				// Load today's state
-				isUnlocked.value = state.isUnlocked || false
-				isActive.value = state.isActive || false
-				currentAnswer.value = state.currentAnswer || ''
-				guesses.value = state.guesses || []
-				currentGuess.value = state.currentGuess || ''
-				gameOver.value = state.gameOver || false
-				isWin.value = state.isWin || false
-				timeRemaining.value = state.timeRemaining || 45
-				isPaused.value = state.isPaused || false
-				
-				// If challenge was active and not paused, restart timer
-				if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
-					startTimer()
-				}
-			} else {
-				// Reset for new day
-				resetDaily()
+			// If challenge was active and not paused, restart timer
+			if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
+				startTimer()
 			}
 		}
 	}
 
-	function saveChallengeStatsToLocal() {
+	function saveChallengeStats() {
 		localStorage.setItem('footballdle-challenge-stats', JSON.stringify(challengeStats.value))
-
 	}
 
-	function loadChallengeStatsFromLocal() {
+	function loadChallengeStats() {
 		const saved = localStorage.getItem('footballdle-challenge-stats')
 		if (saved) {
 			challengeStats.value = JSON.parse(saved)
 		}
 	}
 
-	// ============================================================================
-	// MIGRATION FUNCTIONS
-	// ============================================================================
-	async function migrateLocalChallengeStatsToFirebase() {
-		const authStore = useAuthStore()
-		
-		if (!authStore.isAuthenticated || !authStore.user) {
-			return
-		}
-
-		try {
-			// Check if user already has Firebase challenge stats
-			const { getChallengeStats, saveChallengeStats: saveToFirebase } = useFirestore()
-			const firebaseStats = await getChallengeStats(authStore.user.uid)
-			
-			if (firebaseStats) {
-				return
-			}
-
-			// Load local challenge stats
-			const savedStats = localStorage.getItem('footballdle-challenge-stats')
-			if (savedStats) {
-				const localStats = JSON.parse(savedStats)
-				
-				// Save to Firebase
-				await saveToFirebase(authStore.user.uid, localStats)
-				
-				// Update current stats
-				challengeStats.value = localStats
-			}
-		} catch (error) {
-			// Silent fail
-		}
-	}
-
 	function resetDaily() {
 		// Reset challenge state daily (but keep stats)
-		isUnlocked.value = false
 		isActive.value = false
 		gameOver.value = false
 		isWin.value = false
@@ -417,7 +329,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 		currentGuess.value = ''
 		timeRemaining.value = 45
 		isPaused.value = false
-		showGameOverModal.value = false
 		stopTimer()
 		saveChallengeState()
 	}
@@ -435,7 +346,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 		timeRemaining,
 		showGameOverModal,
 		isPaused,
-		isLoading,
 		challengeStats,
 		
 		// Computed
@@ -459,7 +369,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 		loadChallengeState,
 		saveChallengeStats,
 		loadChallengeStats,
-		migrateLocalChallengeStatsToFirebase,
 		resetDaily,
 	}
 }) 
