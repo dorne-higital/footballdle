@@ -75,8 +75,8 @@
 			</div>
 
 			<div v-else class="already-played-section">
-				<h3 class="heading">Already played today!</h3>
-				<p class="caption">Looks like you have played today, come back tomorrow to play again</p>
+				<h3 class="heading">Daily game played!</h3>
+				<p class="caption">Looks like you have played today, come back tomorrow to play it again</p>
 
 				<div class="countdown">
 					<h4>{{ countdown }}</h4>
