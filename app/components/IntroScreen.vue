@@ -58,7 +58,9 @@
 					</div>
 				</div>
 
-				<h5 class="heading">Ready to play?</h5>
+				<h6 class="heading">
+					{{ hasIncompleteGame ? 'Looks like you have a game in progress' : 'Ready to play?' }}
+				</h6>
 
 				<button @click="$emit('start-game')" class="button primary play-button">
 					{{ hasIncompleteGame ? 'Resume Game' : 'Play Now' }}
@@ -301,7 +303,7 @@ const isLoading = ref(false) // Start with no loading
 
 				.play-button {
 					font-size: 1.1rem;
-					padding: 1rem 3rem;
+					padding: 1rem 2rem;
 					border-radius: var(--global-border-radius);
 					justify-content: center;
 					transition: all 0.3s ease;
@@ -344,7 +346,7 @@ const isLoading = ref(false) // Start with no loading
 
 				.play-button {
 					font-size: 1.1rem;
-					padding: 1rem 3rem;
+					padding: 1rem 2rem;
 					border-radius: var(--global-border-radius);
 					justify-content: center;
 					transition: all 0.3s ease;

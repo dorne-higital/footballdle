@@ -158,7 +158,7 @@
 		.row {
 			display: flex;
 			justify-content: center;
-			gap: 0.5rem;
+			gap: 0.3rem;
 
 			button {
 				flex: 1 1 0;
