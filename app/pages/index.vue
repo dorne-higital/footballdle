@@ -387,6 +387,17 @@
 	import { useHead } from 'nuxt/app'
 
 	useHead({
+		script: [
+			{
+			type: 'application/ld+json',
+			children: JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "WebSite",
+					"name": "Footballdle",
+					"url": "https://footballdle.co.uk"
+				})
+			}
+		],
 		title: 'Footballdle | Guess the Premier League footballer',
 		meta: [
 			{
