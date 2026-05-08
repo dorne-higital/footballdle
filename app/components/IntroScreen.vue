@@ -263,14 +263,10 @@
 		}
 
 		.intro-content {
-			background: var(--bg-secondary);
-			border: 1px solid var(--border);
 			border-radius: var(--global-border-radius);
-			box-shadow: 0 8px 32px rgb(0 0 0 / 10%);
 			display: flex;
 			flex-direction: column;
 			max-width: 500px;
-			padding: 1rem;
 			place-content: center flex-start;
 			text-align: center;
 			width: 100%;
