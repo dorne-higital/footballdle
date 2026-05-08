@@ -19,7 +19,7 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="coffee-link"
-				@click="$emit('buy-coffee', 'header')"
+				@click.prevent="$emit('buy-coffee', 'header')"
 				aria-label="Buy me a coffee"
 			>
 				<Icon

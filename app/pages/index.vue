@@ -182,7 +182,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					class="coffee-nudge"
-					@click="handleBuyMeCoffee('game_over_modal')"
+					@click.prevent="handleBuyMeCoffee('game_over_modal')"
 				>
 					<Icon
 						name="uil:coffee"
@@ -345,7 +345,7 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							class="coffee-button"
-							@click="handleBuyMeCoffee('settings_modal')"
+							@click.prevent="handleBuyMeCoffee('settings_modal')"
 						>
 							<Icon
 								name="uil:coffee"
@@ -610,7 +610,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						class="coffee-nudge"
-						@click="handleBuyMeCoffee('challenge_over_modal')"
+						@click.prevent="handleBuyMeCoffee('challenge_over_modal')"
 					>
 						<Icon
 							name="uil:coffee"
@@ -762,6 +762,10 @@
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
+		if (import.meta.client) {
+			const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
+			btn?.click()
+		}
 	}
 
 	// ============================================================================
