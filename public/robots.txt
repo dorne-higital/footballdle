@@ -1,2 +1,4 @@
 User-Agent: *
 Disallow:
+
+Sitemap: https://footballdle.co.uk/sitemap.xml

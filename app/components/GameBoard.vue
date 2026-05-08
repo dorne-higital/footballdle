@@ -1,9 +1,23 @@
 <template>
-	<section :class="componentName">
+	<section
+		:class="componentName"
+		class="game-board"
+	>
+		<div
+			class="toast"
+			:class="{ visible: errorMessage }"
+		>
+			{{ errorMessage }}
+		</div>
+
 		<div
 			v-for="i in maxGuesses"
 			:key="i"
-			class="guess-row"
+			:class="[
+				'guess-row',
+				{ 'active-row': !gameOver && i - 1 === guesses.length },
+				{ shake: shaking && i - 1 === guesses.length },
+			]"
 		>
 			<span
 				v-for="j in 6"
@@ -18,6 +32,8 @@
 </template>
 
 <script setup lang="ts">
+	import { ref, watch } from 'vue'
+
 	const props = withDefaults(
 		defineProps<{
 			componentName?: string
@@ -25,9 +41,27 @@
 			answer: string
 			maxGuesses: number
 			currentGuess?: string
+			gameOver?: boolean
+			errorMessage?: string
 		}>(),
 		{
 			componentName: 'game-board',
+			gameOver: false,
+			errorMessage: '',
+		},
+	)
+
+	const shaking = ref(false)
+
+	watch(
+		() => props.errorMessage,
+		(msg) => {
+			if (msg) {
+				shaking.value = true
+				setTimeout(() => {
+					shaking.value = false
+				}, 500)
+			}
 		},
 	)
 
@@ -36,13 +70,10 @@
 		if (!guess) return ''
 		const char = guess[charIdx]
 		if (!char) return ''
-		// Only color submitted guesses
 		if (guessIdx >= props.guesses.length) return ''
 
 		const answerUpper = props.answer.toUpperCase()
 		const guessUpper = guess.toUpperCase()
-
-		// Process the entire word to get the correct feedback for each position
 		const result = processWordFeedback(guessUpper, answerUpper)
 		return result[charIdx]
 	}
@@ -51,27 +82,21 @@
 		const result = new Array(guess.length).fill('absent')
 		const answerArray = answer.split('')
 
-		// Step 1: Mark all correct positions first
 		for (let i = 0; i < guess.length; i++) {
 			if (guess[i] === answerArray[i]) {
 				result[i] = 'correct'
-				answerArray[i] = 'USED' // Mark as used
+				answerArray[i] = 'USED'
 			}
 		}
 
-		// Step 2: Mark present positions (only for letters not already used)
 		for (let i = 0; i < guess.length; i++) {
 			if (result[i] !== 'correct') {
-				// Skip already correct positions
 				const letter = guess[i]
 				if (letter) {
-					// TypeScript safety check
-					// Check if this letter exists in unused positions of the answer
 					const index = answerArray.indexOf(letter)
 					if (index !== -1) {
 						result[i] = 'present'
-						answerArray[index] = 'USED' // Mark this instance as used
-					} else {
+						answerArray[index] = 'USED'
 					}
 				}
 			}
@@ -87,29 +112,53 @@
 	}
 
 	function shouldAnimate(guessIdx: number, charIdx: number) {
-		// Only animate letters in completed guesses (not current guess)
 		return guessIdx < props.guesses.length && props.guesses[guessIdx]?.[charIdx]
 	}
 
 	function getAnimationDelay(guessIdx: number, charIdx: number) {
 		if (!shouldAnimate(guessIdx, charIdx)) return {}
-
-		// Stagger animation: each letter animates 0.1s after the previous one
-		const delay = charIdx * 0.1
-		return {
-			animationDelay: `${delay}s`,
-		}
+		return { animationDelay: `${charIdx * 0.1}s` }
 	}
 </script>
 
 <style scoped lang="scss">
 	.game-board {
 		padding: 1rem 0;
+		position: relative;
+
+		.toast {
+			background: var(--text-primary);
+			border-radius: var(--global-border-radius);
+			color: var(--bg-secondary);
+			font-size: 0.85rem;
+			font-weight: 600;
+			left: 50%;
+			opacity: 0;
+			padding: 0.5rem 1.1rem;
+			pointer-events: none;
+			position: absolute;
+			top: 0;
+			transform: translateX(-50%) translateY(-4px);
+			transition:
+				opacity 0.15s,
+				transform 0.15s;
+			white-space: nowrap;
+			z-index: 10;
+
+			&.visible {
+				opacity: 1;
+				transform: translateX(-50%) translateY(0);
+			}
+		}
 
 		.guess-row {
 			display: flex;
 			justify-content: center;
 			margin-bottom: 0.5rem;
+
+			&.shake {
+				animation: shake 0.5s ease-in-out;
+			}
 
 			.letter {
 				align-items: center;
@@ -129,27 +178,52 @@
 				width: 3rem;
 
 				&.animate {
-					animation: flipIn 0.6s ease-in-out forwards;
+					animation: flip-in 0.6s ease-in-out forwards;
 				}
 
-				// Feedback classes - only apply after animation starts
 				&.correct {
-					animation: correctReveal 0.6s ease-in-out forwards;
+					animation: correct-reveal 0.6s ease-in-out forwards;
 				}
 
 				&.present {
-					animation: presentReveal 0.6s ease-in-out forwards;
+					animation: present-reveal 0.6s ease-in-out forwards;
 				}
 
 				&.absent {
-					animation: absentReveal 0.6s ease-in-out forwards;
+					animation: absent-reveal 0.6s ease-in-out forwards;
 				}
+			}
+
+			&.active-row .letter:not(.correct, .present, .absent) {
+				border-color: var(--text-secondary);
 			}
 		}
 	}
 
-	// Flip animation for letter reveal
-	@keyframes flipIn {
+	@keyframes shake {
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+
+		20% {
+			transform: translateX(-6px);
+		}
+
+		40% {
+			transform: translateX(6px);
+		}
+
+		60% {
+			transform: translateX(-4px);
+		}
+
+		80% {
+			transform: translateX(4px);
+		}
+	}
+
+	@keyframes flip-in {
 		0% {
 			background: var(--bg-secondary);
 			border-color: var(--border);
@@ -172,8 +246,7 @@
 		}
 	}
 
-	// Correct letter animation (green)
-	@keyframes correctReveal {
+	@keyframes correct-reveal {
 		0% {
 			background: var(--bg-secondary);
 			border-color: var(--border);
@@ -196,8 +269,7 @@
 		}
 	}
 
-	// Present letter animation (yellow)
-	@keyframes presentReveal {
+	@keyframes present-reveal {
 		0% {
 			background: var(--bg-secondary);
 			border-color: var(--border);
@@ -220,8 +292,7 @@
 		}
 	}
 
-	// Absent letter animation (grey)
-	@keyframes absentReveal {
+	@keyframes absent-reveal {
 		0% {
 			background: var(--bg-secondary);
 			border-color: var(--border);

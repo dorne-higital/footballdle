@@ -36,6 +36,14 @@ export const useGameStore = defineStore('game', () => {
 	const isWin = ref(false)
 	const showGameOverModal = ref(false)
 	const showIntro = ref(true)
+	const errorMessage = ref('')
+	let errorTimer: ReturnType<typeof setTimeout> | null = null
+
+	function setError(msg: string) {
+		errorMessage.value = msg
+		if (errorTimer) clearTimeout(errorTimer)
+		errorTimer = setTimeout(() => { errorMessage.value = '' }, 1800)
+	}
 
 	// Countdown state
 	const countdown = ref('')
@@ -66,17 +74,15 @@ export const useGameStore = defineStore('game', () => {
 		if (gameOver.value) return // Prevent guess if game is over
 		guess = guess.trim().toUpperCase()
 		if (guess.length !== 6) {
-			alert('Guess must be 6 letters!')
+			setError('Must be 6 letters')
 			return
 		}
-		// Use optimized validation function
 		if (!isValidFootballer(guess)) {
-			alert('Not a valid footballer surname!')
+			setError('Not a valid footballer')
 			return
 		}
-		// Case-insensitive duplicate guess check
 		if (guesses.value.map(g => g.toUpperCase()).includes(guess)) {
-			alert('Already guessed!')
+			setError('Already guessed!')
 			return
 		}
 		guesses.value.push(guess)
@@ -199,6 +205,7 @@ export const useGameStore = defineStore('game', () => {
 		countdown,
 		answer,
 		todayStr,
+		errorMessage,
 		
 		// Computed
 		canPlay,

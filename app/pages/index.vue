@@ -45,6 +45,8 @@
 				:answer="gameStore.answer"
 				:maxGuesses="gameStore.maxGuesses"
 				:currentGuess="gameStore.currentGuess"
+				:game-over="gameStore.gameOver"
+				:error-message="gameStore.errorMessage"
 			/>
 
 			<Keyboard
@@ -462,26 +464,18 @@
 	import { useHead } from 'nuxt/app'
 
 	useHead({
-		script: [
-			{
-				type: 'application/ld+json',
-				children: JSON.stringify({
-					'@context': 'https://schema.org',
-					'@type': 'WebSite',
-					name: 'Footballdle',
-					url: 'https://footballdle.co.uk',
-				}),
-			},
+		title: 'Footballdle | Daily Premier League Football Wordle',
+		link: [
+			{ rel: 'canonical', href: 'https://footballdle.co.uk' },
 		],
-		title: 'Footballdle | Guess the Premier League footballer',
 		meta: [
 			{
 				name: 'description',
-				content: 'Guess the 6-letter Premier League footballer in 6 tries.',
+				content: 'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
 			},
 			{
 				name: 'keywords',
-				content: 'Premier League, Wordle, Football Game, Soccer Puzzle, Daily Game',
+				content: 'football wordle, premier league wordle, footballdle, guess the footballer, daily football game, footballer guessing game, EPL word game, premier league quiz, football puzzle, soccer wordle, premier league game',
 			},
 			{
 				name: 'author',
@@ -491,13 +485,18 @@
 				name: 'robots',
 				content: 'index, follow',
 			},
+			// Open Graph
 			{
-				name: 'og:title',
-				content: 'Footballdle | Guess the Premier League footballer',
+				property: 'og:type',
+				content: 'website',
 			},
 			{
-				name: 'og:description',
-				content: 'Guess the 6-letter Premier League footballer in 6 tries.',
+				property: 'og:title',
+				content: 'Footballdle | Daily Premier League Football Wordle',
+			},
+			{
+				property: 'og:description',
+				content: 'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new challenge every day.',
 			},
 			{
 				property: 'og:image',
@@ -506,6 +505,50 @@
 			{
 				property: 'og:url',
 				content: 'https://footballdle.co.uk',
+			},
+			{
+				property: 'og:site_name',
+				content: 'Footballdle',
+			},
+			// Twitter / X Card
+			{
+				name: 'twitter:card',
+				content: 'summary_large_image',
+			},
+			{
+				name: 'twitter:title',
+				content: 'Footballdle | Daily Premier League Football Wordle',
+			},
+			{
+				name: 'twitter:description',
+				content: 'Guess the hidden Premier League footballer in 6 tries. Free daily football word game.',
+			},
+			{
+				name: 'twitter:image',
+				content: 'https://footballdle.co.uk/og-image.png',
+			},
+		],
+		script: [
+			{
+				type: 'application/ld+json',
+				children: JSON.stringify({
+					'@context': 'https://schema.org',
+					'@type': 'WebApplication',
+					name: 'Footballdle',
+					url: 'https://footballdle.co.uk',
+					description: 'Daily Premier League football wordle. Guess the 6-letter footballer surname in 6 tries.',
+					applicationCategory: 'Game',
+					genre: 'Puzzle',
+					gamePlatform: 'Web Browser',
+					operatingSystem: 'Any',
+					inLanguage: 'en-GB',
+					isAccessibleForFree: true,
+					offers: {
+						'@type': 'Offer',
+						price: '0',
+						priceCurrency: 'GBP',
+					},
+				}),
 			},
 		],
 	})
