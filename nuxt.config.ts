@@ -3,13 +3,13 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
-	
+
 	// Build optimizations
 	nitro: {
 		compressPublicAssets: true,
 		minify: true,
 	},
-	
+
 	vite: {
 		build: {
 			rollupOptions: {
@@ -24,14 +24,14 @@ export default defineNuxtConfig({
 			include: ['vue', 'pinia'],
 		},
 	},
-	
+
 	// Google Analytics configuration
 	runtimeConfig: {
 		public: {
 			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
 		},
 	},
-	
+
 	// Optional: Add meta tags for Google Analytics
 	app: {
 		head: {
@@ -56,7 +56,6 @@ export default defineNuxtConfig({
 					'data-cfasync': 'false',
 					'data-id': 'dhorne92E',
 					'data-description': 'Support me on Buy me a coffee!',
-					'data-message': 'Thank you for your support!',
 					'data-color': '#FF5F5F',
 					'data-position': 'Right',
 					'data-x_margin': '18',
