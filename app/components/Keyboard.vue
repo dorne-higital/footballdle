@@ -191,8 +191,8 @@
 				cursor: pointer;
 				display: flex;
 				flex: 1 1 0;
-				font-size: 1.5rem;
-				height: 58px;
+				font-size: clamp(1.1rem, 2.5vh, 1.5rem);
+				height: clamp(40px, 7vh, 58px);
 				justify-content: center;
 				transition:
 					background 0.1s,

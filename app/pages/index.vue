@@ -984,8 +984,9 @@
 		align-items: stretch;
 		background: var(--bg-gradient);
 		display: flex;
+		height: 100dvh;
 		justify-content: center;
-		min-height: 100dvh;
+		overflow: hidden;
 		padding: 1rem;
 		position: relative;
 
@@ -995,9 +996,38 @@
 			display: flex;
 			flex-direction: column;
 			max-width: 500px;
-			place-content: center flex-start;
+			overflow: hidden;
+			padding: 0.5rem 0.5rem 0;
 			text-align: center;
 			width: 100%;
+
+			.header-nav {
+				flex-shrink: 0;
+				padding-bottom: 0.25rem;
+			}
+
+			.game-board {
+				flex: 1;
+				min-height: 0;
+				overflow: hidden;
+			}
+
+			.hints-container {
+				flex-shrink: 0;
+			}
+
+			.keyboard {
+				flex-shrink: 0;
+				padding-bottom: 0.5rem;
+			}
+
+			.challenge-game {
+				display: flex;
+				flex: 1;
+				flex-direction: column;
+				min-height: 0;
+				overflow: hidden;
+			}
 		}
 	}
 
@@ -1067,6 +1097,7 @@
 	.hints-container {
 		align-items: center;
 		display: flex;
+		flex-shrink: 0;
 		flex-wrap: wrap;
 		gap: 0.4rem;
 		justify-content: center;

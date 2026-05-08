@@ -67,7 +67,7 @@
 		align-items: center;
 		display: flex;
 		justify-content: space-between;
-		padding: 0.5rem 1rem;
+		padding: 0;
 		width: 100%;
 
 		.left-section {

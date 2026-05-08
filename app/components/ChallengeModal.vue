@@ -210,6 +210,16 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 	}
 
 	.challenge-game {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		overflow: hidden;
+
+		.keyboard {
+			flex-shrink: 0;
+			padding-bottom: 0.5rem;
+		}
+
 		.challenge-nav {
 			align-items: center;
 			display: flex;
@@ -238,6 +248,9 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		}
 
 		.game-board {
+			flex: 1;
+			min-height: 0;
+			overflow: hidden;
 			padding: 1rem 0;
 
 			.guess-row {

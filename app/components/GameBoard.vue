@@ -120,7 +120,7 @@
 
 <style scoped lang="scss">
 	.game-board {
-		padding: 0.5rem 0;
+		padding: clamp(0.25rem, 0.5vh, 0.5rem) 0;
 		position: relative;
 
 		.toast {
@@ -151,7 +151,7 @@
 		.guess-row {
 			display: flex;
 			justify-content: center;
-			margin-bottom: 0.5rem;
+			margin-bottom: clamp(0.2rem, 0.6vh, 0.5rem);
 
 			&.shake {
 				animation: shake 0.5s ease-in-out;
@@ -163,16 +163,16 @@
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
 				display: flex;
-				height: 2.8rem;
+				height: clamp(2.2rem, 5.5vh, 2.8rem);
 				justify-content: center;
-				line-height: 2.8rem;
+				line-height: clamp(2.2rem, 5.5vh, 2.8rem);
 				margin: 0 0.1rem;
 				perspective: 1000px;
 				transform-style: preserve-3d;
 				transition:
 					background 0.2s,
 					color 0.2s;
-				width: 3rem;
+				width: clamp(2.4rem, 7vw, 3rem);
 
 				&.animate {
 					animation: flip-in 0.6s ease-in-out forwards;
