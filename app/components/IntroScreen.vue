@@ -540,13 +540,16 @@
 						}
 
 						.tile {
-							backdrop-filter: blur(10px);
 							background: rgb(255 255 255 / 10%);
 							border: 1px solid rgb(255 255 255 / 20%);
 							border-radius: var(--global-border-radius);
 							color: white;
 							padding: 1rem;
 							text-align: center;
+
+							@media (width > 600px) {
+								backdrop-filter: blur(10px);
+							}
 
 							@media (width <= 600px) {
 								align-items: center;

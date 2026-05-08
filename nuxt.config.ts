@@ -4,6 +4,16 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 
+	fonts: {
+		families: [
+			{ name: 'Cairo', provider: 'google', weights: [400, 700] },
+			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700] },
+		],
+		defaults: {
+			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },
+		},
+	},
+
 	// Pre-render the sitemap so it works on static deployments too
 	routeRules: {
 		'/sitemap.xml': { prerender: true },

@@ -1,6 +1,4 @@
 @use 'theme';
-@import 'https://fonts.googleapis.com/css?family=Cairo:700|Cairo:400';
-@import 'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap';
 
 // Typography Variables
 $heading-font: 'Cairo', sans-serif;
@@ -19,17 +17,11 @@ $h6-font-size: 0.8rem;
 // Typography Styles
 body {
 	background: var(--bg-secondary);
-	background-attachment: fixed;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
 	color: var(--text-primary);
 	font-family: $body-font;
 	font-size: $base-font-size;
 	line-height: $line-height;
-	max-height: 100dvh;
 	min-height: 100dvh;
-	overflow: hidden;
 }
 
 h1,
