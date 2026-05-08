@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { footballers, getAnswerForDay, isValidFootballer } from '../composables/useFootballers'
+import { getAnswerForDay, isValidFootballer, getPlayerData } from '../composables/useFootballers'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -52,6 +52,21 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
+	const hints = computed(() => {
+		const player = getPlayerData(answer)
+		if (!player) return []
+
+		const revealed: { label: string; value: string; icon: string }[] = []
+		if (guesses.value.length >= 3)
+			revealed.push({ label: 'Position', value: player.position, icon: 'solar:football-linear' })
+		if (guesses.value.length >= 4)
+			revealed.push({ label: 'Nationality', value: player.nationality, icon: 'solar:earth-linear' })
+		if (guesses.value.length >= 5)
+			revealed.push({ label: 'Club', value: player.club, icon: 'solar:shield-linear' })
+
+		return revealed
+	})
+
 	const canPlay = computed(() => {
 		// Check if we have a saved game for today
 		const savedGame = localStorage.getItem('footballdle-game')
@@ -208,6 +223,7 @@ export const useGameStore = defineStore('game', () => {
 		errorMessage,
 		
 		// Computed
+		hints,
 		canPlay,
 		
 		// Functions

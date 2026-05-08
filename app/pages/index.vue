@@ -49,6 +49,26 @@
 				:error-message="gameStore.errorMessage"
 			/>
 
+			<TransitionGroup
+				v-if="gameStore.hints.length"
+				name="hint"
+				tag="div"
+				class="hints-container"
+			>
+				<div
+					v-for="hint in gameStore.hints"
+					:key="hint.label"
+					class="hint-chip"
+				>
+					<Icon
+						:name="hint.icon"
+						size="0.85rem"
+					/>
+					<span class="hint-label">{{ hint.label }}:</span>
+					<span class="hint-value">{{ hint.value }}</span>
+				</div>
+			</TransitionGroup>
+
 			<Keyboard
 				:disabled="gameStore.gameOver"
 				:guesses="gameStore.guesses"
@@ -846,6 +866,48 @@
 			opacity: 0.2;
 			transform: translate(-50%, -50%) scaleX(0.6);
 		}
+	}
+
+	// ============================================================================
+	// HINTS
+	// ============================================================================
+	.hints-container {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		justify-content: center;
+		padding: 0 0.5rem 0.5rem;
+
+		.hint-chip {
+			align-items: center;
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 2rem;
+			color: var(--text-primary);
+			display: inline-flex;
+			font-size: 0.8rem;
+			gap: 0.35rem;
+			padding: 0.3rem 0.75rem;
+
+			.hint-label {
+				color: var(--text-secondary);
+				font-weight: 500;
+			}
+
+			.hint-value {
+				font-weight: 700;
+			}
+		}
+	}
+
+	.hint-enter-active {
+		transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	.hint-enter-from {
+		opacity: 0;
+		transform: scale(0.7) translateY(6px);
 	}
 
 	// ============================================================================
