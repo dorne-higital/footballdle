@@ -1,8 +1,5 @@
 <template>
-	<section
-		:class="componentName"
-		class="game-board"
-	>
+	<section :class="componentName">
 		<div
 			class="toast"
 			:class="{ visible: errorMessage }"
@@ -123,7 +120,7 @@
 
 <style scoped lang="scss">
 	.game-board {
-		padding: 1rem 0;
+		padding: 0.5rem 0;
 		position: relative;
 
 		.toast {
@@ -166,9 +163,9 @@
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
 				display: flex;
-				height: 3rem;
+				height: 2.8rem;
 				justify-content: center;
-				line-height: 3rem;
+				line-height: 2.8rem;
 				margin: 0 0.1rem;
 				perspective: 1000px;
 				transform-style: preserve-3d;

@@ -173,7 +173,7 @@
 		gap: 0.5rem;
 		margin: 0 auto;
 		max-width: 500px;
-		padding: 0 0.5rem;
+		padding: 0;
 		width: 100%;
 
 		.row {

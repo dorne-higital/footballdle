@@ -43,7 +43,9 @@ export const useGameStore = defineStore('game', () => {
 	function setError(msg: string) {
 		errorMessage.value = msg
 		if (errorTimer) clearTimeout(errorTimer)
-		errorTimer = setTimeout(() => { errorMessage.value = '' }, 1800)
+		errorTimer = setTimeout(() => {
+			errorMessage.value = ''
+		}, 1800)
 	}
 
 	// Countdown state
@@ -62,8 +64,7 @@ export const useGameStore = defineStore('game', () => {
 			revealed.push({ label: 'Position', value: player.position, icon: 'solar:football-linear' })
 		if (guesses.value.length >= 4)
 			revealed.push({ label: 'Nationality', value: player.nationality, icon: 'solar:earth-linear' })
-		if (guesses.value.length >= 5)
-			revealed.push({ label: 'Club', value: player.club, icon: 'solar:shield-linear' })
+		if (guesses.value.length >= 5) revealed.push({ label: 'Club', value: player.club, icon: 'solar:shield-linear' })
 
 		return revealed
 	})
@@ -97,7 +98,7 @@ export const useGameStore = defineStore('game', () => {
 			setError('Not a valid footballer')
 			return
 		}
-		if (guesses.value.map(g => g.toUpperCase()).includes(guess)) {
+		if (guesses.value.map((g) => g.toUpperCase()).includes(guess)) {
 			setError('Already guessed!')
 			return
 		}
@@ -142,9 +143,7 @@ export const useGameStore = defineStore('game', () => {
 	function updateCountdown() {
 		if (!nextGameTime) return
 		const now = new Date()
-		const nextGame = typeof nextGameTime === 'string'
-			? new Date(nextGameTime)
-			: nextGameTime
+		const nextGame = typeof nextGameTime === 'string' ? new Date(nextGameTime) : nextGameTime
 		const diff = nextGame.getTime() - now.getTime()
 		if (diff <= 0) {
 			countdown.value = '00:00:00'
@@ -192,7 +191,7 @@ export const useGameStore = defineStore('game', () => {
 				isWin.value = savedWin
 				// Don't show game over modal on load - let the intro screen handle it
 				showGameOverModal.value = false
-				
+
 				// If game is completed, show intro screen
 				// If game is not completed, keep intro hidden so user can continue
 				showIntro.value = savedOver
@@ -223,11 +222,11 @@ export const useGameStore = defineStore('game', () => {
 		todayStr,
 		puzzleNumber,
 		errorMessage,
-		
+
 		// Computed
 		hints,
 		canPlay,
-		
+
 		// Functions
 		submitGuess,
 		onKeyboardKey,
@@ -242,4 +241,4 @@ export const useGameStore = defineStore('game', () => {
 		getUKDateString,
 		getNextGameTime,
 	}
-}) 
+})
