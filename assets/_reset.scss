@@ -1,29 +1,56 @@
-
-html, body, div, span,
-h1, h2, h3, h4, h5, h6,
-p, img, sub, sup,
-b, u, i, ol, ul, li,
-fieldset, form, label,
-article, aside, footer,
-header, nav, section, a {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    box-sizing: border-box;
-    font: inherit;
-    vertical-align: baseline;
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+img,
+sub,
+sup,
+b,
+u,
+i,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+article,
+aside,
+footer,
+header,
+nav,
+section,
+a {
+	border: 0;
+	box-sizing: border-box;
+	font: inherit;
+	margin: 0;
+	padding: 0;
+	vertical-align: baseline;
 }
 
 body {
-    background-color: #FFF;
+	background-color: #fff;
 }
 
 /* HTML5 display-role reset for older browsers */
-article, aside, footer,
-header, nav, section {
-    display: block;
+article,
+aside,
+footer,
+header,
+nav,
+section {
+	display: block;
 }
 
-ol, ul {
-    list-style: none;
+ol,
+ul {
+	list-style: none;
 }
