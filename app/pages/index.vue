@@ -985,6 +985,7 @@
 		background: var(--bg-gradient);
 		display: flex;
 		justify-content: center;
+		min-height: 100dvh;
 		padding: 1rem;
 		position: relative;
 
@@ -994,7 +995,6 @@
 			display: flex;
 			flex-direction: column;
 			max-width: 500px;
-			padding: 1rem 0.5rem;
 			place-content: center flex-start;
 			text-align: center;
 			width: 100%;
