@@ -1,26 +1,34 @@
 export function useShare() {
-	function onShare(guesses: string[], answer: string, isWin: boolean, todayStr: string) {
-		// Build emoji grid
-		const grid = guesses.map(guess => {
-			return guess.split('').map((char, i) => {
-				// Check if letter is in correct position
-				if (answer[i] && char.toUpperCase() === answer[i].toUpperCase()) {
-					return '🟩'
-				}
-				// Check if letter exists in answer but wrong position
-				if (answer.toUpperCase().includes(char.toUpperCase())) {
-					return '🟨'
-				}
-				// Letter not in answer
-				return '⬛'
-			}).join('')
-		}).join('\n')
-		const text = `Footballdle ${todayStr}\n${isWin ? guesses.length : 'X'}/6\n${grid}\n\nwww.footballdle.co.uk`
-		navigator.clipboard.writeText(text)
-		alert('Result copied to clipboard!')
+	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string): string {
+		const grid = guesses
+			.map(guess =>
+				guess
+					.split('')
+					.map((char, i) => {
+						if (answer[i] && char.toUpperCase() === answer[i].toUpperCase()) return '🟩'
+						if (answer.toUpperCase().includes(char.toUpperCase())) return '🟨'
+						return '⬛'
+					})
+					.join(''),
+			)
+			.join('\n')
+		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6\n\n${grid}\n\nfootballdle.co.uk`
 	}
 
-	return {
-		onShare,
+	async function onShare(guesses: string[], answer: string, isWin: boolean, label: string): Promise<boolean> {
+		const text = getShareText(guesses, answer, isWin, label)
+		try {
+			await navigator.clipboard.writeText(text)
+			return true
+		} catch {
+			return false
+		}
 	}
-} 
+
+	function onShareTwitter(guesses: string[], answer: string, isWin: boolean, label: string) {
+		const text = getShareText(guesses, answer, isWin, label)
+		window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+	}
+
+	return { onShare, onShareTwitter, getShareText }
+}

@@ -94,6 +94,7 @@
 				:can-play="challengeStore.canPlay"
 				:is-paused="challengeStore.isPaused"
 				:game-over="challengeStore.gameOver"
+				:error-message="challengeStore.errorMessage"
 				@key="handleChallengeKey"
 				@end-challenge="handleEndChallenge"
 				@toggle-pause="challengeStore.togglePause"
@@ -116,12 +117,49 @@
 					<p>
 						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
 					</p>
-					<button
-						@click="handleShare"
-						class="button primary share"
-					>
-						Share
-					</button>
+					<div class="share-preview">
+						<p class="share-header">Footballdle ⚽ {{ gameStore.todayStr }} &nbsp;·&nbsp; {{ gameStore.isWin ? gameStore.guesses.length : 'X' }}/6</p>
+						<div class="share-emoji-grid">
+							<div
+								v-for="(guess, gi) in gameStore.guesses"
+								:key="gi"
+								class="share-row"
+							>
+								<span
+									v-for="(char, ci) in guess.split('')"
+									:key="ci"
+									class="share-tile"
+									:class="{
+										correct: gameStore.answer[ci] && char.toUpperCase() === gameStore.answer[ci].toUpperCase(),
+										present: !( gameStore.answer[ci] && char.toUpperCase() === gameStore.answer[ci].toUpperCase()) && gameStore.answer.toUpperCase().includes(char.toUpperCase()),
+										absent: !gameStore.answer.toUpperCase().includes(char.toUpperCase()),
+									}"
+								></span>
+							</div>
+						</div>
+					</div>
+					<div class="share-buttons">
+						<button
+							class="button primary"
+							@click="handleShare"
+						>
+							<Icon
+								name="solar:copy-linear"
+								size="1rem"
+							/>
+							{{ shareToast ? 'Copied!' : 'Copy result' }}
+						</button>
+						<button
+							class="btn-x"
+							@click="handleShareTwitter"
+						>
+							<Icon
+								name="ri:twitter-x-fill"
+								size="1rem"
+							/>
+							Share on X
+						</button>
+					</div>
 				</div>
 			</template>
 
@@ -379,6 +417,26 @@
 								</div>
 								<p>{{ statsStore.winPercentage }}% win rate</p>
 							</div>
+
+							<div class="guess-distribution">
+								<p class="caption distribution-title">Guess Distribution</p>
+								<div
+									v-for="n in 6"
+									:key="n"
+									class="dist-row"
+								>
+									<span class="dist-label">{{ n }}</span>
+									<div class="dist-bar-wrap">
+										<div
+											class="dist-bar"
+											:class="{ highlight: lastGuessCount === n }"
+											:style="{ width: getBarWidth(n, statsStore.stats.guessDistribution) }"
+										>
+											<span class="dist-count">{{ statsStore.stats.guessDistribution[String(n)] || 0 }}</span>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 
 						<!-- Challenge Stats -->
@@ -411,6 +469,26 @@
 								</div>
 								<p>{{ challengeStore.winPercentage }}% win rate</p>
 							</div>
+
+							<div class="guess-distribution">
+								<p class="caption distribution-title">Guess Distribution</p>
+								<div
+									v-for="n in 6"
+									:key="n"
+									class="dist-row"
+								>
+									<span class="dist-label">{{ n }}</span>
+									<div class="dist-bar-wrap">
+										<div
+											class="dist-bar"
+											:class="{ highlight: lastChallengeGuessCount === n }"
+											:style="{ width: getBarWidth(n, challengeStore.challengeStats.guessDistribution) }"
+										>
+											<span class="dist-count">{{ challengeStore.challengeStats.guessDistribution[String(n)] || 0 }}</span>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -434,10 +512,58 @@
 					<p>
 						The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong>
 					</p>
+
+					<div class="share-preview">
+						<p class="share-header">
+							Footballdle ⚽ Challenge{{ challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : '' }}
+						</p>
+						<div class="share-emoji-grid">
+							<div
+								v-for="(guess, gi) in challengeStore.guesses"
+								:key="gi"
+								class="share-row"
+							>
+								<span
+									v-for="(char, ci) in guess.split('')"
+									:key="ci"
+									class="share-tile"
+									:class="{
+										correct: challengeStore.currentAnswer[ci] && char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase(),
+										present: !(challengeStore.currentAnswer[ci] && char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase()) && challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
+										absent: !challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
+									}"
+								></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="share-buttons">
+						<button
+							class="button primary"
+							@click="handleChallengeShare"
+						>
+							<Icon
+								name="solar:copy-linear"
+								size="1rem"
+							/>
+							{{ shareToast ? 'Copied!' : 'Copy result' }}
+						</button>
+						<button
+							class="btn-x"
+							@click="handleChallengeShareTwitter"
+						>
+							<Icon
+								name="ri:twitter-x-fill"
+								size="1rem"
+							/>
+							Share on X
+						</button>
+					</div>
+
 					<div class="challenge-buttons">
 						<nuxt-link
-							@click="handleEndChallenge"
 							class="button link"
+							@click="handleEndChallenge"
 						>
 							<Icon
 								name="solar:alt-arrow-left-linear"
@@ -447,8 +573,8 @@
 						</nuxt-link>
 
 						<button
-							@click="handleChallengePlayAgain"
 							class="button primary full"
+							@click="handleChallengePlayAgain"
 						>
 							Play Again
 						</button>
@@ -581,7 +707,7 @@
 	const themeStore = useThemeStore()
 	const modalsStore = useModalsStore()
 	const challengeStore = useChallengeStore()
-	const { onShare } = useShare()
+	const { onShare, onShareTwitter } = useShare()
 
 	const {
 		trackGameStart,
@@ -616,18 +742,27 @@
 	const activeStatsTab = ref('daily')
 	const isLoading = ref(false)
 	const sessionStartTime = ref(Date.now())
+	const shareToast = ref(false)
+	let shareToastTimer: ReturnType<typeof setTimeout> | null = null
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
 	const hasIncompleteGame = computed(() => {
-		// Check if there's a saved game for today that's not completed
-		// Use the game store state instead of reading from localStorage for reactivity
-		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
-			return true
-		}
+		if (gameStore.guesses.length > 0 && !gameStore.gameOver) return true
 		return false
 	})
+
+	const lastGuessCount = computed(() => (gameStore.isWin && gameStore.gameOver ? gameStore.guesses.length : 0))
+	const lastChallengeGuessCount = computed(() =>
+		challengeStore.isWin && challengeStore.gameOver ? challengeStore.guesses.length : 0,
+	)
+
+	function getBarWidth(n: number, dist: Record<string, number>): string {
+		const max = Math.max(...Object.values(dist).map(Number), 1)
+		const count = Number(dist[String(n)] || 0)
+		return count === 0 ? '1.5rem' : `${Math.max((count / max) * 100, 10)}%`
+	}
 
 	// ============================================================================
 	// LIFECYCLE HOOKS
@@ -693,9 +828,42 @@
 	// ============================================================================
 	// EVENT HANDLERS
 	// ============================================================================
-	function handleShare() {
-		onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
-		trackShare('native')
+	async function handleShare() {
+		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		if (copied) {
+			shareToast.value = true
+			if (shareToastTimer) clearTimeout(shareToastTimer)
+			shareToastTimer = setTimeout(() => {
+				shareToast.value = false
+			}, 2000)
+		}
+		trackShare('copy')
+	}
+
+	function handleShareTwitter() {
+		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		trackShare('twitter')
+	}
+
+	async function handleChallengeShare() {
+		const timeUsed = 45 - challengeStore.timeRemaining
+		const label = challengeStore.isWin ? `Challenge (${timeUsed}s)` : 'Challenge'
+		const copied = await onShare(challengeStore.guesses, challengeStore.currentAnswer, challengeStore.isWin, label)
+		if (copied) {
+			shareToast.value = true
+			if (shareToastTimer) clearTimeout(shareToastTimer)
+			shareToastTimer = setTimeout(() => {
+				shareToast.value = false
+			}, 2000)
+		}
+		trackShare('copy_challenge')
+	}
+
+	function handleChallengeShareTwitter() {
+		const timeUsed = 45 - challengeStore.timeRemaining
+		const label = challengeStore.isWin ? `Challenge (${timeUsed}s)` : 'Challenge'
+		onShareTwitter(challengeStore.guesses, challengeStore.currentAnswer, challengeStore.isWin, label)
+		trackShare('twitter_challenge')
 	}
 
 	function handleKeyboardKey(key: string) {
@@ -707,7 +875,7 @@
 		}
 
 		if (gameStore.gameOver && gameStore.showGameOverModal) {
-			statsStore.updateStats(gameStore.isWin)
+			statsStore.updateStats(gameStore.isWin, gameStore.guesses.length, gameStore.todayStr)
 			if (gameStore.isWin) {
 				trackGameWin(gameStore.guesses.length)
 			} else {
@@ -931,7 +1099,8 @@
 	// ============================================================================
 	// GAME OVER MODAL
 	// ============================================================================
-	.game-over-section {
+	.game-over-section,
+	.challenge-game-over-section {
 		text-align: center;
 		width: 100%;
 
@@ -947,11 +1116,103 @@
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
 		}
+	}
 
-		.share {
+	// Shared share card styles (used by both daily and challenge modals)
+	.share-preview {
+		background: var(--bg-primary);
+		border: 1px solid var(--border);
+		border-radius: var(--global-border-radius);
+		margin: 0.75rem 0;
+		padding: 0.75rem 1rem;
+		width: 100%;
+
+		.share-header {
+			color: var(--text-secondary);
+			font-size: 0.75rem;
+			font-weight: 600;
+			letter-spacing: 0.02em;
+			margin-bottom: 0.6rem;
+		}
+
+		.share-emoji-grid {
+			align-items: center;
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+		}
+
+		.share-row {
+			display: flex;
+			gap: 3px;
+		}
+
+		.share-tile {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 2px;
+			height: 14px;
+			width: 14px;
+
+			&.correct {
+				background: var(--color-success);
+				border-color: var(--color-success);
+			}
+
+			&.present {
+				background: var(--color-present);
+				border-color: var(--color-present);
+			}
+
+			&.absent {
+				background: var(--color-absent);
+				border-color: var(--color-absent);
+			}
+		}
+	}
+
+	.share-buttons {
+		display: flex;
+		gap: 0.75rem;
+		justify-content: center;
+		margin-top: 0.25rem;
+		width: 100%;
+
+		.button {
+			align-items: center;
+			border-bottom: none;
+			display: flex;
+			flex: 1;
+			gap: 0.4rem;
 			justify-content: center;
-			margin-top: 1rem;
-			width: 50%;
+
+			&:hover {
+				border-bottom: none;
+			}
+		}
+
+		.btn-x {
+			align-items: center;
+			background: #000;
+			border: 2px solid #000;
+			border-bottom: 2px solid #000;
+			border-radius: var(--border-radius);
+			color: #fff;
+			cursor: pointer;
+			display: flex;
+			flex: 1;
+			font-size: 0.9rem;
+			font-weight: 500;
+			gap: 0.4rem;
+			justify-content: center;
+			padding: 0.5rem 1rem;
+			transition: background 0.2s;
+
+			&:hover {
+				background: #222;
+				border-bottom: 2px solid #222;
+				color: #fff;
+			}
 		}
 	}
 
@@ -1303,7 +1564,7 @@
 		}
 
 		.stats-content-container {
-			min-height: 300px;
+			min-height: 420px;
 			position: relative;
 
 			.stats-content {
@@ -1338,6 +1599,13 @@
 						text-align: center;
 						transition: all 0.2s;
 
+						h3 {
+							color: var(--text-primary);
+							font-size: 2rem;
+							font-weight: 700;
+							margin: 0 0 0.5rem;
+						}
+
 						&:hover {
 							border-color: var(--border-hover);
 							box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
@@ -1347,13 +1615,6 @@
 								opacity: 1;
 							}
 						}
-
-						h3 {
-							color: var(--text-primary);
-							font-size: 2rem;
-							font-weight: 700;
-							margin: 0 0 0.5rem;
-						}
 					}
 				}
 
@@ -1362,13 +1623,6 @@
 					border: 1px solid var(--border);
 					border-radius: var(--global-border-radius);
 					padding: 1rem;
-
-					h3 {
-						color: var(--text-primary);
-						font-size: 1.2rem;
-						font-weight: 600;
-						margin: 0 0 1rem;
-					}
 
 					.progress-bar {
 						background: var(--bg-primary);
@@ -1394,6 +1648,65 @@
 						text-align: center;
 					}
 				}
+
+				.guess-distribution {
+					background: var(--bg-secondary);
+					border: 1px solid var(--border);
+					border-radius: var(--global-border-radius);
+					margin-top: 0.5rem;
+					padding: 1rem;
+
+					.distribution-title {
+						font-weight: 600;
+						margin-bottom: 0.75rem;
+						text-align: left;
+					}
+
+					.dist-row {
+						align-items: center;
+						display: flex;
+						gap: 0.5rem;
+						margin-bottom: 0.3rem;
+
+						.dist-label {
+							color: var(--text-secondary);
+							flex-shrink: 0;
+							font-size: 0.85rem;
+							font-weight: 700;
+							text-align: right;
+							width: 0.75rem;
+						}
+
+						.dist-bar-wrap {
+							flex: 1;
+
+							.dist-bar {
+								align-items: center;
+								background: var(--bg-primary);
+								border-radius: 2px;
+								display: flex;
+								justify-content: flex-end;
+								min-width: 1.5rem;
+								padding: 0.2rem 0.4rem;
+								transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+								.dist-count {
+									color: var(--text-secondary);
+									font-size: 0.75rem;
+									font-weight: 700;
+								}
+
+								&.highlight {
+									background: var(--color-gradient);
+
+									.dist-count {
+										color: white;
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1402,24 +1715,11 @@
 	// CHALLENGE GAME OVER MODAL
 	// ============================================================================
 	.challenge-game-over-section {
-		text-align: center;
-
-		h4 {
-			color: var(--text-primary);
-			font-size: 1.5rem;
-			margin-bottom: 1rem;
-		}
-
-		.answer {
-			color: var(--tertiary-color);
-			font-weight: 700;
-		}
-
 		.challenge-buttons {
 			display: flex;
 			gap: 1rem;
 			justify-content: center;
-			margin-top: 1.5rem;
+			margin-top: 1rem;
 		}
 	}
 </style>

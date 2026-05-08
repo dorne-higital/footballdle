@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useChallengeFootballers } from '../composables/useChallengeFootballers'
 
-const { challengeFootballers, getRandomChallengeFootballer, isValidChallengeFootballer } = useChallengeFootballers()
+const { getRandomChallengeFootballer, isValidChallengeFootballer } = useChallengeFootballers()
 
 export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
@@ -22,6 +22,17 @@ export const useChallengeStore = defineStore('challenge', () => {
 	const showGameOverModal = ref(false)
 	const isPaused = ref(false)
 
+	const errorMessage = ref('')
+	let errorTimer: ReturnType<typeof setTimeout> | null = null
+
+	function setError(msg: string) {
+		errorMessage.value = msg
+		if (errorTimer) clearTimeout(errorTimer)
+		errorTimer = setTimeout(() => {
+			errorMessage.value = ''
+		}, 1800)
+	}
+
 	// Challenge stats (separate from regular stats)
 	const challengeStats = ref({
 		gamesPlayed: 0,
@@ -29,8 +40,9 @@ export const useChallengeStore = defineStore('challenge', () => {
 		losses: 0,
 		currentStreak: 0,
 		maxStreak: 0,
-		bestTime: 0, // Best time to solve in seconds
-		totalTime: 0, // Total time played
+		bestTime: 0,
+		totalTime: 0,
+		guessDistribution: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 } as Record<string, number>,
 	})
 
 	// ============================================================================
@@ -64,47 +76,41 @@ export const useChallengeStore = defineStore('challenge', () => {
 		timeRemaining.value = 45
 		showGameOverModal.value = false
 		isPaused.value = false
-		
-		// Generate random 5-letter player
+
 		currentAnswer.value = getRandomChallengeFootballer()
-		
-		// Start timer
+
 		startTimer()
 		saveChallengeState()
 	}
 
 	function submitGuess(guess: string) {
 		if (gameOver.value || timeRemaining.value <= 0) return
-		
+
 		guess = guess.trim().toUpperCase()
 		if (guess.length !== 5) {
-			alert('Challenge mode: Guess must be 5 letters!')
+			setError('Must be 5 letters')
 			return
 		}
-		
-		// Check if it's a valid 5-letter footballer
+
 		if (!isValidChallengeFootballer(guess)) {
-			alert('Not a valid 5-letter footballer surname!')
+			setError('Not a valid footballer')
 			return
 		}
-		
-		// Check for duplicate guesses
-		if (guesses.value.includes(guess)) {
-			alert('Already guessed!')
+
+		if (guesses.value.map(g => g.toUpperCase()).includes(guess)) {
+			setError('Already guessed!')
 			return
 		}
-		
+
 		guesses.value.push(guess)
-		
-		// Check win condition (case-insensitive comparison)
+
 		if (guess.toUpperCase() === currentAnswer.value.toUpperCase()) {
 			isWin.value = true
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
-			updateChallengeStats(true)
-			// Track challenge win
-			if (process.client) {
+			updateChallengeStats(true, guesses.value.length)
+			if (import.meta.client) {
 				try {
 					const timeUsed = 45 - timeRemaining.value
 					;(window as any).gtag('event', 'challenge_win', {
@@ -112,9 +118,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 						event_label: 'challenge_mode',
 						value: timeUsed,
 					})
-				} catch (error) {
-					// Silently fail if analytics is not available
-				}
+				} catch {}
 			}
 		} else if (guesses.value.length >= maxGuesses) {
 			isWin.value = false
@@ -122,8 +126,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			showGameOverModal.value = true
 			stopTimer()
 			updateChallengeStats(false)
-			// Track challenge loss
-			if (process.client) {
+			if (import.meta.client) {
 				try {
 					const timeUsed = 45 - timeRemaining.value
 					;(window as any).gtag('event', 'challenge_loss', {
@@ -131,19 +134,17 @@ export const useChallengeStore = defineStore('challenge', () => {
 						event_label: 'challenge_mode',
 						value: timeUsed,
 					})
-				} catch (error) {
-					// Silently fail if analytics is not available
-				}
+				} catch {}
 			}
 		}
-		
+
 		currentGuess.value = ''
 		saveChallengeState()
 	}
 
 	function onKeyboardKey(key: string) {
 		if (gameOver.value || timeRemaining.value <= 0 || isPaused.value) return
-		
+
 		if (key === 'ENTER') {
 			submitGuess(currentGuess.value)
 		} else if (key === 'BACKSPACE') {
@@ -154,12 +155,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function endChallenge() {
-		// Track challenge abandonment if not completed
-		if (isActive.value && !gameOver.value && timeRemaining.value > 0) {
-			const timeUsed = 45 - timeRemaining.value
-			// We'll track this in the main component
-		}
-		
 		isActive.value = false
 		gameOver.value = false
 		isWin.value = false
@@ -189,32 +184,27 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// TIMER FUNCTIONS
 	// ============================================================================
 	function startTimer() {
-		stopTimer() // Clear any existing timer
-		if (isPaused.value) return // Don't start timer if paused
-		
+		stopTimer()
+		if (isPaused.value) return
+
 		timerInterval.value = setInterval(() => {
-			if (isPaused.value) return // Don't countdown if paused
-			
+			if (isPaused.value) return
+
 			timeRemaining.value--
 			if (timeRemaining.value <= 0) {
-				// Time's up!
 				isWin.value = false
 				gameOver.value = true
 				showGameOverModal.value = true
 				stopTimer()
 				updateChallengeStats(false)
-				// Track challenge loss due to time
-				if (process.client) {
+				if (import.meta.client) {
 					try {
-						const timeUsed = 45 - timeRemaining.value
 						;(window as any).gtag('event', 'challenge_loss', {
 							event_category: 'challenge',
-							event_label: 'challenge_mode',
-							value: timeUsed,
+							event_label: 'time_up',
+							value: 45,
 						})
-					} catch (error) {
-						// Silently fail if analytics is not available
-					}
+					} catch {}
 				}
 				saveChallengeState()
 			}
@@ -231,29 +221,29 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	// STATS FUNCTIONS
 	// ============================================================================
-	function updateChallengeStats(win: boolean) {
+	function updateChallengeStats(win: boolean, guessCount?: number) {
 		challengeStats.value.gamesPlayed++
-		
+
 		if (win) {
 			challengeStats.value.wins++
 			challengeStats.value.currentStreak++
 			if (challengeStats.value.currentStreak > challengeStats.value.maxStreak) {
 				challengeStats.value.maxStreak = challengeStats.value.currentStreak
 			}
-			
-			// Update best time if this was faster
 			const timeUsed = 45 - timeRemaining.value
 			if (challengeStats.value.bestTime === 0 || timeUsed < challengeStats.value.bestTime) {
 				challengeStats.value.bestTime = timeUsed
+			}
+			if (guessCount && guessCount >= 1 && guessCount <= 6) {
+				const key = String(guessCount)
+				challengeStats.value.guessDistribution[key] = (challengeStats.value.guessDistribution[key] || 0) + 1
 			}
 		} else {
 			challengeStats.value.losses++
 			challengeStats.value.currentStreak = 0
 		}
-		
-		// Update total time
-		challengeStats.value.totalTime += (45 - timeRemaining.value)
-		
+
+		challengeStats.value.totalTime += 45 - timeRemaining.value
 		saveChallengeStats()
 	}
 
@@ -266,6 +256,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			maxStreak: 0,
 			bestTime: 0,
 			totalTime: 0,
+			guessDistribution: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 },
 		}
 		saveChallengeStats()
 	}
@@ -301,8 +292,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			isWin.value = state.isWin || false
 			timeRemaining.value = state.timeRemaining || 45
 			isPaused.value = state.isPaused || false
-			
-			// If challenge was active and not paused, restart timer
+
 			if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
 				startTimer()
 			}
@@ -316,12 +306,16 @@ export const useChallengeStore = defineStore('challenge', () => {
 	function loadChallengeStats() {
 		const saved = localStorage.getItem('footballdle-challenge-stats')
 		if (saved) {
-			challengeStats.value = JSON.parse(saved)
+			const parsed = JSON.parse(saved)
+			challengeStats.value = {
+				...challengeStats.value,
+				...parsed,
+				guessDistribution: parsed.guessDistribution || { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 },
+			}
 		}
 	}
 
 	function resetDaily() {
-		// Reset challenge state daily (but keep stats)
 		isActive.value = false
 		gameOver.value = false
 		isWin.value = false
@@ -347,13 +341,15 @@ export const useChallengeStore = defineStore('challenge', () => {
 		showGameOverModal,
 		isPaused,
 		challengeStats,
-		
+		errorMessage,
+
 		// Computed
 		canPlay,
 		timeFormatted,
 		winPercentage,
-		
+
 		// Functions
+		setError,
 		unlockChallenge,
 		startChallenge,
 		submitGuess,
@@ -371,4 +367,4 @@ export const useChallengeStore = defineStore('challenge', () => {
 		loadChallengeStats,
 		resetDaily,
 	}
-}) 
+})

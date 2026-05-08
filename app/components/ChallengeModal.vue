@@ -33,6 +33,12 @@
 			</div>
 		</div>
 
+		<!-- Error Toast -->
+		<div
+			class="challenge-toast"
+			:class="{ visible: errorMessage }"
+		>{{ errorMessage }}</div>
+
 		<!-- Game Board (5 letters, 6 rows) -->
 		<div class="game-board">
 			<div v-for="i in maxGuesses" :key="i" class="guess-row">
@@ -89,6 +95,7 @@ const props = defineProps<{
 	canPlay: boolean
 	isPaused: boolean
 	gameOver: boolean
+	errorMessage?: string
 }>()
 
 const emit = defineEmits(['key', 'end-challenge', 'toggle-pause', 'play-again'])
@@ -179,6 +186,29 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 </script>
 
 <style scoped lang="scss">
+	.challenge-toast {
+		background: var(--text-primary);
+		border-radius: var(--global-border-radius);
+		color: var(--bg-secondary);
+		font-size: 0.85rem;
+		font-weight: 600;
+		left: 50%;
+		opacity: 0;
+		padding: 0.5rem 1rem;
+		pointer-events: none;
+		position: absolute;
+		top: 4rem;
+		transform: translateX(-50%) translateY(-4px);
+		transition: opacity 0.2s, transform 0.2s;
+		white-space: nowrap;
+		z-index: 100;
+
+		&.visible {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
+		}
+	}
+
 	.challenge-game {
 		.challenge-nav {
 			align-items: center;
