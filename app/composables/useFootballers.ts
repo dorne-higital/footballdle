@@ -144,7 +144,7 @@ const footballerMap = new Map(footballers.map((f) => [f.name.toUpperCase(), f]))
 // Cache for memoized daily answers
 const answerCache = new Map<string, string>()
 
-const EPOCH = '08/05/2026' // DD/MM/YYYY — Puzzle #1 launch date
+const EPOCH = '01/01/2026' // DD/MM/YYYY — Puzzle #1 launch date
 
 export function getPuzzleNumber(dateStr: string): number {
 	const [d1, m1, y1] = EPOCH.split('/').map(Number)

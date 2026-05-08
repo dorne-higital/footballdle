@@ -1,5 +1,5 @@
 const BASE_URL = 'https://footballdle.co.uk'
-const EPOCH = new Date(2026, 4, 8) // 8 May 2026 — Puzzle #1
+const EPOCH = new Date(2026, 0, 1) // 1 Jan 2026 — Puzzle #1
 
 function getUKToday(): Date {
 	const s = new Date().toLocaleString('en-US', { timeZone: 'Europe/London' })
