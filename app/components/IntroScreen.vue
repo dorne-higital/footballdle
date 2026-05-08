@@ -130,6 +130,17 @@
 					<h4>{{ countdown }}</h4>
 				</div>
 
+				<NuxtLink
+					:to="`/solution/${yesterdayISO}`"
+					class="yesterday-link"
+				>
+					<Icon
+						name="solar:history-linear"
+						size="0.9rem"
+					/>
+					See yesterday's answer
+				</NuxtLink>
+
 				<div
 					v-if="challengeUnlocked"
 					class="challenge-section"
@@ -191,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-	import { withDefaults, ref, onMounted, nextTick, watch } from 'vue'
+	import { withDefaults, ref, computed, onMounted, nextTick, watch } from 'vue'
 
 	const props = withDefaults(
 		defineProps<{
@@ -234,6 +245,13 @@
 	])
 
 	const isLoading = ref(false) // Start with no loading
+
+	const yesterdayISO = computed(() => {
+		const now = new Date()
+		const d = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
+		d.setDate(d.getDate() - 1)
+		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+	})
 </script>
 
 <style scoped lang="scss">
@@ -449,6 +467,23 @@
 
 				.countdown {
 					font-weight: 900;
+				}
+
+				.yesterday-link {
+					align-items: center;
+					border-bottom: 1px solid transparent;
+					color: #e3e3e3;
+					display: inline-flex;
+					font-size: 0.8rem;
+					gap: 0.35rem;
+					margin-top: 0.75rem;
+					text-decoration: none;
+					transition: color 0.2s;
+
+					&:hover {
+						border-bottom: 1px solid white;
+						color: #fff;
+					}
 				}
 
 				p,

@@ -176,6 +176,16 @@
 					<p class="caption">Next game in:</p>
 					<h3>{{ gameStore.countdown }}</h3>
 				</div>
+				<NuxtLink
+					:to="`/solution/${yesterdayISO}`"
+					class="yesterday-link"
+				>
+					<Icon
+						name="solar:history-linear"
+						size="0.9rem"
+					/>
+					Yesterday's answer
+				</NuxtLink>
 				<a
 					href="https://buymeacoffee.com/dhorne92E"
 					target="_blank"
@@ -789,6 +799,13 @@
 		challengeStore.isWin && challengeStore.gameOver ? challengeStore.guesses.length : 0,
 	)
 
+	const yesterdayISO = computed(() => {
+		const [dd, mm, yyyy] = gameStore.todayStr.split('/').map(Number)
+		const d = new Date(yyyy!, mm! - 1, dd!)
+		d.setDate(d.getDate() - 1)
+		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+	})
+
 	function getBarWidth(n: number, dist: Record<string, number>): string {
 		const max = Math.max(...Object.values(dist).map(Number), 1)
 		const count = Number(dist[String(n)] || 0)
@@ -1138,6 +1155,21 @@
 	// ============================================================================
 	// SHARED COFFEE NUDGE
 	// ============================================================================
+	.yesterday-link {
+		align-items: center;
+		color: var(--text-secondary);
+		display: inline-flex;
+		font-size: 0.8rem;
+		gap: 0.35rem;
+		margin-top: 0.5rem;
+		text-decoration: none;
+		transition: color 0.2s;
+
+		&:hover {
+			color: var(--primary-color);
+		}
+	}
+
 	.coffee-nudge {
 		align-items: center;
 		color: var(--text-secondary);
