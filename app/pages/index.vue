@@ -1333,9 +1333,6 @@
 		width: 100%;
 
 		.support-group {
-			border-bottom: 1px solid var(--border);
-			margin-bottom: 1.5rem;
-			padding-bottom: 1.5rem;
 			text-align: left;
 
 			.coffee-button {
