@@ -3,31 +3,34 @@
 		<!-- Navigation Header -->
 		<div class="challenge-nav">
 			<!-- Countdown-->
-			<div class="timer" :class="{ 'warning': timeRemaining <= 10, 'danger': timeRemaining <= 5 }">
+			<div
+				class="timer"
+				:class="{ warning: timeRemaining <= 10, danger: timeRemaining <= 5 }"
+			>
 				{{ timeFormatted }}
 			</div>
 
 			<!-- Icons (pause / play / home) -->
 			<div class="cta-buttons">
 				<template v-if="!gameOver">
-					<Icon 
+					<Icon
 						name="solar:alarm-pause-linear"
-						size="1.5rem" 
+						size="1.5rem"
 						@click="togglePause"
 					/>
 				</template>
 
 				<template v-else>
-					<Icon 
+					<Icon
 						name="solar:play-circle-linear"
-						size="1.5rem" 
+						size="1.5rem"
 						@click="playAgain"
 					/>
 				</template>
 
-				<Icon 
+				<Icon
 					name="solar:home-smile-linear"
-					size="1.5rem" 
+					size="1.5rem"
 					@click="endChallenge"
 				/>
 			</div>
@@ -37,43 +40,49 @@
 		<div
 			class="challenge-toast"
 			:class="{ visible: errorMessage }"
-		>{{ errorMessage }}</div>
+		>
+			{{ errorMessage }}
+		</div>
 
 		<!-- Game Board (5 letters, 6 rows) -->
 		<div class="game-board">
-			<div v-for="i in maxGuesses" :key="i" class="guess-row">
+			<div
+				v-for="i in maxGuesses"
+				:key="i"
+				class="guess-row"
+			>
 				<span
 					v-for="j in 5"
 					:key="j"
-					:class="[
-						'letter',
-						{ 'animate': shouldAnimate(i-1, j-1) },
-						feedbackClass(i-1, j-1)
-					]"
-					:style="getAnimationDelay(i-1, j-1)"
+					:class="['letter', { animate: shouldAnimate(i - 1, j - 1) }, feedbackClass(i - 1, j - 1)]"
+					:style="getAnimationDelay(i - 1, j - 1)"
 				>
-					{{ getRowGuess(i-1)[j-1] || '' }}
+					{{ getRowGuess(i - 1)[j - 1] || '' }}
 				</span>
 			</div>
 		</div>
 
 		<!-- Keyboard (using existing component) -->
-		<Keyboard 
-			:disabled="!canPlay || isPaused" 
-			:guesses="guesses" 
-			:answer="answer" 
+		<Keyboard
+			:disabled="!canPlay || isPaused"
+			:guesses="guesses"
+			:answer="answer"
 			:maxGuesses="maxGuesses"
 			:currentGuess="currentGuess"
-			@key="onKeyPress" 
+			@key="onKeyPress"
 		/>
 
 		<!-- Pause Overlay -->
-		<div v-if="isPaused" class="pause-overlay" @click="togglePause">
+		<div
+			v-if="isPaused"
+			class="pause-overlay"
+			@click="togglePause"
+		>
 			<div class="pause-content">
 				<h2>
-					<Icon 
+					<Icon
 						name="solar:alarm-pause-linear"
-						size="1.5rem" 
+						size="1.5rem"
 					/>
 					Paused
 				</h2>
@@ -84,105 +93,106 @@
 </template>
 
 <script setup lang="ts">
+	const props = defineProps<{
+		guesses: string[]
+		currentGuess: string
+		maxGuesses: number
+		answer: string
+		timeRemaining: number
+		timeFormatted: string
+		canPlay: boolean
+		isPaused: boolean
+		gameOver: boolean
+		errorMessage?: string
+	}>()
 
-const props = defineProps<{
-	guesses: string[]
-	currentGuess: string
-	maxGuesses: number
-	answer: string
-	timeRemaining: number
-	timeFormatted: string
-	canPlay: boolean
-	isPaused: boolean
-	gameOver: boolean
-	errorMessage?: string
-}>()
+	const emit = defineEmits(['key', 'end-challenge', 'toggle-pause', 'play-again'])
 
-const emit = defineEmits(['key', 'end-challenge', 'toggle-pause', 'play-again'])
-
-function onKeyPress(key: string) {
-	if (props.isPaused) return // Don't process keys when paused
-	emit('key', key)
-}
-
-function endChallenge() {
-	emit('end-challenge')
-}
-
-function togglePause() {
-	emit('toggle-pause')
-}
-
-function playAgain() {
-	emit('play-again')
-}
-
-function getRowGuess(guessIdx: number) {
-	if (guessIdx < props.guesses.length) {
-		return props.guesses[guessIdx] || ''
+	function onKeyPress(key: string) {
+		if (props.isPaused) return // Don't process keys when paused
+		emit('key', key)
 	}
-	if (guessIdx === props.guesses.length) {
-		return props.currentGuess || ''
+
+	function endChallenge() {
+		emit('end-challenge')
 	}
-	return ''
-}
 
-function feedbackClass(guessIdx: number, charIdx: number) {
-	const guess = getRowGuess(guessIdx)
-	if (!guess) return ''
-	const char = guess[charIdx]
-	if (!char) return ''
-	// Only color submitted guesses
-	if (guessIdx >= props.guesses.length) return ''
-	
-	const answerUpper = props.answer.toUpperCase()
-	const guessUpper = guess.toUpperCase()
-	
-	// Process the entire word to get the correct feedback for each position
-	const result = processWordFeedback(guessUpper, answerUpper)
-	return result[charIdx]
-}
+	function togglePause() {
+		emit('toggle-pause')
+	}
 
-function processWordFeedback(guess: string, answer: string): string[] {
-	const result = new Array(guess.length).fill('absent')
-	const answerArray = answer.split('')
-	
-	// Step 1: Mark all correct positions first
-	for (let i = 0; i < guess.length; i++) {
-		if (guess[i] === answerArray[i]) {
-			result[i] = 'correct'
-			answerArray[i] = 'USED' // Mark as used
+	function playAgain() {
+		emit('play-again')
+	}
+
+	function getRowGuess(guessIdx: number) {
+		if (guessIdx < props.guesses.length) {
+			return props.guesses[guessIdx] || ''
 		}
+		if (guessIdx === props.guesses.length) {
+			return props.currentGuess || ''
+		}
+		return ''
 	}
-	
-	// Step 2: Mark present positions (only for letters not already used)
-	for (let i = 0; i < guess.length; i++) {
-		if (result[i] !== 'correct') { // Skip already correct positions
-			const letter = guess[i]
-			if (letter) { // TypeScript safety check
-				// Check if this letter exists in unused positions of the answer
-				const index = answerArray.indexOf(letter)
-				if (index !== -1) {
-					result[i] = 'present'
-					answerArray[index] = 'USED' // Mark this instance as used
-				}
-				// If not found, it remains 'absent' (which is the default)
+
+	function feedbackClass(guessIdx: number, charIdx: number) {
+		const guess = getRowGuess(guessIdx)
+		if (!guess) return ''
+		const char = guess[charIdx]
+		if (!char) return ''
+		// Only color submitted guesses
+		if (guessIdx >= props.guesses.length) return ''
+
+		const answerUpper = props.answer.toUpperCase()
+		const guessUpper = guess.toUpperCase()
+
+		// Process the entire word to get the correct feedback for each position
+		const result = processWordFeedback(guessUpper, answerUpper)
+		return result[charIdx]
+	}
+
+	function processWordFeedback(guess: string, answer: string): string[] {
+		const result = new Array(guess.length).fill('absent')
+		const answerArray = answer.split('')
+
+		// Step 1: Mark all correct positions first
+		for (let i = 0; i < guess.length; i++) {
+			if (guess[i] === answerArray[i]) {
+				result[i] = 'correct'
+				answerArray[i] = 'USED' // Mark as used
 			}
 		}
+
+		// Step 2: Mark present positions (only for letters not already used)
+		for (let i = 0; i < guess.length; i++) {
+			if (result[i] !== 'correct') {
+				// Skip already correct positions
+				const letter = guess[i]
+				if (letter) {
+					// TypeScript safety check
+					// Check if this letter exists in unused positions of the answer
+					const index = answerArray.indexOf(letter)
+					if (index !== -1) {
+						result[i] = 'present'
+						answerArray[index] = 'USED' // Mark this instance as used
+					}
+					// If not found, it remains 'absent' (which is the default)
+				}
+			}
+		}
+
+		return result
 	}
-	
-	return result
-}
 
-function shouldAnimate(guessIdx: number, charIdx: number) {
-	return guessIdx < props.guesses.length && props.guesses[guessIdx]?.[charIdx]
-}
+	function shouldAnimate(guessIdx: number, charIdx: number) {
+		return guessIdx < props.guesses.length && props.guesses[guessIdx]?.[charIdx]
+	}
 
-function getAnimationDelay(guessIdx: number, charIdx: number) {
-	if (!shouldAnimate(guessIdx, charIdx)) return {}
-	const delay = charIdx * 0.1
-	return { animationDelay: `${delay}s` }
-}
+	function getAnimationDelay(guessIdx: number, charIdx: number) {
+		if (!shouldAnimate(guessIdx, charIdx)) return {}
+		const delay = charIdx * 0.1
+		return { animationDelay: `${delay}s` }
+	}
 </script>
 
 <style scoped lang="scss">
@@ -199,7 +209,9 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		position: absolute;
 		top: 4rem;
 		transform: translateX(-50%) translateY(-4px);
-		transition: opacity 0.2s, transform 0.2s;
+		transition:
+			opacity 0.2s,
+			transform 0.2s;
 		white-space: nowrap;
 		z-index: 100;
 
@@ -224,7 +236,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 			align-items: center;
 			display: flex;
 			justify-content: space-between;
-			padding: .5rem 1rem;
+			padding: 0.5rem 1rem;
 			width: 100%;
 
 			.timer {
@@ -258,7 +270,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 				gap: 0.25rem;
 				justify-content: center;
 				margin-bottom: 0.25rem;
-				
+
 				.letter {
 					align-items: center;
 					background: var(--bg-secondary);
@@ -274,23 +286,23 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 					transform-style: preserve-3d;
 					transition: all 0.2s;
 					width: 3rem;
-					
+
 					&.animate {
 						animation: flipIn 0.6s ease-in-out forwards;
 					}
-					
+
 					&.correct {
 						background: var(--color-success);
 						border-color: var(--color-success);
 						color: white;
 					}
-					
+
 					&.present {
 						background: var(--color-present);
 						border-color: var(--color-present);
 						color: white;
 					}
-					
+
 					&.absent {
 						background: var(--color-absent);
 						border-color: var(--color-absent);
@@ -299,15 +311,14 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 				}
 			}
 		}
-		
-		
+
 		.pause-overlay {
 			align-items: center;
 			backdrop-filter: blur(8px);
 			background: rgb(0 0 0 / 80%);
-			inset: 0;
 			cursor: pointer;
 			display: flex;
+			inset: 0;
 			justify-content: center;
 			position: fixed;
 			z-index: 1000;
@@ -328,7 +339,7 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 					align-items: center;
 					color: var(--text-primary);
 					display: flex;
-					gap: .5rem;
+					gap: 0.5rem;
 					margin-bottom: 0.5rem;
 
 					svg {
@@ -346,8 +357,16 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 	}
 
 	@keyframes flipIn {
-		0% { transform: rotateX(0deg); }
-		50% { transform: rotateX(90deg); }
-		100% { transform: rotateX(0deg); }
+		0% {
+			transform: rotateX(0deg);
+		}
+
+		50% {
+			transform: rotateX(90deg);
+		}
+
+		100% {
+			transform: rotateX(0deg);
+		}
 	}
-</style> 
+</style>
