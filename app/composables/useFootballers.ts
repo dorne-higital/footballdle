@@ -28,6 +28,7 @@ export const footballers: Footballer[] = [
 	{ name: 'cuyper', club: 'Brighton & Hove Albion', nationality: 'Belgian', position: 'Defender' },
 	{ name: 'darlow', club: 'Leeds United', nationality: 'Welsh', position: 'Goalkeeper' },
 	{ name: 'davies', club: 'Liverpool', nationality: 'English', position: 'Goalkeeper' },
+	{ name: 'delight', club: 'Manchester United', nationality: 'Dutch', position: 'Defender' },
 	{ name: 'diallo', club: 'Manchester United', nationality: 'Ivorian', position: 'Midfielder' },
 	{ name: 'diarra', club: 'Sunderland', nationality: 'Senegalese', position: 'Midfielder' },
 	{ name: 'disasi', club: 'West Ham', nationality: 'French', position: 'Midfielder' },
