@@ -395,7 +395,7 @@
 								@click="handleStatsTabSwitch('challenge')"
 							>
 								<Icon
-									name="solar:lightning-linear"
+									name="solar:alarm-play-bold"
 									size="1rem"
 								/>
 								<span>Challenge</span>
@@ -1593,23 +1593,24 @@
 				.toggle-btn {
 					align-items: center;
 					background: transparent;
-					border: none;
+					border: 1px solid var(--border);
 					border-radius: calc(var(--global-border-radius) - 2px);
 					color: var(--text-secondary);
 					cursor: pointer;
 					display: flex;
 					flex: 1;
-					font-size: 0.9rem;
+					font-size: 0.75rem;
 					font-weight: 500;
 					gap: 0.5rem;
 					justify-content: center;
+					line-height: 1rem;
 					overflow: hidden;
 					padding: 0.75rem 1rem;
 					position: relative;
 					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
 					&::before {
-						background: var(--primary-color);
+						background: var(--bg-gradient);
 						content: '';
 						inset: 0;
 						opacity: 0;
@@ -1635,7 +1636,8 @@
 					}
 
 					&.active {
-						color: white;
+						color: var(--text-primary);
+						font-weight: 500;
 
 						&::before {
 							opacity: 1;
