@@ -118,7 +118,10 @@
 						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
 					</p>
 					<div class="share-preview">
-						<p class="share-header">Footballdle ⚽ {{ gameStore.todayStr }} &nbsp;·&nbsp; {{ gameStore.isWin ? gameStore.guesses.length : 'X' }}/6</p>
+						<p class="share-header">
+							Footballdle ⚽ #{{ gameStore.puzzleNumber }} &nbsp;·&nbsp;
+							{{ gameStore.isWin ? gameStore.guesses.length : 'X' }}/6
+						</p>
 						<div class="share-emoji-grid">
 							<div
 								v-for="(guess, gi) in gameStore.guesses"
@@ -130,8 +133,14 @@
 									:key="ci"
 									class="share-tile"
 									:class="{
-										correct: gameStore.answer[ci] && char.toUpperCase() === gameStore.answer[ci].toUpperCase(),
-										present: !( gameStore.answer[ci] && char.toUpperCase() === gameStore.answer[ci].toUpperCase()) && gameStore.answer.toUpperCase().includes(char.toUpperCase()),
+										correct:
+											gameStore.answer[ci] &&
+											char.toUpperCase() === gameStore.answer[ci].toUpperCase(),
+										present:
+											!(
+												gameStore.answer[ci] &&
+												char.toUpperCase() === gameStore.answer[ci].toUpperCase()
+											) && gameStore.answer.toUpperCase().includes(char.toUpperCase()),
 										absent: !gameStore.answer.toUpperCase().includes(char.toUpperCase()),
 									}"
 								></span>
@@ -432,7 +441,9 @@
 											:class="{ highlight: lastGuessCount === n }"
 											:style="{ width: getBarWidth(n, statsStore.stats.guessDistribution) }"
 										>
-											<span class="dist-count">{{ statsStore.stats.guessDistribution[String(n)] || 0 }}</span>
+											<span class="dist-count">{{
+												statsStore.stats.guessDistribution[String(n)] || 0
+											}}</span>
 										</div>
 									</div>
 								</div>
@@ -482,9 +493,13 @@
 										<div
 											class="dist-bar"
 											:class="{ highlight: lastChallengeGuessCount === n }"
-											:style="{ width: getBarWidth(n, challengeStore.challengeStats.guessDistribution) }"
+											:style="{
+												width: getBarWidth(n, challengeStore.challengeStats.guessDistribution),
+											}"
 										>
-											<span class="dist-count">{{ challengeStore.challengeStats.guessDistribution[String(n)] || 0 }}</span>
+											<span class="dist-count">{{
+												challengeStore.challengeStats.guessDistribution[String(n)] || 0
+											}}</span>
 										</div>
 									</div>
 								</div>
@@ -515,7 +530,9 @@
 
 					<div class="share-preview">
 						<p class="share-header">
-							Footballdle ⚽ Challenge{{ challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : '' }}
+							Footballdle ⚽ Challenge{{
+								challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : ''
+							}}
 						</p>
 						<div class="share-emoji-grid">
 							<div
@@ -528,9 +545,18 @@
 									:key="ci"
 									class="share-tile"
 									:class="{
-										correct: challengeStore.currentAnswer[ci] && char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase(),
-										present: !(challengeStore.currentAnswer[ci] && char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase()) && challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
-										absent: !challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
+										correct:
+											challengeStore.currentAnswer[ci] &&
+											char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase(),
+										present:
+											!(
+												challengeStore.currentAnswer[ci] &&
+												char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase()
+											) &&
+											challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
+										absent: !challengeStore.currentAnswer
+											.toUpperCase()
+											.includes(char.toUpperCase()),
 									}"
 								></span>
 							</div>
@@ -611,17 +637,17 @@
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
-		link: [
-			{ rel: 'canonical', href: 'https://footballdle.co.uk' },
-		],
+		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk' }],
 		meta: [
 			{
 				name: 'description',
-				content: 'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
+				content:
+					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
 			},
 			{
 				name: 'keywords',
-				content: 'football wordle, premier league wordle, footballdle, guess the footballer, daily football game, footballer guessing game, EPL word game, premier league quiz, football puzzle, soccer wordle, premier league game',
+				content:
+					'football wordle, premier league wordle, footballdle, guess the footballer, daily football game, footballer guessing game, EPL word game, premier league quiz, football puzzle, soccer wordle, premier league game',
 			},
 			{
 				name: 'author',
@@ -642,7 +668,8 @@
 			},
 			{
 				property: 'og:description',
-				content: 'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new challenge every day.',
+				content:
+					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new challenge every day.',
 			},
 			{
 				property: 'og:image',
@@ -682,7 +709,8 @@
 					'@type': 'WebApplication',
 					name: 'Footballdle',
 					url: 'https://footballdle.co.uk',
-					description: 'Daily Premier League football wordle. Guess the 6-letter footballer surname in 6 tries.',
+					description:
+						'Daily Premier League football wordle. Guess the 6-letter footballer surname in 6 tries.',
 					applicationCategory: 'Game',
 					genre: 'Puzzle',
 					gamePlatform: 'Web Browser',
@@ -829,7 +857,8 @@
 	// EVENT HANDLERS
 	// ============================================================================
 	async function handleShare() {
-		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		const label = `#${gameStore.puzzleNumber}`
+		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, label)
 		if (copied) {
 			shareToast.value = true
 			if (shareToastTimer) clearTimeout(shareToastTimer)
@@ -841,7 +870,7 @@
 	}
 
 	function handleShareTwitter() {
-		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.todayStr)
+		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, `#${gameStore.puzzleNumber}`)
 		trackShare('twitter')
 	}
 
@@ -955,17 +984,13 @@
 		align-items: stretch;
 		background: var(--bg-gradient);
 		display: flex;
-		height: 100dvh;
 		justify-content: center;
 		padding: 1rem;
 		position: relative;
 
 		.game-screen,
 		.challenge-screen {
-			background: var(--bg-secondary);
-			border: 1px solid var(--border);
 			border-radius: var(--global-border-radius);
-			box-shadow: 0 8px 32px rgb(0 0 0 / 10%);
 			display: flex;
 			flex-direction: column;
 			max-width: 500px;

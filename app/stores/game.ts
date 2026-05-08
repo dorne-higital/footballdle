@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { getAnswerForDay, isValidFootballer, getPlayerData } from '../composables/useFootballers'
+import { getAnswerForDay, isValidFootballer, getPlayerData, getPuzzleNumber } from '../composables/useFootballers'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -26,6 +26,7 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	const todayStr = getUKDateString() || ''
 	const answer = getAnswerForDay(todayStr) || ''
+	const puzzleNumber = getPuzzleNumber(todayStr)
 	const nextGameTime = getNextGameTime()
 
 	// Game state
@@ -220,6 +221,7 @@ export const useGameStore = defineStore('game', () => {
 		countdown,
 		answer,
 		todayStr,
+		puzzleNumber,
 		errorMessage,
 		
 		// Computed

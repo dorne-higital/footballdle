@@ -143,6 +143,17 @@ const footballerMap = new Map(footballers.map((f) => [f.name.toUpperCase(), f]))
 // Cache for memoized daily answers
 const answerCache = new Map<string, string>()
 
+const EPOCH = '08/05/2026' // DD/MM/YYYY — Puzzle #1 launch date
+
+export function getPuzzleNumber(dateStr: string): number {
+	const [d1, m1, y1] = EPOCH.split('/').map(Number)
+	const [d2, m2, y2] = dateStr.split('/').map(Number)
+	const epochDate = new Date(y1!, m1! - 1, d1)
+	const todayDate = new Date(y2!, m2! - 1, d2)
+	const diff = Math.round((todayDate.getTime() - epochDate.getTime()) / (24 * 60 * 60 * 1000))
+	return diff + 1
+}
+
 export function getAnswerForDay(dateStr: string): string {
 	if (answerCache.has(dateStr)) return answerCache.get(dateStr)!
 	const hash = Array.from(dateStr).reduce((acc, c) => acc + c.charCodeAt(0), 0)
