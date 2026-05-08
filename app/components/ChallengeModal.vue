@@ -180,7 +180,6 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 
 <style scoped lang="scss">
 	.challenge-game {
-
 		.challenge-nav {
 			align-items: center;
 			display: flex;
@@ -214,24 +213,24 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 			.guess-row {
 				display: flex;
 				gap: 0.25rem;
-				margin-bottom: 0.25rem;
 				justify-content: center;
+				margin-bottom: 0.25rem;
 				
 				.letter {
-					width: 3rem;
-					height: 3rem;
-					border: 2px solid var(--border);
-					display: flex;
 					align-items: center;
-					justify-content: center;
-					font-weight: 700;
-					font-size: 1.2rem;
-					text-transform: uppercase;
 					background: var(--bg-secondary);
+					border: 2px solid var(--border);
 					color: var(--text-primary);
-					transition: all 0.2s;
-					transform-style: preserve-3d;
+					display: flex;
+					font-size: 1.2rem;
+					font-weight: 700;
+					height: 3rem;
+					justify-content: center;
 					perspective: 1000px;
+					text-transform: uppercase;
+					transform-style: preserve-3d;
+					transition: all 0.2s;
+					width: 3rem;
 					
 					&.animate {
 						animation: flipIn 0.6s ease-in-out forwards;
@@ -260,30 +259,27 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 		
 		
 		.pause-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-			background: rgba(0, 0, 0, 0.8);
-			backdrop-filter: blur(8px);
-			display: flex;
 			align-items: center;
-			justify-content: center;
-			z-index: 1000;
+			backdrop-filter: blur(8px);
+			background: rgb(0 0 0 / 80%);
+			inset: 0;
 			cursor: pointer;
+			display: flex;
+			justify-content: center;
+			position: fixed;
+			z-index: 1000;
 
 			.pause-content {
 				align-items: center;
 				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
+				box-shadow: 0 8px 32px rgb(0 0 0 / 30%);
 				display: flex;
 				flex-direction: column;
 				gap: 1rem;
 				padding: 2rem;
 				text-align: center;
-				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
 				h2 {
 					align-items: center;
@@ -299,8 +295,8 @@ function getAnimationDelay(guessIdx: number, charIdx: number) {
 
 				p {
 					color: var(--text-secondary);
-					margin: 0;
 					font-size: 1rem;
+					margin: 0;
 				}
 			}
 		}

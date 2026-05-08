@@ -1,33 +1,52 @@
 <template>
 	<div :class="componentName">
 		<div class="row">
-			<button 
-				v-for="key in row1" 
-				:key="key" 
-				@click="press(key)" 
+			<button
+				v-for="key in row1"
+				:key="key"
+				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
-			>{{ key }}</button>
+			>
+				{{ key }}
+			</button>
 		</div>
 		<div class="row">
-			<button 
-				v-for="key in row2" 
-				:key="key" 
-				@click="press(key)" 
+			<button
+				v-for="key in row2"
+				:key="key"
+				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
-			>{{ key }}</button>
+			>
+				{{ key }}
+			</button>
 		</div>
 		<div class="row">
-			<button @click="press('ENTER')" :disabled="disabled" data-key="ENTER" class="enter">ENTER</button>
-			<button 
-				v-for="key in row3" 
-				:key="key" 
-				@click="press(key)" 
+			<button
+				@click="press('ENTER')"
+				:disabled="disabled"
+				data-key="ENTER"
+				class="enter"
+			>
+				ENTER
+			</button>
+			<button
+				v-for="key in row3"
+				:key="key"
+				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
-			>{{ key }}</button>
-			<button @click="press('BACKSPACE')" :disabled="disabled" data-key="BACKSPACE">⌫</button>
+			>
+				{{ key }}
+			</button>
+			<button
+				@click="press('BACKSPACE')"
+				:disabled="disabled"
+				data-key="BACKSPACE"
+			>
+				⌫
+			</button>
 		</div>
 	</div>
 </template>
@@ -36,41 +55,41 @@
 	import { onMounted, onUnmounted, watch, toRef } from 'vue'
 
 	const props = withDefaults(
-		defineProps < {
-			componentName?: string,
-			disabled?: boolean,
-			guesses?: string[],
+		defineProps<{
+			componentName?: string
+			disabled?: boolean
+			guesses?: string[]
 			answer?: string
 		}>(),
 		{
 			componentName: 'keyboard',
 			guesses: () => [],
-			answer: ''
-		}
+			answer: '',
+		},
 	)
 
 	const emit = defineEmits(['key'])
-	const row1 = ['Q','W','E','R','T','Y','U','I','O','P']
-	const row2 = ['A','S','D','F','G','H','J','K','L']
-	const row3 = ['Z','X','C','V','B','N','M']
+	const row1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']
+	const row2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']
+	const row3 = ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
 
 	const disabledRef = toRef(props, 'disabled')
 
 	function getKeyFeedback(key: string): string {
 		if (!props.answer || props.guesses.length === 0) return ''
-		
+
 		const answerUpper = props.answer.toUpperCase()
 		const keyUpper = key.toUpperCase()
-		
+
 		// Check if this key appears in any submitted guess
 		let isCorrect = false
 		let isPresent = false
 		let isAbsent = false
-		
+
 		for (const guess of props.guesses) {
 			const guessUpper = guess.toUpperCase()
 			const result = processWordFeedback(guessUpper, answerUpper)
-			
+
 			// Check if this key appears in the result
 			for (let i = 0; i < guessUpper.length; i++) {
 				if (guessUpper[i] === keyUpper) {
@@ -84,19 +103,19 @@
 				}
 			}
 		}
-		
+
 		// Priority: correct > present > absent
 		if (isCorrect) return 'correct'
 		if (isPresent) return 'present'
 		if (isAbsent) return 'absent'
-		
+
 		return ''
 	}
-	
+
 	function processWordFeedback(guess: string, answer: string): string[] {
 		const result = new Array(guess.length).fill('absent')
 		const answerArray = answer.split('')
-		
+
 		// Step 1: Mark all correct positions first
 		for (let i = 0; i < guess.length; i++) {
 			if (guess[i] === answerArray[i]) {
@@ -104,12 +123,14 @@
 				answerArray[i] = 'USED' // Mark as used
 			}
 		}
-		
+
 		// Step 2: Mark present positions (only for letters not already used)
 		for (let i = 0; i < guess.length; i++) {
-			if (result[i] !== 'correct') { // Skip already correct positions
+			if (result[i] !== 'correct') {
+				// Skip already correct positions
 				const letter = guess[i]
-				if (letter) { // TypeScript safety check
+				if (letter) {
+					// TypeScript safety check
 					const index = answerArray.indexOf(letter)
 					if (index !== -1) {
 						result[i] = 'present'
@@ -118,7 +139,7 @@
 				}
 			}
 		}
-		
+
 		return result
 	}
 
@@ -150,47 +171,49 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		width: 100%;
-		max-width: 500px;
 		margin: 0 auto;
-		padding: 0 .5rem;
+		max-width: 500px;
+		padding: 0 0.5rem;
+		width: 100%;
 
 		.row {
 			display: flex;
-			justify-content: center;
 			gap: 0.3rem;
+			justify-content: center;
 
 			button {
-				flex: 1 1 0;
-				width: 48px;
-				height: 58px;
+				align-items: center;
 				background: #d3d6da;
 				border: none;
 				border-radius: 6px;
-				font-size: 1.5rem;
+				box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
 				color: #222;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-				transition: background 0.1s, color 0.1s;
 				cursor: pointer;
+				display: flex;
+				flex: 1 1 0;
+				font-size: 1.5rem;
+				height: 58px;
+				justify-content: center;
+				transition:
+					background 0.1s,
+					color 0.1s;
 				user-select: none;
+				width: 48px;
 
 				&:active {
 					background: #b5b8ba;
 				}
 
 				&:disabled {
-					opacity: 0.5;
 					cursor: not-allowed;
+					opacity: 0.5;
 				}
 
 				&[data-key='ENTER'],
 				&[data-key='BACKSPACE'] {
 					flex: 1.5 1 0;
+					font-size: 0.8rem;
 					max-width: 72px;
-					font-size: .8rem;
 					padding: 0 2px;
 				}
 
@@ -215,4 +238,4 @@
 			}
 		}
 	}
-</style> 
+</style>

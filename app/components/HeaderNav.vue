@@ -1,35 +1,49 @@
 <template>
-	<section 
-		:class="componentName" 
+	<section
+		:class="componentName"
 		class="sw-small"
 	>
 		<div class="left-section">
-			<Icon 
+			<Icon
 				v-if="showBackButton"
 				name="solar:home-smile-linear"
-				size="1.5rem" 
+				size="1.5rem"
 				@click="$emit('back-to-menu')"
 				class="back-to-menu"
 			/>
 		</div>
-		
+
 		<div class="button-container">
-			<Icon 
-				name="uil:info-circle" 
-				@click="$emit('show-info')" 
-				size="1.5em" 
+			<a
+				href="https://buymeacoffee.com/dhorne92E"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="coffee-link"
+				@click="$emit('buy-coffee', 'header')"
+				aria-label="Buy me a coffee"
+			>
+				<Icon
+					name="uil:coffee"
+					size="1.5em"
+				/>
+			</a>
+
+			<Icon
+				name="uil:info-circle"
+				@click="$emit('show-info')"
+				size="1.5em"
 			/>
 
-			<Icon 
-				name="uil:setting" 
-				@click="$emit('show-settings')" 
-				size="1.5em" 
+			<Icon
+				name="uil:setting"
+				@click="$emit('show-settings')"
+				size="1.5em"
 			/>
 
-			<Icon 
-				name="uil:statistics" 
-				@click="$emit('show-stats')" 
-				size="1.5em" 
+			<Icon
+				name="uil:statistics"
+				@click="$emit('show-stats')"
+				size="1.5em"
 			/>
 		</div>
 	</section>
@@ -43,30 +57,46 @@
 		}>(),
 		{
 			componentName: 'header-nav',
-			showBackButton: false
-		}
+			showBackButton: false,
+		},
 	)
 </script>
 
 <style scoped lang="scss">
 	.header-nav {
+		align-items: center;
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
-		padding: .5rem 1rem;
+		padding: 0.5rem 1rem;
 		width: 100%;
 
 		.left-section {
-			display: flex;
 			align-items: center;
+			display: flex;
 		}
 
 		.button-container {
+			align-items: center;
 			display: flex;
-			gap: .5rem;
+			gap: 0.5rem;
 
 			span {
 				cursor: pointer;
+			}
+
+			.coffee-link {
+				align-items: center;
+				border-bottom: none;
+				color: var(--text-primary);
+				display: flex;
+				text-decoration: none;
+				transition: all 0.2s;
+
+				&:hover {
+					border-bottom: none;
+					color: var(--primary-color);
+					transform: scale(1.1);
+				}
 			}
 		}
 
@@ -74,10 +104,10 @@
 			color: var(--text-primary);
 			cursor: pointer;
 			transition: all 0.2s;
-			
+
 			&:hover {
 				transform: scale(1.1);
 			}
 		}
 	}
-</style> 
+</style>

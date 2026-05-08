@@ -1,7 +1,10 @@
 <template>
 	<div class="page-container">
 		<!-- Loading Overlay -->
-		<div v-if="isLoading" class="loading-overlay">
+		<div
+			v-if="isLoading"
+			class="loading-overlay"
+		>
 			<div class="loading-content">
 				<Loader />
 			</div>
@@ -20,37 +23,45 @@
 			@show-info="handleShowInfo"
 			@show-settings="handleShowSettings"
 			@show-stats="handleShowStats"
+			@buy-coffee="handleBuyMeCoffee"
 		/>
 
 		<!-- Game Screen -->
-		<div v-else-if="!challengeStore.isActive" class="game-screen">
-			<HeaderNav 
+		<div
+			v-else-if="!challengeStore.isActive"
+			class="game-screen"
+		>
+			<HeaderNav
 				:show-back-button="true"
-				@show-info="handleShowInfo" 
-				@show-settings="handleShowSettings" 
-				@show-stats="handleShowStats" 
+				@show-info="handleShowInfo"
+				@show-settings="handleShowSettings"
+				@show-stats="handleShowStats"
 				@back-to-menu="handleBackToMenu"
+				@buy-coffee="handleBuyMeCoffee"
 			/>
 
-			<GameBoard 
-				:guesses="gameStore.guesses" 
-				:answer="gameStore.answer" 
-				:maxGuesses="gameStore.maxGuesses" 
-				:currentGuess="gameStore.currentGuess" 
-			/>
-
-			<Keyboard 
-				:disabled="gameStore.gameOver" 
-				:guesses="gameStore.guesses" 
-				:answer="gameStore.answer" 
+			<GameBoard
+				:guesses="gameStore.guesses"
+				:answer="gameStore.answer"
 				:maxGuesses="gameStore.maxGuesses"
 				:currentGuess="gameStore.currentGuess"
-				@key="handleKeyboardKey" 
+			/>
+
+			<Keyboard
+				:disabled="gameStore.gameOver"
+				:guesses="gameStore.guesses"
+				:answer="gameStore.answer"
+				:maxGuesses="gameStore.maxGuesses"
+				:currentGuess="gameStore.currentGuess"
+				@key="handleKeyboardKey"
 			/>
 		</div>
 
 		<!-- Challenge Screen -->
-		<div v-else-if="challengeStore.isActive" class="challenge-screen">
+		<div
+			v-else-if="challengeStore.isActive"
+			class="challenge-screen"
+		>
 			<ChallengeModal
 				:guesses="challengeStore.guesses"
 				:current-guess="challengeStore.currentGuess"
@@ -80,8 +91,15 @@
 				<div class="game-over-section">
 					<h4 v-if="gameStore.isWin">You win!</h4>
 					<h4 v-else>You lose!</h4>
-					<p>The answer was <strong class="answer">{{ gameStore.answer }}</strong></p>
-					<button @click="handleShare" class="button primary share">Share</button>
+					<p>
+						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
+					</p>
+					<button
+						@click="handleShare"
+						class="button primary share"
+					>
+						Share
+					</button>
 				</div>
 			</template>
 
@@ -90,6 +108,19 @@
 					<p class="caption">Next game in:</p>
 					<h3>{{ gameStore.countdown }}</h3>
 				</div>
+				<a
+					href="https://buymeacoffee.com/dhorne92E"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="coffee-nudge"
+					@click="handleBuyMeCoffee('game_over_modal')"
+				>
+					<Icon
+						name="uil:coffee"
+						size="0.9rem"
+					/>
+					Enjoying Footballdle? Buy me a coffee
+				</a>
 			</template>
 		</BaseModal>
 
@@ -120,7 +151,9 @@
 							<span class="letter">E</span>
 							<span class="letter">R</span>
 						</span>
-						<p class="caption">The letter <strong>A</strong> is in the answer and in the correct position.</p>
+						<p class="caption">
+							The letter <strong>A</strong> is in the answer and in the correct position.
+						</p>
 
 						<span class="example">
 							<span class="letter">D</span>
@@ -144,16 +177,16 @@
 					</div>
 
 					<p>A new player is revealed every day at midnight.</p>
-				
+
 					<div class="info-footer">
 						<p class="caption">
-							Footballdle is a word game inspired by Wordle. It is not affiliated with the Premier League or any other football club.
+							Footballdle is a word game inspired by Wordle. It is not affiliated with the Premier League
+							or any other football club.
 						</p>
 
 						<p class="caption">
 							If you spot any missing players, get in touch and I can add them right away.
 						</p>
-
 					</div>
 				</div>
 			</template>
@@ -171,9 +204,9 @@
 					<div class="setting-group">
 						<label>Choose Theme</label>
 						<p>Select your preferred theme</p>
-						
+
 						<div class="theme-grid">
-							<button 
+							<button
 								:class="['theme-option', { active: themeStore.currentTheme === 'light' }]"
 								@click="themeStore.setTheme('light')"
 							>
@@ -187,8 +220,8 @@
 								</div>
 								<span class="theme-name">Light</span>
 							</button>
-							
-							<button 
+
+							<button
 								:class="['theme-option', { active: themeStore.currentTheme === 'dark' }]"
 								@click="themeStore.setTheme('dark')"
 							>
@@ -202,8 +235,8 @@
 								</div>
 								<span class="theme-name">Dark</span>
 							</button>
-							
-							<button 
+
+							<button
 								:class="['theme-option', { active: themeStore.currentTheme === 'greyscale' }]"
 								@click="themeStore.setTheme('greyscale')"
 							>
@@ -217,8 +250,8 @@
 								</div>
 								<span class="theme-name">Greyscale</span>
 							</button>
-							
-							<button 
+
+							<button
 								:class="['theme-option', { active: themeStore.currentTheme === 'pastel' }]"
 								@click="themeStore.setTheme('pastel')"
 							>
@@ -233,6 +266,24 @@
 								<span class="theme-name">Pastel</span>
 							</button>
 						</div>
+					</div>
+
+					<div class="setting-group support-group">
+						<label>Support Footballdle</label>
+						<p>Enjoying the game? Help keep it free and ad-light.</p>
+						<a
+							href="https://buymeacoffee.com/dhorne92E"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="coffee-button"
+							@click="handleBuyMeCoffee('settings_modal')"
+						>
+							<Icon
+								name="uil:coffee"
+								size="1rem"
+							/>
+							Buy me a coffee
+						</a>
 					</div>
 				</div>
 			</template>
@@ -250,19 +301,25 @@
 					<!-- Stats Toggle -->
 					<div class="stats-toggle">
 						<div class="toggle-container">
-							<button 
+							<button
 								:class="['toggle-btn', { active: activeStatsTab === 'daily' }]"
-								@click="activeStatsTab = 'daily'"
+								@click="handleStatsTabSwitch('daily')"
 							>
-								<Icon name="solar:calendar-linear" size="1rem" />
+								<Icon
+									name="solar:calendar-linear"
+									size="1rem"
+								/>
 								<span>Daily</span>
 							</button>
-							<button 
+							<button
 								v-if="challengeStore.challengeStats.gamesPlayed > 0"
 								:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
-								@click="activeStatsTab = 'challenge'"
+								@click="handleStatsTabSwitch('challenge')"
 							>
-								<Icon name="solar:lightning-linear" size="1rem" />
+								<Icon
+									name="solar:lightning-linear"
+									size="1rem"
+								/>
 								<span>Challenge</span>
 							</button>
 						</div>
@@ -271,9 +328,7 @@
 					<!-- Stats Content Container -->
 					<div class="stats-content-container">
 						<!-- Daily Game Stats -->
-						<div 
-							:class="['stats-content', { active: activeStatsTab === 'daily' }]"
-						>
+						<div :class="['stats-content', { active: activeStatsTab === 'daily' }]">
 							<div class="stats-grid">
 								<div class="stat-card">
 									<h3>{{ statsStore.stats.gamesPlayed }}</h3>
@@ -292,11 +347,11 @@
 									<p class="caption">Max Streak</p>
 								</div>
 							</div>
-							
+
 							<div class="win-rate">
 								<div class="progress-bar">
-									<div 
-										class="progress-fill" 
+									<div
+										class="progress-fill"
 										:style="{ width: `${statsStore.winPercentage}%` }"
 									></div>
 								</div>
@@ -305,9 +360,7 @@
 						</div>
 
 						<!-- Challenge Stats -->
-						<div 
-							:class="['stats-content', { active: activeStatsTab === 'challenge' }]"
-						>
+						<div :class="['stats-content', { active: activeStatsTab === 'challenge' }]">
 							<div class="stats-grid">
 								<div class="stat-card">
 									<h3>{{ challengeStore.challengeStats.gamesPlayed }}</h3>
@@ -326,11 +379,11 @@
 									<p class="caption">Best Time</p>
 								</div>
 							</div>
-							
+
 							<div class="win-rate">
 								<div class="progress-bar">
-									<div 
-										class="progress-fill" 
+									<div
+										class="progress-fill"
 										:style="{ width: `${challengeStore.winPercentage}%` }"
 									></div>
 								</div>
@@ -352,23 +405,45 @@
 		>
 			<template #body>
 				<div class="challenge-game-over-section">
-					<h4 v-if="challengeStore.isWin">You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!</h4>
+					<h4 v-if="challengeStore.isWin">
+						You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!
+					</h4>
 					<h4 v-else>Better luck next time!</h4>
-					<p>The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong></p>
+					<p>
+						The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong>
+					</p>
 					<div class="challenge-buttons">
-						<nuxt-link @click="handleEndChallenge" class="button link">
-							<Icon 
+						<nuxt-link
+							@click="handleEndChallenge"
+							class="button link"
+						>
+							<Icon
 								name="solar:alt-arrow-left-linear"
-								size="1rem" 
+								size="1rem"
 							/>
-
 							Home
 						</nuxt-link>
 
-						<button @click="challengeStore.startChallenge" class="button primary full">
+						<button
+							@click="handleChallengePlayAgain"
+							class="button primary full"
+						>
 							Play Again
 						</button>
 					</div>
+					<a
+						href="https://buymeacoffee.com/dhorne92E"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="coffee-nudge"
+						@click="handleBuyMeCoffee('challenge_over_modal')"
+					>
+						<Icon
+							name="uil:coffee"
+							size="0.9rem"
+						/>
+						Enjoying Footballdle? Buy me a coffee
+					</a>
 				</div>
 			</template>
 		</BaseModal>
@@ -389,49 +464,49 @@
 	useHead({
 		script: [
 			{
-			type: 'application/ld+json',
-			children: JSON.stringify({
-					"@context": "https://schema.org",
-					"@type": "WebSite",
-					"name": "Footballdle",
-					"url": "https://footballdle.co.uk"
-				})
-			}
+				type: 'application/ld+json',
+				children: JSON.stringify({
+					'@context': 'https://schema.org',
+					'@type': 'WebSite',
+					name: 'Footballdle',
+					url: 'https://footballdle.co.uk',
+				}),
+			},
 		],
 		title: 'Footballdle | Guess the Premier League footballer',
 		meta: [
 			{
 				name: 'description',
-				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.',
 			},
 			{
 				name: 'keywords',
-				content: 'Premier League, Wordle, Football Game, Soccer Puzzle, Daily Game'
+				content: 'Premier League, Wordle, Football Game, Soccer Puzzle, Daily Game',
 			},
 			{
 				name: 'author',
-				content: 'Footballdle'
+				content: 'Footballdle',
 			},
 			{
 				name: 'robots',
-				content: 'index, follow'
+				content: 'index, follow',
 			},
 			{
 				name: 'og:title',
-				content: 'Footballdle | Guess the Premier League footballer'
+				content: 'Footballdle | Guess the Premier League footballer',
 			},
 			{
 				name: 'og:description',
-				content: 'Guess the 6-letter Premier League footballer in 6 tries.'
+				content: 'Guess the 6-letter Premier League footballer in 6 tries.',
 			},
 			{
-			property: 'og:image',
-			content: 'https://footballdle.co.uk/og-image.png'
+				property: 'og:image',
+				content: 'https://footballdle.co.uk/og-image.png',
 			},
 			{
-			property: 'og:url',
-			content: 'https://footballdle.co.uk'
-			}
+				property: 'og:url',
+				content: 'https://footballdle.co.uk',
+			},
 		],
 	})
 
@@ -444,114 +519,32 @@
 	const modalsStore = useModalsStore()
 	const challengeStore = useChallengeStore()
 	const { onShare } = useShare()
-	
-	// Analytics tracking functions (client-side only)
-	const trackGameStart = () => {
-		try {
-			const { trackGameStart: track } = useAnalytics()
-			track()
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackGameWin = (guesses: number) => {
-		try {
-			const { trackGameWin: track } = useAnalytics()
-			track(guesses)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackGameLoss = (guesses: number) => {
-		try {
-			const { trackGameLoss: track } = useAnalytics()
-			track(guesses)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackGameAbandon = (guesses: number) => {
-		try {
-			const { trackGameAbandon: track } = useAnalytics()
-			track(guesses)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackChallengeStart = () => {
-		try {
-			const { trackChallengeStart: track } = useAnalytics()
-			track()
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackChallengeWin = (timeUsed: number) => {
-		try {
-			const { trackChallengeWin: track } = useAnalytics()
-			track(timeUsed)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackChallengeLoss = (timeUsed: number) => {
-		try {
-			const { trackChallengeLoss: track } = useAnalytics()
-			track(timeUsed)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackChallengeAbandon = (timeUsed: number) => {
-		try {
-			const { trackChallengeAbandon: track } = useAnalytics()
-			track(timeUsed)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackShare = (platform?: string) => {
-		try {
-			const { trackShare: track } = useAnalytics()
-			track(platform)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackModalOpen = (modalName: string) => {
-		try {
-			const { trackModalOpen: track } = useAnalytics()
-			track(modalName)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackHomeClick = (location: string) => {
-		try {
-			const { trackHomeClick: track } = useAnalytics()
-			track(location)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
-	}
-	
-	const trackSessionTime = (duration: number) => {
-		try {
-			const { trackSessionTime: track } = useAnalytics()
-			track(duration)
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
+
+	const {
+		trackGameStart,
+		trackGameWin,
+		trackGameLoss,
+		trackGameAbandon,
+		trackGuessSubmitted,
+		trackIntroButtonClick,
+		trackStatsTabSwitch,
+		trackChallengeStart,
+		trackChallengeWin,
+		trackChallengeLoss,
+		trackChallengeAbandon,
+		trackChallengePlayAgain,
+		trackShare,
+		trackModalOpen,
+		trackHomeClick,
+		trackSessionTime,
+		trackInfoModal,
+		trackSettingsModal,
+		trackStatsModal,
+		trackBuyMeCoffee,
+	} = useAnalytics()
+
+	function handleBuyMeCoffee(location: string) {
+		trackBuyMeCoffee(location)
 	}
 
 	// ============================================================================
@@ -581,15 +574,15 @@
 		statsStore.loadStats()
 		gameStore.loadState()
 		gameStore.startCountdown()
-		
+
 		// Load challenge state
 		challengeStore.loadChallengeState()
 		challengeStore.loadChallengeStats()
-		
+
 		// Track session start
 		sessionStartTime.value = Date.now()
 	})
-	
+
 	// Track session time when leaving
 	onUnmounted(() => {
 		const sessionDuration = Math.floor((Date.now() - sessionStartTime.value) / 1000)
@@ -603,27 +596,36 @@
 	// ============================================================================
 	// WATCHERS
 	// ============================================================================
-	watch(() => gameStore.getUKDateString(), (newDate, oldDate) => {
-		if (newDate !== oldDate) {
-			gameStore.resetGame()
-			challengeStore.resetDaily()
-			location.reload()
-		}
-	})
+	watch(
+		() => gameStore.getUKDateString(),
+		(newDate, oldDate) => {
+			if (newDate !== oldDate) {
+				gameStore.resetGame()
+				challengeStore.resetDaily()
+				location.reload()
+			}
+		},
+	)
 
 	// Watch for game completion to unlock challenge mode
-	watch(() => gameStore.showGameOverModal, (showModal) => {
-		if (showModal && gameStore.gameOver) {
-			challengeStore.unlockChallenge()
-		}
-	})
+	watch(
+		() => gameStore.showGameOverModal,
+		(showModal) => {
+			if (showModal && gameStore.gameOver) {
+				challengeStore.unlockChallenge()
+			}
+		},
+	)
 
 	// Reset stats tab to daily when stats modal opens
-	watch(() => modalsStore.showStats, (showStats) => {
-		if (showStats) {
-			activeStatsTab.value = 'daily'
-		}
-	})
+	watch(
+		() => modalsStore.showStats,
+		(showStats) => {
+			if (showStats) {
+				activeStatsTab.value = 'daily'
+			}
+		},
+	)
 
 	// ============================================================================
 	// EVENT HANDLERS
@@ -634,12 +636,15 @@
 	}
 
 	function handleKeyboardKey(key: string) {
+		const guessesBefore = gameStore.guesses.length
 		gameStore.onKeyboardKey(key)
-		// Update stats when game ends
+
+		if (key === 'ENTER' && gameStore.guesses.length > guessesBefore) {
+			trackGuessSubmitted(gameStore.guesses.length)
+		}
+
 		if (gameStore.gameOver && gameStore.showGameOverModal) {
 			statsStore.updateStats(gameStore.isWin)
-			
-			// Track game completion
 			if (gameStore.isWin) {
 				trackGameWin(gameStore.guesses.length)
 			} else {
@@ -649,25 +654,29 @@
 	}
 
 	function handleStartGame() {
+		trackIntroButtonClick(hasIncompleteGame.value ? 'resume_game' : 'play_now')
 		gameStore.startGame()
-		trackGameStart()
+		trackGameStart(statsStore.stats.gamesPlayed > 0)
 	}
 
 	function handleStartChallenge() {
+		trackIntroButtonClick('challenge_play')
 		challengeStore.startChallenge()
 		gameStore.showIntro = false
 		trackChallengeStart()
 	}
 
 	function handleEndChallenge() {
-		// Track challenge abandonment if not completed
 		if (challengeStore.isActive && !challengeStore.gameOver && challengeStore.timeRemaining > 0) {
-			const timeUsed = 45 - challengeStore.timeRemaining
-			trackChallengeAbandon(timeUsed)
+			trackChallengeAbandon(45 - challengeStore.timeRemaining)
 		}
-		
 		challengeStore.endChallenge()
 		gameStore.showIntro = true
+	}
+
+	function handleChallengePlayAgain() {
+		challengeStore.startChallenge()
+		trackChallengePlayAgain()
 	}
 
 	function handleChallengeKey(key: string) {
@@ -676,135 +685,143 @@
 
 	function handleShowInfo() {
 		modalsStore.openInfo()
-		try {
-			const { trackInfoModal } = useAnalytics()
-			trackInfoModal()
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
+		trackInfoModal()
 	}
-	
+
 	function handleShowSettings() {
 		modalsStore.openSettings()
-		try {
-			const { trackSettingsModal } = useAnalytics()
-			trackSettingsModal()
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
+		trackSettingsModal()
 	}
-	
+
 	function handleShowStats() {
 		modalsStore.openStats()
-		try {
-			const { trackStatsModal } = useAnalytics()
-			trackStatsModal()
-		} catch (error) {
-			// Silently fail if analytics is not available
-		}
+		trackStatsModal()
 	}
-	
+
 	function handleBackToMenu() {
-		// Track game abandonment if game is in progress
 		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
 			trackGameAbandon(gameStore.guesses.length)
 		}
-		
-		// Track home click
 		trackHomeClick('game_screen')
-		
-		// If game is completed, force refresh to ensure proper state
 		if (gameStore.gameOver) {
 			isLoading.value = true
 			setTimeout(() => {
 				location.reload()
 			}, 500)
 		} else {
-			// Show intro screen for incomplete games
 			gameStore.showIntro = true
 		}
+	}
+
+	function handleStatsTabSwitch(tab: 'daily' | 'challenge') {
+		activeStatsTab.value = tab
+		trackStatsTabSwitch(tab)
 	}
 </script>
 
 <style scoped lang="scss">
 	.page-container {
-		display: flex;
 		align-items: stretch;
-		justify-content: center;
 		background: var(--bg-gradient);
-		padding: 1rem;
+		display: flex;
 		height: 100dvh;
+		justify-content: center;
+		padding: 1rem;
 		position: relative;
 
 		.game-screen,
 		.challenge-screen {
-			align-content: center;
 			background: var(--bg-secondary);
-			border-radius: var(--global-border-radius);
-			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 			border: 1px solid var(--border);
+			border-radius: var(--global-border-radius);
+			box-shadow: 0 8px 32px rgb(0 0 0 / 10%);
 			display: flex;
 			flex-direction: column;
-			justify-content: flex-start;
 			max-width: 500px;
-			padding: 1rem .5rem;
+			padding: 1rem 0.5rem;
+			place-content: center flex-start;
 			text-align: center;
 			width: 100%;
 		}
 	}
 
-	
 	// ============================================================================
 	// LOADING OVERLAY
 	// ============================================================================
 	.loading-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		align-items: center;
 		background: var(--bg-gradient);
 		display: flex;
-		align-items: center;
+		inset: 0;
 		justify-content: center;
+		position: fixed;
 		z-index: 10000;
 
 		.loading-content {
-			text-align: center;
 			color: var(--text-primary);
-			position: relative;
-			width: 100%;
 			height: 100%;
+			position: relative;
+			text-align: center;
+			width: 100%;
 		}
 	}
 
 	@keyframes bounce {
-		0%, 20%, 50%, 80%, 100% {
+		0%,
+		20%,
+		50%,
+		80%,
+		100% {
 			transform: translate(-50%, -50%) translateY(0);
 		}
+
 		40% {
 			transform: translate(-50%, -50%) translateY(-80px);
 		}
+
 		60% {
 			transform: translate(-50%, -50%) translateY(-40px);
 		}
 	}
 
 	@keyframes shadow {
-		0%, 20%, 50%, 80%, 100% {
-			transform: translate(-50%, -50%) scaleX(1);
+		0%,
+		20%,
+		50%,
+		80%,
+		100% {
 			opacity: 0.3;
+			transform: translate(-50%, -50%) scaleX(1);
 		}
+
 		40% {
-			transform: translate(-50%, -50%) scaleX(0.3);
 			opacity: 0.1;
+			transform: translate(-50%, -50%) scaleX(0.3);
 		}
+
 		60% {
-			transform: translate(-50%, -50%) scaleX(0.6);
 			opacity: 0.2;
+			transform: translate(-50%, -50%) scaleX(0.6);
 		}
 	}
 
+	// ============================================================================
+	// SHARED COFFEE NUDGE
+	// ============================================================================
+	.coffee-nudge {
+		align-items: center;
+		color: var(--text-secondary);
+		display: inline-flex;
+		font-size: 0.8rem;
+		gap: 0.35rem;
+		margin-top: 0.75rem;
+		text-decoration: none;
+		transition: color 0.2s;
+
+		&:hover {
+			color: var(--primary-color);
+		}
+	}
 
 	// ============================================================================
 	// GAME OVER MODAL
@@ -812,20 +829,20 @@
 	.game-over-section {
 		text-align: center;
 		width: 100%;
-		
+
 		h4 {
 			color: var(--text-primary);
-			margin-bottom: 1rem;
 			font-size: 1.5rem;
+			margin-bottom: 1rem;
 		}
-		
+
 		.answer {
 			color: var(--primary-color);
 			font-weight: 700;
-			letter-spacing: .05rem;
+			letter-spacing: 0.05rem;
 			text-transform: uppercase;
 		}
-		
+
 		.share {
 			justify-content: center;
 			margin-top: 1rem;
@@ -840,40 +857,40 @@
 		max-height: 60vh;
 
 		p {
-			margin-bottom: 1rem;
 			line-height: 1.6;
+			margin-bottom: 1rem;
 		}
-		
+
 		.examples {
 			margin: 1.5rem 0;
-			
+
 			.example {
 				display: flex;
 				gap: 0.25rem;
 				margin-bottom: 0.5rem;
-				
+
 				.letter {
-					width: 2rem;
-					height: 2rem;
+					align-items: center;
 					border: 2px solid var(--border);
 					display: flex;
-					align-items: center;
-					justify-content: center;
-					font-weight: 700;
 					font-size: 0.9rem;
-					
+					font-weight: 700;
+					height: 2rem;
+					justify-content: center;
+					width: 2rem;
+
 					&.correct {
 						background: var(--color-success);
 						border-color: var(--color-success);
 						color: white;
 					}
-					
+
 					&.present {
 						background: var(--color-present);
 						border-color: var(--color-present);
 						color: white;
 					}
-					
+
 					&.absent {
 						background: var(--color-absent);
 						border-color: var(--color-absent);
@@ -895,104 +912,133 @@
 	.settings-section {
 		width: 100%;
 
+		.support-group {
+			border-bottom: 1px solid var(--border);
+			margin-bottom: 1.5rem;
+			padding-bottom: 1.5rem;
+
+			.coffee-button {
+				align-items: center;
+				background: #fd0;
+				border-radius: var(--global-border-radius);
+				color: #000;
+				display: inline-flex;
+				font-size: 0.9rem;
+				font-weight: 600;
+				gap: 0.5rem;
+				margin-top: 0.5rem;
+				padding: 0.6rem 1.2rem;
+				text-decoration: none;
+				transition: all 0.2s ease;
+
+				&:hover {
+					box-shadow: 0 4px 12px rgb(255 221 0 / 40%);
+					transform: translateY(-2px);
+				}
+			}
+		}
+
 		.setting-group {
+			align-items: flex-start;
 			display: flex;
 			flex-direction: column;
-			align-items: flex-start;
 			margin-bottom: 2rem;
 			width: 100%;
-			
+
 			label {
-				font-weight: 600;
-				margin-bottom: 0.5rem;
 				color: var(--text-primary);
 				font-size: 1.1rem;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
 			}
-			
+
 			p {
-				margin: 0 0 1rem 0;
 				color: var(--text-secondary);
 				font-size: 0.9rem;
+				margin: 0 0 1rem;
 			}
 
 			.theme-grid {
 				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 				gap: 1rem;
+				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 				width: 100%;
-				
+
 				.theme-option {
 					background: var(--bg-secondary);
 					border: 2px solid var(--border);
 					border-radius: var(--global-border-radius);
-					padding: 1rem;
 					cursor: pointer;
-					transition: all 0.3s ease;
-					text-align: center;
-					position: relative;
 					overflow: hidden;
-					
+					padding: 1rem;
+					position: relative;
+					text-align: center;
+					transition: all 0.3s ease;
+
 					&:hover {
 						border-color: var(--primary-color);
+						box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
 						transform: translateY(-2px);
-						box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 					}
-					
+
 					&.active {
-						border-color: var(--primary-color);
 						background: var(--primary-color);
+						border-color: var(--primary-color);
+						box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
 						color: white;
 						font-weight: 600;
 						transform: translateY(-2px);
-						box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 					}
-					
+
 					.theme-preview {
-						width: 100%;
-						height: 60px;
 						border-radius: calc(var(--global-border-radius) - 2px);
-						overflow: hidden;
+						height: 60px;
 						margin-bottom: 0.5rem;
-						
+						overflow: hidden;
+						width: 100%;
+
 						.preview-header {
-							height: 20px;
 							background: var(--bg-primary);
 							border-bottom: 1px solid var(--border);
+							height: 20px;
 						}
-						
+
 						.preview-content {
-							height: 40px;
-							display: flex;
 							align-items: center;
-							justify-content: center;
-							gap: 0.25rem;
-							padding: 0.5rem;
 							background: var(--bg-secondary);
-							
+							display: flex;
+							gap: 0.25rem;
+							height: 40px;
+							justify-content: center;
+							padding: 0.5rem;
+
 							.preview-tile {
-								width: 1.5rem;
-								height: 1.5rem;
+								background: var(--bg-primary);
 								border: 1px solid var(--border);
 								border-radius: 2px;
-								background: var(--bg-primary);
-								
+								height: 1.5rem;
+								width: 1.5rem;
+
 								&.correct {
 									background: var(--primary-color);
 									border-color: var(--primary-color);
 								}
 							}
 						}
-						
+
 						// Theme-specific preview colors
 						&.light {
 							.preview-header {
 								background: #f8fafc;
 							}
+
 							.preview-content {
-								background: #ffffff;
+								background: #fff;
+
 								.preview-tile {
 									background: #f8fafc;
 									border-color: #e5e7eb;
+
 									&.correct {
 										background: #dc2626;
 										border-color: #dc2626;
@@ -1000,16 +1046,19 @@
 								}
 							}
 						}
-						
+
 						&.dark {
 							.preview-header {
 								background: #0f172a;
 							}
+
 							.preview-content {
 								background: #1e293b;
+
 								.preview-tile {
 									background: #0f172a;
 									border-color: #334155;
+
 									&.correct {
 										background: #ef4444;
 										border-color: #ef4444;
@@ -1017,16 +1066,19 @@
 								}
 							}
 						}
-						
+
 						&.greyscale {
 							.preview-header {
-								background: #ffffff;
+								background: #fff;
 							}
+
 							.preview-content {
 								background: #f0f0f0;
+
 								.preview-tile {
-									background: #ffffff;
-									border-color: #000000;
+									background: #fff;
+									border-color: #000;
+
 									&.correct {
 										background: #dc2626;
 										border-color: #dc2626;
@@ -1034,16 +1086,19 @@
 								}
 							}
 						}
-						
+
 						&.pastel {
 							.preview-header {
 								background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
 							}
+
 							.preview-content {
 								background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+
 								.preview-tile {
 									background: #f0f9ff;
 									border-color: #bae6fd;
+
 									&.correct {
 										background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
 										border-color: #0ea5e9;
@@ -1052,11 +1107,11 @@
 							}
 						}
 					}
-					
+
 					.theme-name {
+						display: block;
 						font-size: 0.9rem;
 						font-weight: 500;
-						display: block;
 					}
 				}
 			}
@@ -1070,71 +1125,69 @@
 		width: 80%;
 
 		.stats-toggle {
-			margin-bottom: .5rem;
 			border-bottom: 1px solid var(--border);
-			padding-bottom: .5rem;
-			
+			margin-bottom: 0.5rem;
+			padding-bottom: 0.5rem;
+
 			.toggle-container {
-				display: flex;
 				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
-				padding: 0.25rem;
+				display: flex;
 				gap: 0.25rem;
-				
+				padding: 0.25rem;
+
 				.toggle-btn {
-					flex: 1;
-					display: flex;
 					align-items: center;
-					justify-content: center;
-					gap: 0.5rem;
-					padding: 0.75rem 1rem;
 					background: transparent;
 					border: none;
 					border-radius: calc(var(--global-border-radius) - 2px);
 					color: var(--text-secondary);
 					cursor: pointer;
-					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-					font-weight: 500;
+					display: flex;
+					flex: 1;
 					font-size: 0.9rem;
-					position: relative;
+					font-weight: 500;
+					gap: 0.5rem;
+					justify-content: center;
 					overflow: hidden;
-					
+					padding: 0.75rem 1rem;
+					position: relative;
+					transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
 					&::before {
-						content: '';
-						position: absolute;
-						top: 0;
-						left: 0;
-						right: 0;
-						bottom: 0;
 						background: var(--primary-color);
+						content: '';
+						inset: 0;
 						opacity: 0;
+						position: absolute;
 						transition: opacity 0.3s ease;
 						z-index: 0;
 					}
-					
-					svg, span {
+
+					svg,
+					span {
 						position: relative;
-						z-index: 1;
 						transition: all 0.3s ease;
+						z-index: 1;
 					}
-					
+
 					&:hover {
 						color: var(--text-primary);
 						transform: translateY(-1px);
-						
+
 						&::before {
 							opacity: 0.1;
 						}
 					}
-					
+
 					&.active {
 						color: white;
-						
+
 						&::before {
 							opacity: 1;
 						}
-						
+
 						svg {
 							transform: scale(1.1);
 						}
@@ -1144,94 +1197,94 @@
 		}
 
 		.stats-content-container {
-			position: relative;
 			min-height: 300px;
+			position: relative;
 
 			.stats-content {
-				position: absolute;
-				top: 0;
 				left: 0;
-				right: 0;
 				opacity: 0;
-				visibility: hidden;
+				position: absolute;
+				right: 0;
+				top: 0;
 				transform: translateX(20px);
 				transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-				
+				visibility: hidden;
+
 				&.active {
 					opacity: 1;
-					visibility: visible;
 					transform: translateX(0);
+					visibility: visible;
 				}
-				
+
 				.stats-grid {
 					display: grid;
+					gap: 0.5rem;
 					grid-template-columns: repeat(2, 1fr);
-					gap: .5rem;
-					margin-bottom: .5rem;
+					margin-bottom: 0.5rem;
 
 					.stat-card {
 						background: var(--bg-secondary);
 						border: 1px solid var(--border);
 						border-radius: var(--global-border-radius);
+						overflow: hidden;
 						padding: 1rem;
+						position: relative;
 						text-align: center;
 						transition: all 0.2s;
-						position: relative;
-						overflow: hidden;
-						
+
 						&:hover {
 							border-color: var(--border-hover);
+							box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
 							transform: translateY(-2px);
-							box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-							
+
 							&::before {
 								opacity: 1;
 							}
 						}
-						
+
 						h3 {
+							color: var(--text-primary);
 							font-size: 2rem;
 							font-weight: 700;
-							margin: 0 0 0.5rem 0;
-							color: var(--text-primary);
+							margin: 0 0 0.5rem;
 						}
 					}
 				}
-				
+
 				.win-rate {
 					background: var(--bg-secondary);
 					border: 1px solid var(--border);
 					border-radius: var(--global-border-radius);
 					padding: 1rem;
-					
+
 					h3 {
-						margin: 0 0 1rem 0;
 						color: var(--text-primary);
 						font-size: 1.2rem;
 						font-weight: 600;
+						margin: 0 0 1rem;
 					}
-					
+
 					.progress-bar {
-						width: 100%;
-						height: 8px;
 						background: var(--bg-primary);
 						border-radius: 4px;
-						overflow: hidden;
+						height: 8px;
 						margin-bottom: 0.5rem;
-						
+						overflow: hidden;
+						width: 100%;
+
 						.progress-fill {
-							height: 100%;
 							background: var(--color-gradient);
 							border-radius: 4px;
+							height: 100%;
 							transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 						}
 					}
-					
+
 					p {
-						margin: 0;
 						color: var(--text-secondary);
 						font-size: 0.9rem;
 						font-weight: 500;
+						margin: 0;
 						text-align: center;
 					}
 				}
@@ -1244,18 +1297,18 @@
 	// ============================================================================
 	.challenge-game-over-section {
 		text-align: center;
-		
+
 		h4 {
 			color: var(--text-primary);
-			margin-bottom: 1rem;
 			font-size: 1.5rem;
+			margin-bottom: 1rem;
 		}
-		
+
 		.answer {
 			color: var(--tertiary-color);
 			font-weight: 700;
 		}
-		
+
 		.challenge-buttons {
 			display: flex;
 			gap: 1rem;
@@ -1263,4 +1316,4 @@
 			margin-top: 1.5rem;
 		}
 	}
-</style> 
+</style>

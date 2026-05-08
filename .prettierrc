@@ -1,0 +1,9 @@
+{
+	"useTabs": true,
+	"tabWidth": 4,
+	"singleAttributePerLine": true,
+	"printWidth": 120,
+	"semi": false,
+	"singleQuote": true,
+	"vueIndentScriptAndStyle": true
+}
