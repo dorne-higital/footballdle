@@ -35,6 +35,16 @@ export default defineNuxtConfig({
 	// Optional: Add meta tags for Google Analytics
 	app: {
 		head: {
+			link: [
+				{ rel: 'manifest', href: '/manifest.json' },
+				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+			],
+			meta: [
+				{ name: 'theme-color', content: '#dc2626' },
+				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
+				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
+				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
+			],
 			script: [
 				{
 					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
