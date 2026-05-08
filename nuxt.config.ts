@@ -4,6 +4,11 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 
+	// Pre-render the sitemap so it works on static deployments too
+	routeRules: {
+		'/sitemap.xml': { prerender: true },
+	},
+
 	// Build optimizations
 	nitro: {
 		compressPublicAssets: true,
