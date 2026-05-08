@@ -183,7 +183,8 @@
 
 <style scoped lang="scss">
 	.solution-page {
-		min-height: 100dvh;
+		height: 100dvh;
+		overflow-y: auto;
 		padding: 0 1rem 3rem;
 	}
 

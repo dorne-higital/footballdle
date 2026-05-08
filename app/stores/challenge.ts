@@ -1,9 +1,9 @@
 
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { useChallengeFootballers } from '../composables/useChallengeFootballers'
+import { getChallengeFootballerByIndex, useChallengeFootballers } from '../composables/useChallengeFootballers'
 
-const { getRandomChallengeFootballer, isValidChallengeFootballer } = useChallengeFootballers()
+const { isValidChallengeFootballer } = useChallengeFootballers()
 
 export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
@@ -11,6 +11,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	const isUnlocked = ref(false)
 	const isActive = ref(false)
+	const sessionGameIndex = ref(0)
 	const currentAnswer = ref('')
 	const guesses = ref<string[]>([])
 	const currentGuess = ref('')
@@ -77,7 +78,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 		showGameOverModal.value = false
 		isPaused.value = false
 
-		currentAnswer.value = getRandomChallengeFootballer()
+		currentAnswer.value = getChallengeFootballerByIndex(sessionGameIndex.value)
+		sessionGameIndex.value++
 
 		startTimer()
 		saveChallengeState()
@@ -275,6 +277,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			isWin: isWin.value,
 			timeRemaining: timeRemaining.value,
 			isPaused: isPaused.value,
+			sessionGameIndex: sessionGameIndex.value,
 		}
 		localStorage.setItem('footballdle-challenge', JSON.stringify(state))
 	}
@@ -292,6 +295,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			isWin.value = state.isWin || false
 			timeRemaining.value = state.timeRemaining || 45
 			isPaused.value = state.isPaused || false
+			sessionGameIndex.value = state.sessionGameIndex || 0
 
 			if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
 				startTimer()
@@ -331,6 +335,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		// State
 		isUnlocked,
 		isActive,
+		sessionGameIndex,
 		currentAnswer,
 		guesses,
 		currentGuess,

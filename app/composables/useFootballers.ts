@@ -146,6 +146,23 @@ const answerCache = new Map<string, string>()
 
 const EPOCH = '01/01/2026' // DD/MM/YYYY — Puzzle #1 launch date
 
+// Fixed seed — never change this or all past answers will shift
+const SHUFFLE_SEED = 20260101
+
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+	const result = [...arr]
+	let s = seed >>> 0
+	for (let i = result.length - 1; i > 0; i--) {
+		s = (Math.imul(s, 1664525) + 1013904223) >>> 0
+		const j = s % (i + 1)
+		;[result[i], result[j]] = [result[j]!, result[i]!]
+	}
+	return result
+}
+
+// Shuffled once at module load — order is deterministic and permanent
+const shuffledFootballers = seededShuffle(footballers, SHUFFLE_SEED)
+
 export function getPuzzleNumber(dateStr: string): number {
 	const [d1, m1, y1] = EPOCH.split('/').map(Number)
 	const [d2, m2, y2] = dateStr.split('/').map(Number)
@@ -157,8 +174,9 @@ export function getPuzzleNumber(dateStr: string): number {
 
 export function getAnswerForDay(dateStr: string): string {
 	if (answerCache.has(dateStr)) return answerCache.get(dateStr)!
-	const hash = Array.from(dateStr).reduce((acc, c) => acc + c.charCodeAt(0), 0)
-	const answer = footballers[hash % footballers.length]?.name || ''
+	const idx = getPuzzleNumber(dateStr) - 1 // 0-indexed
+	const safeIdx = ((idx % shuffledFootballers.length) + shuffledFootballers.length) % shuffledFootballers.length
+	const answer = shuffledFootballers[safeIdx]?.name || ''
 	answerCache.set(dateStr, answer)
 	return answer
 }

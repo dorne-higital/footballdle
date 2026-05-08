@@ -1,3 +1,16 @@
+const CHALLENGE_SHUFFLE_SEED = 20260102
+
+function seededShuffle<T>(arr: T[], seed: number): T[] {
+	const result = [...arr]
+	let s = seed >>> 0
+	for (let i = result.length - 1; i > 0; i--) {
+		s = (Math.imul(s, 1664525) + 1013904223) >>> 0
+		const j = s % (i + 1)
+		;[result[i], result[j]] = [result[j]!, result[i]!]
+	}
+	return result
+}
+
 // 5-letter Premier League footballer surnames for challenge mode
 const challengeFootballers = [
 	'ABBEY',
@@ -120,19 +133,22 @@ const challengeFootballers = [
 // Create a Set for O(1) lookups
 const challengeFootballerSet = new Set(challengeFootballers)
 
-export function useChallengeFootballers() {
-	function getRandomChallengeFootballer(): string {
-		const randomIndex = Math.floor(Math.random() * challengeFootballers.length)
-		return challengeFootballers[randomIndex] || ''
-	}
+// Shuffled once at module load — order is deterministic and permanent
+const shuffledChallengeFootballers = seededShuffle(challengeFootballers, CHALLENGE_SHUFFLE_SEED)
 
+export function getChallengeFootballerByIndex(idx: number): string {
+	const len = shuffledChallengeFootballers.length
+	const safeIdx = ((idx % len) + len) % len
+	return shuffledChallengeFootballers[safeIdx] || ''
+}
+
+export function useChallengeFootballers() {
 	function isValidChallengeFootballer(name: string): boolean {
 		return challengeFootballerSet.has(name.toUpperCase())
 	}
 
 	return {
 		challengeFootballers,
-		getRandomChallengeFootballer,
 		isValidChallengeFootballer,
 	}
 }

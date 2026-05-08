@@ -1,44 +1,32 @@
 const API_TOKEN = 'f425457f0ccb4f5cb2b99e8574ebb762'
 
-const nationalityMap = {
-	'England': 'English', 'France': 'French', 'Spain': 'Spanish', 'Germany': 'German',
-	'Italy': 'Italian', 'Netherlands': 'Dutch', 'Portugal': 'Portuguese', 'Brazil': 'Brazilian',
-	'Argentina': 'Argentine', 'Uruguay': 'Uruguayan', 'Colombia': 'Colombian', 'Paraguay': 'Paraguayan',
-	'Wales': 'Welsh', 'Scotland': 'Scottish', 'Ireland': 'Irish', 'Republic of Ireland': 'Irish',
-	'Northern Ireland': 'Northern Irish', 'Belgium': 'Belgian', 'Switzerland': 'Swiss',
-	'Denmark': 'Danish', 'Sweden': 'Swedish', 'Norway': 'Norwegian', 'Finland': 'Finnish',
-	'Poland': 'Polish', 'Czech Republic': 'Czech', 'Slovakia': 'Slovak', 'Hungary': 'Hungarian',
-	'Croatia': 'Croatian', 'Serbia': 'Serbian', 'Albania': 'Albanian', 'Greece': 'Greek',
-	'Turkey': 'Turkish', 'Ukraine': 'Ukrainian', 'Japan': 'Japanese', 'South Korea': 'South Korean',
-	'Australia': 'Australian', 'Canada': 'Canadian', 'United States': 'American', 'USA': 'American',
-	'Cameroon': 'Cameroonian', 'Nigeria': 'Nigerian', 'Ghana': 'Ghanaian', 'Senegal': 'Senegalese',
-	"Côte d'Ivoire": 'Ivorian', 'Ivory Coast': 'Ivorian', 'Morocco': 'Moroccan', 'Egypt': 'Egyptian',
-	'Mali': 'Malian', 'Gambia': 'Gambian', 'Jamaica': 'Jamaican', 'Romania': 'Romanian',
-	'Bulgaria': 'Bulgarian', 'Slovenia': 'Slovenian', 'Kosovo': 'Kosovar', 'Iceland': 'Icelandic',
-	'DR Congo': 'Congolese', 'Congo': 'Congolese', 'Gabon': 'Gabonese', 'Togo': 'Togolese',
-	'Cape Verde': 'Cape Verdean', 'Guinea': 'Guinean', 'Burkina Faso': 'Burkinabé',
-	'Sierra Leone': 'Sierra Leonean', 'North Macedonia': 'Macedonian', 'Montenegro': 'Montenegrin',
-	'Bosnia and Herzegovina': 'Bosnian', 'Austria': 'Austrian', 'Ecuador': 'Ecuadorian',
-	'Chile': 'Chilean', 'Mexico': 'Mexican', 'Venezuela': 'Venezuelan', 'Peru': 'Peruvian',
-	'Mozambique': 'Mozambican', 'Tanzania': 'Tanzanian', 'Zimbabwe': 'Zimbabwean',
-}
-
+// Maps API position strings to our 4 canonical values.
+// Falls through to the raw API value if unknown — fix those manually in the output.
 const positionMap = {
-	'Goalkeeper': 'Goalkeeper', 'GOALKEEPER': 'Goalkeeper',
-	'Defence': 'Defender', 'DEFENCE': 'Defender', 'Defender': 'Defender',
-	'Midfield': 'Midfielder', 'MIDFIELD': 'Midfielder', 'Midfielder': 'Midfielder',
-	'Offence': 'Forward', 'OFFENCE': 'Forward',
-	'Attack': 'Forward', 'ATTACK': 'Forward', 'ATTACKER': 'Forward', 'Attacker': 'Forward',
-	'Forward': 'Forward',
+	Goalkeeper: 'Goalkeeper',
+	GOALKEEPER: 'Goalkeeper',
+	Defence: 'Defender',
+	DEFENCE: 'Defender',
+	Defender: 'Defender',
+	Midfield: 'Midfielder',
+	MIDFIELD: 'Midfielder',
+	Midfielder: 'Midfielder',
+	Offence: 'Forward',
+	OFFENCE: 'Forward',
+	Attack: 'Forward',
+	ATTACK: 'Forward',
+	ATTACKER: 'Forward',
+	Attacker: 'Forward',
+	Forward: 'Forward',
 }
 
 const clubNameMap = {
 	'Brighton Hove': 'Brighton & Hove Albion',
-	'Nottingham': 'Nottingham Forest',
+	Nottingham: 'Nottingham Forest',
 	'Man United': 'Manchester United',
 	'Man City': 'Manchester City',
-	'Wolves': 'Wolverhampton Wanderers',
-	'Spurs': 'Tottenham Hotspur',
+	Wolves: 'Wolverhampton Wanderers',
+	Spurs: 'Tottenham Hotspur',
 }
 
 function normaliseClub(name) {
@@ -81,8 +69,8 @@ async function fetchPLPlayers() {
 			players.push({
 				name: surname,
 				club: normaliseClub(team.shortName || team.name),
-				nationality: nationalityMap[player.nationality] || player.nationality || 'Unknown',
-				position: positionMap[player.position] || 'Midfielder',
+				nationality: player.nationality || 'Unknown',
+				position: positionMap[player.position] || player.position || 'Unknown',
 			})
 		}
 	}
@@ -90,7 +78,7 @@ async function fetchPLPlayers() {
 	// Sort alphabetically, dedupe by name (keep first occurrence)
 	players.sort((a, b) => a.name.localeCompare(b.name))
 	const seen = new Set()
-	const unique = players.filter(p => {
+	const unique = players.filter((p) => {
 		if (seen.has(p.name)) return false
 		seen.add(p.name)
 		return true
@@ -99,8 +87,9 @@ async function fetchPLPlayers() {
 	console.log(`Found ${unique.length} players with 6-letter surnames:\n`)
 
 	// Print as TypeScript array ready to paste
-	const lines = unique.map(p =>
-		`\t{ name: '${p.name}', club: '${p.club}', nationality: '${p.nationality}', position: '${p.position}' },`
+	const lines = unique.map(
+		(p) =>
+			`\t{ name: '${p.name}', club: '${p.club}', nationality: '${p.nationality}', position: '${p.position}' },`,
 	)
 
 	console.log('export const footballers: Footballer[] = [')
