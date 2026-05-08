@@ -64,7 +64,6 @@
 						:name="hint.icon"
 						size="0.85rem"
 					/>
-					<span class="hint-label">{{ hint.label }}:</span>
 					<span class="hint-value">{{ hint.value }}</span>
 				</div>
 			</TransitionGroup>
