@@ -182,6 +182,7 @@ html {
 }
 
 body {
+	background: var(--bg-gradient);
 	touch-action: manipulation;
 	-webkit-tap-highlight-color: transparent;
 }
