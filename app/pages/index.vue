@@ -982,7 +982,6 @@
 <style scoped lang="scss">
 	.page-container {
 		align-items: stretch;
-		background: var(--bg-gradient);
 		display: flex;
 		height: 100dvh;
 		justify-content: center;
@@ -1036,7 +1035,6 @@
 	// ============================================================================
 	.loading-overlay {
 		align-items: center;
-		background: var(--bg-gradient);
 		display: flex;
 		inset: 0;
 		justify-content: center;

@@ -239,7 +239,6 @@
 <style scoped lang="scss">
 	.intro-screen {
 		align-items: stretch;
-		background: var(--bg-gradient);
 		display: flex;
 		height: 100%;
 		justify-content: center;
@@ -248,7 +247,6 @@
 
 		.loading-overlay {
 			align-items: center;
-			background: var(--bg-gradient);
 			display: flex;
 			inset: 0;
 			justify-content: center;
