@@ -916,6 +916,7 @@
 			border-bottom: 1px solid var(--border);
 			margin-bottom: 1.5rem;
 			padding-bottom: 1.5rem;
+			text-align: left;
 
 			.coffee-button {
 				align-items: center;
