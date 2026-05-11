@@ -297,8 +297,10 @@
 				justify-content: space-between;
 
 				.heading {
-					color: var(--text-primary);
+					background: var(--color-gradient);
+					background-clip: text;
 					font-weight: 700;
+					-webkit-text-fill-color: transparent;
 				}
 
 				.icons {
