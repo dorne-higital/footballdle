@@ -20,6 +20,12 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 
+	icon: {
+		clientBundle: {
+			scan: true,
+		},
+	},
+
 	fonts: {
 		families: [
 			{ name: 'Cairo', provider: 'google', weights: [400, 700], display: 'swap' },
@@ -70,6 +76,8 @@ export default defineNuxtConfig({
 	app: {
 		head: {
 			link: [
+				{ rel: 'preconnect', href: 'https://www.googletagmanager.com' },
+				{ rel: 'dns-prefetch', href: 'https://cdnjs.buymeacoffee.com' },
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
