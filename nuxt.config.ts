@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 
 	fonts: {
 		families: [
-			{ name: 'Cairo', provider: 'google', weights: [400, 700], display: 'swap' },
+			{ name: 'Cairo', provider: 'google', weights: [400, 700], display: 'swap', preload: true },
 			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
 		],
 		defaults: {
@@ -88,6 +88,9 @@ export default defineNuxtConfig({
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
 			],
 			script: [
+				{
+					innerHTML: `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`,
+				},
 				{
 					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
 					async: true,
