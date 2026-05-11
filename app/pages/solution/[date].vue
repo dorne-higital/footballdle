@@ -143,7 +143,7 @@
 		day: 'numeric',
 		month: 'long',
 		year: 'numeric',
-		timeZone: 'UTC',
+		timeZone: 'Europe/London',
 	})
 
 	// Up to 5 recent past puzzles for internal linking (excluding this page)
@@ -151,7 +151,7 @@
 		const d = new Date(ukToday)
 		d.setDate(d.getDate() - i - 1)
 		const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-		const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+		const label = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/London' })
 		const pastAnswer = getAnswerForDay(toUKDateStr(d))
 		return { iso, label, answer: pastAnswer }
 	})
@@ -266,7 +266,7 @@
 		.answer-letter {
 			align-items: center;
 			background: var(--color-success);
-			border-radius: 4px;
+			border-radius: var(--global-border-radius);
 			color: #fff;
 			display: flex;
 			font-size: 1.6rem;

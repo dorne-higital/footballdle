@@ -185,7 +185,7 @@
 				align-items: center;
 				background: #d3d6da;
 				border: none;
-				border-radius: 6px;
+				border-radius: var(--global-border-radius);
 				box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
 				color: #222;
 				cursor: pointer;

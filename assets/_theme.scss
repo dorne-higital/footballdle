@@ -17,7 +17,7 @@
 		var(--secondary-color) 0%,
 		color-mix(in srgb, var(--secondary-color) 25%, #000) 100%
 	);
-	--global-border-radius: 8px;
+	--global-border-radius: 0;
 	--border: #e5e7eb;
 	--border-hover: #dc2626;
 }
@@ -162,10 +162,6 @@
 html {
 	touch-action: manipulation;
 	-webkit-touch-callout: none;
-	user-select: none;
-	user-select: none;
-	user-select: none;
-	user-select: none;
 	user-select: none;
 }
 
