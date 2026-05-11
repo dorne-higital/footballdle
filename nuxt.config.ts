@@ -22,8 +22,8 @@ export default defineNuxtConfig({
 
 	fonts: {
 		families: [
-			{ name: 'Cairo', provider: 'google', weights: [400, 700] },
-			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700] },
+			{ name: 'Cairo', provider: 'google', weights: [400, 700], display: 'swap' },
+			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
 		],
 		defaults: {
 			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },
@@ -83,6 +83,9 @@ export default defineNuxtConfig({
 				{
 					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
 					async: true,
+				},
+				{
+					innerHTML: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.GOOGLE_ANALYTICS_ID || ''}');`,
 				},
 				{
 					src: 'https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js',

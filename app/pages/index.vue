@@ -634,7 +634,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted, nextTick, computed } from 'vue'
+	import { ref, watch, onMounted, onUnmounted, nextTick, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../stores/game'
 	import { useStatsStore } from '../stores/stats'
 	import { useThemeStore } from '../stores/theme'
@@ -643,6 +643,9 @@
 	import { useShare } from '../composables/useShare'
 	import { useAnalytics } from '../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
+
+	const BaseModal = defineAsyncComponent(() => import('../components/BaseModal.vue'))
+	const ChallengeModal = defineAsyncComponent(() => import('../components/ChallengeModal.vue'))
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
@@ -1029,10 +1032,6 @@
 				flex: 1;
 				min-height: 0;
 				overflow: hidden;
-			}
-
-			.hints-container {
-				flex-shrink: 0;
 			}
 
 			.keyboard {

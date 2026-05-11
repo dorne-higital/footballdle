@@ -160,11 +160,22 @@ export const useGameStore = defineStore('game', () => {
 	function startCountdown() {
 		updateCountdown()
 		countdownInterval = setInterval(updateCountdown, 1000)
+		document.addEventListener('visibilitychange', onVisibilityChange)
 	}
 
 	function stopCountdown() {
 		if (countdownInterval) {
 			clearInterval(countdownInterval)
+		}
+		document.removeEventListener('visibilitychange', onVisibilityChange)
+	}
+
+	function onVisibilityChange() {
+		if (document.hidden) {
+			if (countdownInterval) clearInterval(countdownInterval)
+		} else {
+			updateCountdown()
+			countdownInterval = setInterval(updateCountdown, 1000)
 		}
 	}
 
