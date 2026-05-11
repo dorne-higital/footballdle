@@ -1,4 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+function getSolutionRoutes(): string[] {
+	const routes: string[] = []
+	const cursor = new Date(2026, 0, 1) // epoch: 1 Jan 2026
+	const today = new Date()
+	today.setHours(0, 0, 0, 0)
+	while (cursor <= today) {
+		const y = cursor.getFullYear()
+		const m = String(cursor.getMonth() + 1).padStart(2, '0')
+		const d = String(cursor.getDate()).padStart(2, '0')
+		routes.push(`/solution/${y}-${m}-${d}`)
+		cursor.setDate(cursor.getDate() + 1)
+	}
+	return routes
+}
+
 export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
@@ -19,10 +35,13 @@ export default defineNuxtConfig({
 		'/sitemap.xml': { prerender: true },
 	},
 
-	// Build optimizations
+	// Build optimizations + pre-render all solution pages so they exist as static HTML
 	nitro: {
 		compressPublicAssets: true,
 		minify: true,
+		prerender: {
+			routes: getSolutionRoutes(),
+		},
 	},
 
 	vite: {
