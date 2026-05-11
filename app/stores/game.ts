@@ -60,11 +60,11 @@ export const useGameStore = defineStore('game', () => {
 		if (!player) return []
 
 		const revealed: { label: string; value: string; icon: string }[] = []
+		if (guesses.value.length >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
 		if (guesses.value.length >= 3)
-			revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
-		if (guesses.value.length >= 4)
 			revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
-		if (guesses.value.length >= 5) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
+		if (guesses.value.length >= 4)
+			revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
 
 		return revealed
 	})
