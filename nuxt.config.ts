@@ -83,6 +83,7 @@ export default defineNuxtConfig({
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
 			meta: [
+				{ name: 'google-adsense-account', content: 'ca-pub-8134902947215331' },
 				{ name: 'theme-color', content: '#dc2626' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
