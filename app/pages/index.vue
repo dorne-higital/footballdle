@@ -24,6 +24,7 @@
 			@show-settings="handleShowSettings"
 			@show-stats="handleShowStats"
 			@buy-coffee="handleBuyMeCoffee"
+			@show-result="gameStore.showGameOverModal = true"
 		/>
 
 		<!-- Game Screen -->

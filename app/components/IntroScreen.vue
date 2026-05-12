@@ -141,16 +141,29 @@
 					<h4>{{ countdown }}</h4>
 				</div>
 
-				<NuxtLink
-					:to="`/solution/${yesterdayISO}`"
-					class="yesterday-link"
-				>
-					<Icon
-						name="solar:history-linear"
-						size="0.9rem"
-					/>
-					See yesterday's answer
-				</NuxtLink>
+				<div class="game-ctas">
+					<NuxtLink
+						class="view-result-btn"
+						@click="$emit('show-result')"
+					>
+						<Icon
+							name="solar:share-linear"
+							size="1rem"
+						/>
+						Todays result
+					</NuxtLink>
+
+					<NuxtLink
+						:to="`/solution/${yesterdayISO}`"
+						class="yesterday-link"
+					>
+						<Icon
+							name="solar:history-linear"
+							size="0.9rem"
+						/>
+						Prev answer
+					</NuxtLink>
+				</div>
 
 				<div
 					v-if="challengeUnlocked"
@@ -253,6 +266,7 @@
 		'show-settings',
 		'show-stats',
 		'buy-coffee',
+		'show-result',
 	])
 
 	const isLoading = ref(false) // Start with no loading
@@ -493,20 +507,32 @@
 					font-weight: 900;
 				}
 
-				.yesterday-link {
-					align-items: center;
-					border-bottom: 1px solid transparent;
-					color: #e3e3e3;
-					display: inline-flex;
-					font-size: 0.8rem;
-					gap: 0.35rem;
-					margin-top: 0.75rem;
-					text-decoration: none;
-					transition: color 0.2s;
+				.game-ctas {
+					display: flex;
+					flex-direction: row;
+					gap: 1rem;
+					justify-content: space-between;
 
-					&:hover {
-						border-bottom: 1px solid white;
-						color: #fff;
+					.view-result-btn,
+					.yesterday-link {
+						align-items: center;
+						border: 1px solid var(--border);
+						color: #e3e3e3;
+						display: inline-flex;
+						flex: 1;
+						font-size: 0.8rem;
+						gap: 0.35rem;
+						justify-content: center;
+						margin-top: 0.75rem;
+						padding: 0.25rem;
+						text-align: center;
+						text-decoration: none;
+						transition: color 0.2s;
+
+						&:hover {
+							border-bottom: 1px solid white;
+							color: #fff;
+						}
 					}
 				}
 
