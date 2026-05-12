@@ -1,5 +1,5 @@
 export function useShare() {
-	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string): string {
+	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): string {
 		const grid = guesses
 			.map(guess =>
 				guess
@@ -12,11 +12,12 @@ export function useShare() {
 					.join(''),
 			)
 			.join('\n')
-		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6\n\n${grid}\n\nfootballdle.co.uk`
+		const streakLine = streak && streak > 1 ? ` 🔥 ${streak} day streak` : ''
+		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6${streakLine}\n\n${grid}\n\nfootballdle.co.uk`
 	}
 
-	async function onShare(guesses: string[], answer: string, isWin: boolean, label: string): Promise<boolean> {
-		const text = getShareText(guesses, answer, isWin, label)
+	async function onShare(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): Promise<boolean> {
+		const text = getShareText(guesses, answer, isWin, label, streak)
 		try {
 			await navigator.clipboard.writeText(text)
 			return true
@@ -25,8 +26,8 @@ export function useShare() {
 		}
 	}
 
-	function onShareTwitter(guesses: string[], answer: string, isWin: boolean, label: string) {
-		const text = getShareText(guesses, answer, isWin, label)
+	function onShareTwitter(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number) {
+		const text = getShareText(guesses, answer, isWin, label, streak)
 		window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
 	}
 

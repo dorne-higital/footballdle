@@ -905,7 +905,8 @@
 	// ============================================================================
 	async function handleShare() {
 		const label = `#${gameStore.puzzleNumber}`
-		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, label)
+		const streak = statsStore.stats.currentStreak
+		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, label, streak)
 		if (copied) {
 			shareToast.value = true
 			if (shareToastTimer) clearTimeout(shareToastTimer)
@@ -917,7 +918,8 @@
 	}
 
 	function handleShareTwitter() {
-		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, `#${gameStore.puzzleNumber}`)
+		const streak = statsStore.stats.currentStreak
+		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, `#${gameStore.puzzleNumber}`, streak)
 		trackShare('twitter')
 	}
 
