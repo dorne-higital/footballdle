@@ -824,7 +824,7 @@
 		if (s >= 14) return `${s} day streak — unstoppable!`
 		if (s >= 7) return `${s} day streak — one week!`
 		if (s >= 5) return `${s} day streak — on fire!`
-		if (s >= 3) return `${s} day streak — hat-trick!`
+		if (s >= 3) return `${s} day streak — smashing it!`
 		return `${s} days in a row!`
 	})
 
