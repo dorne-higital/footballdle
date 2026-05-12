@@ -48,15 +48,7 @@ export default defineNuxtConfig({
 		prerender: {
 			routes: getSolutionRoutes(),
 		},
-		experimental: {
-			tasks: true,
-		},
-		scheduledTasks: {
-			'0 9 * * *': ['push:daily'], // 9am UTC = 10am BST (UK summer)
-		},
-		storage: {
-			'push-subs': { driver: 'fs', base: './.data/push-subs' },
-		},
+
 	},
 
 	vite: {
@@ -74,15 +66,11 @@ export default defineNuxtConfig({
 		},
 	},
 
-	// Google Analytics configuration
 	runtimeConfig: {
-		vapidPrivateKey: process.env.VAPID_PRIVATE_KEY || '',
-		vapidSubject: process.env.VAPID_SUBJECT || '',
 		public: {
 			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
 			adsensePublisherId: process.env.ADSENSE_PUBLISHER_ID || '',
 			adsenseSlotId: process.env.ADSENSE_SLOT_ID || '',
-			vapidPublicKey: process.env.VAPID_PUBLIC_KEY || '',
 		},
 	},
 
