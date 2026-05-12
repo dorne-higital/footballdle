@@ -533,9 +533,6 @@
 			</template>
 		</BaseModal>
 
-		<!-- Install Banner -->
-		<InstallBanner />
-
 		<!-- Challenge Game Over Modal -->
 		<BaseModal
 			v-if="challengeStore.showGameOverModal"
