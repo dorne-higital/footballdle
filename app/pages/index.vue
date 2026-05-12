@@ -1,5 +1,5 @@
 <template>
-	<div class="page-container">
+	<div :class="['page-container', { 'is-intro': gameStore.showIntro }]">
 		<!-- Loading Overlay -->
 		<div
 			v-if="isLoading"
@@ -1035,6 +1035,10 @@
 		overflow: hidden;
 		padding: 1rem;
 		position: relative;
+
+		&.is-intro {
+			overflow-y: auto;
+		}
 
 		.game-screen,
 		.challenge-screen {
