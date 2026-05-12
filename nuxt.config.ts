@@ -69,6 +69,8 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
+			adsensePublisherId: process.env.ADSENSE_PUBLISHER_ID || '',
+			adsenseSlotId: process.env.ADSENSE_SLOT_ID || '',
 		},
 	},
 
@@ -77,7 +79,6 @@ export default defineNuxtConfig({
 		head: {
 			link: [
 				{ rel: 'preconnect', href: 'https://www.googletagmanager.com' },
-				{ rel: 'dns-prefetch', href: 'https://cdnjs.buymeacoffee.com' },
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],

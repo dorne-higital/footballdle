@@ -52,6 +52,17 @@
 			<p class="subheading">Guess the Premier League footballer</p>
 
 			<div
+				v-if="stats.currentStreak > 1"
+				class="streak-bar"
+			>
+				<Icon
+					name="solar:fire-bold"
+					size="1rem"
+				/>
+				<span>{{ stats.currentStreak }} day streak</span>
+			</div>
+
+			<div
 				v-if="canPlay"
 				class="play-section"
 			>
@@ -202,7 +213,7 @@
 </template>
 
 <script setup lang="ts">
-	import { withDefaults, ref, computed, onMounted, nextTick, watch } from 'vue'
+	import { ref, computed } from 'vue'
 
 	const props = withDefaults(
 		defineProps<{
@@ -329,6 +340,19 @@
 				color: var(--text-primary);
 				margin: 0;
 				text-align: left;
+			}
+
+			.streak-bar {
+				align-items: center;
+				background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+				border-radius: 2rem;
+				color: #fff;
+				display: inline-flex;
+				font-size: 0.85rem;
+				font-weight: 600;
+				gap: 0.35rem;
+				margin-top: 0.5rem;
+				padding: 0.3rem 0.85rem;
 			}
 
 			.play-section {

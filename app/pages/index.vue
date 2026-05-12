@@ -113,6 +113,16 @@
 				<div class="game-over-section">
 					<h4 v-if="gameStore.isWin">You win!</h4>
 					<h4 v-else>You lose!</h4>
+					<div
+						v-if="gameStore.isWin && statsStore.stats.currentStreak > 1"
+						class="streak-celebration"
+					>
+						<Icon
+							name="solar:fire-bold"
+							size="1rem"
+						/>
+						{{ streakMessage }}
+					</div>
 					<p>
 						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
 					</p>
@@ -197,7 +207,11 @@
 						name="uil:coffee"
 						size="0.9rem"
 					/>
-					Enjoying Footballdle? Buy me a coffee
+					{{
+						statsStore.stats.currentStreak >= 3
+							? `${statsStore.stats.currentStreak} day streak — buy me a coffee?`
+							: 'Enjoying Footballdle? Buy me a coffee'
+					}}
 				</a>
 			</template>
 		</BaseModal>
@@ -802,6 +816,16 @@
 		challengeStore.isWin && challengeStore.gameOver ? challengeStore.guesses.length : 0,
 	)
 
+	const streakMessage = computed(() => {
+		const s = statsStore.stats.currentStreak
+		if (s >= 30) return `${s} day streak — absolute legend!`
+		if (s >= 14) return `${s} day streak — unstoppable!`
+		if (s >= 7) return `${s} day streak — one week!`
+		if (s >= 5) return `${s} day streak — on fire!`
+		if (s >= 3) return `${s} day streak — hat-trick!`
+		return `${s} days in a row!`
+	})
+
 	const yesterdayISO = computed(() => {
 		const [dd, mm, yyyy] = gameStore.todayStr.split('/').map(Number)
 		const d = new Date(yyyy!, mm! - 1, dd!)
@@ -1203,6 +1227,19 @@
 			font-weight: 700;
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
+		}
+
+		.streak-celebration {
+			align-items: center;
+			background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+			border-radius: 2rem;
+			color: #fff;
+			display: inline-flex;
+			font-size: 0.85rem;
+			font-weight: 600;
+			gap: 0.35rem;
+			margin-bottom: 0.75rem;
+			padding: 0.3rem 0.9rem;
 		}
 	}
 

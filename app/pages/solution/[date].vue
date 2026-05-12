@@ -56,6 +56,8 @@
 				</div>
 			</div>
 
+			<AdUnit />
+
 			<div class="cta-section">
 				<p class="cta-text">Can you guess today's player?</p>
 				<NuxtLink
@@ -83,6 +85,7 @@
 					</NuxtLink>
 				</div>
 			</div>
+			<AdUnit />
 		</main>
 
 		<footer class="solution-footer">
@@ -94,6 +97,20 @@
 
 <script setup lang="ts">
 	import { getAnswerForDay, getPlayerData, getPuzzleNumber } from '../../composables/useFootballers'
+
+	const { public: { adsensePublisherId } } = useRuntimeConfig()
+
+	if (adsensePublisherId) {
+		useHead({
+			script: [
+				{
+					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
+					async: true,
+					crossorigin: 'anonymous',
+				},
+			],
+		})
+	}
 
 	const route = useRoute()
 	const dateParam = route.params.date as string
