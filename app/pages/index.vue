@@ -360,6 +360,33 @@
 						</div>
 					</div>
 
+					<div
+						v-if="pushSupported"
+						class="setting-group push-group"
+					>
+						<label>Daily Reminder</label>
+						<p>Get notified when today's puzzle is ready.</p>
+						<button
+							:class="['toggle-switch', { active: pushEnabled }]"
+							:disabled="pushLoading"
+							@click="togglePush"
+						>
+							<span class="toggle-track">
+								<span class="toggle-thumb" />
+							</span>
+							<span class="toggle-label">{{
+								pushEnabled ? 'Notifications on' : 'Notifications off'
+							}}</span>
+						</button>
+						<p
+							v-if="pushBlocked"
+							class="push-blocked-msg"
+						>
+							Notifications are blocked in your browser. Enable them in your browser settings and try
+							again.
+						</p>
+					</div>
+
 					<div class="setting-group support-group">
 						<label>Support Footballdle</label>
 						<p>Enjoying the game? Help keep it free and ad-light.</p>
@@ -799,6 +826,42 @@
 	// ============================================================================
 	const activeStatsTab = ref('daily')
 	const isLoading = ref(false)
+
+	// Push notifications
+	const {
+		isSupported: pushSupported,
+		isSubscribed,
+		subscribe: pushSubscribe,
+		unsubscribe: pushUnsubscribe,
+	} = usePushNotifications()
+	const pushEnabled = ref(false)
+	const pushLoading = ref(false)
+	const pushBlocked = ref(false)
+
+	async function initPushState() {
+		if (!pushSupported) return
+		pushEnabled.value = await isSubscribed()
+	}
+
+	async function togglePush() {
+		pushLoading.value = true
+		pushBlocked.value = false
+		try {
+			if (pushEnabled.value) {
+				await pushUnsubscribe()
+				pushEnabled.value = false
+			} else {
+				const ok = await pushSubscribe()
+				if (!ok && Notification.permission === 'denied') {
+					pushBlocked.value = true
+				}
+				pushEnabled.value = ok
+			}
+		} finally {
+			pushLoading.value = false
+		}
+	}
+
 	const sessionStartTime = ref(Date.now())
 	const shareToast = ref(false)
 	let shareToastTimer: ReturnType<typeof setTimeout> | null = null
@@ -847,6 +910,7 @@
 		statsStore.loadStats()
 		gameStore.loadState()
 		gameStore.startCountdown()
+		initPushState()
 
 		// Load challenge state
 		challengeStore.loadChallengeState()
@@ -1431,6 +1495,67 @@
 					transform: translateY(-2px);
 				}
 			}
+		}
+
+		.toggle-switch {
+			align-items: center;
+			background: none;
+			border: none;
+			cursor: pointer;
+			display: inline-flex;
+			gap: 0.6rem;
+			padding: 0;
+
+			&:disabled {
+				cursor: wait;
+				opacity: 0.6;
+			}
+
+			.toggle-track {
+				background: var(--border);
+				border-radius: 999px;
+				display: block;
+				height: 24px;
+				position: relative;
+				transition: background 0.2s;
+				width: 44px;
+
+				.toggle-thumb {
+					background: #fff;
+					border-radius: 50%;
+					display: block;
+					height: 18px;
+					left: 3px;
+					position: absolute;
+					top: 3px;
+					transition: transform 0.2s;
+					width: 18px;
+				}
+			}
+
+			&.active .toggle-track {
+				background: var(--primary-color);
+			}
+
+			&.active .toggle-thumb {
+				transform: translateX(20px);
+			}
+
+			.toggle-label {
+				color: var(--text-primary);
+				font-size: 0.9rem;
+				font-weight: 500;
+			}
+		}
+
+		.push-group {
+			text-align: left;
+		}
+
+		.push-blocked-msg {
+			color: var(--primary-color);
+			font-size: 0.8rem;
+			margin-top: 0.5rem;
 		}
 
 		.setting-group {
