@@ -91,6 +91,15 @@ export default defineNuxtConfig({
 			],
 			script: [
 				{
+					type: 'application/ld+json',
+					innerHTML: JSON.stringify({
+						'@context': 'https://schema.org',
+						'@type': 'WebSite',
+						name: 'Footballdle',
+						url: 'https://footballdle.co.uk',
+					}),
+				},
+				{
 					innerHTML: `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`,
 				},
 				{
