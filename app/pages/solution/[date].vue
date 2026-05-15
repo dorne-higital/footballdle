@@ -19,6 +19,8 @@
 				<span class="puzzle-date">{{ formattedDate }}</span>
 			</div>
 
+			<h1 class="solution-heading">Footballdle Answer — {{ formattedDate }}</h1>
+
 			<div class="answer-card">
 				<span
 					v-for="(letter, i) in answer.toUpperCase().split('')"
@@ -55,6 +57,16 @@
 					{{ playerData.nationality }}
 				</div>
 			</div>
+
+			<p
+				v-if="playerData"
+				class="solution-description"
+			>
+				The answer to Footballdle puzzle #{{ puzzleNumber }} on {{ formattedDate }} was
+				<strong>{{ answer.toUpperCase() }}</strong> — a {{ playerData.nationality }}
+				{{ playerData.position.toLowerCase() }} who plays for {{ playerData.club }} in the Premier
+				League. Did you get it? Come back tomorrow for a new puzzle.
+			</p>
 
 			<AdUnit />
 
@@ -178,6 +190,10 @@
 	const answerUpper = answer.toUpperCase()
 	const playerDesc = playerData ? ` – ${playerData.position} for ${playerData.club}` : ''
 
+	const faqAnswer = playerData
+		? `The Footballdle answer on ${formattedDate} was ${answerUpper} — a ${playerData.nationality} ${playerData.position.toLowerCase()} who plays for ${playerData.club} in the Premier League.`
+		: `The Footballdle answer on ${formattedDate} was ${answerUpper}.`
+
 	useHead({
 		title: `Footballdle #${puzzleNumber} Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
 		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/solution/${dateParam}` }],
@@ -194,6 +210,33 @@
 			{ property: 'og:url', content: `https://footballdle.co.uk/solution/${dateParam}` },
 			{ property: 'og:type', content: 'article' },
 			{ name: 'robots', content: 'index, follow' },
+		],
+		script: [
+			{
+				type: 'application/ld+json',
+				children: JSON.stringify({
+					'@context': 'https://schema.org',
+					'@type': 'FAQPage',
+					mainEntity: [
+						{
+							'@type': 'Question',
+							name: `What was the Footballdle answer on ${formattedDate}?`,
+							acceptedAnswer: {
+								'@type': 'Answer',
+								text: faqAnswer,
+							},
+						},
+						{
+							'@type': 'Question',
+							name: 'What is Footballdle?',
+							acceptedAnswer: {
+								'@type': 'Answer',
+								text: 'Footballdle is a free daily Premier League footballer guessing game. Each day, guess a hidden 6-letter footballer surname in up to 6 tries. A new player is revealed every day at midnight UK time.',
+							},
+						},
+					],
+				}),
+			},
 		],
 	})
 </script>
@@ -268,6 +311,21 @@
 		font-size: 1.6rem;
 		font-weight: 700;
 		margin-bottom: 1.5rem;
+	}
+
+	.solution-heading {
+		color: var(--text-primary);
+		font-size: 1.4rem;
+		font-weight: 700;
+		margin-bottom: 1.25rem;
+	}
+
+	.solution-description {
+		color: var(--text-secondary);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		margin-bottom: 1.5rem;
+		text-align: left;
 	}
 
 	.answer-card {

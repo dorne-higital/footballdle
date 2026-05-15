@@ -91,6 +91,9 @@ export default defineNuxtConfig({
 			],
 			script: [
 				{
+					innerHTML: `window.adBreak=window.adBreak||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};window.adConfig=window.adConfig||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};`,
+				},
+				{
 					type: 'application/ld+json',
 					innerHTML: JSON.stringify({
 						'@context': 'https://schema.org',

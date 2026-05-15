@@ -38,6 +38,7 @@ export const useGameStore = defineStore('game', () => {
 	const showGameOverModal = ref(false)
 	const showIntro = ref(true)
 	const errorMessage = ref('')
+	const purchasedHints = ref(0)
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
@@ -59,15 +60,23 @@ export const useGameStore = defineStore('game', () => {
 		const player = getPlayerData(answer)
 		if (!player) return []
 
+		const effective = guesses.value.length + purchasedHints.value
 		const revealed: { label: string; value: string; icon: string }[] = []
-		if (guesses.value.length >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
-		if (guesses.value.length >= 3)
-			revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
-		if (guesses.value.length >= 4)
-			revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
+		if (effective >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
+		if (effective >= 3) revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
+		if (effective >= 4) revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
 
 		return revealed
 	})
+
+	const canPurchaseHint = computed(
+		() => !gameOver.value && guesses.value.length + purchasedHints.value < 4,
+	)
+
+	function unlockHint() {
+		purchasedHints.value++
+		saveState()
+	}
 
 	const canPlay = computed(() => {
 		// Check if we have a saved game for today
@@ -188,6 +197,7 @@ export const useGameStore = defineStore('game', () => {
 			guesses: guesses.value,
 			gameOver: gameOver.value,
 			isWin: isWin.value,
+			purchasedHints: purchasedHints.value,
 		}
 		localStorage.setItem('footballdle-game', JSON.stringify(gameState))
 	}
@@ -195,16 +205,13 @@ export const useGameStore = defineStore('game', () => {
 	function loadState() {
 		const savedGame = localStorage.getItem('footballdle-game')
 		if (savedGame) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin } = JSON.parse(savedGame)
+			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedPurchasedHints } = JSON.parse(savedGame)
 			if (date === todayStr) {
 				guesses.value = savedGuesses
 				gameOver.value = savedOver
 				isWin.value = savedWin
-				// Don't show game over modal on load - let the intro screen handle it
+				purchasedHints.value = savedPurchasedHints || 0
 				showGameOverModal.value = false
-
-				// If game is completed, show intro screen
-				// If game is not completed, keep intro hidden so user can continue
 				showIntro.value = savedOver
 			}
 		}
@@ -214,6 +221,7 @@ export const useGameStore = defineStore('game', () => {
 		guesses.value = []
 		gameOver.value = false
 		isWin.value = false
+		purchasedHints.value = 0
 		showGameOverModal.value = false
 		showIntro.value = true
 		saveState()
@@ -237,12 +245,14 @@ export const useGameStore = defineStore('game', () => {
 		// Computed
 		hints,
 		canPlay,
+		canPurchaseHint,
 
 		// Functions
 		submitGuess,
 		onKeyboardKey,
 		startGame,
 		closeGameOverModal,
+		unlockHint,
 		updateCountdown,
 		startCountdown,
 		stopCountdown,

@@ -69,6 +69,19 @@
 				</div>
 			</TransitionGroup>
 
+			<button
+				v-if="gameStore.canPurchaseHint && (adPlatformReady || isAdTestMode)"
+				class="watch-ad-btn"
+				:disabled="adLoading"
+				@click="handleWatchAd"
+			>
+				<Icon
+					name="solar:play-circle-linear"
+					size="1rem"
+				/>
+				{{ adLoading ? 'Loading ad...' : 'Watch an ad for a hint' }}
+			</button>
+
 			<Keyboard
 				:disabled="gameStore.gameOver"
 				:guesses="gameStore.guesses"
@@ -800,6 +813,35 @@
 	// ============================================================================
 	const activeStatsTab = ref('daily')
 	const isLoading = ref(false)
+	const adLoading = ref(false)
+	const adPlatformReady = ref(false)
+	const isAdTestMode = ref(false)
+
+	function handleWatchAd() {
+		if (!import.meta.client) return
+
+		// Test mode: ?adtest=1 in URL simulates the ad flow
+		const isTestMode = new URLSearchParams(window.location.search).get('adtest') === '1'
+		if (isTestMode) {
+			adLoading.value = true
+			setTimeout(() => {
+				adLoading.value = false
+				gameStore.unlockHint()
+			}, 2000)
+			return
+		}
+
+		const adBreak = (window as any).adBreak
+		if (!adBreak) return
+		adBreak({
+			type: 'reward',
+			name: 'hint-unlock',
+			beforeAd: () => { adLoading.value = true },
+			afterAd: () => { adLoading.value = false },
+			adDismissed: () => { adLoading.value = false },
+			adViewed: () => { gameStore.unlockHint() },
+		})
+	}
 
 	const sessionStartTime = ref(Date.now())
 	const shareToast = ref(false)
@@ -849,6 +891,14 @@
 		statsStore.loadStats()
 		gameStore.loadState()
 		gameStore.startCountdown()
+
+		isAdTestMode.value = new URLSearchParams(window.location.search).get('adtest') === '1'
+		if ((window as any).adConfig) {
+			;(window as any).adConfig({
+				preloadAdBreaks: 'on',
+				onReady: () => { adPlatformReady.value = true },
+			})
+		}
 
 		// Load challenge state
 		challengeStore.loadChallengeState()
@@ -1171,6 +1221,33 @@
 			.hint-value {
 				font-weight: 700;
 			}
+		}
+	}
+
+	.watch-ad-btn {
+		align-items: center;
+		background: transparent;
+		border: 1px dashed var(--border);
+		border-radius: var(--global-border-radius);
+		color: var(--text-secondary);
+		cursor: pointer;
+		display: flex;
+		flex-shrink: 0;
+		font-size: 0.8rem;
+		gap: 0.4rem;
+		justify-content: center;
+		margin: 0 0.5rem 0.5rem;
+		padding: 0.4rem 1rem;
+		transition: all 0.2s;
+
+		&:disabled {
+			cursor: wait;
+			opacity: 0.5;
+		}
+
+		&:hover:not(:disabled) {
+			border-color: var(--primary-color);
+			color: var(--primary-color);
 		}
 	}
 
