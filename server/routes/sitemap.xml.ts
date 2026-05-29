@@ -30,6 +30,16 @@ export default defineEventHandler((event) => {
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>`,
+		`  <url>
+    <loc>${BASE_URL}/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>`,
+		`  <url>
+    <loc>${BASE_URL}/privacy-policy</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>`,
 		// Today's solution is highest priority — freshest content
 		todayISO
 			? `  <url>

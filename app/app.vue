@@ -1,6 +1,7 @@
 <template>
 	<NuxtPage />
-</template> 
+	<SiteFooter />
+</template>
   
 <style lang="scss">
 	@use '../assets/main.scss';
