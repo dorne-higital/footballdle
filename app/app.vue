@@ -1,6 +1,5 @@
 <template>
 	<NuxtPage />
-	<SiteFooter />
 </template>
   
 <style lang="scss">

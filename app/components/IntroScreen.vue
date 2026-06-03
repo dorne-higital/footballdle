@@ -221,6 +221,40 @@
 					</button>
 				</div>
 			</div>
+			<!-- World Cup Event Banner -->
+			<NuxtLink
+				to="/worldcup"
+				class="wc-event-banner"
+			>
+				<div class="wc-banner-content">
+					<div class="wc-banner-top">
+						<span class="wc-live-badge">
+							<span class="wc-live-dot" />
+							Limited Event
+						</span>
+						<span class="wc-player-count">1,042 players</span>
+					</div>
+					<h3 class="wc-banner-title">World Cup 2026</h3>
+					<p class="wc-banner-sub">Guess any WC player — any name length</p>
+					<span class="wc-banner-cta">
+						Play now
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							size="0.9rem"
+						/>
+					</span>
+				</div>
+				<div class="wc-banner-graphic">
+					<Icon
+						name="solar:football-bold"
+						class="wc-ball"
+					/>
+					<Icon
+						name="solar:cup-star-bold"
+						class="wc-trophy"
+					/>
+				</div>
+			</NuxtLink>
 		</div>
 	</div>
 </template>
@@ -616,6 +650,150 @@
 						}
 					}
 				}
+			}
+		}
+
+		.wc-event-banner {
+			background: linear-gradient(135deg, #0a1628 0%, #0d2137 55%, #0a2a1a 100%);
+			border: 1px solid rgb(255 255 255 / 12%);
+			border-radius: var(--global-border-radius);
+			color: #fff;
+			display: flex;
+			justify-content: space-between;
+			margin-top: 1rem;
+			overflow: hidden;
+			padding: 1.25rem;
+			position: relative;
+			text-decoration: none;
+			transition: all 0.3s ease;
+
+			&::before {
+				background: radial-gradient(ellipse at 80% 50%, rgb(16 185 129 / 12%) 0%, transparent 65%);
+				content: '';
+				inset: 0;
+				pointer-events: none;
+				position: absolute;
+			}
+
+			&:hover {
+				border-color: rgb(255 255 255 / 25%);
+				box-shadow: 0 8px 32px rgb(0 0 0 / 35%);
+				transform: translateY(-2px);
+			}
+
+			.wc-banner-content {
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+				position: relative;
+				z-index: 1;
+
+				.wc-banner-top {
+					align-items: center;
+					display: flex;
+					gap: 0.6rem;
+
+					.wc-live-badge {
+						align-items: center;
+						background: rgb(255 255 255 / 15%);
+						border: 1px solid rgb(255 255 255 / 25%);
+						border-radius: 2rem;
+						display: inline-flex;
+						font-size: 0.65rem;
+						font-weight: 700;
+						gap: 0.3rem;
+						letter-spacing: 0.04em;
+						padding: 0.2rem 0.55rem;
+						text-transform: uppercase;
+
+						.wc-live-dot {
+							animation: wc-pulse 1.8s ease-in-out infinite;
+							background: #4ade80;
+							border-radius: 50%;
+							display: inline-block;
+							height: 6px;
+							width: 6px;
+						}
+					}
+
+					.wc-player-count {
+						color: rgb(255 255 255 / 55%);
+						font-size: 0.7rem;
+					}
+				}
+
+				.wc-banner-title {
+					color: #fff;
+					font-size: 1.35rem;
+					font-weight: 800;
+					letter-spacing: -0.01em;
+					line-height: 1.1;
+					margin: 0;
+					text-align: left;
+				}
+
+				.wc-banner-sub {
+					color: rgb(255 255 255 / 65%);
+					font-size: 0.78rem;
+					line-height: 1.4;
+					margin: 0;
+					text-align: left;
+				}
+
+				.wc-banner-cta {
+					align-items: center;
+					background: rgb(255 255 255 / 12%);
+					border: 1px solid rgb(255 255 255 / 25%);
+					border-radius: 2rem;
+					display: inline-flex;
+					font-size: 0.8rem;
+					font-weight: 700;
+					gap: 0.3rem;
+					margin-top: 0.2rem;
+					padding: 0.35rem 0.9rem;
+					transition: background 0.2s;
+					width: fit-content;
+				}
+
+				.wc-event-banner:hover & .wc-banner-cta {
+					background: rgb(255 255 255 / 20%);
+				}
+			}
+
+			.wc-banner-graphic {
+				align-items: flex-end;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				padding-left: 0.5rem;
+				position: relative;
+				z-index: 1;
+
+				.wc-ball {
+					color: rgb(255 255 255 / 15%);
+					font-size: 4.5rem;
+					line-height: 1;
+				}
+
+				.wc-trophy {
+					color: #f59e0b;
+					font-size: 1.75rem;
+					line-height: 1;
+					opacity: 0.9;
+				}
+			}
+		}
+
+		@keyframes wc-pulse {
+			0%,
+			100% {
+				opacity: 1;
+				transform: scale(1);
+			}
+
+			50% {
+				opacity: 0.5;
+				transform: scale(0.8);
 			}
 		}
 	}

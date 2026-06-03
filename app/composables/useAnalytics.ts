@@ -232,6 +232,68 @@ export const useAnalytics = () => {
 		}
 	}
 
+	// ── World Cup game ──────────────────────────────────────────────────────────
+
+	const trackWCGameStart = (isReturningPlayer: boolean = false) => {
+		if (import.meta.client) {
+			event('game_start', {
+				event_category: 'wc_game',
+				event_label: 'wc_daily',
+				player_type: isReturningPlayer ? 'returning' : 'new',
+			})
+		}
+	}
+
+	const trackWCGuessSubmitted = (guessNumber: number) => {
+		if (import.meta.client) {
+			event('guess_submitted', {
+				event_category: 'wc_game',
+				event_label: 'wc_daily',
+				guess_number: guessNumber,
+			})
+		}
+	}
+
+	const trackWCGameWin = (guesses: number) => {
+		if (import.meta.client) {
+			event('game_win', {
+				event_category: 'wc_game',
+				event_label: 'wc_daily',
+				guess_count: guesses,
+				value: guesses,
+			})
+		}
+	}
+
+	const trackWCGameLoss = (guesses: number) => {
+		if (import.meta.client) {
+			event('game_loss', {
+				event_category: 'wc_game',
+				event_label: 'wc_daily',
+				guess_count: guesses,
+				value: guesses,
+			})
+		}
+	}
+
+	const trackWCShare = (platform: 'copy' | 'twitter') => {
+		if (import.meta.client) {
+			event('share', {
+				event_category: 'wc_social',
+				event_label: platform,
+			})
+		}
+	}
+
+	const trackWCStatsModal = () => {
+		if (import.meta.client) {
+			event('modal_stats_open', {
+				event_category: 'wc_ui',
+				event_label: 'wc_stats_modal',
+			})
+		}
+	}
+
 	return {
 		trackGameStart,
 		trackGameWin,
@@ -258,5 +320,11 @@ export const useAnalytics = () => {
 		trackHomeClick,
 		trackSessionTime,
 		trackBuyMeCoffee,
+		trackWCGameStart,
+		trackWCGuessSubmitted,
+		trackWCGameWin,
+		trackWCGameLoss,
+		trackWCShare,
+		trackWCStatsModal,
 	}
 }

@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \"const wp = require\\('web-push'\\); const keys = wp.generateVAPIDKeys\\(\\); console.log\\('PUBLIC=' + keys.publicKey\\); console.log\\('PRIVATE=' + keys.privateKey\\);\")"
+      "Bash(node -e \"const wp = require\\('web-push'\\); const keys = wp.generateVAPIDKeys\\(\\); console.log\\('PUBLIC=' + keys.publicKey\\); console.log\\('PRIVATE=' + keys.privateKey\\);\")",
+      "Bash(curl -s https://api.football-data.org/v4/competitions/WC/teams?season=2026 -H 'X-Auth-Token: f425457f0ccb4f5cb2b99e8574ebb762')",
+      "Bash(node scripts/fetch-wc-players.mjs)",
+      "Bash(node -e ' *)"
     ]
   }
 }

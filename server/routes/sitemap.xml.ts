@@ -40,6 +40,11 @@ export default defineEventHandler((event) => {
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>`,
+		`  <url>
+    <loc>${BASE_URL}/worldcup</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`,
 		// Today's solution is highest priority — freshest content
 		todayISO
 			? `  <url>
