@@ -1091,6 +1091,7 @@
 		position: relative;
 
 		&.is-intro {
+			align-items: flex-start;
 			overflow-y: auto;
 		}
 
