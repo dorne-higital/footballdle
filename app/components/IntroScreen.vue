@@ -317,7 +317,7 @@
 	.intro-screen {
 		align-items: stretch;
 		display: flex;
-		height: 100%;
+		min-height: 100%;
 		justify-content: center;
 		position: relative;
 		width: 100%;
@@ -344,6 +344,7 @@
 			display: flex;
 			flex-direction: column;
 			max-width: 500px;
+			padding-bottom: 1rem;
 			place-content: center flex-start;
 			text-align: center;
 			width: 100%;
