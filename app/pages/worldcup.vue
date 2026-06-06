@@ -661,44 +661,40 @@
 		gap: 0.4rem;
 
 		.guess-chip {
-			align-items: center;
 			background: var(--bg-secondary);
 			border: 1px solid var(--border);
 			border-left: 3px solid var(--color-absent);
 			border-radius: var(--global-border-radius);
 			display: flex;
-			gap: 0.5rem;
-			justify-content: space-between;
-			padding: 0.5rem 0.75rem;
+			flex-direction: column;
+			gap: 0.3rem;
+			padding: 0.45rem 0.75rem;
 			transition: opacity 0.2s;
 			width: 100%;
 
 			.guess-name {
 				color: var(--text-primary);
-				flex-shrink: 0;
-				font-size: 0.9rem;
+				font-size: 0.85rem;
 				font-weight: 700;
 				letter-spacing: 0.06em;
-				min-width: 6rem;
 			}
 
 			.guess-attrs {
 				align-items: center;
 				display: flex;
 				flex-wrap: nowrap;
-				gap: 0.35rem;
+				gap: 0.3rem;
 				justify-content: flex-end;
-				overflow: hidden;
 
 				.attr {
 					align-items: center;
 					border-radius: 2rem;
 					display: inline-flex;
 					flex-shrink: 0;
-					font-size: 0.7rem;
+					font-size: 0.67rem;
 					font-weight: 600;
-					gap: 0.25rem;
-					padding: 0.2rem 0.55rem;
+					gap: 0.2rem;
+					padding: 0.18rem 0.5rem;
 					white-space: nowrap;
 
 					&.match {
@@ -716,16 +712,16 @@
 			}
 
 			&.past {
-				opacity: 0.55;
+				opacity: 0.5;
 				padding: 0.3rem 0.75rem;
 
 				.guess-name {
-					font-size: 0.78rem;
+					font-size: 0.75rem;
 				}
 
 				.attr {
-					font-size: 0.62rem;
-					padding: 0.15rem 0.4rem;
+					font-size: 0.6rem;
+					padding: 0.12rem 0.4rem;
 				}
 			}
 		}
