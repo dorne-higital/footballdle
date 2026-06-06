@@ -10,7 +10,7 @@
 					name="solar:alt-arrow-left-linear"
 					size="1rem"
 				/>
-				Main game
+				Home
 			</NuxtLink>
 			<div class="wc-title">
 				<span class="wc-badge">World Cup 2026</span>
@@ -18,7 +18,7 @@
 			</div>
 			<button
 				class="stats-btn"
-				@click="showStats = true; trackWCStatsModal()"
+				@click="openStats"
 			>
 				<Icon
 					name="solar:chart-2-linear"
@@ -48,9 +48,9 @@
 			>
 				<TransitionGroup name="guess">
 					<div
-						v-for="guess in wrongGuesses"
+						v-for="(guess, i) in wrongGuesses"
 						:key="guess"
-						class="guess-chip"
+						:class="['guess-chip', i === wrongGuesses.length - 1 ? 'latest' : 'past']"
 					>
 						<span class="guess-name">{{ guess.toUpperCase() }}</span>
 						<div
@@ -67,7 +67,7 @@
 									name="solar:globe-linear"
 									size="0.7rem"
 								/>
-								{{ getGuessData(guess)?.continent }}
+								{{ shortContinent(getGuessData(guess)?.continent) }}
 							</span>
 							<span
 								:class="[
@@ -91,7 +91,7 @@
 									name="solar:football-linear"
 									size="0.7rem"
 								/>
-								{{ getGuessData(guess)?.position }}
+								{{ shortPosition(getGuessData(guess)?.position) }}
 							</span>
 							<span
 								v-if="getGuessData(guess)?.born && playerData?.born"
@@ -122,10 +122,10 @@
 				<p class="guess-count">{{ wcStore.guesses.length }} / {{ wcStore.maxGuesses }} guesses used</p>
 			</div>
 
-			<!-- Search input (only shown when game active) -->
+			<!-- Keyboard input (only shown when game active) -->
 			<div
 				v-if="!wcStore.gameOver"
-				class="search-area"
+				class="wc-keyboard-area"
 			>
 				<div
 					v-if="suggestions.length"
@@ -145,45 +145,29 @@
 						<span class="suggestion-meta">{{ s.country }} · {{ s.position }}</span>
 					</button>
 				</div>
-				<div class="search-box">
-					<Icon
-						name="solar:magnifer-linear"
-						size="1.1rem"
-						class="search-icon"
-					/>
-					<input
-						ref="searchInputRef"
-						v-model="searchQuery"
-						class="search-input"
-						type="text"
-						placeholder="Type a name or surname..."
-						autocomplete="off"
-						autocorrect="off"
-						autocapitalize="off"
-						spellcheck="false"
-						@input="onSearchInput"
-						@keydown="onKeydown"
-						@blur="onBlur"
-						@focus="onFocus"
-					/>
+				<div class="wc-query-display">
+					<span
+						v-if="searchQuery"
+						class="query-text"
+						>{{ searchQuery.toUpperCase() }}</span
+					>
+					<span
+						v-else
+						class="query-placeholder"
+						>Type a surname…</span
+					>
 					<button
 						v-if="searchQuery"
-						class="clear-btn"
-						@mousedown.prevent="clearSearch"
-					>
-						<Icon
-							name="solar:close-circle-linear"
-							size="1rem"
-						/>
-					</button>
-					<button
 						class="submit-btn"
-						:disabled="!searchQuery.trim()"
-						@click="submitCurrent"
+						@mousedown.prevent="submitCurrent"
 					>
 						Guess
 					</button>
 				</div>
+				<Keyboard
+					:disabled="wcStore.gameOver"
+					@key="handleWCKeyboardKey"
+				/>
 			</div>
 
 			<!-- Game over inline state -->
@@ -350,7 +334,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, computed, onMounted, nextTick } from 'vue'
+	import { ref, computed, onMounted } from 'vue'
 	import { useWCGameStore } from '../stores/wcGame'
 	import { useWCStatsStore } from '../stores/wcStats'
 	import { getWCSuggestions, getWCPlayerData } from '../composables/useWCFootballers'
@@ -373,17 +357,21 @@
 
 	const wcStore = useWCGameStore()
 	const wcStatsStore = useWCStatsStore()
-	const { trackWCGameStart, trackWCGuessSubmitted, trackWCGameWin, trackWCGameLoss, trackWCShare, trackWCStatsModal } =
-		useAnalytics()
+	const {
+		trackWCGameStart,
+		trackWCGuessSubmitted,
+		trackWCGameWin,
+		trackWCGameLoss,
+		trackWCShare,
+		trackWCStatsModal,
+	} = useAnalytics()
 
 	const searchQuery = ref('')
 	const suggestions = ref<WCFootballer[]>([])
 	const highlightedSuggestion = ref('')
 	const shareToast = ref(false)
 	const showStats = ref(false)
-	const searchInputRef = ref<HTMLInputElement | null>(null)
 	let shareToastTimer: ReturnType<typeof setTimeout> | null = null
-	let blurTimeout: ReturnType<typeof setTimeout> | null = null
 
 	const wrongGuesses = computed(() => wcStore.guesses.filter((g) => g.toLowerCase() !== wcStore.answer.toLowerCase()))
 
@@ -397,64 +385,52 @@
 		return new Date().getFullYear() - born
 	}
 
+	const positionAbbr: Record<string, string> = {
+		Goalkeeper: 'G',
+		Defender: 'D',
+		Midfielder: 'M',
+		Forward: 'F',
+	}
+
+	function shortPosition(pos: string | undefined): string {
+		return pos ? (positionAbbr[pos] ?? pos) : ''
+	}
+
+	function shortContinent(c: string | undefined): string {
+		if (!c) return ''
+		return c.replace('North America', 'N. America').replace('South America', 'S. America')
+	}
+
 	onMounted(() => {
 		wcStore.loadState()
 		wcStatsStore.loadStats()
 		if (!wcStore.gameOver) {
 			trackWCGameStart(wcStatsStore.stats.gamesPlayed > 0)
-			nextTick(() => searchInputRef.value?.focus())
 		}
 	})
 
-	function onSearchInput() {
-		suggestions.value = getWCSuggestions(searchQuery.value)
-		highlightedSuggestion.value = suggestions.value[0]?.name ?? ''
+	function openStats() {
+		showStats.value = true
+		trackWCStatsModal()
 	}
 
-	function onKeydown(e: KeyboardEvent) {
-		if (e.key === 'Enter') {
-			e.preventDefault()
-			if (highlightedSuggestion.value) {
-				selectSuggestion(highlightedSuggestion.value)
-			} else {
-				submitCurrent()
-			}
+	function handleWCKeyboardKey(key: string) {
+		if (key === 'ENTER') {
+			submitCurrent()
 			return
 		}
-
-		if (e.key === 'ArrowDown') {
-			e.preventDefault()
-			const idx = suggestions.value.findIndex((s) => s.name === highlightedSuggestion.value)
-			const next = suggestions.value[idx + 1]
-			if (next) highlightedSuggestion.value = next.name
-			return
+		if (key === 'BACKSPACE') {
+			searchQuery.value = searchQuery.value.slice(0, -1)
+		} else {
+			searchQuery.value += key.toLowerCase()
 		}
-
-		if (e.key === 'ArrowUp') {
-			e.preventDefault()
-			const idx = suggestions.value.findIndex((s) => s.name === highlightedSuggestion.value)
-			const prev = suggestions.value[idx - 1]
-			if (prev) highlightedSuggestion.value = prev.name
-			return
-		}
-
-		if (e.key === 'Escape') {
-			suggestions.value = []
-			return
-		}
-	}
-
-	function onFocus() {
-		if (blurTimeout) clearTimeout(blurTimeout)
 		if (searchQuery.value.length >= 2) {
 			suggestions.value = getWCSuggestions(searchQuery.value)
-		}
-	}
-
-	function onBlur() {
-		blurTimeout = setTimeout(() => {
+			highlightedSuggestion.value = suggestions.value[0]?.name ?? ''
+		} else {
 			suggestions.value = []
-		}, 150)
+			highlightedSuggestion.value = ''
+		}
 	}
 
 	function trackGuessResult() {
@@ -471,7 +447,6 @@
 		searchQuery.value = ''
 		suggestions.value = []
 		highlightedSuggestion.value = ''
-		nextTick(() => searchInputRef.value?.focus())
 	}
 
 	function submitCurrent() {
@@ -489,20 +464,12 @@
 		searchQuery.value = ''
 		suggestions.value = []
 		highlightedSuggestion.value = ''
-		nextTick(() => searchInputRef.value?.focus())
 	}
 
 	function distBarWidth(n: number): string {
 		const max = Math.max(1, ...Object.values(wcStatsStore.stats.guessDistribution).map(Number))
 		const count = Number(wcStatsStore.stats.guessDistribution[String(n)] || 0)
 		return `${Math.max(8, (count / max) * 100)}%`
-	}
-
-	function clearSearch() {
-		searchQuery.value = ''
-		suggestions.value = []
-		highlightedSuggestion.value = ''
-		nextTick(() => searchInputRef.value?.focus())
 	}
 
 	function buildShareText(): string {
@@ -566,6 +533,7 @@
 			align-items: center;
 			color: var(--text-secondary);
 			display: flex;
+			flex: 1;
 			flex-shrink: 0;
 			font-size: 0.85rem;
 			gap: 0.25rem;
@@ -580,7 +548,7 @@
 		.wc-title {
 			align-items: center;
 			display: flex;
-			flex: 1;
+			flex: 2;
 			gap: 0.5rem;
 			justify-content: center;
 
@@ -606,7 +574,9 @@
 			color: var(--text-secondary);
 			cursor: pointer;
 			display: flex;
+			flex: 1;
 			flex-shrink: 0;
+			justify-content: flex-end;
 			padding: 0.25rem;
 			transition: color 0.2s;
 
@@ -682,7 +652,14 @@
 			gap: 0.5rem;
 			justify-content: space-between;
 			padding: 0.5rem 0.75rem;
+			transition: opacity 0.2s;
 			width: 100%;
+
+			&.past {
+				opacity: 0.55;
+				transform: scale(0.97);
+				transform-origin: left center;
+			}
 
 			.guess-name {
 				color: var(--text-primary);
@@ -696,18 +673,21 @@
 			.guess-attrs {
 				align-items: center;
 				display: flex;
-				flex-wrap: wrap;
+				flex-wrap: nowrap;
 				gap: 0.35rem;
 				justify-content: flex-end;
+				overflow: hidden;
 
 				.attr {
 					align-items: center;
 					border-radius: 2rem;
 					display: inline-flex;
+					flex-shrink: 0;
 					font-size: 0.7rem;
 					font-weight: 600;
 					gap: 0.25rem;
 					padding: 0.2rem 0.55rem;
+					white-space: nowrap;
 
 					&.match {
 						background: color-mix(in srgb, var(--color-success) 15%, transparent);
@@ -742,12 +722,14 @@
 	}
 
 	// ============================================================================
-	// SEARCH
+	// KEYBOARD INPUT AREA
 	// ============================================================================
-	.search-area {
+	.wc-keyboard-area {
+		background: var(--bg-primary);
 		bottom: 0;
 		display: flex;
 		flex-direction: column;
+		gap: 0.4rem;
 		margin-top: auto;
 		padding-bottom: 0.5rem;
 		position: sticky;
@@ -758,7 +740,7 @@
 		border: 1px solid var(--border);
 		border-bottom: none;
 		border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
-		max-height: 240px;
+		max-height: 200px;
 		overflow-y: auto;
 
 		.suggestion-item {
@@ -771,7 +753,7 @@
 			display: flex;
 			gap: 0.75rem;
 			justify-content: space-between;
-			padding: 0.65rem 1rem;
+			padding: 0.55rem 1rem;
 			text-align: left;
 			transition: background 0.15s;
 			width: 100%;
@@ -815,58 +797,29 @@
 		}
 	}
 
-	.search-box {
+	.wc-query-display {
 		align-items: center;
-		background: var(--bg-primary);
+		background: var(--bg-secondary);
 		border: 1px solid var(--border);
 		border-radius: var(--global-border-radius);
 		display: flex;
 		gap: 0.5rem;
+		justify-content: space-between;
+		min-height: 2.75rem;
 		padding: 0.5rem 0.75rem;
-		transition: border-color 0.2s;
 
-		&:focus-within {
-			border-color: var(--primary-color);
-		}
-
-		.search-icon {
-			color: var(--text-secondary);
-			flex-shrink: 0;
-		}
-
-		.search-input {
-			background: transparent;
-			border: none;
+		.query-text {
 			color: var(--text-primary);
 			flex: 1;
 			font-size: 1rem;
-			font-weight: 600;
-			letter-spacing: 0.04em;
-			min-width: 0;
-			outline: none;
-			text-transform: uppercase;
-
-			&::placeholder {
-				color: var(--text-secondary);
-				font-weight: 400;
-				letter-spacing: normal;
-				text-transform: none;
-			}
+			font-weight: 700;
+			letter-spacing: 0.08em;
 		}
 
-		.clear-btn {
-			background: transparent;
-			border: none;
+		.query-placeholder {
 			color: var(--text-secondary);
-			cursor: pointer;
-			display: flex;
-			flex-shrink: 0;
-			padding: 0;
-			transition: color 0.15s;
-
-			&:hover {
-				color: var(--text-primary);
-			}
+			flex: 1;
+			font-size: 0.9rem;
 		}
 
 		.submit-btn {
@@ -875,21 +828,16 @@
 			border-radius: calc(var(--global-border-radius) - 2px);
 			color: #fff;
 			cursor: pointer;
+			flex-shrink: 0;
 			font-size: 0.85rem;
 			font-weight: 700;
 			padding: 0.35rem 0.85rem;
-			transition: opacity 0.2s;
 			white-space: nowrap;
-
-			&:disabled {
-				cursor: not-allowed;
-				opacity: 0.4;
-			}
 		}
 	}
 
-	// when suggestions are open, attach the search box to them
-	.search-area:has(.suggestions) .search-box {
+	// attach query display to bottom of suggestions list when open
+	.wc-keyboard-area:has(.suggestions) .wc-query-display {
 		border-radius: 0 0 var(--global-border-radius) var(--global-border-radius);
 	}
 
