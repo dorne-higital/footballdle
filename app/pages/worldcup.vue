@@ -79,7 +79,7 @@
 									name="solar:earth-linear"
 									size="0.7rem"
 								/>
-								{{ getGuessData(guess)?.country }}
+								{{ shortCountry(getGuessData(guess)?.country) }}
 							</span>
 							<span
 								:class="[
@@ -166,6 +166,7 @@
 				</div>
 				<Keyboard
 					:disabled="wcStore.gameOver"
+					:show-space="true"
 					@key="handleWCKeyboardKey"
 				/>
 			</div>
@@ -401,6 +402,21 @@
 		return c.replace('North America', 'N. America').replace('South America', 'S. America')
 	}
 
+	const countryAbbr: Record<string, string> = {
+		'United States': 'USA',
+		'Saudi Arabia': 'S. Arabia',
+		'Bosnia-Herzegovina': 'Bosnia',
+		'Cape Verde Islands': 'Cape Verde',
+		'South Africa': 'S. Africa',
+		'South Korea': 'S. Korea',
+		'New Zealand': 'N. Zealand',
+		'Ivory Coast': 'Ivory Cst',
+	}
+
+	function shortCountry(c: string | undefined): string {
+		return c ? (countryAbbr[c] ?? c) : ''
+	}
+
 	onMounted(() => {
 		wcStore.loadState()
 		wcStatsStore.loadStats()
@@ -421,6 +437,8 @@
 		}
 		if (key === 'BACKSPACE') {
 			searchQuery.value = searchQuery.value.slice(0, -1)
+		} else if (key === ' ') {
+			searchQuery.value += ' '
 		} else {
 			searchQuery.value += key.toLowerCase()
 		}
@@ -655,12 +673,6 @@
 			transition: opacity 0.2s;
 			width: 100%;
 
-			&.past {
-				opacity: 0.55;
-				transform: scale(0.97);
-				transform-origin: left center;
-			}
-
 			.guess-name {
 				color: var(--text-primary);
 				flex-shrink: 0;
@@ -700,6 +712,20 @@
 						border: 1px solid var(--border);
 						color: var(--text-secondary);
 					}
+				}
+			}
+
+			&.past {
+				opacity: 0.55;
+				padding: 0.3rem 0.75rem;
+
+				.guess-name {
+					font-size: 0.78rem;
+				}
+
+				.attr {
+					font-size: 0.62rem;
+					padding: 0.15rem 0.4rem;
 				}
 			}
 		}

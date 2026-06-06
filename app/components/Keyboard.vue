@@ -48,6 +48,18 @@
 				⌫
 			</button>
 		</div>
+		<div
+			v-if="showSpace"
+			class="row"
+		>
+			<button
+				data-key="SPACE"
+				:disabled="disabled"
+				@click="press(' ')"
+			>
+				SPACE
+			</button>
+		</div>
 	</div>
 </template>
 
@@ -60,11 +72,13 @@
 			disabled?: boolean
 			guesses?: string[]
 			answer?: string
+			showSpace?: boolean
 		}>(),
 		{
 			componentName: 'keyboard',
 			guesses: () => [],
 			answer: '',
+			showSpace: false,
 		},
 	)
 
@@ -153,6 +167,9 @@
 			emit('key', 'ENTER')
 		} else if (e.key === 'Backspace') {
 			emit('key', 'BACKSPACE')
+		} else if (e.key === ' ' && props.showSpace) {
+			e.preventDefault()
+			emit('key', ' ')
 		} else if (/^[a-zA-Z]$/.test(e.key) && e.key.length === 1) {
 			emit('key', e.key.toUpperCase())
 		}
@@ -215,6 +232,13 @@
 					font-size: 0.8rem;
 					max-width: 72px;
 					padding: 0 2px;
+				}
+
+				&[data-key='SPACE'] {
+					flex: 1;
+					font-size: 0.8rem;
+					max-width: none;
+					width: 100%;
 				}
 
 				&[data-key='BACKSPACE'] {
