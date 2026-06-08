@@ -4,6 +4,7 @@
 			<NuxtLink
 				to="/"
 				class="back-link"
+				title="Play Footballdle"
 			>
 				<Icon
 					name="solar:alt-arrow-left-linear"
@@ -117,7 +118,7 @@
 				The player list covers active 2025/26 Premier League squads and is updated regularly. Players must
 				have exactly six letters in their surname to qualify for the daily puzzle. If you think someone is
 				missing, drop us an email at
-				<a href="mailto:footballdleadmin@gmail.com">footballdleadmin@gmail.com</a> and we'll add them.
+				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a> and we'll add them.
 			</p>
 
 			<h2>I lost my streak — what happened?</h2>
@@ -150,6 +151,7 @@
 				<NuxtLink
 					to="/"
 					class="cta-button"
+					title="Play today's puzzle"
 				>
 					Play today's puzzle →
 				</NuxtLink>

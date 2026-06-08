@@ -4,6 +4,7 @@
 			<NuxtLink
 				to="/"
 				class="back-link"
+				title="Play Footballdle"
 			>
 				<Icon
 					name="solar:alt-arrow-left-linear"
@@ -83,7 +84,7 @@
 			<h2>Contact</h2>
 			<p>
 				If you have any questions about this privacy policy please contact us at
-				<a href="footballdleadmin@gmail.com">footballdleadmin@gmail.com</a>.
+				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a>.
 			</p>
 		</main>
 

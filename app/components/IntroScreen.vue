@@ -144,6 +144,7 @@
 				<div class="game-ctas">
 					<NuxtLink
 						class="view-result-btn"
+						title="View today's result"
 						@click="$emit('show-result')"
 					>
 						<Icon
@@ -156,6 +157,7 @@
 					<NuxtLink
 						:to="`/solution/${yesterdayISO}`"
 						class="yesterday-link"
+						title="View yesterday's answer"
 					>
 						<Icon
 							name="solar:history-linear"
@@ -225,6 +227,7 @@
 			<NuxtLink
 				to="/worldcup"
 				class="wc-event-banner"
+				title="Play World Cup 2026 mode"
 			>
 				<div class="wc-banner-content">
 					<div class="wc-banner-top">

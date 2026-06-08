@@ -4,6 +4,7 @@
 			<NuxtLink
 				to="/"
 				class="back-link"
+				title="Play Footballdle"
 				@click="clearError({ redirect: '/' })"
 			>
 				<Icon
@@ -28,6 +29,7 @@
 			<NuxtLink
 				to="/"
 				class="button primary"
+				title="Back to Footballdle"
 				@click="clearError({ redirect: '/' })"
 			>
 				Back to Footballdle
@@ -43,6 +45,7 @@
 			<p>Daily Premier League footballer guessing game.</p>
 			<NuxtLink
 				to="/"
+				title="Play Footballdle"
 				@click="clearError({ redirect: '/' })"
 				>footballdle.co.uk</NuxtLink
 			>

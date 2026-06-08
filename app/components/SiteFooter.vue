@@ -18,9 +18,9 @@
 			>
 				<span class="footer-copy">© {{ year }} Footballdle</span>
 				<span class="footer-sep">·</span>
-				<NuxtLink to="/privacy-policy">Privacy Policy</NuxtLink>
+				<NuxtLink to="/privacy-policy" title="Privacy Policy">Privacy Policy</NuxtLink>
 				<span class="footer-sep">·</span>
-				<NuxtLink to="/about">About</NuxtLink>
+				<NuxtLink to="/about" title="About Footballdle">About</NuxtLink>
 			</div>
 		</Transition>
 	</footer>

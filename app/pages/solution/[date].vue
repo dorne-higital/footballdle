@@ -4,6 +4,7 @@
 			<NuxtLink
 				to="/"
 				class="back-link"
+				title="Play Footballdle"
 			>
 				<Icon
 					name="solar:alt-arrow-left-linear"
@@ -75,6 +76,7 @@
 				<NuxtLink
 					to="/"
 					class="cta-button"
+					title="Play today's puzzle"
 				>
 					Play today's puzzle →
 				</NuxtLink>
@@ -90,6 +92,7 @@
 						v-for="p in recentPuzzles"
 						:key="p.iso"
 						:to="`/solution/${p.iso}`"
+						:title="`Footballdle answer — ${p.label}`"
 						class="recent-item"
 					>
 						<span class="recent-answer">{{ p.answer.toUpperCase() }}</span>
@@ -102,7 +105,7 @@
 
 		<footer class="solution-footer">
 			<p>A new Premier League footballer to guess every day at midnight (UK time).</p>
-			<NuxtLink to="/">footballdle.co.uk</NuxtLink>
+			<NuxtLink to="/" title="Play Footballdle">footballdle.co.uk</NuxtLink>
 		</footer>
 	</div>
 </template>

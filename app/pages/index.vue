@@ -203,6 +203,7 @@
 				<NuxtLink
 					:to="`/solution/${yesterdayISO}`"
 					class="yesterday-link"
+					title="View yesterday's answer"
 				>
 					<Icon
 						name="solar:history-linear"

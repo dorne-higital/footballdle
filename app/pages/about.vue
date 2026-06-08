@@ -4,6 +4,7 @@
 			<NuxtLink
 				to="/"
 				class="back-link"
+				title="Play Footballdle"
 			>
 				<Icon
 					name="solar:alt-arrow-left-linear"
@@ -94,18 +95,18 @@
 				cover hosting costs.
 			</p>
 			<p>
-				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer">Nuxt</a>
-				and <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer">Vue</a>, deployed on
-				<a href="https://vercel.com" target="_blank" rel="noopener noreferrer">Vercel</a>. Player data
+				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer" title="Nuxt.js framework">Nuxt</a>
+				and <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer" title="Vue.js framework">Vue</a>, deployed on
+				<a href="https://vercel.com" target="_blank" rel="noopener noreferrer" title="Vercel hosting">Vercel</a>. Player data
 				comes from the
-				<a href="https://www.football-data.org" target="_blank" rel="noopener noreferrer">football-data.org</a>
+				<a href="https://www.football-data.org" target="_blank" rel="noopener noreferrer" title="football-data.org API">football-data.org</a>
 				API.
 			</p>
 
 			<h2>Inspiration and credit</h2>
 			<p>
 				Footballdle takes direct inspiration from
-				<a href="https://www.nytimes.com/games/wordle/index.html" target="_blank" rel="noopener noreferrer">Wordle</a>,
+				<a href="https://www.nytimes.com/games/wordle/index.html" target="_blank" rel="noopener noreferrer" title="Wordle by the New York Times">Wordle</a>,
 				created by Josh Wardle and now owned by the New York Times. The colour-coded feedback mechanic is
 				Wordle's — applied here to the world of football rather than the dictionary. Footballdle is not
 				affiliated with the Premier League, FIFA, any football club, or the New York Times.
@@ -114,7 +115,7 @@
 			<h2>Contact</h2>
 			<p>
 				For missing players, bug reports, or anything else:
-				<a href="mailto:footballdleadmin@gmail.com">footballdleadmin@gmail.com</a>
+				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a>
 			</p>
 			<p>
 				Response times vary — this is a one-person operation run in spare time — but every message gets
@@ -125,6 +126,7 @@
 				<NuxtLink
 					to="/"
 					class="cta-button"
+					title="Play today's puzzle"
 					>Play today's puzzle →</NuxtLink
 				>
 			</div>

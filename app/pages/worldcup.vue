@@ -2,16 +2,19 @@
 	<div class="wc-page dark">
 		<!-- Header -->
 		<header class="wc-header">
-			<NuxtLink
-				to="/"
-				class="back-link"
-			>
-				<Icon
-					name="solar:alt-arrow-left-linear"
-					size="1rem"
-				/>
-				Home
-			</NuxtLink>
+			<div class="back-link-container">
+				<NuxtLink
+					to="/"
+					class="back-link"
+					title="Back to main game"
+				>
+					<Icon
+						name="solar:alt-arrow-left-linear"
+						size="1rem"
+					/>
+					Home
+				</NuxtLink>
+			</div>
 			<div class="wc-title">
 				<span class="wc-badge">World Cup 2026</span>
 				<span class="wc-puzzle">#{{ wcStore.puzzleNumber }}</span>
@@ -239,6 +242,7 @@
 				<NuxtLink
 					to="/"
 					class="back-home"
+					title="Back to main game"
 				>
 					<Icon
 						name="solar:alt-arrow-left-linear"
@@ -547,19 +551,23 @@
 		max-width: 500px;
 		width: 100%;
 
-		.back-link {
-			align-items: center;
-			color: var(--text-secondary);
+		.back-link-container {
 			display: flex;
 			flex: 1;
-			flex-shrink: 0;
-			font-size: 0.85rem;
-			gap: 0.25rem;
-			text-decoration: none;
-			transition: color 0.2s;
 
-			&:hover {
-				color: var(--text-primary);
+			.back-link {
+				align-items: center;
+				color: var(--text-secondary);
+				display: flex;
+				flex-shrink: 0;
+				font-size: 0.85rem;
+				gap: 0.25rem;
+				text-decoration: none;
+				transition: color 0.2s;
+
+				&:hover {
+					color: var(--text-primary);
+				}
 			}
 		}
 
