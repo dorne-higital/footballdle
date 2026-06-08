@@ -232,7 +232,7 @@
 							<span class="wc-live-dot" />
 							Limited Event
 						</span>
-						<span class="wc-player-count">1,042 players</span>
+						<span class="wc-player-count">1,077 players</span>
 					</div>
 					<h3 class="wc-banner-title">World Cup 2026</h3>
 					<p class="wc-banner-sub">Guess any WC player — any name length</p>
@@ -317,8 +317,8 @@
 	.intro-screen {
 		align-items: stretch;
 		display: flex;
-		min-height: 100%;
 		justify-content: center;
+		min-height: 100%;
 		position: relative;
 		width: 100%;
 
