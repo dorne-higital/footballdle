@@ -369,10 +369,12 @@
 					flex-direction: row;
 					gap: 0.75rem;
 
-					.coffee-link {
+					.coffee-link,
+					.iconify {
 						align-items: center;
 						border-bottom: none;
 						color: var(--text-primary);
+						cursor: pointer;
 						display: flex;
 						transition: all 0.2s;
 
