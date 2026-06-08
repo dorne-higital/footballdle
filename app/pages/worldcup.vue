@@ -387,10 +387,10 @@
 	}
 
 	const positionAbbr: Record<string, string> = {
-		Goalkeeper: 'G',
-		Defender: 'D',
-		Midfielder: 'M',
-		Forward: 'F',
+		Goalkeeper: 'Goalkeeper',
+		Defender: 'Defender',
+		Midfielder: 'Midfielder',
+		Forward: 'Forward',
 	}
 
 	function shortPosition(pos: string | undefined): string {
