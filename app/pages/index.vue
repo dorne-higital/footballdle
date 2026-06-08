@@ -230,74 +230,6 @@
 			</template>
 		</BaseModal>
 
-		<!-- Info Modal -->
-		<BaseModal
-			v-if="modalsStore.showInfo"
-			heading="How to play"
-			variant="small"
-			align="left"
-			@close="modalsStore.closeInfo"
-		>
-			<template #body>
-				<div class="info-section">
-					<p>Guess the 6-letter Premier League footballer in 6 tries.</p>
-
-					<p>Each guess much be a valid Premier League footballer playing in the 25/26 season.</p>
-
-					<p>The colour of the letter indicates how close your guess is to the answer:</p>
-
-					<p class="caption"><strong>Examples</strong></p>
-
-					<div class="examples">
-						<span class="example">
-							<span class="letter">P</span>
-							<span class="letter correct">A</span>
-							<span class="letter">L</span>
-							<span class="letter">M</span>
-							<span class="letter">E</span>
-							<span class="letter">R</span>
-						</span>
-						<p class="caption">
-							The letter <strong>A</strong> is in the answer and in the correct position.
-						</p>
-
-						<span class="example">
-							<span class="letter">D</span>
-							<span class="letter">E</span>
-							<span class="letter">L</span>
-							<span class="letter">I</span>
-							<span class="letter present">G</span>
-							<span class="letter">T</span>
-						</span>
-						<p class="caption">The letter <strong>G</strong> is in the answer but in the wrong position.</p>
-
-						<span class="example">
-							<span class="letter">E</span>
-							<span class="letter">L</span>
-							<span class="letter">A</span>
-							<span class="letter absent">N</span>
-							<span class="letter">G</span>
-							<span class="letter">A</span>
-						</span>
-						<p class="caption">The letter <strong>N</strong> is not in the answer.</p>
-					</div>
-
-					<p>A new player is revealed every day at midnight.</p>
-
-					<div class="info-footer">
-						<p class="caption">
-							Footballdle is a word game inspired by Wordle. It is not affiliated with the Premier League
-							or any other football club.
-						</p>
-
-						<p class="caption">
-							If you spot any missing players, get in touch and I can add them right away.
-						</p>
-					</div>
-				</div>
-			</template>
-		</BaseModal>
-
 		<!-- Settings Modal -->
 		<BaseModal
 			v-if="modalsStore.showSettings"
@@ -1045,8 +977,8 @@
 	}
 
 	function handleShowInfo() {
-		modalsStore.openInfo()
 		trackInfoModal()
+		navigateTo('/how-to-play')
 	}
 
 	function handleShowSettings() {
