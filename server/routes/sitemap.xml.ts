@@ -36,6 +36,11 @@ export default defineEventHandler((event) => {
     <priority>0.5</priority>
   </url>`,
 		`  <url>
+    <loc>${BASE_URL}/how-to-play</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`,
+		`  <url>
     <loc>${BASE_URL}/privacy-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
