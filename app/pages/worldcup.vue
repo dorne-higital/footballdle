@@ -998,6 +998,7 @@
 			gap: 0.3rem;
 			text-decoration: none;
 			transition: color 0.2s;
+			width: fit-content;
 
 			&:hover {
 				color: var(--text-primary);
