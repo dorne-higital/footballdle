@@ -60,24 +60,11 @@
 				practising letter placement and improving your opening guesses ahead of the next daily puzzle.
 			</p>
 
-			<h2>World Cup 2026</h2>
-			<p>
-				Footballdle also runs a special World Cup 2026 edition. Rather than a fixed-length Premier League
-				name, each daily puzzle picks a surname from the full pool of players across all 48 nations
-				competing at the 2026 FIFA World Cup in the United States, Canada, and Mexico. The player list
-				covers over 1,000 players with no surname-length restriction, so it's a significantly harder and
-				more international challenge. Wrong guesses come with additional clues — the player's continent,
-				country, position, and year of birth — helping you triangulate the answer across cultures and
-				languages you might be less familiar with.
-			</p>
-
 			<h2>Keeping the player list accurate</h2>
 			<p>
 				The Premier League squad list is refreshed at the start of each season and updated again during
 				the January transfer window. If a player moves clubs mid-season they stay in the pool — what
 				matters is that they played in the Premier League that season, not which shirt they finished in.
-				The World Cup 2026 list was compiled from official FIFA squad submissions covering all 48
-				qualified nations and is updated as squads are confirmed.
 			</p>
 			<p>
 				Player data isn't perfect. Surnames get transliterated differently across sources, some squad
@@ -144,7 +131,7 @@
 			{
 				name: 'description',
 				content:
-					'Footballdle is a free daily Premier League footballer guessing game. Find out how it was built, how the player list is maintained, and how Challenge and World Cup modes work.',
+					'Footballdle is a free daily Premier League footballer guessing game. Find out how it was built, how the player list is maintained, and how Challenge mode works.',
 			},
 			{ name: 'robots', content: 'index, follow' },
 		],

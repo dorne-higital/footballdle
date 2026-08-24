@@ -32,6 +32,7 @@ export const footballers: Footballer[] = [
 	{ name: 'baleba', club: 'Brighton & Hove Albion', nationality: 'Cameroon', position: 'Defensive Midfield' },
 	{ name: 'barnes', club: 'Newcastle', nationality: 'England', position: 'Left Winger' },
 	{ name: 'bassey', club: 'Fulham', nationality: 'Nigeria', position: 'Centre-Back' },
+	{ name: 'becker', club: 'Liverpool', nationality: 'Brazil', position: 'Goalkeeper' },
 	{ name: 'botman', club: 'Newcastle', nationality: 'Netherlands', position: 'Centre-Back' },
 	{ name: 'brooks', club: 'Wolverhampton', nationality: 'England', position: 'Goalkeeper' },
 	{ name: 'cairns', club: 'Leeds United', nationality: 'England', position: 'Goalkeeper' },
@@ -70,7 +71,7 @@ export const footballers: Footballer[] = [
 	{ name: 'hickey', club: 'Brentford', nationality: 'Scotland', position: 'Right-Back' },
 	{ name: 'howell', club: 'Brighton & Hove Albion', nationality: 'England', position: 'Forward' },
 	{ name: 'hughes', club: 'Crystal Palace', nationality: 'England', position: 'Central Midfield' },
-	{ name: 'isidor', club: 'Sunderland', nationality: 'France', position: 'Centre-Forward' },
+	{ name: 'isidor', club: 'Sunderland', nationality: 'Haiti', position: 'Centre-Forward' },
 	{ name: 'janelt', club: 'Brentford', nationality: 'Germany', position: 'Defensive Midfield' },
 	{ name: 'jensen', club: 'Brentford', nationality: 'Denmark', position: 'Central Midfield' },
 	{ name: 'justin', club: 'Leeds United', nationality: 'England', position: 'Right-Back' },
@@ -84,6 +85,7 @@ export const footballers: Footballer[] = [
 	{ name: 'kroupi', club: 'Bournemouth', nationality: 'France', position: 'Centre-Forward' },
 	{ name: 'laffey', club: 'Liverpool', nationality: 'England', position: 'Midfielder' },
 	{ name: 'larsen', club: 'Burnley', nationality: 'Denmark', position: 'Left Winger' },
+	{ name: 'lienou', club: 'Leeds United', nationality: 'Wales', position: 'null' },
 	{ name: 'mainoo', club: 'Manchester United', nationality: 'England', position: 'Central Midfield' },
 	{ name: 'mandas', club: 'Bournemouth', nationality: 'Greece', position: 'Goalkeeper' },
 	{ name: 'mateta', club: 'Crystal Palace', nationality: 'France', position: 'Centre-Forward' },
@@ -103,7 +105,7 @@ export const footballers: Footballer[] = [
 	{ name: 'moreno', club: 'Nottingham Forest', nationality: 'Germany', position: 'Goalkeeper' },
 	{ name: 'mudryk', club: 'Chelsea', nationality: 'Ukraine', position: 'Left Winger' },
 	{ name: 'mundle', club: 'Sunderland', nationality: 'England', position: 'Left Winger' },
-	{ name: 'murphy', club: 'Newcastle', nationality: 'England', position: 'Right Winger' },
+	{ name: 'murphy', club: 'Newcastle', nationality: 'Ireland', position: 'Right Winger' },
 	{ name: 'ndiaye', club: 'Everton', nationality: 'Senegal', position: 'Left Winger' },
 	{ name: 'nelson', club: 'Brentford', nationality: 'England', position: 'Right Winger' },
 	{ name: 'nmecha', club: 'Leeds United', nationality: 'Germany', position: 'Centre-Forward' },
@@ -123,7 +125,7 @@ export const footballers: Footballer[] = [
 	{ name: 'rogers', club: 'Aston Villa', nationality: 'England', position: 'Attacking Midfield' },
 	{ name: 'romero', club: 'Tottenham', nationality: 'Argentina', position: 'Centre-Back' },
 	{ name: 'rutter', club: 'Brighton & Hove Albion', nationality: 'France', position: 'Centre-Forward' },
-	{ name: 'sadiki', club: 'Sunderland', nationality: 'DR Congo', position: 'Defender' },
+	{ name: 'sadiki', club: 'Sunderland', nationality: 'Congo DR', position: 'Defender' },
 	{ name: 'saliba', club: 'Arsenal', nationality: 'France', position: 'Centre-Back' },
 	{ name: 'salmon', club: 'Arsenal', nationality: 'England', position: 'Defender' },
 	{ name: 'sancho', club: 'Aston Villa', nationality: 'England', position: 'Left Winger' },
@@ -133,6 +135,7 @@ export const footballers: Footballer[] = [
 	{ name: 'senesi', club: 'Bournemouth', nationality: 'Argentina', position: 'Centre-Back' },
 	{ name: 'shahar', club: 'Newcastle', nationality: 'England', position: 'Defender' },
 	{ name: 'shield', club: 'Brentford', nationality: 'England', position: 'Midfielder' },
+	{ name: 'sillah', club: 'Nottingham Forest', nationality: 'Gambia', position: 'Forward' },
 	{ name: 'simons', club: 'Tottenham', nationality: 'Netherlands', position: 'Attacking Midfield' },
 	{ name: 'spence', club: 'Tottenham', nationality: 'England', position: 'Right-Back' },
 	{ name: 'steele', club: 'Brighton & Hove Albion', nationality: 'England', position: 'Goalkeeper' },
@@ -149,8 +152,8 @@ export const footballers: Footballer[] = [
 	{ name: 'walker', club: 'Burnley', nationality: 'England', position: 'Right-Back' },
 	{ name: 'wilson', club: 'Fulham', nationality: 'Wales', position: 'Right Winger' },
 	{ name: 'wright', club: 'Aston Villa', nationality: 'England', position: 'Goalkeeper' },
-	{ name: 'yeremy', club: 'Crystal Palace', nationality: 'Spain', position: 'Forward' },
 ]
+
 
 // Fast O(1) lookups
 const footballerSet = new Set(footballers.map((f) => f.name.toUpperCase()))
