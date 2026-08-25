@@ -1,54 +1,20 @@
 <template>
 	<div class="mode-select-hub">
-		<div class="hub-header">
-			<div class="hub-header-top">
-				<h1 class="heading">Footballdle</h1>
-
-				<div class="icons">
-					<a
-						href="https://buymeacoffee.com/dhorne92E"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="coffee-link"
-						@click.prevent="$emit('buy-coffee', 'hub_header')"
-						aria-label="Buy me a coffee"
-					>
-						<Icon
-							name="uil:coffee"
-							size="1.5rem"
-						/>
-					</a>
-
-					<NuxtLink
-						to="/how-to-play"
-						aria-label="How to play"
-					>
-						<Icon
-							name="uil:info-circle"
-							size="1.5rem"
-						/>
-					</NuxtLink>
-
-					<Icon
-						name="uil:setting"
-						size="1.5rem"
-						@click="$emit('show-settings')"
-					/>
-				</div>
-			</div>
-
+		<div class="hub-intro">
+			<span class="eyebrow">Mode Select</span>
+			<h2 class="heading">Choose your mode</h2>
 			<p class="hub-tagline">Pick a mode. Every mode keeps its own streak.</p>
 		</div>
 
 		<div class="mode-grid">
 			<NuxtLink
 				to="/play/daily"
-				class="mode-card"
+				class="mode-card primary"
 			>
 				<div class="mode-card-top">
 					<Icon
 						name="solar:calendar-linear"
-						size="1.5rem"
+						size="1.6rem"
 					/>
 					<ModeStreakBadge :streak="dailyStreak" />
 				</div>
@@ -58,7 +24,7 @@
 					Play now
 					<Icon
 						name="solar:alt-arrow-right-linear"
-						size="0.9rem"
+						size="0.8rem"
 					/>
 				</span>
 			</NuxtLink>
@@ -67,9 +33,9 @@
 				<div class="mode-card-top">
 					<Icon
 						name="solar:magnifer-linear"
-						size="1.5rem"
+						size="1.4rem"
 					/>
-					<span class="soon-badge">Coming soon</span>
+					<span class="soon-badge">Soon</span>
 				</div>
 				<h3>Scout Report</h3>
 				<p class="caption">Guess any surname. Get attribute clues on club, nationality and position.</p>
@@ -79,9 +45,9 @@
 				<div class="mode-card-top">
 					<Icon
 						name="solar:alarm-outline"
-						size="1.5rem"
+						size="1.4rem"
 					/>
-					<span class="soon-badge">Coming soon</span>
+					<span class="soon-badge">Soon</span>
 				</div>
 				<h3>Spot the Baller</h3>
 				<p class="caption">10 rapid-fire rounds. Pick the right name before the clock runs out.</p>
@@ -101,59 +67,59 @@
 			dailyStreak: 0,
 		},
 	)
-
-	defineEmits(['show-settings', 'buy-coffee'])
 </script>
 
 <style scoped lang="scss">
 	.mode-select-hub {
+		margin: 0 auto;
 		max-width: 500px;
+		position: relative;
 		width: 100%;
+		z-index: 0;
 
-		.hub-header {
-			background:
-				radial-gradient(circle at 30% -20%, rgb(255 255 255 / 14%), transparent 55%),
-				repeating-linear-gradient(135deg, rgb(255 255 255 / 3%) 0 10px, transparent 10px 20px),
-				var(--color-gradient);
-			border-radius: var(--global-border-radius);
-			padding: 1.5rem;
+		@media (width >= 860px) {
+			max-width: 960px;
+		}
 
-			.hub-header-top {
-				align-items: center;
-				display: flex;
-				justify-content: space-between;
+		.hub-intro {
+			margin-bottom: 1.25rem;
+			text-align: center;
+
+			@media (width >= 860px) {
+				margin-bottom: 2rem;
+			}
+
+			.eyebrow {
+				background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+				border-radius: 999px;
+				color: var(--primary-color);
+				display: inline-block;
+				font-family: var(--font-mono);
+				font-size: 0.68rem;
+				font-weight: 600;
+				letter-spacing: 0.14em;
+				margin-bottom: 0.6rem;
+				padding: 0.25rem 0.7rem;
+				text-transform: uppercase;
 			}
 
 			.heading {
-				color: #fff;
-				font-weight: 800;
-				letter-spacing: -0.01em;
-				margin: 0;
-			}
+				color: var(--text-primary);
+				font-family: var(--font-display);
+				font-size: 1.6rem;
+				font-weight: 700;
+				letter-spacing: 0.02em;
+				margin: 0 0 0.4rem;
 
-			.icons {
-				align-items: center;
-				display: flex;
-				gap: 0.75rem;
-
-				a,
-				.iconify {
-					align-items: center;
-					color: #fff;
-					cursor: pointer;
-					display: flex;
-					transition: all 0.2s;
-
-					&:hover {
-						transform: scale(1.1);
-					}
+				@media (width >= 860px) {
+					font-size: 2.1rem;
 				}
 			}
 
 			.hub-tagline {
-				color: rgb(255 255 255 / 85%);
-				margin: 0.75rem 0 0;
-				text-align: left;
+				color: var(--text-secondary);
+				font-size: 0.9rem;
+				margin: 0;
 			}
 		}
 
@@ -161,7 +127,14 @@
 			display: flex;
 			flex-direction: column;
 			gap: 0.75rem;
-			margin-top: 1rem;
+			position: relative;
+			z-index: 1;
+
+			@media (width >= 860px) {
+				display: grid;
+				gap: 1.25rem;
+				grid-template-columns: repeat(3, 1fr);
+			}
 		}
 
 		.mode-card {
@@ -170,20 +143,47 @@
 			border-radius: var(--global-border-radius);
 			color: var(--text-primary);
 			display: block;
-			padding: 1rem;
+			padding: 1rem 1.1rem;
 			text-align: left;
 			text-decoration: none;
 			transition: all 0.2s;
 
+			@media (width >= 860px) {
+				display: flex;
+				flex-direction: column;
+				padding: 1.5rem;
+			}
+
 			&:hover:not(.disabled) {
-				border-color: var(--primary-color);
-				box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
+				border-color: var(--border-hover);
+				box-shadow: 0 10px 24px -18px color-mix(in srgb, var(--text-primary) 40%, transparent);
 				transform: translateY(-2px);
 			}
 
 			&.disabled {
 				cursor: default;
-				opacity: 0.55;
+				opacity: 0.6;
+			}
+
+			&.primary {
+				background: var(--primary-color);
+				border-color: var(--primary-color);
+				color: #fff;
+
+				.caption {
+					color: rgb(255 255 255 / 82%);
+				}
+
+				.mode-cta {
+					background: rgb(255 255 255 / 20%);
+					border-radius: 999px;
+					color: #fff;
+					font-family: var(--font-mono);
+					font-size: 0.68rem;
+					letter-spacing: 0.06em;
+					padding: 0.25rem 0.6rem;
+					text-transform: uppercase;
+				}
 			}
 
 			.mode-card-top {
@@ -194,6 +194,9 @@
 			}
 
 			h3 {
+				font-family: var(--font-display);
+				font-size: 1.05rem;
+				font-weight: 700;
 				margin: 0 0 0.25rem;
 			}
 
@@ -201,6 +204,10 @@
 				color: var(--text-secondary);
 				font-size: 0.85rem;
 				margin: 0 0 0.5rem;
+
+				@media (width >= 860px) {
+					flex: 1;
+				}
 			}
 
 			.mode-cta {
@@ -213,12 +220,13 @@
 			}
 
 			.soon-badge {
-				background: var(--bg-primary);
-				border-radius: 2rem;
-				color: var(--text-secondary);
+				background: color-mix(in srgb, var(--tertiary-color) 14%, var(--bg-secondary));
+				border-radius: 999px;
+				color: var(--tertiary-color);
+				font-family: var(--font-mono);
 				font-size: 0.65rem;
 				font-weight: 700;
-				letter-spacing: 0.04em;
+				letter-spacing: 0.06em;
 				padding: 0.2rem 0.55rem;
 				text-transform: uppercase;
 			}

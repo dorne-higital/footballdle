@@ -1,4 +1,5 @@
 <template>
+	<div class="daily-page-wrapper">
 	<div :class="['daily-page', { 'is-intro': gameStore.showIntro }]">
 		<!-- Intro / ready-to-play screen -->
 		<ModeIntroScreen
@@ -15,10 +16,6 @@
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
 			@start-challenge="handleStartChallenge"
-			@show-info="handleShowInfo"
-			@show-settings="handleShowSettings"
-			@show-stats="handleShowStats"
-			@buy-coffee="handleBuyMeCoffee"
 			@show-result="gameStore.showGameOverModal = true"
 		/>
 
@@ -27,15 +24,6 @@
 			v-else-if="!challengeStore.isActive"
 			class="game-screen"
 		>
-			<HeaderNav
-				:show-back-button="true"
-				@show-info="handleShowInfo"
-				@show-settings="handleShowSettings"
-				@show-stats="handleShowStats"
-				@back-to-menu="handleBackToMenu"
-				@buy-coffee="handleBuyMeCoffee"
-			/>
-
 			<ScoreboardStrip
 				mode-label="Daily"
 				:puzzle-number="gameStore.puzzleNumber"
@@ -421,6 +409,17 @@
 			</template>
 		</PitchCardModal>
 	</div>
+
+	<DashboardSidePanel
+		class="desktop-side-panel"
+		active-mode="daily"
+		:daily-streak="statsStore.stats.currentStreak"
+		:streak="statsStore.stats.currentStreak"
+		:win-percentage="statsStore.winPercentage"
+		:recent-form="statsStore.stats.recentForm"
+		@buy-coffee="handleBuyMeCoffee"
+	/>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -433,18 +432,31 @@
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
-	import HeaderNav from '../../components/HeaderNav.vue'
 	import GameBoard from '../../components/GameBoard.vue'
 	import Keyboard from '../../components/Keyboard.vue'
 	import PlaySurfaceFrame from '../../components/shared/PlaySurfaceFrame.vue'
 	import ScoreboardStrip from '../../components/shared/ScoreboardStrip.vue'
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
+	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 
 	definePageMeta({ layout: 'play' })
 
 	const PitchCardModal = defineAsyncComponent(() => import('../../components/shared/PitchCardModal.vue'))
 	const ChallengeModal = defineAsyncComponent(() => import('../../components/ChallengeModal.vue'))
+
+	const { public: { adsensePublisherId } } = useRuntimeConfig()
+	if (adsensePublisherId && !import.meta.dev) {
+		useHead({
+			script: [
+				{
+					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
+					async: true,
+					crossorigin: 'anonymous',
+				},
+			],
+		})
+	}
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
@@ -516,7 +528,6 @@
 		trackGameStart,
 		trackGameWin,
 		trackGameLoss,
-		trackGameAbandon,
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackStatsTabSwitch,
@@ -527,11 +538,7 @@
 		trackChallengePlayAgain,
 		trackShare,
 		trackModalOpen,
-		trackHomeClick,
 		trackSessionTime,
-		trackInfoModal,
-		trackSettingsModal,
-		trackStatsModal,
 		trackBuyMeCoffee,
 	} = useAnalytics()
 
@@ -779,29 +786,6 @@
 		challengeStore.onKeyboardKey(key)
 	}
 
-	function handleShowInfo() {
-		trackInfoModal()
-		navigateTo('/how-to-play')
-	}
-
-	function handleShowSettings() {
-		modalsStore.openSettings()
-		trackSettingsModal()
-	}
-
-	function handleShowStats() {
-		modalsStore.openStats()
-		trackStatsModal()
-	}
-
-	function handleBackToMenu() {
-		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
-			trackGameAbandon(gameStore.guesses.length)
-		}
-		trackHomeClick('game_screen')
-		navigateTo('/')
-	}
-
 	function handleStatsTabSwitch(tab: 'daily' | 'challenge') {
 		activeStatsTab.value = tab
 		trackStatsTabSwitch(tab)
@@ -809,11 +793,32 @@
 </script>
 
 <style scoped lang="scss">
+	.daily-page-wrapper {
+		align-items: flex-start;
+		display: flex;
+		gap: 1.25rem;
+		height: 100%;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.desktop-side-panel {
+		display: none;
+	}
+
+	@media (width >= 1024px) {
+		.desktop-side-panel {
+			display: flex;
+			margin-top: 0.5rem;
+		}
+	}
+
 	.daily-page {
 		align-items: stretch;
 		border-radius: var(--global-border-radius);
 		display: flex;
 		flex-direction: column;
+		flex-shrink: 0;
 		height: 100%;
 		justify-content: center;
 		max-width: 500px;

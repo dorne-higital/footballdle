@@ -81,7 +81,7 @@
 					name="uil:coffee"
 					size="1rem"
 				/>
-				Buy me a coffee
+				Buy me a <span class="accent">coffee</span>
 			</a>
 		</div>
 	</div>
@@ -100,24 +100,32 @@
 		width: 100%;
 
 		.support-group {
+			border-top: 1px solid var(--border);
+			padding-top: 1.5rem;
 			text-align: left;
 
 			.coffee-button {
 				align-items: center;
-				background: #fd0;
+				background: var(--text-primary);
+				border: 1.5px solid var(--text-primary);
 				border-radius: var(--global-border-radius);
-				color: #000;
+				color: var(--bg-secondary);
 				display: inline-flex;
+				font-family: var(--font-body);
 				font-size: 0.9rem;
-				font-weight: 600;
-				gap: 0.5rem;
+				font-weight: 700;
+				gap: 0.55rem;
 				margin-top: 0.5rem;
-				padding: 0.6rem 1.2rem;
+				padding: 0.65rem 1.25rem;
 				text-decoration: none;
 				transition: all 0.2s ease;
 
+				.accent {
+					color: var(--tertiary-color);
+				}
+
 				&:hover {
-					box-shadow: 0 4px 12px rgb(255 221 0 / 40%);
+					box-shadow: 0 10px 24px -12px rgb(24 32 25 / 35%);
 					transform: translateY(-2px);
 				}
 			}
@@ -131,10 +139,13 @@
 			width: 100%;
 
 			label {
-				color: var(--text-primary);
-				font-size: 1.1rem;
-				font-weight: 600;
+				color: var(--text-secondary);
+				font-family: var(--font-display);
+				font-size: 0.75rem;
+				font-weight: 700;
+				letter-spacing: 0.14em;
 				margin-bottom: 0.5rem;
+				text-transform: uppercase;
 			}
 
 			p {
@@ -145,40 +156,37 @@
 
 			.theme-grid {
 				display: grid;
-				gap: 1rem;
+				gap: 0.85rem;
 				grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 				width: 100%;
 
 				.theme-option {
 					background: var(--bg-secondary);
-					border: 2px solid var(--border);
+					border: 1.5px solid var(--border);
 					border-radius: var(--global-border-radius);
 					cursor: pointer;
 					overflow: hidden;
 					padding: 1rem;
 					position: relative;
 					text-align: center;
-					transition: all 0.3s ease;
+					transition: all 0.2s ease;
 
 					&:hover {
-						border-color: var(--primary-color);
-						box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
-						transform: translateY(-2px);
+						border-color: var(--border-hover);
+						box-shadow: 0 10px 24px -16px rgb(24 32 25 / 25%);
 					}
 
 					&.active {
 						background: var(--primary-color);
 						border-color: var(--primary-color);
-						box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
-						color: white;
-						font-weight: 600;
-						transform: translateY(-2px);
+						box-shadow: 0 10px 24px -14px rgb(24 32 25 / 30%);
+						color: #fff;
 					}
 
 					.theme-preview {
-						border-radius: calc(var(--global-border-radius) - 2px);
+						border-radius: calc(var(--global-border-radius) - 4px);
 						height: 60px;
-						margin-bottom: 0.5rem;
+						margin-bottom: 0.65rem;
 						overflow: hidden;
 						width: 100%;
 
@@ -213,19 +221,19 @@
 
 						&.light {
 							.preview-header {
-								background: #f8fafc;
+								background: #f6f7f3;
 							}
 
 							.preview-content {
 								background: #fff;
 
 								.preview-tile {
-									background: #f8fafc;
-									border-color: #e5e7eb;
+									background: #f6f7f3;
+									border-color: rgb(24 32 25 / 15%);
 
 									&.correct {
-										background: #dc2626;
-										border-color: #dc2626;
+										background: #1e7a46;
+										border-color: #1e7a46;
 									}
 								}
 							}
@@ -233,19 +241,19 @@
 
 						&.dark {
 							.preview-header {
-								background: #0f172a;
+								background: #10160f;
 							}
 
 							.preview-content {
-								background: #1e293b;
+								background: #182019;
 
 								.preview-tile {
-									background: #0f172a;
-									border-color: #334155;
+									background: #10160f;
+									border-color: rgb(255 255 255 / 15%);
 
 									&.correct {
-										background: #ef4444;
-										border-color: #ef4444;
+										background: #3fae73;
+										border-color: #3fae73;
 									}
 								}
 							}
@@ -264,8 +272,8 @@
 									border-color: #000;
 
 									&.correct {
-										background: #dc2626;
-										border-color: #dc2626;
+										background: #095000;
+										border-color: #095000;
 									}
 								}
 							}
@@ -294,8 +302,8 @@
 
 					.theme-name {
 						display: block;
-						font-size: 0.9rem;
-						font-weight: 500;
+						font-size: 0.85rem;
+						font-weight: 600;
 					}
 				}
 			}

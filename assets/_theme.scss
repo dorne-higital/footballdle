@@ -1,71 +1,75 @@
 :root {
-	--text-primary: #1a1a1a;
-	--text-secondary: #6b7280;
-	--bg-primary: #f8fafc;
+	--font-display: 'Jost', 'Futura', 'Century Gothic', 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+	--font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+
+	--text-primary: #182019;
+	--text-secondary: #5b6660;
+	--bg-primary: #f6f7f3;
 	--bg-secondary: #fff;
-	--bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-	--primary-color: #dc2626;
-	--secondary-color: #1e40af;
-	--accent-color: #059669;
-	--tertiary-color: #f59e0b;
-	--color-success: #059669;
-	--color-present: #f59e0b;
-	--color-absent: #6b7280;
-	--color-gradient: linear-gradient(135deg, #dc2626 0%, #1e40af 100%);
+	--bg-gradient: linear-gradient(135deg, #f6f7f3 0%, #e7f0e9 100%);
+	--primary-color: #1e7a46;
+	--secondary-color: #182019;
+	--accent-color: #1e7a46;
+	--tertiary-color: #b8752a;
+	--color-success: #1e7a46;
+	--color-present: #b8752a;
+	--color-absent: #5c6660;
+	--color-gradient: linear-gradient(135deg, #1e7a46 0%, #155c34 100%);
 	--subtle-gradient: linear-gradient(
 		135deg,
 		var(--secondary-color) 0%,
 		color-mix(in srgb, var(--secondary-color) 25%, #000) 100%
 	);
-	--global-border-radius: 0;
-	--border: #e5e7eb;
-	--border-hover: #dc2626;
+	--global-border-radius: 12px;
+	--border: rgb(24 32 25 / 10%);
+	--border-hover: #1e7a46;
 
-	--turf-base: #eef4ee;
-	--turf-stripe: #e2ede2;
-	--touchline-color: rgb(15 23 20 / 15%);
+	--turf-base: #e7f0e9;
+	--turf-stripe: #deebe3;
+	--touchline-color: rgb(24 32 25 / 10%);
 	--pitchcard-accent-win: var(--color-success);
-	--pitchcard-accent-loss: #dc2626;
+	--pitchcard-accent-loss: #b23a3a;
 	--pitchcard-accent-neutral: var(--secondary-color);
-	--pitchcard-accent-info: var(--tertiary-color);
-	--scoreboard-bg: #0f2318;
-	--scoreboard-fg: #eef4ee;
-	--scoreboard-accent: #f59e0b;
+	--pitchcard-accent-info: #3f6b8c;
+	--scoreboard-bg: #182019;
+	--scoreboard-fg: #f6f7f3;
+	--scoreboard-accent: #1e7a46;
 }
 
 .dark {
-	--text-primary: #f8fafc;
-	--text-secondary: #cbd5e1;
-	--bg-primary: #0f172a;
-	--bg-secondary: #1e293b;
-	--bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-	--primary-color: #ef4444;
-	--secondary-color: #3b82f6;
-	--accent-color: #10b981;
-	--tertiary-color: #fbbf24;
-	--color-success: #10b981;
-	--color-present: #fbbf24;
-	--color-absent: #64748b;
-	--color-gradient: linear-gradient(135deg, #ef4444 0%, #3b82f6 100%);
+	--text-primary: #eaf2ec;
+	--text-secondary: #9fb0a6;
+	--bg-primary: #10160f;
+	--bg-secondary: #182019;
+	--bg-gradient: linear-gradient(135deg, #0f1511 0%, #182019 100%);
+	--primary-color: #3fae73;
+	--secondary-color: #eaf2ec;
+	--accent-color: #3fae73;
+	--tertiary-color: #d99a4e;
+	--color-success: #3fae73;
+	--color-present: #d99a4e;
+	--color-absent: #5b6660;
+	--color-gradient: linear-gradient(135deg, #3fae73 0%, #1e7a46 100%);
 	--subtle-gradient: linear-gradient(
 		135deg,
 		var(--secondary-color) 0%,
 		color-mix(in srgb, var(--secondary-color) 25%, #000) 100%
 	);
-	--global-border-radius: 8px;
-	--border: #334155;
-	--border-hover: #ef4444;
+	--global-border-radius: 12px;
+	--border: rgb(255 255 255 / 10%);
+	--border-hover: #3fae73;
 
-	--turf-base: #142219;
-	--turf-stripe: #182a1e;
-	--touchline-color: rgb(255 255 255 / 12%);
+	--turf-base: #131a13;
+	--turf-stripe: #182019;
+	--touchline-color: rgb(255 255 255 / 8%);
 	--pitchcard-accent-win: var(--color-success);
-	--pitchcard-accent-loss: #ef4444;
+	--pitchcard-accent-loss: #c9605a;
 	--pitchcard-accent-neutral: var(--secondary-color);
-	--pitchcard-accent-info: var(--tertiary-color);
-	--scoreboard-bg: #0a1912;
-	--scoreboard-fg: #e8f3ec;
-	--scoreboard-accent: #fbbf24;
+	--pitchcard-accent-info: #6c93b0;
+	--scoreboard-bg: #0b0f0a;
+	--scoreboard-fg: #eaf2ec;
+	--scoreboard-accent: #3fae73;
 }
 
 .greyscale {

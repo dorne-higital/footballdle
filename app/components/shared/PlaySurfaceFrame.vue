@@ -10,7 +10,8 @@
 
 <style scoped lang="scss">
 	.play-surface-frame {
-		background: repeating-linear-gradient(90deg, var(--turf-base) 0 22px, var(--turf-stripe) 22px 44px);
+		background:
+			repeating-linear-gradient(100deg, var(--turf-stripe) 0 64px, var(--turf-base) 64px 128px);
 		border: 2px solid var(--touchline-color);
 		border-radius: var(--global-border-radius);
 		display: flex;

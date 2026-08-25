@@ -200,25 +200,28 @@
 
 			button {
 				align-items: center;
-				background: #d3d6da;
-				border: none;
-				border-radius: var(--global-border-radius);
-				box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
-				color: #222;
+				background: var(--bg-secondary);
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				color: var(--text-primary);
 				cursor: pointer;
 				display: flex;
 				flex: 1 1 0;
-				font-size: clamp(1.1rem, 2.5vh, 1.5rem);
+				font-family: var(--font-body);
+				font-size: clamp(1rem, 2.3vh, 1.35rem);
+				font-weight: 600;
 				height: clamp(40px, 7vh, 58px);
 				justify-content: center;
 				transition:
 					background 0.1s,
-					color 0.1s;
+					color 0.1s,
+					border-color 0.1s;
 				user-select: none;
 				width: 48px;
 
 				&:active {
-					background: #b5b8ba;
+					background: color-mix(in srgb, var(--primary-color) 10%, var(--bg-secondary));
+					border-color: var(--border-hover);
 				}
 
 				&:disabled {
@@ -228,36 +231,49 @@
 
 				&[data-key='ENTER'],
 				&[data-key='BACKSPACE'] {
+					color: var(--text-secondary);
 					flex: 1.5 1 0;
-					font-size: 0.8rem;
-					max-width: 72px;
-					padding: 0 2px;
+					font-family: var(--font-display);
+					font-size: 0.7rem;
+					font-weight: 600;
+					letter-spacing: 0.04em;
+					max-width: 76px;
+					padding: 0 4px;
+					text-transform: uppercase;
 				}
 
 				&[data-key='SPACE'] {
+					color: var(--text-secondary);
 					flex: 1;
-					font-size: 0.8rem;
+					font-family: var(--font-display);
+					font-size: 0.7rem;
+					font-weight: 600;
+					letter-spacing: 0.08em;
 					max-width: none;
+					text-transform: uppercase;
 					width: 100%;
 				}
 
 				&[data-key='BACKSPACE'] {
-					font-size: 1.4rem;
+					font-size: 1.2rem;
 				}
 
 				&.correct {
 					background: var(--color-success);
+					border-color: var(--color-success);
 					color: #fff;
 				}
 
 				&.present {
 					background: var(--color-present);
+					border-color: var(--color-present);
 					color: #fff;
 				}
 
 				&.absent {
-					background: var(--color-absent);
-					color: #fff;
+					background: color-mix(in srgb, var(--text-secondary) 20%, var(--bg-secondary));
+					border-color: color-mix(in srgb, var(--text-secondary) 20%, var(--bg-secondary));
+					color: var(--text-secondary);
 				}
 			}
 		}

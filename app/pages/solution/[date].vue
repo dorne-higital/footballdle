@@ -115,7 +115,7 @@
 
 	const { public: { adsensePublisherId } } = useRuntimeConfig()
 
-	if (adsensePublisherId) {
+	if (adsensePublisherId && !import.meta.dev) {
 		useHead({
 			script: [
 				{

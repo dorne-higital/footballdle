@@ -133,9 +133,19 @@
 
 				h3 {
 					color: var(--text-primary);
+					font-family: var(--font-mono);
 					font-size: 2rem;
 					font-weight: 700;
 					margin: 0 0 0.5rem;
+				}
+
+				.caption {
+					color: var(--text-secondary);
+					font-family: var(--font-display);
+					font-size: 0.68rem;
+					font-weight: 700;
+					letter-spacing: 0.1em;
+					text-transform: uppercase;
 				}
 			}
 		}
@@ -148,28 +158,33 @@
 			padding: 0.75rem 1rem;
 
 			.form-title {
-				font-weight: 600;
-				margin-bottom: 0.5rem;
+				color: var(--text-secondary);
+				font-family: var(--font-display);
+				font-size: 0.68rem;
+				font-weight: 700;
+				letter-spacing: 0.1em;
+				margin-bottom: 0.6rem;
 				text-align: left;
+				text-transform: uppercase;
 			}
 
 			.form-squares {
 				display: flex;
 				flex-wrap: wrap;
-				gap: 3px;
+				gap: 6px;
 			}
 
 			.form-sq {
-				border-radius: 2px;
-				height: 12px;
-				width: 12px;
+				border-radius: 6px;
+				height: 20px;
+				width: 20px;
 
 				&.win {
-					background: var(--color-success);
+					background: var(--primary-color);
 				}
 
 				&.loss {
-					background: var(--pitchcard-accent-loss);
+					background: var(--color-absent);
 				}
 			}
 		}
@@ -181,16 +196,16 @@
 			padding: 1rem;
 
 			.progress-bar {
-				background: var(--bg-primary);
-				border-radius: 4px;
+				background: var(--turf-base);
+				border-radius: 999px;
 				height: 8px;
 				margin-bottom: 0.5rem;
 				overflow: hidden;
 				width: 100%;
 
 				.progress-fill {
-					background: var(--color-gradient);
-					border-radius: 4px;
+					background: var(--primary-color);
+					border-radius: 999px;
 					height: 100%;
 					transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 				}
@@ -198,7 +213,7 @@
 
 			p {
 				color: var(--text-secondary);
-				font-size: 0.9rem;
+				font-size: 0.85rem;
 				font-weight: 500;
 				margin: 0;
 				text-align: center;
@@ -213,9 +228,14 @@
 			padding: 1rem;
 
 			.distribution-title {
-				font-weight: 600;
+				color: var(--text-secondary);
+				font-family: var(--font-display);
+				font-size: 0.68rem;
+				font-weight: 700;
+				letter-spacing: 0.1em;
 				margin-bottom: 0.75rem;
 				text-align: left;
+				text-transform: uppercase;
 			}
 
 			.dist-row {
@@ -227,7 +247,8 @@
 				.dist-label {
 					color: var(--text-secondary);
 					flex-shrink: 0;
-					font-size: 0.85rem;
+					font-family: var(--font-mono);
+					font-size: 0.8rem;
 					font-weight: 700;
 					text-align: right;
 					width: 0.75rem;
@@ -238,25 +259,26 @@
 
 					.dist-bar {
 						align-items: center;
-						background: var(--bg-primary);
-						border-radius: 2px;
+						background: var(--turf-base);
+						border-radius: 999px;
 						display: flex;
 						justify-content: flex-end;
 						min-width: 1.5rem;
-						padding: 0.2rem 0.4rem;
+						padding: 0.2rem 0.5rem;
 						transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
 						.dist-count {
 							color: var(--text-secondary);
+							font-family: var(--font-mono);
 							font-size: 0.75rem;
 							font-weight: 700;
 						}
 
 						&.highlight {
-							background: var(--color-gradient);
+							background: var(--primary-color);
 
 							.dist-count {
-								color: white;
+								color: var(--bg-secondary);
 							}
 						}
 					}

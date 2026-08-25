@@ -49,7 +49,7 @@
 	.modal.accent-neutral,
 	.modal.accent-info {
 		&::before {
-			border-radius: var(--global-border-radius) var(--global-border-radius) 0 0;
+			border-radius: calc(var(--global-border-radius) + 4px) calc(var(--global-border-radius) + 4px) 0 0;
 			content: '';
 			height: 4px;
 			left: 0;

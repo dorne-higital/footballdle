@@ -77,8 +77,9 @@
 		.modal {
 			align-items: stretch;
 			background: var(--bg-secondary);
-			border-radius: var(--global-border-radius);
-			box-shadow: 0 8px 32px rgb(0 0 0 / 18%);
+			border: 1px solid var(--border);
+			border-radius: calc(var(--global-border-radius) + 4px);
+			box-shadow: 0 10px 28px -16px rgb(20 30 20 / 22%);
 			color: var(--text-primary);
 			display: flex;
 			flex-direction: column;
@@ -117,6 +118,15 @@
 			.header {
 				border-bottom: 1px solid var(--border);
 				padding: 0.5rem 0.5rem 1rem;
+
+				h3 {
+					color: var(--text-primary);
+					font-family: var(--font-display);
+					font-size: 1.3rem;
+					font-weight: 700;
+					letter-spacing: 0.01em;
+					margin: 0;
+				}
 			}
 
 			.body {

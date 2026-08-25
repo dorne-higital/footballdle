@@ -1,45 +1,23 @@
 <template>
 	<div class="mode-intro-screen">
+		<div
+			class="arc-watermark"
+			aria-hidden="true"
+		></div>
+
 		<div class="intro-content">
+			<div class="eyebrow-row">
+				<span class="eyebrow">{{ eyebrowLabel }}</span>
+				<span class="match-no">{{ kickoffLabel }}</span>
+			</div>
+
 			<div class="intro-header">
 				<h1 class="heading">{{ modeName }}</h1>
-
-				<div class="icons">
-					<a
-						href="https://buymeacoffee.com/dhorne92E"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="coffee-link"
-						@click.prevent="$emit('buy-coffee', 'intro_header')"
-						aria-label="Buy me a coffee"
-					>
-						<Icon
-							name="uil:coffee"
-							size="1.5rem"
-						/>
-					</a>
-
-					<Icon
-						name="uil:info-circle"
-						@click="$emit('show-info')"
-						size="1.5rem"
-					/>
-
-					<Icon
-						name="uil:setting"
-						@click="$emit('show-settings')"
-						size="1.5rem"
-					/>
-
-					<Icon
-						name="uil:statistics"
-						@click="$emit('show-stats')"
-						size="1.5rem"
-					/>
-				</div>
 			</div>
 
 			<p class="subheading">{{ modeTagline }}</p>
+
+			<hr class="arc-rule" />
 
 			<div
 				v-if="stats.currentStreak > 1"
@@ -49,7 +27,7 @@
 					name="solar:fire-bold"
 					size="1rem"
 				/>
-				<span>{{ stats.currentStreak }} day streak</span>
+				<span><span class="streak-num">{{ stats.currentStreak }}</span> day streak</span>
 			</div>
 
 			<div
@@ -198,7 +176,10 @@
 </template>
 
 <script setup lang="ts">
-	withDefaults(
+	import { computed } from 'vue'
+	import { getPuzzleNumber } from '../composables/useFootballers'
+
+	const props = withDefaults(
 		defineProps<{
 			modeName: string
 			modeTagline: string
@@ -234,15 +215,15 @@
 		},
 	)
 
-	defineEmits([
-		'start-game',
-		'start-challenge',
-		'show-info',
-		'show-settings',
-		'show-stats',
-		'buy-coffee',
-		'show-result',
-	])
+	// Decorative "match" header — mirrors the daily puzzle numbering used
+	// elsewhere in the app (see stores/game.ts) without requiring a new prop.
+	const todayUK = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
+	const puzzleNumber = getPuzzleNumber(todayUK)
+
+	const eyebrowLabel = computed(() => `${props.modeName} Match`)
+	const kickoffLabel = computed(() => `No. ${puzzleNumber} · Kick-off 00:00 GMT`)
+
+	defineEmits(['start-game', 'start-challenge', 'show-result'])
 </script>
 
 <style scoped lang="scss">
@@ -254,6 +235,30 @@
 		position: relative;
 		width: 100%;
 
+		// "Pitch marking" watermark — a center-circle + halfway line echoing
+		// the board's own grid, set very low-opacity behind the content.
+		.arc-watermark {
+			border: 2px solid var(--primary-color);
+			border-radius: 50%;
+			height: 420px;
+			opacity: 0.06;
+			pointer-events: none;
+			position: absolute;
+			right: -140px;
+			top: -60px;
+			width: 420px;
+			z-index: 0;
+
+			&::after {
+				border-left: 2px solid var(--primary-color);
+				bottom: 0;
+				content: '';
+				left: 50%;
+				position: absolute;
+				top: 0;
+			}
+		}
+
 		.intro-content {
 			border-radius: var(--global-border-radius);
 			display: flex;
@@ -261,100 +266,131 @@
 			max-width: 500px;
 			padding-bottom: 1rem;
 			place-content: center flex-start;
-			text-align: center;
+			position: relative;
+			text-align: left;
 			width: 100%;
+			z-index: 1;
 
-			.intro-header {
-				align-items: center;
+			.eyebrow-row {
+				align-items: baseline;
 				display: flex;
-				flex-direction: row;
 				justify-content: space-between;
+				margin-bottom: 0.4rem;
 
-				.heading {
-					background: var(--color-gradient);
-					background-clip: text;
-					font-weight: 700;
-					-webkit-text-fill-color: transparent;
+				.eyebrow {
+					background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+					border-radius: 999px;
+					color: var(--primary-color);
+					font-family: var(--font-mono);
+					font-size: 0.68rem;
+					font-weight: 600;
+					letter-spacing: 0.14em;
+					padding: 0.25rem 0.6rem;
+					text-transform: uppercase;
 				}
 
-				.icons {
-					align-items: center;
-					display: flex;
-					flex-direction: row;
-					gap: 0.75rem;
+				.match-no {
+					color: var(--text-secondary);
+					font-family: var(--font-mono);
+					font-size: 0.7rem;
+					letter-spacing: 0.02em;
+				}
+			}
 
-					.coffee-link,
-					.iconify {
-						align-items: center;
-						border-bottom: none;
-						color: var(--text-primary);
-						cursor: pointer;
-						display: flex;
-						transition: all 0.2s;
-
-						&:hover {
-							border-bottom: none;
-							color: var(--primary-color);
-							transform: scale(1.1);
-						}
-					}
+			.intro-header {
+				.heading {
+					color: var(--text-primary);
+					font-family: var(--font-display);
+					font-size: 1.7rem;
+					font-weight: 700;
+					letter-spacing: 0.01em;
+					margin: 0.1rem 0 0.25rem;
 				}
 			}
 
 			.subheading {
-				color: var(--text-primary);
-				margin: 0;
+				color: var(--text-secondary);
+				margin: 0 0 1.1rem;
 				text-align: left;
+			}
+
+			.arc-rule {
+				border: none;
+				border-radius: 0 0 999px 999px;
+				border-top: 3px solid var(--primary-color);
+				height: 0;
+				margin: 0 0 1.25rem;
+				opacity: 0.5;
+				width: 56px;
 			}
 
 			.streak-bar {
 				align-items: center;
-				background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
+				background: color-mix(in srgb, var(--tertiary-color) 14%, transparent);
+				border: 1px solid color-mix(in srgb, var(--tertiary-color) 30%, transparent);
 				border-radius: 2rem;
-				color: #fff;
+				color: var(--tertiary-color);
 				display: inline-flex;
-				font-size: 0.85rem;
+				font-size: 0.8rem;
 				font-weight: 600;
-				gap: 0.35rem;
-				margin-top: 0.5rem;
+				gap: 0.4rem;
+				margin-bottom: 0.5rem;
 				padding: 0.3rem 0.85rem;
+				width: max-content;
+
+				.streak-num {
+					font-family: var(--font-mono);
+					font-weight: 700;
+				}
 			}
 
 			.play-section {
-				background: var(--subtle-gradient);
+				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
-				color: white;
+				box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+				color: var(--text-primary);
 				margin-top: 1rem;
-				padding: 1rem;
+				padding: 1.25rem;
+				text-align: center;
 
 				.heading {
-					margin-bottom: 0.5rem;
+					color: var(--text-secondary);
+					font-family: var(--font-display);
+					font-size: 0.85rem;
+					font-weight: 700;
+					letter-spacing: 0.06em;
+					margin-bottom: 0.75rem;
+					text-transform: uppercase;
 				}
 
 				.caption {
+					color: var(--text-secondary);
 					line-height: 1.5;
 					margin-bottom: 1.5rem;
 				}
 
 				.usp-tiles {
 					display: grid;
-					gap: 1rem;
+					gap: 0.75rem;
 					grid-template-columns: repeat(2, 1fr);
-					margin: 1rem 0;
+					margin: 0 0 1rem;
 
 					@media (width <= 600px) {
 						grid-template-columns: repeat(1, 1fr);
 					}
 
 					.tile {
-						backdrop-filter: blur(10px);
-						background: rgb(255 255 255 / 10%);
-						border: 1px solid rgb(255 255 255 / 20%);
-						border-radius: var(--global-border-radius);
-						color: white;
+						background: var(--bg-primary);
+						border: 1px solid var(--border);
+						border-radius: calc(var(--global-border-radius) - 2px);
+						color: var(--text-primary);
 						padding: 1rem;
 						text-align: center;
+
+						.iconify {
+							color: var(--primary-color);
+						}
 
 						@media (width <= 600px) {
 							align-items: center;
@@ -367,51 +403,54 @@
 
 						h6 {
 							font-size: 0.8rem;
+							margin: 0.35rem 0 0;
 						}
 					}
 				}
 
 				.play-button {
+					background: var(--primary-color);
+					border: 1px solid var(--primary-color);
 					border-radius: var(--global-border-radius);
-					font-size: 1.1rem;
+					color: #fff;
+					font-size: 1.05rem;
+					font-weight: 700;
 					justify-content: center;
-					margin-top: 1rem;
-					padding: 1rem 2rem;
+					margin-top: 0.25rem;
+					padding: 0.95rem 2rem;
 					text-align: center;
-					text-transform: uppercase;
-					transition: all 0.3s ease;
+					transition: all 0.2s ease;
 					width: 75%;
 
-					@media (width <= 600px) {
-						box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
-					}
-
 					&:hover {
-						box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
+						background: color-mix(in srgb, var(--primary-color) 88%, black);
+						box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-color) 25%, transparent);
 						transform: translateY(-2px);
 					}
 				}
 			}
 
 			.incomplete-game-section {
-				background: linear-gradient(
-					135deg,
-					var(--tertiary-color) 0%,
-					color-mix(in srgb, var(--tertiary-color) 25%, #000) 100%
-				);
+				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
-				color: white;
+				box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+				color: var(--text-primary);
 				margin-top: 1rem;
-				padding: 1rem;
+				padding: 1.25rem;
+				text-align: center;
 
 				.heading {
-					font-size: 1.5rem;
+					color: var(--text-primary);
+					font-family: var(--font-display);
+					font-size: 1.3rem;
+					font-weight: 700;
 					padding-bottom: 0.5rem;
 				}
 
 				p,
 				h4 {
+					color: var(--text-secondary);
 					line-height: 1.5;
 				}
 
@@ -420,42 +459,49 @@
 				}
 
 				.play-button {
+					background: var(--primary-color);
+					border: 1px solid var(--primary-color);
 					border-radius: var(--global-border-radius);
-					font-size: 1.1rem;
+					color: #fff;
+					font-size: 1.05rem;
+					font-weight: 700;
 					justify-content: center;
 					margin-top: 1rem;
-					padding: 1rem 2rem;
+					padding: 0.95rem 2rem;
 					text-align: center;
-					text-transform: uppercase;
-					transition: all 0.3s ease;
+					transition: all 0.2s ease;
 					width: 75%;
 
-					@media (width <= 600px) {
-						box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
-					}
-
 					&:hover {
-						box-shadow: 0 8px 25px rgb(0 0 0 / 15%);
+						background: color-mix(in srgb, var(--primary-color) 88%, black);
+						box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-color) 25%, transparent);
 						transform: translateY(-2px);
 					}
 				}
 			}
 
 			.already-played-section {
-				background: var(--color-gradient);
+				background: var(--bg-secondary);
 				border: 1px solid var(--border);
 				border-radius: var(--global-border-radius);
-				color: white;
+				box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
+				color: var(--text-primary);
 				margin-top: 1rem;
-				padding: 1rem;
+				padding: 1.25rem;
+				text-align: center;
 
 				.heading {
-					font-size: 1.5rem;
+					color: var(--text-primary);
+					font-family: var(--font-display);
+					font-size: 1.3rem;
+					font-weight: 700;
 					padding-bottom: 0.5rem;
 				}
 
 				.countdown {
-					font-weight: 900;
+					color: var(--primary-color);
+					font-family: var(--font-mono);
+					font-weight: 700;
 				}
 
 				.game-ctas {
@@ -469,29 +515,31 @@
 						align-items: center;
 						background: none;
 						border: 1px solid var(--border);
-						color: #e3e3e3;
+						border-radius: calc(var(--global-border-radius) - 4px);
+						color: var(--text-secondary);
 						cursor: pointer;
 						display: inline-flex;
 						flex: 1;
-						font-family: inherit;
+						font-family: var(--font-body);
 						font-size: 0.8rem;
 						gap: 0.35rem;
 						justify-content: center;
 						margin-top: 0.75rem;
-						padding: 0.25rem;
+						padding: 0.5rem;
 						text-align: center;
 						text-decoration: none;
-						transition: color 0.2s;
+						transition: all 0.2s ease;
 
 						&:hover {
-							border-bottom: 1px solid white;
-							color: #fff;
+							border-color: var(--border-hover);
+							color: var(--primary-color);
 						}
 					}
 				}
 
 				p,
 				h4 {
+					color: var(--text-secondary);
 					line-height: 1.5;
 				}
 
@@ -505,32 +553,40 @@
 						position: relative;
 						text-align: center;
 
-						&::before {
-							background: white;
+						&::before,
+						&::after {
+							background: var(--border);
 							content: '';
 							height: 1px;
-							left: 0;
 							position: absolute;
 							top: 50%;
+						}
+
+						&::before {
+							left: 0;
 							width: calc(50% - 1rem);
 						}
 
 						&::after {
-							background: white;
-							content: '';
-							height: 1px;
-							position: absolute;
 							right: 0;
-							top: 50%;
 							width: calc(50% - 1rem);
 						}
 
 						p {
+							color: var(--text-secondary);
+							font-family: var(--font-display);
+							font-size: 0.75rem;
+							letter-spacing: 0.1em;
 							padding: 0 1rem;
 							position: relative;
 							text-transform: uppercase;
 							z-index: 1;
 						}
+					}
+
+					h3 {
+						color: var(--text-primary);
+						font-family: var(--font-display);
 					}
 
 					.usp-tiles {
@@ -544,15 +600,15 @@
 						}
 
 						.tile {
-							background: rgb(255 255 255 / 10%);
-							border: 1px solid rgb(255 255 255 / 20%);
-							border-radius: var(--global-border-radius);
-							color: white;
+							background: var(--bg-primary);
+							border: 1px solid var(--border);
+							border-radius: calc(var(--global-border-radius) - 2px);
+							color: var(--text-primary);
 							padding: 1rem;
 							text-align: center;
 
-							@media (width > 600px) {
-								backdrop-filter: blur(10px);
+							.iconify {
+								color: var(--primary-color);
 							}
 
 							@media (width <= 600px) {
@@ -566,7 +622,19 @@
 
 							h6 {
 								font-size: 0.8rem;
+								margin: 0.35rem 0 0;
 							}
+						}
+					}
+
+					.play-button {
+						background: var(--primary-color);
+						border: 1px solid var(--primary-color);
+						border-radius: var(--global-border-radius);
+						color: #fff;
+
+						&:hover {
+							background: color-mix(in srgb, var(--primary-color) 88%, black);
 						}
 					}
 				}

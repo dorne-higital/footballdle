@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 
 	fonts: {
 		families: [
-			{ name: 'Cairo', provider: 'google', weights: [400, 700], display: 'swap', preload: true },
+			{ name: 'Jost', provider: 'google', weights: [500, 600, 700, 800], display: 'swap', preload: true },
 			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
 		],
 		defaults: {

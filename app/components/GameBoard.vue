@@ -19,7 +19,12 @@
 			<span
 				v-for="j in 6"
 				:key="j"
-				:class="['letter', { animate: shouldAnimate(i - 1, j - 1) }, feedbackClass(i - 1, j - 1)]"
+				:class="[
+					'letter',
+					{ animate: shouldAnimate(i - 1, j - 1) },
+					feedbackClass(i - 1, j - 1),
+					tileState(i - 1, j - 1),
+				]"
 				:style="getAnimationDelay(i - 1, j - 1)"
 			>
 				{{ getRowGuess(i - 1)[j - 1] || '' }}
@@ -102,6 +107,14 @@
 		return result
 	}
 
+	function tileState(guessIdx: number, charIdx: number) {
+		if (props.gameOver || guessIdx !== props.guesses.length) return ''
+		const filledLen = (props.currentGuess || '').length
+		if (charIdx < filledLen) return 'filled'
+		if (charIdx === filledLen) return 'filled cursor'
+		return ''
+	}
+
 	function getRowGuess(i: number) {
 		if (i < props.guesses.length) return props.guesses[i] || ''.padEnd(6, ' ')
 		if (i === props.guesses.length && props.currentGuess) return props.currentGuess.padEnd(6, ' ')
@@ -159,10 +172,13 @@
 
 			.letter {
 				align-items: center;
-				background: var(--bg-primary);
-				border: 1px solid var(--border);
+				background: var(--bg-secondary);
+				border: 2px solid var(--border);
 				border-radius: var(--global-border-radius);
 				display: flex;
+				font-family: var(--font-display);
+				font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+				font-weight: 700;
 				height: clamp(2.2rem, 5.5vh, 2.8rem);
 				justify-content: center;
 				line-height: clamp(2.2rem, 5.5vh, 2.8rem);
@@ -171,8 +187,19 @@
 				transform-style: preserve-3d;
 				transition:
 					background 0.2s,
+					border-color 0.2s,
+					box-shadow 0.2s,
 					color 0.2s;
 				width: clamp(2.4rem, 7vw, 3rem);
+
+				&.filled {
+					border-color: var(--text-primary);
+				}
+
+				&.cursor {
+					border-color: var(--primary-color);
+					box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 16%, transparent);
+				}
 
 				&.animate {
 					animation: flip-in 0.6s ease-in-out forwards;
@@ -189,10 +216,6 @@
 				&.absent {
 					animation: absent-reveal 0.6s ease-in-out forwards;
 				}
-			}
-
-			&.active-row .letter:not(.correct, .present, .absent) {
-				border-color: var(--text-secondary);
 			}
 		}
 	}

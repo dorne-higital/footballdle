@@ -1,10 +1,6 @@
 <template>
 	<div class="hub-page">
-		<ModeSelectHub
-			:daily-streak="statsStore.stats.currentStreak"
-			@show-settings="handleShowSettings"
-			@buy-coffee="handleBuyMeCoffee"
-		/>
+		<ModeSelectHub :daily-streak="statsStore.stats.currentStreak" />
 
 		<!-- Settings Modal -->
 		<PitchCardModal
@@ -29,6 +25,8 @@
 	import { useHead } from 'nuxt/app'
 	import ModeSelectHub from '../components/hub/ModeSelectHub.vue'
 	import ThemePickerSettings from '../components/shared/ThemePickerSettings.vue'
+
+	definePageMeta({ layout: 'play' })
 
 	const PitchCardModal = defineAsyncComponent(() => import('../components/shared/PitchCardModal.vue'))
 
@@ -81,12 +79,7 @@
 
 	const statsStore = useModeStatsStore('daily')
 	const modalsStore = useModalsStore()
-	const { trackSettingsModal, trackBuyMeCoffee } = useAnalytics()
-
-	function handleShowSettings() {
-		modalsStore.openSettings()
-		trackSettingsModal()
-	}
+	const { trackBuyMeCoffee } = useAnalytics()
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
@@ -103,12 +96,8 @@
 
 <style scoped lang="scss">
 	.hub-page {
-		align-items: center;
-		display: flex;
-		height: 100dvh;
-		justify-content: center;
+		height: 100%;
 		overflow-y: auto;
-		padding: 1rem;
 		width: 100%;
 	}
 </style>

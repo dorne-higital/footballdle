@@ -79,6 +79,8 @@ export const useGameStore = defineStore('game', () => {
 	}
 
 	const canPlay = computed(() => {
+		// Server has no localStorage — client hydrates the real value on mount.
+		if (!import.meta.client) return true
 		// Check if we have a saved game for today
 		const savedGame = localStorage.getItem('footballdle-game')
 		if (savedGame) {

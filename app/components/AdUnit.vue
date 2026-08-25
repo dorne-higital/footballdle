@@ -25,10 +25,14 @@
 	const insEl = ref<HTMLElement | null>(null)
 
 	onMounted(() => {
-		if (!publisherId || !slotId) return
+		if (!publisherId || !slotId || import.meta.dev) return
+		// Nuxt dev-mode hydration can remount this component; adsbygoogle throws
+		// an uncaught error if push() is called twice for the same slot.
+		if ((window as any).__adsbygooglePushed) return
 		try {
 			;(window as any).adsbygoogle = (window as any).adsbygoogle || []
 			;(window as any).adsbygoogle.push({})
+			;(window as any).__adsbygooglePushed = true
 		} catch {
 			// adsbygoogle not ready yet — script loads async
 		}

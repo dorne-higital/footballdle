@@ -7,7 +7,7 @@
 			name="solar:fire-bold"
 			size="0.8rem"
 		/>
-		{{ streak }}
+		<span class="num">{{ streak }}</span>
 	</span>
 </template>
 
@@ -18,8 +18,12 @@
 <style scoped lang="scss">
 	.mode-streak-badge {
 		align-items: center;
-		background: linear-gradient(135deg, #f97316 0%, #dc2626 100%);
-		border-radius: 2rem;
+		background: linear-gradient(
+			135deg,
+			var(--tertiary-color) 0%,
+			color-mix(in srgb, var(--tertiary-color) 65%, black) 100%
+		);
+		border-radius: 999px;
 		color: #fff;
 		display: inline-flex;
 		flex-shrink: 0;
@@ -27,5 +31,9 @@
 		font-weight: 700;
 		gap: 0.25rem;
 		padding: 0.2rem 0.55rem;
+
+		.num {
+			font-family: var(--font-mono);
+		}
 	}
 </style>
