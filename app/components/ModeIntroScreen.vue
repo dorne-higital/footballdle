@@ -1,18 +1,8 @@
 <template>
-	<div class="intro-screen">
-		<!-- Loading State -->
-		<div
-			v-if="isLoading"
-			class="loading-overlay"
-		>
-			<div class="loading-content">
-				<Loader />
-			</div>
-		</div>
-
+	<div class="mode-intro-screen">
 		<div class="intro-content">
 			<div class="intro-header">
-				<h1 class="heading">Footballdle</h1>
+				<h1 class="heading">{{ modeName }}</h1>
 
 				<div class="icons">
 					<a
@@ -49,7 +39,7 @@
 				</div>
 			</div>
 
-			<p class="subheading">Guess the Premier League footballer</p>
+			<p class="subheading">{{ modeTagline }}</p>
 
 			<div
 				v-if="stats.currentStreak > 1"
@@ -67,37 +57,16 @@
 				class="play-section"
 			>
 				<div class="usp-tiles">
-					<div class="tile">
+					<div
+						v-for="tile in uspTiles"
+						:key="tile.text"
+						class="tile"
+					>
 						<Icon
-							name="solar:calendar-linear"
+							:name="tile.icon"
 							size="1.5rem"
 						/>
-
-						<h6>New player to guess every day</h6>
-					</div>
-
-					<div class="tile">
-						<Icon
-							name="solar:football-outline"
-							size="1.5rem"
-						/>
-						<h6>25/26 Premier League players</h6>
-					</div>
-
-					<div class="tile">
-						<Icon
-							name="solar:magnifer-linear"
-							size="1.5rem"
-						/>
-						<h6>Only players with 6 letter surnames</h6>
-					</div>
-
-					<div class="tile">
-						<Icon
-							name="solar:shield-warning-linear"
-							size="1.5rem"
-						/>
-						<h6>Maximum 6 guesses</h6>
+						<h6>{{ tile.text }}</h6>
 					</div>
 				</div>
 
@@ -134,7 +103,7 @@
 				v-else
 				class="already-played-section"
 			>
-				<h3 class="heading">Daily game played!</h3>
+				<h3 class="heading">{{ modeName }} played!</h3>
 				<p class="caption">Looks like you have played today, come back tomorrow to play it again</p>
 
 				<div class="countdown">
@@ -142,7 +111,7 @@
 				</div>
 
 				<div class="game-ctas">
-					<NuxtLink
+					<button
 						class="view-result-btn"
 						title="View today's result"
 						@click="$emit('show-result')"
@@ -152,10 +121,11 @@
 							size="1rem"
 						/>
 						Todays result
-					</NuxtLink>
+					</button>
 
 					<NuxtLink
-						:to="`/solution/${yesterdayISO}`"
+						v-if="prevAnswerLink"
+						:to="prevAnswerLink"
 						class="yesterday-link"
 						title="View yesterday's answer"
 					>
@@ -228,14 +198,16 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, computed } from 'vue'
-
-	const props = withDefaults(
+	withDefaults(
 		defineProps<{
+			modeName: string
+			modeTagline: string
+			uspTiles: { icon: string; text: string }[]
 			canPlay?: boolean
 			countdown?: string
 			challengeUnlocked?: boolean
 			hasIncompleteGame?: boolean
+			prevAnswerLink?: string
 			stats?: {
 				gamesPlayed: number
 				wins: number
@@ -250,6 +222,7 @@
 			countdown: '',
 			challengeUnlocked: false,
 			hasIncompleteGame: false,
+			prevAnswerLink: '',
 			stats: () => ({
 				gamesPlayed: 0,
 				wins: 0,
@@ -261,7 +234,7 @@
 		},
 	)
 
-	const emit = defineEmits([
+	defineEmits([
 		'start-game',
 		'start-challenge',
 		'show-info',
@@ -270,42 +243,16 @@
 		'buy-coffee',
 		'show-result',
 	])
-
-	const isLoading = ref(false) // Start with no loading
-
-	const yesterdayISO = computed(() => {
-		const now = new Date()
-		const d = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		d.setDate(d.getDate() - 1)
-		return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-	})
 </script>
 
 <style scoped lang="scss">
-	.intro-screen {
+	.mode-intro-screen {
 		align-items: stretch;
 		display: flex;
 		justify-content: center;
 		min-height: 100%;
 		position: relative;
 		width: 100%;
-
-		.loading-overlay {
-			align-items: center;
-			display: flex;
-			inset: 0;
-			justify-content: center;
-			position: fixed;
-			z-index: 10000;
-
-			.loading-content {
-				color: var(--text-primary);
-				height: 100%;
-				position: relative;
-				text-align: center;
-				width: 100%;
-			}
-		}
 
 		.intro-content {
 			border-radius: var(--global-border-radius);
@@ -318,7 +265,6 @@
 			width: 100%;
 
 			.intro-header {
-				align-items: flex-start;
 				align-items: center;
 				display: flex;
 				flex-direction: row;
@@ -521,10 +467,13 @@
 					.view-result-btn,
 					.yesterday-link {
 						align-items: center;
+						background: none;
 						border: 1px solid var(--border);
 						color: #e3e3e3;
+						cursor: pointer;
 						display: inline-flex;
 						flex: 1;
+						font-family: inherit;
 						font-size: 0.8rem;
 						gap: 0.35rem;
 						justify-content: center;
@@ -623,6 +572,5 @@
 				}
 			}
 		}
-
 	}
 </style>

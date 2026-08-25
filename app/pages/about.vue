@@ -2,7 +2,7 @@
 	<div class="static-page">
 		<nav class="static-nav">
 			<NuxtLink
-				to="/"
+				to="/play/daily"
 				class="back-link"
 				title="Play Footballdle"
 			>
@@ -111,7 +111,7 @@
 
 			<div class="cta">
 				<NuxtLink
-					to="/"
+					to="/play/daily"
 					class="cta-button"
 					title="Play today's puzzle"
 					>Play today's puzzle →</NuxtLink

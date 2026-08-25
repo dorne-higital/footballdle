@@ -2,7 +2,7 @@
 	<div class="solution-page">
 		<nav class="solution-nav">
 			<NuxtLink
-				to="/"
+				to="/play/daily"
 				class="back-link"
 				title="Play Footballdle"
 			>
@@ -74,7 +74,7 @@
 			<div class="cta-section">
 				<p class="cta-text">Can you guess today's player?</p>
 				<NuxtLink
-					to="/"
+					to="/play/daily"
 					class="cta-button"
 					title="Play today's puzzle"
 				>

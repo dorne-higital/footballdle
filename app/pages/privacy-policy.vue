@@ -2,7 +2,7 @@
 	<div class="static-page">
 		<nav class="static-nav">
 			<NuxtLink
-				to="/"
+				to="/play/daily"
 				class="back-link"
 				title="Play Footballdle"
 			>

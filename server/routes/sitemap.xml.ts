@@ -27,8 +27,13 @@ export default defineEventHandler((event) => {
 	const urlEntries = [
 		`  <url>
     <loc>${BASE_URL}/</loc>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>`,
+		`  <url>
+    <loc>${BASE_URL}/play/daily</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>`,
 		`  <url>
     <loc>${BASE_URL}/about</loc>

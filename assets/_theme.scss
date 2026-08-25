@@ -20,6 +20,17 @@
 	--global-border-radius: 0;
 	--border: #e5e7eb;
 	--border-hover: #dc2626;
+
+	--turf-base: #eef4ee;
+	--turf-stripe: #e2ede2;
+	--touchline-color: rgb(15 23 20 / 15%);
+	--pitchcard-accent-win: var(--color-success);
+	--pitchcard-accent-loss: #dc2626;
+	--pitchcard-accent-neutral: var(--secondary-color);
+	--pitchcard-accent-info: var(--tertiary-color);
+	--scoreboard-bg: #0f2318;
+	--scoreboard-fg: #eef4ee;
+	--scoreboard-accent: #f59e0b;
 }
 
 .dark {
@@ -44,6 +55,17 @@
 	--global-border-radius: 8px;
 	--border: #334155;
 	--border-hover: #ef4444;
+
+	--turf-base: #142219;
+	--turf-stripe: #182a1e;
+	--touchline-color: rgb(255 255 255 / 12%);
+	--pitchcard-accent-win: var(--color-success);
+	--pitchcard-accent-loss: #ef4444;
+	--pitchcard-accent-neutral: var(--secondary-color);
+	--pitchcard-accent-info: var(--tertiary-color);
+	--scoreboard-bg: #0a1912;
+	--scoreboard-fg: #e8f3ec;
+	--scoreboard-accent: #fbbf24;
 }
 
 .greyscale {
@@ -64,6 +86,17 @@
 	--global-border-radius: 8px;
 	--border: #000;
 	--border-hover: #333;
+
+	--turf-base: #f2f2f2;
+	--turf-stripe: #e6e6e6;
+	--touchline-color: rgb(0 0 0 / 20%);
+	--pitchcard-accent-win: var(--color-success);
+	--pitchcard-accent-loss: #000;
+	--pitchcard-accent-neutral: var(--secondary-color);
+	--pitchcard-accent-info: var(--tertiary-color);
+	--scoreboard-bg: #1a1a1a;
+	--scoreboard-fg: #fff;
+	--scoreboard-accent: #999;
 }
 
 // ============================================================================
@@ -89,6 +122,17 @@
 	--global-border-radius: 12px;
 	--border: #bae6fd;
 	--border-hover: #0ea5e9;
+
+	--turf-base: #eaf7f2;
+	--turf-stripe: #def0e7;
+	--touchline-color: rgb(2 132 199 / 18%);
+	--pitchcard-accent-win: var(--color-success);
+	--pitchcard-accent-loss: #f43f5e;
+	--pitchcard-accent-neutral: var(--secondary-color);
+	--pitchcard-accent-info: var(--tertiary-color);
+	--scoreboard-bg: #0c4a6e;
+	--scoreboard-fg: #e0f2fe;
+	--scoreboard-accent: #38bdf8;
 
 	/* Pastel theme special effects */
 	box-shadow: 0 4px 20px rgb(14 165 233 / 10%);

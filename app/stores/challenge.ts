@@ -2,6 +2,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getChallengeFootballerByIndex, useChallengeFootballers } from '../composables/useChallengeFootballers'
+import { useModeStatsStore } from './modeStats'
+import { getUKDateString } from '../utils/dateStreak'
 
 const { isValidChallengeFootballer } = useChallengeFootballers()
 
@@ -34,17 +36,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		}, 1800)
 	}
 
-	// Challenge stats (separate from regular stats)
-	const challengeStats = ref({
-		gamesPlayed: 0,
-		wins: 0,
-		losses: 0,
-		currentStreak: 0,
-		maxStreak: 0,
-		bestTime: 0,
-		totalTime: 0,
-		guessDistribution: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 } as Record<string, number>,
-	})
+	const challengeStatsStore = useModeStatsStore('challenge')
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
@@ -54,10 +46,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 		const minutes = Math.floor(timeRemaining.value / 60)
 		const seconds = timeRemaining.value % 60
 		return `${minutes}:${seconds.toString().padStart(2, '0')}`
-	})
-	const winPercentage = computed(() => {
-		if (challengeStats.value.gamesPlayed === 0) return 0
-		return Math.round((challengeStats.value.wins / challengeStats.value.gamesPlayed) * 100)
 	})
 
 	// ============================================================================
@@ -111,7 +99,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
-			updateChallengeStats(true, guesses.value.length)
+			recordChallengeResult(true, guesses.value.length)
 			if (import.meta.client) {
 				try {
 					const timeUsed = 45 - timeRemaining.value
@@ -127,7 +115,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
-			updateChallengeStats(false)
+			recordChallengeResult(false)
 			if (import.meta.client) {
 				try {
 					const timeUsed = 45 - timeRemaining.value
@@ -198,7 +186,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 				gameOver.value = true
 				showGameOverModal.value = true
 				stopTimer()
-				updateChallengeStats(false)
+				recordChallengeResult(false)
 				if (import.meta.client) {
 					try {
 						;(window as any).gtag('event', 'challenge_loss', {
@@ -223,44 +211,14 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	// STATS FUNCTIONS
 	// ============================================================================
-	function updateChallengeStats(win: boolean, guessCount?: number) {
-		challengeStats.value.gamesPlayed++
-
-		if (win) {
-			challengeStats.value.wins++
-			challengeStats.value.currentStreak++
-			if (challengeStats.value.currentStreak > challengeStats.value.maxStreak) {
-				challengeStats.value.maxStreak = challengeStats.value.currentStreak
-			}
-			const timeUsed = 45 - timeRemaining.value
-			if (challengeStats.value.bestTime === 0 || timeUsed < challengeStats.value.bestTime) {
-				challengeStats.value.bestTime = timeUsed
-			}
-			if (guessCount && guessCount >= 1 && guessCount <= 6) {
-				const key = String(guessCount)
-				challengeStats.value.guessDistribution[key] = (challengeStats.value.guessDistribution[key] || 0) + 1
-			}
-		} else {
-			challengeStats.value.losses++
-			challengeStats.value.currentStreak = 0
-		}
-
-		challengeStats.value.totalTime += 45 - timeRemaining.value
-		saveChallengeStats()
-	}
-
-	function resetChallengeStats() {
-		challengeStats.value = {
-			gamesPlayed: 0,
-			wins: 0,
-			losses: 0,
-			currentStreak: 0,
-			maxStreak: 0,
-			bestTime: 0,
-			totalTime: 0,
-			guessDistribution: { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 },
-		}
-		saveChallengeStats()
+	// Challenge allows unlimited plays per day, so stats accrue on every game
+	// while the streak only advances once per calendar day — see modeStats.ts.
+	function recordChallengeResult(win: boolean, guessCount?: number) {
+		const timeUsed = 45 - timeRemaining.value
+		challengeStatsStore.updateStats(win, guessCount, getUKDateString(), {
+			timeUsed,
+			unlimitedPerDay: true,
+		})
 	}
 
 	// ============================================================================
@@ -303,22 +261,6 @@ export const useChallengeStore = defineStore('challenge', () => {
 		}
 	}
 
-	function saveChallengeStats() {
-		localStorage.setItem('footballdle-challenge-stats', JSON.stringify(challengeStats.value))
-	}
-
-	function loadChallengeStats() {
-		const saved = localStorage.getItem('footballdle-challenge-stats')
-		if (saved) {
-			const parsed = JSON.parse(saved)
-			challengeStats.value = {
-				...challengeStats.value,
-				...parsed,
-				guessDistribution: parsed.guessDistribution || { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 },
-			}
-		}
-	}
-
 	function resetDaily() {
 		isActive.value = false
 		gameOver.value = false
@@ -345,13 +287,11 @@ export const useChallengeStore = defineStore('challenge', () => {
 		timeRemaining,
 		showGameOverModal,
 		isPaused,
-		challengeStats,
 		errorMessage,
 
 		// Computed
 		canPlay,
 		timeFormatted,
-		winPercentage,
 
 		// Functions
 		setError,
@@ -364,12 +304,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 		togglePause,
 		startTimer,
 		stopTimer,
-		updateChallengeStats,
-		resetChallengeStats,
 		saveChallengeState,
 		loadChallengeState,
-		saveChallengeStats,
-		loadChallengeStats,
 		resetDaily,
 	}
 })
