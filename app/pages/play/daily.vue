@@ -414,6 +414,7 @@
 		class="desktop-side-panel"
 		active-mode="daily"
 		:daily-streak="statsStore.stats.currentStreak"
+		:scout-streak="scoutStatsStore.stats.currentStreak"
 		:streak="statsStore.stats.currentStreak"
 		:win-percentage="statsStore.winPercentage"
 		:recent-form="statsStore.stats.recentForm"
@@ -519,6 +520,7 @@
 	// ============================================================================
 	const gameStore = useGameStore()
 	const statsStore = useModeStatsStore('daily')
+	const scoutStatsStore = useModeStatsStore('scout')
 	const challengeStatsStore = useModeStatsStore('challenge')
 	const modalsStore = useModalsStore()
 	const challengeStore = useChallengeStore()
@@ -640,6 +642,7 @@
 	// ============================================================================
 	onMounted(() => {
 		statsStore.loadStats()
+		scoutStatsStore.loadStats()
 		gameStore.loadState()
 		gameStore.startCountdown()
 

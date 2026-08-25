@@ -13,6 +13,7 @@ export const useModalsStore = defineStore('modals', () => {
 	// MODAL FUNCTIONS
 	// ============================================================================
 	function openInfo() {
+		closeAll()
 		showInfo.value = true
 	}
 
@@ -21,6 +22,7 @@ export const useModalsStore = defineStore('modals', () => {
 	}
 
 	function openSettings() {
+		closeAll()
 		showSettings.value = true
 	}
 
@@ -29,6 +31,7 @@ export const useModalsStore = defineStore('modals', () => {
 	}
 
 	function openStats() {
+		closeAll()
 		showStats.value = true
 	}
 

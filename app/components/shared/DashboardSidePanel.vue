@@ -21,16 +21,23 @@
 				</span>
 			</NuxtLink>
 
-			<div class="side-nav-item disabled">
+			<NuxtLink
+				to="/play/scout-report"
+				class="side-nav-item"
+				:class="{ active: activeMode === 'scout' }"
+			>
 				<span class="mode-name">
 					<span class="mode-dot" />
 					<span class="mode-text">
 						<span class="title">Scout Report</span>
-						<span class="subtitle">Guess from a stat profile</span>
+						<span class="subtitle">Guess from attribute clues</span>
 					</span>
 				</span>
-				<span class="soon">Soon</span>
-			</div>
+				<span class="mode-tags">
+					<ModeStreakBadge :streak="scoutStreak" />
+					<span class="play-tag">Playing</span>
+				</span>
+			</NuxtLink>
 
 			<div class="side-nav-item disabled">
 				<span class="mode-name">
@@ -108,6 +115,7 @@
 		defineProps<{
 			activeMode?: 'daily' | 'scout' | 'spotball'
 			dailyStreak?: number
+			scoutStreak?: number
 			streak?: number
 			winPercentage?: number
 			recentForm?: boolean[]
@@ -116,6 +124,7 @@
 		{
 			activeMode: 'daily',
 			dailyStreak: 0,
+			scoutStreak: 0,
 			streak: 0,
 			winPercentage: 0,
 			showAd: true,
@@ -168,7 +177,7 @@
 				margin-bottom: 0;
 			}
 
-			&:hover:not(.disabled) {
+			&:hover:not(.disabled):not(.active) {
 				background: var(--bg-primary);
 			}
 
@@ -178,6 +187,10 @@
 
 				.subtitle {
 					color: rgb(255 255 255 / 78%);
+				}
+
+				&:hover {
+					background: color-mix(in srgb, var(--primary-color) 85%, black);
 				}
 			}
 

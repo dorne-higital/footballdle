@@ -181,6 +181,50 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
 // Shuffled once at module load — order is deterministic and permanent
 const shuffledFootballers = seededShuffle(footballers, SHUFFLE_SEED)
 
+// Scout Report draws from the same roster (no 6-letter filter) on its own
+// independent shuffle, so its daily answer never coincides with Daily's.
+const SCOUT_SHUFFLE_SEED = 20260102
+const shuffledFootballersScout = seededShuffle(footballers, SCOUT_SHUFFLE_SEED)
+const scoutAnswerCache = new Map<string, string>()
+
+export function getScoutAnswerForDay(dateStr: string): string {
+	if (scoutAnswerCache.has(dateStr)) return scoutAnswerCache.get(dateStr)!
+	const idx = getPuzzleNumber(dateStr) - 1
+	const safeIdx = ((idx % shuffledFootballersScout.length) + shuffledFootballersScout.length) % shuffledFootballersScout.length
+	const answer = shuffledFootballersScout[safeIdx]?.name || ''
+	scoutAnswerCache.set(dateStr, answer)
+	return answer
+}
+
+// Broad position groups used for Scout Report's partial-credit matching —
+// a wrong-but-same-group guess (e.g. Right-Back vs Centre-Back) reads as
+// "present" rather than "absent". 'Unknown'/'null' never award partial
+// credit, since they carry no real positional information.
+export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward' | 'Unknown'
+
+const POSITION_GROUPS: Record<Position, PositionGroup> = {
+	Goalkeeper: 'Goalkeeper',
+	Defender: 'Defender',
+	'Centre-Back': 'Defender',
+	'Left-Back': 'Defender',
+	'Right-Back': 'Defender',
+	Midfielder: 'Midfielder',
+	'Defensive Midfield': 'Midfielder',
+	'Central Midfield': 'Midfielder',
+	'Attacking Midfield': 'Midfielder',
+	'Left Midfield': 'Midfielder',
+	Forward: 'Forward',
+	'Centre-Forward': 'Forward',
+	'Right Winger': 'Forward',
+	'Left Winger': 'Forward',
+	Unknown: 'Unknown',
+	null: 'Unknown',
+}
+
+export function getPositionGroup(position: Position): PositionGroup {
+	return POSITION_GROUPS[position] ?? 'Unknown'
+}
+
 export function getPuzzleNumber(dateStr: string): number {
 	const [d1, m1, y1] = EPOCH.split('/').map(Number)
 	const [d2, m2, y2] = dateStr.split('/').map(Number)

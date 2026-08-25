@@ -135,7 +135,10 @@
 		padding: 0.85rem 1.5rem;
 		position: relative;
 		width: 100%;
-		z-index: 2;
+		// Above BaseModal's backdrop (z-index: 1000) so the header's own
+		// modal triggers (settings/stats) stay reachable to switch modals
+		// while one is already open, instead of being covered by it.
+		z-index: 1001;
 	}
 
 	.wordmark {

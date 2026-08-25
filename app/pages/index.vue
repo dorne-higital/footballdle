@@ -1,6 +1,9 @@
 <template>
 	<div class="hub-page">
-		<ModeSelectHub :daily-streak="statsStore.stats.currentStreak" />
+		<ModeSelectHub
+			:daily-streak="statsStore.stats.currentStreak"
+			:scout-streak="scoutStatsStore.stats.currentStreak"
+		/>
 
 		<!-- Settings Modal -->
 		<PitchCardModal
@@ -78,6 +81,7 @@
 	})
 
 	const statsStore = useModeStatsStore('daily')
+	const scoutStatsStore = useModeStatsStore('scout')
 	const modalsStore = useModalsStore()
 	const { trackBuyMeCoffee } = useAnalytics()
 
@@ -91,6 +95,7 @@
 
 	onMounted(() => {
 		statsStore.loadStats()
+		scoutStatsStore.loadStats()
 	})
 </script>
 

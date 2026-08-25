@@ -29,17 +29,27 @@
 				</span>
 			</NuxtLink>
 
-			<div class="mode-card disabled">
+			<NuxtLink
+				to="/play/scout-report"
+				class="mode-card"
+			>
 				<div class="mode-card-top">
 					<Icon
 						name="solar:magnifer-linear"
-						size="1.4rem"
+						size="1.6rem"
 					/>
-					<span class="soon-badge">Soon</span>
+					<ModeStreakBadge :streak="scoutStreak" />
 				</div>
 				<h3>Scout Report</h3>
-				<p class="caption">Guess any surname. Get attribute clues on club, nationality and position.</p>
-			</div>
+				<p class="caption">Guess any Premier League player. Get attribute clues on club, nationality and position.</p>
+				<span class="mode-cta">
+					Play now
+					<Icon
+						name="solar:alt-arrow-right-linear"
+						size="0.8rem"
+					/>
+				</span>
+			</NuxtLink>
 
 			<div class="mode-card disabled">
 				<div class="mode-card-top">
@@ -62,9 +72,11 @@
 	withDefaults(
 		defineProps<{
 			dailyStreak?: number
+			scoutStreak?: number
 		}>(),
 		{
 			dailyStreak: 0,
+			scoutStreak: 0,
 		},
 	)
 </script>
