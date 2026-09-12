@@ -179,21 +179,6 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
 // Shuffled once at module load — order is deterministic and permanent
 const shuffledFootballers = seededShuffle(footballers, SHUFFLE_SEED)
 
-// Scout Report draws from the same roster (no 6-letter filter) on its own
-// independent shuffle, so its daily answer never coincides with Daily's.
-const SCOUT_SHUFFLE_SEED = 20260102
-const shuffledFootballersScout = seededShuffle(footballers, SCOUT_SHUFFLE_SEED)
-const scoutAnswerCache = new Map<string, string>()
-
-export function getScoutAnswerForDay(dateStr: string): string {
-	if (scoutAnswerCache.has(dateStr)) return scoutAnswerCache.get(dateStr)!
-	const idx = getPuzzleNumber(dateStr) - 1
-	const safeIdx = ((idx % shuffledFootballersScout.length) + shuffledFootballersScout.length) % shuffledFootballersScout.length
-	const answer = shuffledFootballersScout[safeIdx]?.name || ''
-	scoutAnswerCache.set(dateStr, answer)
-	return answer
-}
-
 // Broad position groups used for Scout Report's partial-credit matching —
 // a wrong-but-same-group guess (e.g. Right-Back vs Centre-Back) reads as
 // "present" rather than "absent".

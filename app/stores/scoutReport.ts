@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { getPuzzleNumber, getPositionGroup } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
-	isValidFootballer,
-	getPlayerData,
-	getPuzzleNumber,
-	getPositionGroup,
-	footballers,
-} from '../composables/useFootballers'
+	isValidFullFootballer,
+	getFullPlayerData,
+	searchFullFootballers,
+} from '../composables/useAllFootballers'
 import { getConfederation } from '../composables/useConfederations'
 import { getUKDateString } from '../utils/dateStreak'
 
@@ -84,11 +83,11 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 
 	// One row per guess, with each attribute compared against the answer.
 	const guessResults = computed<ScoutGuessResult[]>(() => {
-		const answerPlayer = getPlayerData(answer)
+		const answerPlayer = getFullPlayerData(answer)
 		if (!answerPlayer) return []
 
 		return guesses.value.map((name) => {
-			const player = getPlayerData(name)
+			const player = getFullPlayerData(name)
 			if (!player) {
 				return {
 					name,
@@ -132,7 +131,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		if (gameOver.value) return
 		const trimmed = name.trim()
 		if (!trimmed) return
-		if (!isValidFootballer(trimmed)) {
+		if (!isValidFullFootballer(trimmed)) {
 			setError('Not a valid footballer')
 			return
 		}
@@ -240,12 +239,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// Player-name suggestions for the autocomplete input, filtered by query,
 	// excluding names already guessed this round.
 	function searchPlayers(query: string, limit = 8) {
-		const q = query.trim().toUpperCase()
-		if (!q) return []
-		const guessedUpper = new Set(guesses.value.map((g) => g.toUpperCase()))
-		return footballers
-			.filter((f) => f.name.toUpperCase().includes(q) && !guessedUpper.has(f.name.toUpperCase()))
-			.slice(0, limit)
+		return searchFullFootballers(query, guesses.value, limit)
 	}
 
 	return {

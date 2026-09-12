@@ -1,4 +1,5 @@
-import { footballers, getPuzzleNumber, getPositionGroup, type Footballer } from './useFootballers'
+import { getPuzzleNumber, getPositionGroup, type Footballer } from './useFootballers'
+import { allFootballers } from './useAllFootballers'
 import { getConfederation } from './useConfederations'
 
 // Fixed seed — never change this or all past daily round sets will shift
@@ -18,7 +19,7 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
 }
 
 // Shuffled once at module load — order is deterministic and permanent
-const shuffledSpotFootballers = seededShuffle(footballers, SPOT_SHUFFLE_SEED)
+const shuffledSpotFootballers = seededShuffle(allFootballers, SPOT_SHUFFLE_SEED)
 
 export interface SpotRound {
 	target: Footballer
@@ -44,7 +45,7 @@ function similarity(a: Footballer, b: Footballer): number {
 }
 
 function pickDistractors(target: Footballer, seed: number, count: number): Footballer[] {
-	const scored = footballers
+	const scored = allFootballers
 		.filter((p) => p.name !== target.name)
 		.map((player) => ({ player, score: similarity(target, player) }))
 		.sort((a, b) => b.score - a.score)

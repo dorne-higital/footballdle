@@ -67,7 +67,7 @@
 			<div
 				v-for="bucket in scoreHistogram"
 				:key="bucket.label"
-				class="dist-row"
+				class="dist-row score-row"
 			>
 				<span class="dist-label">{{ bucket.label }}</span>
 				<div class="dist-bar-wrap">
@@ -252,6 +252,15 @@
 					font-weight: 700;
 					text-align: right;
 					width: 0.75rem;
+				}
+
+				&.score-row .dist-label {
+					font-family: var(--font-body);
+					font-size: 0.74rem;
+					font-weight: 600;
+					text-align: left;
+					white-space: nowrap;
+					width: 6rem;
 				}
 
 				.dist-bar-wrap {
