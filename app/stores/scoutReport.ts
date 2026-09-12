@@ -105,7 +105,6 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 
 			const samePositionGroup =
 				player.position !== answerPlayer.position &&
-				getPositionGroup(player.position) !== 'Unknown' &&
 				getPositionGroup(player.position) === getPositionGroup(answerPlayer.position)
 
 			return {

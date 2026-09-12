@@ -51,17 +51,27 @@
 				</span>
 			</NuxtLink>
 
-			<div class="mode-card disabled">
+			<NuxtLink
+				to="/play/spot-the-baller"
+				class="mode-card"
+			>
 				<div class="mode-card-top">
 					<Icon
-						name="solar:alarm-outline"
-						size="1.4rem"
+						name="solar:flag-linear"
+						size="1.6rem"
 					/>
-					<span class="soon-badge">Soon</span>
+					<ModeStreakBadge :streak="spotballStreak" />
 				</div>
 				<h3>Spot the Baller</h3>
 				<p class="caption">10 rapid-fire rounds. Pick the right name before the clock runs out.</p>
-			</div>
+				<span class="mode-cta">
+					Play now
+					<Icon
+						name="solar:alt-arrow-right-linear"
+						size="0.8rem"
+					/>
+				</span>
+			</NuxtLink>
 		</div>
 	</div>
 </template>
@@ -73,10 +83,12 @@
 		defineProps<{
 			dailyStreak?: number
 			scoutStreak?: number
+			spotballStreak?: number
 		}>(),
 		{
 			dailyStreak: 0,
 			scoutStreak: 0,
+			spotballStreak: 0,
 		},
 	)
 </script>

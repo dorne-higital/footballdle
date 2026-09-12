@@ -39,16 +39,23 @@
 				</span>
 			</NuxtLink>
 
-			<div class="side-nav-item disabled">
+			<NuxtLink
+				to="/play/spot-the-baller"
+				class="side-nav-item"
+				:class="{ active: activeMode === 'spotball' }"
+			>
 				<span class="mode-name">
 					<span class="mode-dot" />
 					<span class="mode-text">
 						<span class="title">Spot the Baller</span>
-						<span class="subtitle">ID the player, zoomed in</span>
+						<span class="subtitle">10 rapid-fire rounds</span>
 					</span>
 				</span>
-				<span class="soon">Soon</span>
-			</div>
+				<span class="mode-tags">
+					<ModeStreakBadge :streak="spotballStreak" />
+					<span class="play-tag">Playing</span>
+				</span>
+			</NuxtLink>
 		</div>
 
 		<div class="side-card">
@@ -116,6 +123,7 @@
 			activeMode?: 'daily' | 'scout' | 'spotball'
 			dailyStreak?: number
 			scoutStreak?: number
+			spotballStreak?: number
 			streak?: number
 			winPercentage?: number
 			recentForm?: boolean[]
@@ -125,6 +133,7 @@
 			activeMode: 'daily',
 			dailyStreak: 0,
 			scoutStreak: 0,
+			spotballStreak: 0,
 			streak: 0,
 			winPercentage: 0,
 			showAd: true,

@@ -1,19 +1,19 @@
 <template>
-	<div class="scout-page-wrapper">
-	<div :class="['scout-page', { 'is-intro': scoutStore.showIntro }]">
+	<div class="spot-page-wrapper">
+	<div :class="['spot-page', { 'is-intro': spotStore.showIntro }]">
 		<!-- Intro / ready-to-play screen -->
 		<ModeIntroScreen
-			v-if="scoutStore.showIntro"
-			mode-name="Scout Report"
-			mode-tagline="Guess any Premier League player from attribute clues"
-			:usp-tiles="scoutUspTiles"
-			:can-play="scoutStore.canPlay"
-			:countdown="scoutStore.countdown"
+			v-if="spotStore.showIntro"
+			mode-name="Spot the Baller"
+			mode-tagline="10 rapid-fire rounds. Pick the right name before the clock runs out."
+			:usp-tiles="spotUspTiles"
+			:can-play="spotStore.canPlay"
+			:countdown="spotStore.countdown"
 			:has-incomplete-game="hasIncompleteGame"
 			:stats="statsStore.stats"
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
-			@show-result="scoutStore.showGameOverModal = true"
+			@show-result="spotStore.showGameOverModal = true"
 		/>
 
 		<!-- Game Screen -->
@@ -22,36 +22,40 @@
 			class="game-screen"
 		>
 			<ScoreboardStrip
-				mode-label="Scout Report"
-				:puzzle-number="scoutStore.puzzleNumber"
+				mode-label="Spot the Baller"
+				:round-progress="spotStore.roundProgress"
 				:streak="statsStore.stats.currentStreak"
 			/>
 
+			<p class="score-line">Score: <strong>{{ spotStore.score }}</strong> / {{ spotStore.maxGuesses }}</p>
+
 			<PlaySurfaceFrame>
-				<ScoutBoard
-					:results="scoutStore.guessResults"
-					:max-guesses="scoutStore.maxGuesses"
-					:game-over="scoutStore.gameOver"
-					:error-message="scoutStore.errorMessage"
-					@guess="handleGuess"
+				<SpotRoundCard
+					v-if="spotStore.currentRound"
+					:round="spotStore.currentRound"
+					:reveal-state="spotStore.revealState"
+					:time-remaining="spotStore.timeRemaining"
+					:round-time="roundTime"
+					:picked-name="lastPickedName"
+					@pick="handlePick"
 				/>
 			</PlaySurfaceFrame>
 		</div>
 
 		<!-- Game Over Modal -->
 		<PitchCardModal
-			v-if="scoutStore.showGameOverModal"
-			:heading="scoutStore.isWin ? 'Well scouted!' : 'Better luck next time!'"
-			:accent="scoutStore.isWin ? 'win' : 'loss'"
+			v-if="spotStore.showGameOverModal"
+			:heading="spotStore.scoreLabel"
+			:accent="spotStore.isWin ? 'win' : 'loss'"
 			variant="small"
-			@close="scoutStore.closeGameOverModal"
+			@close="spotStore.closeGameOverModal"
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="scoutStore.isWin">You win!</h4>
+					<h4 v-if="spotStore.isWin">You win!</h4>
 					<h4 v-else>You lose!</h4>
 					<div
-						v-if="scoutStore.isWin && statsStore.stats.currentStreak > 1"
+						v-if="spotStore.isWin && statsStore.stats.currentStreak > 1"
 						class="streak-celebration"
 					>
 						<Icon
@@ -61,15 +65,15 @@
 						{{ streakMessage }}
 					</div>
 					<p>
-						The answer was <strong class="answer">{{ scoutStore.answer }}</strong>
+						You scored <strong class="answer">{{ spotStore.score }} / {{ spotStore.maxGuesses }}</strong>
 					</p>
 				</div>
 			</template>
 
 			<template #footer>
-				<div v-if="scoutStore.getNextGameTime">
+				<div v-if="spotStore.getNextGameTime">
 					<p class="caption">Next game in:</p>
-					<h3>{{ scoutStore.countdown }}</h3>
+					<h3>{{ spotStore.countdown }}</h3>
 				</div>
 				<a
 					href="https://buymeacoffee.com/dhorne92E"
@@ -114,11 +118,10 @@
 		>
 			<template #body>
 				<SeasonFormDashboard
-					:primary-stats="scoutPrimaryStats"
+					:primary-stats="spotPrimaryStats"
 					:win-percentage="statsStore.winPercentage"
-					:distribution="statsStore.stats.guessDistribution"
+					:score-histogram="spotScoreHistogram"
 					:recent-form="statsStore.stats.recentForm"
-					:highlight-guess-count="lastGuessCount"
 				/>
 			</template>
 		</PitchCardModal>
@@ -126,10 +129,10 @@
 
 	<DashboardSidePanel
 		class="desktop-side-panel"
-		active-mode="scout"
+		active-mode="spotball"
 		:daily-streak="dailyStatsStore.stats.currentStreak"
-		:scout-streak="statsStore.stats.currentStreak"
-		:spotball-streak="spotballStatsStore.stats.currentStreak"
+		:scout-streak="scoutStatsStore.stats.currentStreak"
+		:spotball-streak="statsStore.stats.currentStreak"
 		:streak="statsStore.stats.currentStreak"
 		:win-percentage="statsStore.winPercentage"
 		:recent-form="statsStore.stats.recentForm"
@@ -140,7 +143,8 @@
 
 <script setup lang="ts">
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
-	import { useScoutReportStore } from '../../stores/scoutReport'
+	import { useSpotTheBallerStore, SPOT_TIER_LABELS } from '../../stores/spotTheBaller'
+	import { SPOT_ROUND_TIME } from '../../composables/useSpotFootballers'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
@@ -148,7 +152,7 @@
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
 	import ScoreboardStrip from '../../components/shared/ScoreboardStrip.vue'
 	import PlaySurfaceFrame from '../../components/shared/PlaySurfaceFrame.vue'
-	import ScoutBoard from '../../components/scout/ScoutBoard.vue'
+	import SpotRoundCard from '../../components/spot/SpotRoundCard.vue'
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
@@ -158,22 +162,22 @@
 	const PitchCardModal = defineAsyncComponent(() => import('../../components/shared/PitchCardModal.vue'))
 
 	useHead({
-		title: 'Scout Report | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/scout-report' }],
+		title: 'Spot the Baller | Footballdle',
+		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/spot-the-baller' }],
 		meta: [
 			{
 				name: 'description',
 				content:
-					'Scout Report: guess any Premier League player. Every guess reveals club, nationality and position clues — narrow it down and build your streak.',
+					'Spot the Baller: 10 rapid-fire rounds. Pick the right Premier League player from club, nationality and position clues before the clock runs out.',
 			},
 			{ name: 'robots', content: 'index, follow' },
 			{ property: 'og:type', content: 'website' },
-			{ property: 'og:title', content: 'Scout Report | Footballdle' },
+			{ property: 'og:title', content: 'Spot the Baller | Footballdle' },
 			{
 				property: 'og:description',
-				content: 'Guess any Premier League player from attribute clues — club, nationality, position.',
+				content: '10 rapid-fire rounds. Pick the right name before the clock runs out.',
 			},
-			{ property: 'og:url', content: 'https://footballdle.co.uk/play/scout-report' },
+			{ property: 'og:url', content: 'https://footballdle.co.uk/play/spot-the-baller' },
 			{ property: 'og:site_name', content: 'Footballdle' },
 		],
 	})
@@ -181,10 +185,10 @@
 	// ============================================================================
 	// STORES
 	// ============================================================================
-	const scoutStore = useScoutReportStore()
-	const statsStore = useModeStatsStore('scout')
+	const spotStore = useSpotTheBallerStore()
+	const statsStore = useModeStatsStore('spotball')
 	const dailyStatsStore = useModeStatsStore('daily')
-	const spotballStatsStore = useModeStatsStore('spotball')
+	const scoutStatsStore = useModeStatsStore('scout')
 	const modalsStore = useModalsStore()
 
 	const { trackGameStart, trackGameWin, trackGameLoss, trackGuessSubmitted, trackIntroButtonClick, trackBuyMeCoffee } =
@@ -201,11 +205,14 @@
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
-	const scoutUspTiles = [
-		{ icon: 'solar:magnifer-linear', text: 'Guess any Premier League player' },
-		{ icon: 'solar:shield-linear', text: 'Club, nationality & position clues' },
-		{ icon: 'solar:map-point-linear', text: 'Close guesses show partial matches' },
-		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
+	const roundTime = SPOT_ROUND_TIME
+	const lastPickedName = ref<string | null>(null)
+
+	const spotUspTiles = [
+		{ icon: 'solar:flag-linear', text: '10 rapid-fire rounds' },
+		{ icon: 'solar:clock-circle-linear', text: '8 seconds per round' },
+		{ icon: 'solar:widget-linear', text: 'Pick from multiple choices' },
+		{ icon: 'solar:cup-star-linear', text: 'Score 6/10 to keep your streak' },
 	]
 
 	const sessionStartTime = ref(Date.now())
@@ -213,10 +220,7 @@
 	// ============================================================================
 	// COMPUTED
 	// ============================================================================
-	const hasIncompleteGame = computed(() => scoutStore.guesses.length > 0 && !scoutStore.gameOver)
-	const lastGuessCount = computed(() =>
-		scoutStore.isWin && scoutStore.gameOver ? scoutStore.guesses.length : 0,
-	)
+	const hasIncompleteGame = computed(() => spotStore.roundResults.length > 0 && !spotStore.gameOver)
 
 	const streakMessage = computed(() => {
 		const s = statsStore.stats.currentStreak
@@ -228,12 +232,19 @@
 		return `${s} days in a row!`
 	})
 
-	const scoutPrimaryStats = computed(() => [
+	const spotPrimaryStats = computed(() => [
 		{ label: 'Games', value: statsStore.stats.gamesPlayed },
 		{ label: 'Wins', value: statsStore.stats.wins },
 		{ label: 'Streak', value: statsStore.stats.currentStreak },
 		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
 	])
+
+	const spotScoreHistogram = computed(() =>
+		SPOT_TIER_LABELS.map((label, i) => ({
+			label,
+			count: spotStore.tierHistogram[String(i + 1)] || 0,
+		})),
+	)
 
 	// ============================================================================
 	// LIFECYCLE
@@ -241,14 +252,15 @@
 	onMounted(() => {
 		statsStore.loadStats()
 		dailyStatsStore.loadStats()
-		spotballStatsStore.loadStats()
-		scoutStore.loadState()
-		scoutStore.startCountdown()
+		scoutStatsStore.loadStats()
+		spotStore.loadState()
+		spotStore.loadTierHistogram()
+		spotStore.startCountdown()
 		sessionStartTime.value = Date.now()
 	})
 
 	onUnmounted(() => {
-		scoutStore.stopCountdown()
+		spotStore.stopCountdown()
 	})
 
 	// ============================================================================
@@ -256,31 +268,27 @@
 	// ============================================================================
 	function handleStartGame() {
 		trackIntroButtonClick(hasIncompleteGame.value ? 'resume_game' : 'play_now')
-		scoutStore.startGame()
+		spotStore.startGame()
 		trackGameStart(statsStore.stats.gamesPlayed > 0)
 	}
 
-	function handleGuess(name: string) {
-		const guessesBefore = scoutStore.guesses.length
-		scoutStore.submitGuess(name)
+	function handlePick(name: string) {
+		lastPickedName.value = name
+		spotStore.pickOption(name)
+		trackGuessSubmitted(spotStore.roundIndex + 1)
 
-		if (scoutStore.guesses.length > guessesBefore) {
-			trackGuessSubmitted(scoutStore.guesses.length)
-		}
-
-		if (scoutStore.gameOver && scoutStore.showGameOverModal) {
-			statsStore.updateStats(scoutStore.isWin, scoutStore.guesses.length, scoutStore.todayStr)
-			if (scoutStore.isWin) {
-				trackGameWin(scoutStore.guesses.length)
+		if (spotStore.gameOver && spotStore.showGameOverModal) {
+			if (spotStore.isWin) {
+				trackGameWin(spotStore.score)
 			} else {
-				trackGameLoss(scoutStore.guesses.length)
+				trackGameLoss(spotStore.score)
 			}
 		}
 	}
 </script>
 
 <style scoped lang="scss">
-	.scout-page-wrapper {
+	.spot-page-wrapper {
 		align-items: flex-start;
 		display: flex;
 		gap: 1.25rem;
@@ -300,7 +308,7 @@
 		}
 	}
 
-	.scout-page {
+	.spot-page {
 		align-items: stretch;
 		border-radius: var(--global-border-radius);
 		display: flex;
@@ -325,6 +333,19 @@
 		}
 	}
 
+	.score-line {
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		margin: 0 0 0.5rem;
+		text-align: center;
+
+		strong {
+			color: var(--text-primary);
+			font-size: 0.95rem;
+		}
+	}
+
 	// ============================================================================
 	// GAME OVER MODAL
 	// ============================================================================
@@ -342,7 +363,6 @@
 			color: var(--primary-color);
 			font-weight: 700;
 			letter-spacing: 0.05rem;
-			text-transform: capitalize;
 		}
 
 		.streak-celebration {

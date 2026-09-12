@@ -13,8 +13,6 @@ export type Position =
 	| 'Right-Back'
 	| 'Central Midfield'
 	| 'Centre-Forward'
-	| 'Unknown'
-	| 'null'
 
 export interface Footballer {
 	name: string
@@ -85,7 +83,7 @@ export const footballers: Footballer[] = [
 	{ name: 'kroupi', club: 'Bournemouth', nationality: 'France', position: 'Centre-Forward' },
 	{ name: 'laffey', club: 'Liverpool', nationality: 'England', position: 'Midfielder' },
 	{ name: 'larsen', club: 'Burnley', nationality: 'Denmark', position: 'Left Winger' },
-	{ name: 'lienou', club: 'Leeds United', nationality: 'Wales', position: 'null' },
+	{ name: 'lienou', club: 'Leeds United', nationality: 'Wales', position: 'Left-Back' },
 	{ name: 'mainoo', club: 'Manchester United', nationality: 'England', position: 'Central Midfield' },
 	{ name: 'mandas', club: 'Bournemouth', nationality: 'Greece', position: 'Goalkeeper' },
 	{ name: 'mateta', club: 'Crystal Palace', nationality: 'France', position: 'Centre-Forward' },
@@ -120,7 +118,7 @@ export const footballers: Footballer[] = [
 	{ name: 'pouani', club: 'Burnley', nationality: 'England', position: 'Forward' },
 	{ name: 'ramsay', club: 'Liverpool', nationality: 'Scotland', position: 'Right-Back' },
 	{ name: 'ramsey', club: 'Newcastle', nationality: 'England', position: 'Left Midfield' },
-	{ name: 'ranson', club: 'Arsenal', nationality: 'England', position: 'Unknown' },
+	{ name: 'ranson', club: 'Arsenal', nationality: 'England', position: 'Goalkeeper' },
 	{ name: 'rodney', club: 'Crystal Palace', nationality: 'England', position: 'Defensive Midfield' },
 	{ name: 'rogers', club: 'Aston Villa', nationality: 'England', position: 'Attacking Midfield' },
 	{ name: 'romero', club: 'Tottenham', nationality: 'Argentina', position: 'Centre-Back' },
@@ -198,9 +196,8 @@ export function getScoutAnswerForDay(dateStr: string): string {
 
 // Broad position groups used for Scout Report's partial-credit matching —
 // a wrong-but-same-group guess (e.g. Right-Back vs Centre-Back) reads as
-// "present" rather than "absent". 'Unknown'/'null' never award partial
-// credit, since they carry no real positional information.
-export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward' | 'Unknown'
+// "present" rather than "absent".
+export type PositionGroup = 'Goalkeeper' | 'Defender' | 'Midfielder' | 'Forward'
 
 const POSITION_GROUPS: Record<Position, PositionGroup> = {
 	Goalkeeper: 'Goalkeeper',
@@ -217,12 +214,10 @@ const POSITION_GROUPS: Record<Position, PositionGroup> = {
 	'Centre-Forward': 'Forward',
 	'Right Winger': 'Forward',
 	'Left Winger': 'Forward',
-	Unknown: 'Unknown',
-	null: 'Unknown',
 }
 
 export function getPositionGroup(position: Position): PositionGroup {
-	return POSITION_GROUPS[position] ?? 'Unknown'
+	return POSITION_GROUPS[position]
 }
 
 export function getPuzzleNumber(dateStr: string): number {

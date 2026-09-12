@@ -3,6 +3,7 @@
 		<ModeSelectHub
 			:daily-streak="statsStore.stats.currentStreak"
 			:scout-streak="scoutStatsStore.stats.currentStreak"
+			:spotball-streak="spotballStatsStore.stats.currentStreak"
 		/>
 
 		<!-- Settings Modal -->
@@ -82,6 +83,7 @@
 
 	const statsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
+	const spotballStatsStore = useModeStatsStore('spotball')
 	const modalsStore = useModalsStore()
 	const { trackBuyMeCoffee } = useAnalytics()
 
@@ -96,6 +98,7 @@
 	onMounted(() => {
 		statsStore.loadStats()
 		scoutStatsStore.loadStats()
+		spotballStatsStore.loadStats()
 	})
 </script>
 
