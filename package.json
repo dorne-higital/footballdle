@@ -12,7 +12,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "clean": "rm -rf .nuxt .output node_modules/.cache",
-    "type-check": "nuxt typecheck"
+    "type-check": "nuxt typecheck",
+    "check-players": "node scripts/check-players.mjs"
   },
   "dependencies": {
     "@nuxt/fonts": "^0.11.4",

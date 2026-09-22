@@ -12,11 +12,17 @@
 			<div class="header flex-between">
 				<h3>{{ heading }}</h3>
 
-				<Icon
-					name="uil:times-circle"
+				<button
+					type="button"
+					class="modal-close"
+					aria-label="Close"
 					@click="$emit('close')"
-					size="1.5rem"
-				/>
+				>
+					<Icon
+						name="uil:times"
+						size="1.15rem"
+					/>
+				</button>
 			</div>
 
 			<template v-if="slots.body">
@@ -126,6 +132,28 @@
 					font-weight: 700;
 					letter-spacing: 0.01em;
 					margin: 0;
+				}
+
+				.modal-close {
+					align-items: center;
+					background: var(--bg-primary);
+					border: 1px solid var(--border);
+					border-radius: 10px;
+					color: var(--text-primary);
+					cursor: pointer;
+					display: inline-flex;
+					flex: none;
+					height: 32px;
+					justify-content: center;
+					padding: 0;
+					transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+					width: 32px;
+
+					&:hover {
+						background: color-mix(in srgb, var(--primary-color) 14%, var(--bg-secondary));
+						border-color: color-mix(in srgb, var(--primary-color) 30%, var(--border));
+						color: var(--primary-color);
+					}
 				}
 			}
 

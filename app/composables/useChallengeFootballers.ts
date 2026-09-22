@@ -64,6 +64,7 @@ const challengeFootballers = [
 	'JAMES',
 	'JESUS',
 	'JONES',
+	'JULIO',
 	'KANTE',
 	'KEANE',
 	'KONSA',

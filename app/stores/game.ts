@@ -78,22 +78,13 @@ export const useGameStore = defineStore('game', () => {
 		saveState()
 	}
 
-	const canPlay = computed(() => {
-		// Server has no localStorage — client hydrates the real value on mount.
-		if (!import.meta.client) return true
-		// Check if we have a saved game for today
-		const savedGame = localStorage.getItem('footballdle-game')
-		if (savedGame) {
-			const { date, gameOver: savedGameOver } = JSON.parse(savedGame)
-			// If we have a saved game for today, check if it's completed
-			if (date === todayStr) {
-				// Only prevent playing if the game is actually completed (won or lost)
-				return !savedGameOver
-			}
-		}
-		// If no saved game for today, we can play
-		return true
-	})
+	// Derived from the store's own reactive `gameOver` ref rather than reading
+	// localStorage directly — a computed with no reactive dependencies only
+	// evaluates once and never updates, so completing today's game wouldn't
+	// flip this to false until a full page reload. `gameOver` already gets
+	// hydrated from localStorage on mount (see loadState) and flips live when
+	// a game finishes (see submitGuess), so this stays in sync either way.
+	const canPlay = computed(() => !gameOver.value)
 
 	// ============================================================================
 	// GAME LOGIC FUNCTIONS
