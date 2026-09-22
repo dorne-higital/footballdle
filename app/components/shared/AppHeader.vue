@@ -145,6 +145,7 @@
 		align-items: center;
 		color: inherit;
 		display: flex;
+		flex: 1 1 auto;
 		gap: 0.75rem;
 		min-width: 0;
 		text-decoration: none;
@@ -166,13 +167,16 @@
 
 		.heading {
 			color: var(--text-primary);
-			font-family: var(--font-display);
 			font-size: 1.2rem;
+			font-family: var(--font-display);
 			font-weight: 700;
 			letter-spacing: 0.1em;
 			line-height: 1.1;
 			margin: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
 			text-transform: uppercase;
+			white-space: nowrap;
 
 			span {
 				color: var(--primary-color);
@@ -225,11 +229,34 @@
 
 	@media (width <= 640px) {
 		.app-header {
-			padding: 0.7rem 1rem;
+			padding: 0.6rem 0.75rem;
 		}
 
-		.tagline {
-			display: none;
+		.wordmark {
+			gap: 0.5rem;
+
+			.mark {
+				height: 22px;
+				width: 22px;
+			}
+
+			.heading {
+				font-size: clamp(0.85rem, 4.3vw, 1.1rem);
+				letter-spacing: 0.06em;
+			}
+
+			.tagline {
+				display: none;
+			}
+		}
+
+		.icons {
+			gap: 0.35rem;
+		}
+
+		.icon-btn {
+			height: 34px;
+			width: 34px;
 		}
 	}
 </style>

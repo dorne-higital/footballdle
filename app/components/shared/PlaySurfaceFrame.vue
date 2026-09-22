@@ -32,4 +32,19 @@
 			width: 30px;
 		}
 	}
+
+	@media (width <= 640px) {
+		.play-surface-frame {
+			flex: none;
+			min-height: auto;
+			overflow: visible;
+			padding: 0.3rem 0.4rem 0;
+
+			.touchline-arc {
+				height: 8px;
+				margin: 0 auto 0.15rem;
+				width: 22px;
+			}
+		}
+	}
 </style>

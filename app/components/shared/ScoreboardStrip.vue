@@ -83,4 +83,15 @@
 			font-weight: 700;
 		}
 	}
+
+	@media (width <= 640px) {
+		.scoreboard-strip {
+			margin-bottom: 0.35rem;
+			padding: 0.3rem 0.6rem;
+
+			.sb-left {
+				display: none;
+			}
+		}
+	}
 </style>

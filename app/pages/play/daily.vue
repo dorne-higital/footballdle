@@ -869,6 +869,24 @@
 		}
 	}
 
+	@media (width <= 640px) {
+		.daily-page:not(.is-intro) {
+			overflow-y: auto;
+
+			.game-screen,
+			.challenge-screen {
+				overflow-y: auto;
+
+				.game-board,
+				.challenge-game {
+					flex: none;
+					min-height: auto;
+					overflow: visible;
+				}
+			}
+		}
+	}
+
 	// ============================================================================
 	// HINTS
 	// ============================================================================
@@ -932,6 +950,25 @@
 	.hint-enter-from {
 		opacity: 0;
 		transform: scale(0.7) translateY(6px);
+	}
+
+	@media (width <= 640px) {
+		.hints-container {
+			gap: 0.25rem;
+			padding: 0.3rem 0.3rem 0;
+
+			.hint-chip {
+				font-size: 0.68rem;
+				gap: 0.25rem;
+				padding: 0.2rem 0.5rem;
+			}
+		}
+
+		.watch-ad-btn {
+			font-size: 0.7rem;
+			margin: 0.3rem 0.3rem 0;
+			padding: 0.3rem 0.75rem;
+		}
 	}
 
 	// ============================================================================

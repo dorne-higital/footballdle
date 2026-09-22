@@ -56,4 +56,10 @@
 			z-index: 1;
 		}
 	}
+
+	@media (width <= 640px) {
+		.play-content {
+			padding: 0.6rem;
+		}
+	}
 </style>
