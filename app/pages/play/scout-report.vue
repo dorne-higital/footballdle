@@ -187,8 +187,15 @@
 	const spotballStatsStore = useModeStatsStore('spotball')
 	const modalsStore = useModalsStore()
 
-	const { trackGameStart, trackGameWin, trackGameLoss, trackGuessSubmitted, trackIntroButtonClick, trackBuyMeCoffee } =
-		useAnalytics()
+	const {
+		trackGameStart,
+		trackGameWin,
+		trackGameLoss,
+		trackGameAbandon,
+		trackGuessSubmitted,
+		trackIntroButtonClick,
+		trackBuyMeCoffee,
+	} = useAnalytics()
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
@@ -248,6 +255,9 @@
 	})
 
 	onUnmounted(() => {
+		if (scoutStore.guesses.length > 0 && !scoutStore.gameOver) {
+			trackGameAbandon(scoutStore.guesses.length, 'scout_report')
+		}
 		scoutStore.stopCountdown()
 	})
 
@@ -257,7 +267,7 @@
 	function handleStartGame() {
 		trackIntroButtonClick(hasIncompleteGame.value ? 'resume_game' : 'play_now')
 		scoutStore.startGame()
-		trackGameStart(statsStore.stats.gamesPlayed > 0)
+		trackGameStart(statsStore.stats.gamesPlayed > 0, 'scout_report')
 	}
 
 	function handleGuess(name: string) {
@@ -265,15 +275,15 @@
 		scoutStore.submitGuess(name)
 
 		if (scoutStore.guesses.length > guessesBefore) {
-			trackGuessSubmitted(scoutStore.guesses.length)
+			trackGuessSubmitted(scoutStore.guesses.length, 'scout_report')
 		}
 
 		if (scoutStore.gameOver && scoutStore.showGameOverModal) {
 			statsStore.updateStats(scoutStore.isWin, scoutStore.guesses.length, scoutStore.todayStr)
 			if (scoutStore.isWin) {
-				trackGameWin(scoutStore.guesses.length)
+				trackGameWin(scoutStore.guesses.length, 'scout_report')
 			} else {
-				trackGameLoss(scoutStore.guesses.length)
+				trackGameLoss(scoutStore.guesses.length, 'scout_report')
 			}
 		}
 	}

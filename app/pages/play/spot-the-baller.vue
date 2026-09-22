@@ -191,8 +191,15 @@
 	const scoutStatsStore = useModeStatsStore('scout')
 	const modalsStore = useModalsStore()
 
-	const { trackGameStart, trackGameWin, trackGameLoss, trackGuessSubmitted, trackIntroButtonClick, trackBuyMeCoffee } =
-		useAnalytics()
+	const {
+		trackGameStart,
+		trackGameWin,
+		trackGameLoss,
+		trackGameAbandon,
+		trackGuessSubmitted,
+		trackIntroButtonClick,
+		trackBuyMeCoffee,
+	} = useAnalytics()
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
@@ -260,6 +267,9 @@
 	})
 
 	onUnmounted(() => {
+		if (spotStore.roundResults.length > 0 && !spotStore.gameOver) {
+			trackGameAbandon(spotStore.roundResults.length, 'spot_the_baller')
+		}
 		spotStore.stopCountdown()
 	})
 
@@ -269,19 +279,19 @@
 	function handleStartGame() {
 		trackIntroButtonClick(hasIncompleteGame.value ? 'resume_game' : 'play_now')
 		spotStore.startGame()
-		trackGameStart(statsStore.stats.gamesPlayed > 0)
+		trackGameStart(statsStore.stats.gamesPlayed > 0, 'spot_the_baller')
 	}
 
 	function handlePick(name: string) {
 		lastPickedName.value = name
 		spotStore.pickOption(name)
-		trackGuessSubmitted(spotStore.roundIndex + 1)
+		trackGuessSubmitted(spotStore.roundIndex + 1, 'spot_the_baller')
 
 		if (spotStore.gameOver && spotStore.showGameOverModal) {
 			if (spotStore.isWin) {
-				trackGameWin(spotStore.score)
+				trackGameWin(spotStore.score, 'spot_the_baller')
 			} else {
-				trackGameLoss(spotStore.score)
+				trackGameLoss(spotStore.score, 'spot_the_baller')
 			}
 		}
 	}

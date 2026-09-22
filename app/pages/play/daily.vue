@@ -532,6 +532,7 @@
 		trackGameStart,
 		trackGameWin,
 		trackGameLoss,
+		trackGameAbandon,
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackStatsTabSwitch,
@@ -666,6 +667,10 @@
 	onUnmounted(() => {
 		const sessionDuration = Math.floor((Date.now() - sessionStartTime.value) / 1000)
 		trackSessionTime(sessionDuration)
+
+		if (gameStore.guesses.length > 0 && !gameStore.gameOver) {
+			trackGameAbandon(gameStore.guesses.length, 'daily_game')
+		}
 	})
 
 	onUnmounted(() => {

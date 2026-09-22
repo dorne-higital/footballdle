@@ -13,54 +13,54 @@ export const useAnalytics = () => {
 		}
 	}
 
-	const trackGameStart = (isReturningPlayer: boolean = false) => {
+	const trackGameStart = (isReturningPlayer: boolean = false, mode: string = 'daily_game') => {
 		if (import.meta.client) {
 			event('game_start', {
 				event_category: 'game',
-				event_label: 'daily_game',
+				event_label: mode,
 				player_type: isReturningPlayer ? 'returning' : 'new',
 			})
 		}
 	}
 
-	const trackGameWin = (guesses: number) => {
+	const trackGameWin = (guesses: number, mode: string = 'daily_game') => {
 		if (import.meta.client) {
 			event('game_win', {
 				event_category: 'game',
-				event_label: 'daily_game',
+				event_label: mode,
 				guess_count: guesses,
 				value: guesses,
 			})
 		}
 	}
 
-	const trackGameLoss = (guesses: number) => {
+	const trackGameLoss = (guesses: number, mode: string = 'daily_game') => {
 		if (import.meta.client) {
 			event('game_loss', {
 				event_category: 'game',
-				event_label: 'daily_game',
+				event_label: mode,
 				guess_count: guesses,
 				value: guesses,
 			})
 		}
 	}
 
-	const trackGameAbandon = (guesses: number) => {
+	const trackGameAbandon = (guesses: number, mode: string = 'daily_game') => {
 		if (import.meta.client) {
 			event('game_abandon', {
 				event_category: 'game',
-				event_label: 'daily_game',
+				event_label: mode,
 				guess_count: guesses,
 				value: guesses,
 			})
 		}
 	}
 
-	const trackGuessSubmitted = (guessNumber: number) => {
+	const trackGuessSubmitted = (guessNumber: number, mode: string = 'daily_game') => {
 		if (import.meta.client) {
 			event('guess_submitted', {
 				event_category: 'game',
-				event_label: 'daily_game',
+				event_label: mode,
 				guess_number: guessNumber,
 			})
 		}
