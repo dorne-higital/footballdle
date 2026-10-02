@@ -81,6 +81,8 @@ export default defineNuxtConfig({
 			googleAnalyticsId: isApp ? '' : process.env.GOOGLE_ANALYTICS_ID || '',
 			adsensePublisherId: isApp ? '' : process.env.ADSENSE_PUBLISHER_ID || '',
 			adsenseSlotId: isApp ? '' : process.env.ADSENSE_SLOT_ID || '',
+			// RevenueCat *public* Apple key (appl_...), safe to ship in the app
+			revenuecatAppleKey: isApp ? process.env.REVENUECAT_APPLE_KEY || '' : '',
 		},
 	},
 

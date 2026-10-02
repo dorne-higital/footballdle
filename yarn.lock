@@ -259,6 +259,11 @@
     hashery "^1.5.1"
     keyv "^5.6.0"
 
+"@capacitor-community/in-app-review@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@capacitor-community/in-app-review/-/in-app-review-8.0.0.tgz#5b643a7397ed2677fba4b4ab42a7d087956d7e6b"
+  integrity sha512-AYpEkIjdv27WGS3hnlc7xAQ1BhaBvD2svgQBfHF4P2Olw1N6a7MSCOQC6O4SuxmdBdJ2fM6uFeo1jyNjKLtIPw==
+
 "@capacitor/app@^8.1.1":
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/@capacitor/app/-/app-8.1.1.tgz#af00649d0c7799ec83469b1c4ada921f9933a77e"
@@ -819,6 +824,27 @@
   version "0.28.0"
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.28.0.tgz#04d90d5752b4ce65d2b6ac25eba08ff7624fe07c"
   integrity sha512-pEl1bO9mfAmIC+tW5btTmrKaujg3zGtUmWNdCw/xs70FBjwAL3o9OEKNHvNmnyylD6ubxUERiEhdsL0xBQ9efw==
+
+"@iconify-json/ri@^1.2.10":
+  version "1.2.10"
+  resolved "https://registry.yarnpkg.com/@iconify-json/ri/-/ri-1.2.10.tgz#eef0a8e808e2fac3ec82f593ce9d6dbed742334c"
+  integrity sha512-WWMhoncVVM+Xmu9T5fgu2lhYRrKTEWhKk3Com0KiM111EeEsRLiASjpsFKnC/SrB6covhUp95r2mH8tGxhgd5Q==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/solar@^1.2.13":
+  version "1.2.13"
+  resolved "https://registry.yarnpkg.com/@iconify-json/solar/-/solar-1.2.13.tgz#18cf292cb82887ac01ba247bbe610079015679a2"
+  integrity sha512-/ZWb6xRib6pzxD/qTkKWYhuzSU2yu0bY+EN0spgtz1NM3d5f4eYueQZpL3PfCdsg5uVfm4Ldtt3cAyQL+YI8/Q==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/uil@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@iconify-json/uil/-/uil-1.2.3.tgz#d455746fe32491fa46a884b6d47e4b7a3cc9c76f"
+  integrity sha512-if91+UBhDQc6glPsIaXecGIcXnbQZfEO4Gdv89TV2xQ+V5e9GWbY5rNl2fsKZd8COsRQ5lRQAKimVQVL0CZZVg==
+  dependencies:
+    "@iconify/types" "*"
 
 "@iconify/collections@^1.0.563":
   version "1.0.681"
@@ -1817,6 +1843,18 @@
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@poppinss/exception/-/exception-1.2.3.tgz#b713855e6c9fe2110fea0949455c50828145e64a"
   integrity sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw==
+
+"@revenuecat/purchases-capacitor@^13.7.0":
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-capacitor/-/purchases-capacitor-13.7.0.tgz#cb56fd6c92390dfa88573ed22db5b0947bb49ba3"
+  integrity sha512-GFBgeHuieJUBUgaoQaFKR9Rx1iF86WxLxiKSn0ybl11lDgIjZNcsGYJ2F+56cn9XRLw+TDh6+0PX3DSa8Aaikw==
+  dependencies:
+    "@revenuecat/purchases-typescript-internal-esm" "19.5.0"
+
+"@revenuecat/purchases-typescript-internal-esm@19.5.0":
+  version "19.5.0"
+  resolved "https://registry.yarnpkg.com/@revenuecat/purchases-typescript-internal-esm/-/purchases-typescript-internal-esm-19.5.0.tgz#e86894df7cb48afd8e2d455ae19f56ffaccd63d4"
+  integrity sha512-25QmDlnwmOBHNFP3VgGLkuUA9CpMwHVfGv74CUj7TeeSbzARaGzwoqMET8MYC3YgixuutvPneUj2VN5GBHenIg==
 
 "@rolldown/pluginutils@1.0.0-rc.13":
   version "1.0.0-rc.13"

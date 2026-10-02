@@ -73,6 +73,19 @@
 				{{ adLoading ? 'Loading ad...' : 'Watch an ad for a hint' }}
 			</button>
 
+			<button
+				v-if="gameStore.canPurchaseHint && $config.public.isApp"
+				class="watch-ad-btn"
+				:disabled="purchases.busy"
+				@click="handleAppHint"
+			>
+				<Icon
+					:name="purchases.isPro ? 'solar:lightbulb-linear' : 'solar:crown-linear'"
+					size="1rem"
+				/>
+				{{ purchases.isPro ? 'Reveal a hint' : 'Unlock hints with Pro' }}
+			</button>
+
 			<Keyboard
 				:disabled="gameStore.gameOver"
 				:guesses="gameStore.guesses"
@@ -432,6 +445,7 @@
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useChallengeStore } from '../../stores/challenge'
+	import { usePurchasesStore } from '../../stores/purchases'
 	import { useShare } from '../../composables/useShare'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
@@ -522,6 +536,7 @@
 	// STORES
 	// ============================================================================
 	const gameStore = useGameStore()
+	const purchases = usePurchasesStore()
 	const statsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
@@ -571,6 +586,11 @@
 		{ icon: 'solar:magnifer-linear', text: 'Only players with 6 letter surnames' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
+
+	// iOS app: Pro replaces the rewarded ad. Non-Pro taps go straight to the purchase sheet.
+	async function handleAppHint() {
+		if (purchases.isPro || (await purchases.buyPro())) gameStore.unlockHint()
+	}
 
 	function handleWatchAd() {
 		if (!import.meta.client) return

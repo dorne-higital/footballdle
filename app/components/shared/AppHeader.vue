@@ -56,6 +56,19 @@
 				/>
 			</a>
 
+			<button
+				v-if="gameCenter.isAvailable"
+				type="button"
+				class="icon-btn"
+				aria-label="Leaderboards"
+				@click="gameCenter.showLeaderboards()"
+			>
+				<Icon
+					name="uil:trophy"
+					size="1.15em"
+				/>
+			</button>
+
 			<NuxtLink
 				to="/how-to-play"
 				class="icon-btn"
@@ -98,8 +111,10 @@
 <script setup lang="ts">
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
+	import { useGameCenter } from '../../composables/useGameCenter'
 
 	const modalsStore = useModalsStore()
+	const gameCenter = useGameCenter()
 	const { trackInfoModal, trackSettingsModal, trackStatsModal, trackHomeClick, trackBuyMeCoffee } = useAnalytics()
 
 	function handleHomeClick() {

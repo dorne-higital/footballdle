@@ -18,6 +18,9 @@ workflows:
         XCODE_SCHEME: App
         # Numeric "Apple ID" from App Store Connect → your app → App Information
         APP_STORE_APPLE_ID: 0000000000
+        # RevenueCat → Project settings → API keys → Apple public key (starts appl_).
+        # Public by design, so fine to commit. Empty = purchases switched off.
+        REVENUECAT_APPLE_KEY: ""
       node: 22
       xcode: latest
     # No triggering block: builds are started manually from the Codemagic

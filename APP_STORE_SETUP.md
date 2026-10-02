@@ -11,6 +11,9 @@ It's built in the cloud by [Codemagic](https://codemagic.io), so no local Xcode 
 | `capacitor.config.ts` | App ID (`uk.co.footballdle.app`), name, and where the web build lives |
 | `ios/` | The native Xcode project. Committed to git. `ios/App/App/public` is generated, so it's ignored |
 | `codemagic.yaml` | Cloud build: install → build web → sync → sign → upload to TestFlight |
+| `app/utils/appStore.ts` | Product, entitlement and leaderboard IDs |
+| `app/stores/purchases.ts` | RevenueCat purchases (Pro, tips, restore) |
+| `ios/App/App/GameCenterPlugin.swift` | Our own Game Center bridge (no maintained Capacitor 8 plugin exists) |
 
 The website build (`yarn build` / `yarn generate`) is unchanged.
 
@@ -104,20 +107,51 @@ App Store Connect → **Business** (Agreements, Tax, and Banking):
 
 IAP products won't load in the app until the agreement is **Active**.
 
-### 9. RevenueCat (for in-app purchases)
+### 9. In-app purchases (App Store Connect)
 
-https://www.revenuecat.com handles the StoreKit plumbing, receipt checks and "restore purchases".
-It's free until the app makes real money.
+App Store Connect → your app → **Monetization → In-App Purchases** → **+**. IDs must match `app/utils/appStore.ts` exactly.
 
-- Create a project and add an **App Store** app with bundle ID `uk.co.footballdle.app`
-- Connect it to App Store Connect (it asks for an In-App Purchase key, generated in the same place as step 4)
-- Copy the **public Apple API key** (starts `appl_`). That one's safe to ship in the app.
+| Type | Reference name | Product ID | Suggested price |
+|---|---|---|---|
+| Non-Consumable | Footballdle Pro | `footballdle_pro` | £2.99 |
+| Consumable | Small Tip | `footballdle_tip_small` | £0.99 |
+| Consumable | Medium Tip | `footballdle_tip_medium` | £2.99 |
+| Consumable | Large Tip | `footballdle_tip_large` | £4.99 |
 
-### 10. Game Center (leaderboards)
+For each one, add an English (UK) display name and description, plus a **review screenshot**
+(a screenshot of the Settings screen showing the buttons, taken from TestFlight).
+The first purchases get submitted for review **together with the first app version**.
 
-App Store Connect → your app → **Features** (or **Services**) → **Game Center**
+### 10. RevenueCat
 
-- Leaderboard IDs get decided when the leaderboard code is written. You'll create them here to match.
+https://www.revenuecat.com. It's free until the app makes real money.
+
+1. Create a project → add an **App Store** app with bundle ID `uk.co.footballdle.app`.
+2. Give it an **In-App Purchase key**: App Store Connect → Users and Access → Integrations →
+   **In-App Purchase** → generate, then upload the `.p8` to RevenueCat with its Key ID and Issuer ID.
+3. **Product catalog → Products** → import or add all four product IDs above.
+4. **Entitlements** → create one called exactly **`pro`** → attach `footballdle_pro` only (not the tips).
+5. **API keys** → copy the **Apple public key** (starts `appl_`) → put it in `codemagic.yaml` as `REVENUECAT_APPLE_KEY`.
+
+TestFlight builds use Apple's sandbox automatically, so test purchases are free.
+
+### 11. Game Center leaderboards
+
+App Store Connect → your app → **Services → Game Center** (make sure Game Center is enabled on the app
+version too). Create four **Classic** leaderboards with score format **Integer**, sorted **high to low**:
+
+| Leaderboard ID | Display name |
+|---|---|
+| `footballdle.daily.best_streak` | Longest Daily Streak |
+| `footballdle.scout.best_streak` | Longest Scout Report Streak |
+| `footballdle.spotball.best_streak` | Longest Spot the Baller Streak |
+| `footballdle.total_wins` | Total Wins |
+
+The app signs players in to Game Center on launch and submits their best streaks and total wins
+automatically, including history from before Game Center existed. The trophy icon in the header opens the boards.
+
+If you created the provisioning profile **before** ticking Game Center on the Bundle ID, regenerate it
+(and re-fetch it in Codemagic), or the build will fail on entitlements.
 
 ---
 

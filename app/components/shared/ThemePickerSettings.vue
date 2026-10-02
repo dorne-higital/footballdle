@@ -87,13 +87,94 @@
 				Buy me a <span class="accent">coffee</span>
 			</a>
 		</div>
+
+		<template v-else>
+			<div class="setting-group support-group">
+				<label>Footballdle Pro</label>
+				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
+				<template v-else>
+					<p>Reveal the club, nationality and position early on the daily game. One-off purchase, no subscription.</p>
+					<button
+						type="button"
+						class="store-button"
+						:disabled="purchases.busy || !purchases.proProduct"
+						@click="purchases.buyPro()"
+					>
+						<Icon
+							name="solar:crown-linear"
+							size="1rem"
+						/>
+						Get <span class="accent">Pro</span>
+						<template v-if="purchases.proProduct">· {{ purchases.proProduct.priceString }}</template>
+					</button>
+				</template>
+				<button
+					type="button"
+					class="text-button"
+					:disabled="purchases.busy"
+					@click="purchases.restore()"
+				>
+					Restore purchases
+				</button>
+			</div>
+
+			<div
+				v-if="purchases.tipProducts.length"
+				class="setting-group support-group"
+			>
+				<label>Tip Jar</label>
+				<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
+				<div class="tip-row">
+					<button
+						v-for="product in purchases.tipProducts"
+						:key="product.identifier"
+						type="button"
+						class="store-button"
+						:disabled="purchases.busy"
+						@click="purchases.tip(product)"
+					>
+						{{ product.priceString }}
+					</button>
+				</div>
+			</div>
+
+			<div
+				v-if="gameCenter.isAvailable"
+				class="setting-group support-group"
+			>
+				<label>Leaderboards</label>
+				<p>See how your streaks stack up against everyone else.</p>
+				<button
+					type="button"
+					class="store-button"
+					@click="gameCenter.showLeaderboards()"
+				>
+					<Icon
+						name="uil:trophy"
+						size="1rem"
+					/>
+					Open leaderboards
+				</button>
+			</div>
+
+			<p
+				v-if="purchases.message"
+				class="store-message"
+			>
+				{{ purchases.message }}
+			</p>
+		</template>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { useThemeStore } from '../../stores/theme'
+	import { usePurchasesStore } from '../../stores/purchases'
+	import { useGameCenter } from '../../composables/useGameCenter'
 
 	const themeStore = useThemeStore()
+	const purchases = usePurchasesStore()
+	const gameCenter = useGameCenter()
 
 	defineEmits(['buy-coffee'])
 </script>
@@ -107,7 +188,8 @@
 			padding-top: 1.5rem;
 			text-align: left;
 
-			.coffee-button {
+			.coffee-button,
+			.store-button {
 				align-items: center;
 				background: var(--text-primary);
 				border: 1.5px solid var(--text-primary);
@@ -127,11 +209,44 @@
 					color: var(--tertiary-color);
 				}
 
-				&:hover {
+				&:hover:not(:disabled) {
 					box-shadow: 0 10px 24px -12px rgb(24 32 25 / 35%);
 					transform: translateY(-2px);
 				}
+
+				&:disabled {
+					cursor: default;
+					opacity: 0.5;
+				}
 			}
+
+			.tip-row {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+
+				.store-button {
+					margin-top: 0;
+				}
+			}
+
+			.text-button {
+				background: none;
+				border: 0;
+				color: var(--text-secondary);
+				cursor: pointer;
+				font-size: 0.85rem;
+				margin-top: 0.75rem;
+				padding: 0;
+				text-decoration: underline;
+			}
+		}
+
+		.store-message {
+			color: var(--text-primary);
+			font-size: 0.9rem;
+			font-weight: 600;
+			margin: 0;
 		}
 
 		.setting-group {

@@ -1,3 +1,6 @@
+import { Capacitor } from '@capacitor/core'
+import { Share } from '@capacitor/share'
+
 export function useShare() {
 	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): string {
 		const grid = guesses
@@ -18,6 +21,11 @@ export function useShare() {
 
 	async function onShare(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): Promise<boolean> {
 		const text = getShareText(guesses, answer, isWin, label, streak)
+		// iOS app: native share sheet. Returns false as nothing was copied (no "Copied" toast).
+		if (Capacitor.isNativePlatform()) {
+			await Share.share({ text }).catch(() => {})
+			return false
+		}
 		try {
 			await navigator.clipboard.writeText(text)
 			return true
