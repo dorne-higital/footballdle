@@ -72,6 +72,7 @@
 					<h3>{{ scoutStore.countdown }}</h3>
 				</div>
 				<a
+					v-if="!$config.public.isApp"
 					href="https://buymeacoffee.com/dhorne92E"
 					target="_blank"
 					rel="noopener noreferrer"

@@ -203,6 +203,7 @@
 					Yesterday's answer
 				</NuxtLink>
 				<a
+					v-if="!$config.public.isApp"
 					href="https://buymeacoffee.com/dhorne92E"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -393,6 +394,7 @@
 						</button>
 					</div>
 					<a
+						v-if="!$config.public.isApp"
 						href="https://buymeacoffee.com/dhorne92E"
 						target="_blank"
 						rel="noopener noreferrer"

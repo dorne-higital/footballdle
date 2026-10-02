@@ -246,7 +246,7 @@
 
 <style scoped lang="scss">
 	.solution-page {
-		height: 100dvh;
+		height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 		overflow-y: auto;
 		padding: 0 1rem 3rem;
 	}

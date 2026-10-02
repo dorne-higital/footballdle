@@ -120,14 +120,16 @@
 
 			<h2>Is Footballdle free?</h2>
 			<p>
-				Yes — completely free, no sign-up, no subscription. If you enjoy playing and want to support the
-				game, you can
-				<a
-					href="https://buymeacoffee.com/dhorne92E"
-					target="_blank"
-					rel="noopener noreferrer"
-					>buy me a coffee</a
-				>. It genuinely helps keep the site running.
+				Yes — completely free, no sign-up, no subscription.
+				<template v-if="!$config.public.isApp">
+					If you enjoy playing and want to support the game, you can
+					<a
+						href="https://buymeacoffee.com/dhorne92E"
+						target="_blank"
+						rel="noopener noreferrer"
+						>buy me a coffee</a
+					>. It genuinely helps keep the site running.
+				</template>
 			</p>
 
 			<h2>How often is the player list updated?</h2>

@@ -21,7 +21,7 @@
 		background: var(--bg-primary);
 		display: flex;
 		flex-direction: column;
-		height: 100dvh;
+		height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 		overflow: hidden;
 		width: 100%;
 	}

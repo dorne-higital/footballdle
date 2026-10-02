@@ -216,6 +216,10 @@ html {
 body {
 	-webkit-tap-highlight-color: transparent;
 	touch-action: manipulation;
+	// Keeps content clear of the notch / home indicator in the iOS app.
+	// env() resolves to 0 on the website (no viewport-fit=cover there).
+	padding-bottom: env(safe-area-inset-bottom);
+	padding-top: env(safe-area-inset-top);
 }
 
 button,

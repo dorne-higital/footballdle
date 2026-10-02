@@ -42,6 +42,7 @@
 
 		<div class="icons">
 			<a
+				v-if="!$config.public.isApp"
 				href="https://buymeacoffee.com/dhorne92E"
 				target="_blank"
 				rel="noopener noreferrer"

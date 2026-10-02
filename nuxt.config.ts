@@ -1,5 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+// APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
+// a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
+// (Apple rejects external tip links, and AdSense doesn't run in native apps).
+const isApp = process.env.APP_TARGET === 'ios'
+
+// Applies the saved theme before first paint to avoid a light-mode flash
+const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
+
 function getSolutionRoutes(): string[] {
 	const routes: string[] = []
 	const cursor = new Date(2026, 0, 1) // epoch: 1 Jan 2026
@@ -18,6 +26,7 @@ function getSolutionRoutes(): string[] {
 export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
+	ssr: !isApp,
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 
 	icon: {
@@ -43,10 +52,10 @@ export default defineNuxtConfig({
 
 	// Build optimizations + pre-render all solution pages so they exist as static HTML
 	nitro: {
-		compressPublicAssets: true,
+		compressPublicAssets: !isApp,
 		minify: true,
 		prerender: {
-			routes: ['/play/daily', '/play/scout-report', '/play/spot-the-baller', ...getSolutionRoutes()],
+			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', ...getSolutionRoutes()],
 		},
 
 	},
@@ -68,28 +77,34 @@ export default defineNuxtConfig({
 
 	runtimeConfig: {
 		public: {
-			googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || '',
-			adsensePublisherId: process.env.ADSENSE_PUBLISHER_ID || '',
-			adsenseSlotId: process.env.ADSENSE_SLOT_ID || '',
+			isApp,
+			googleAnalyticsId: isApp ? '' : process.env.GOOGLE_ANALYTICS_ID || '',
+			adsensePublisherId: isApp ? '' : process.env.ADSENSE_PUBLISHER_ID || '',
+			adsenseSlotId: isApp ? '' : process.env.ADSENSE_SLOT_ID || '',
 		},
 	},
 
 	// Optional: Add meta tags for Google Analytics
 	app: {
 		head: {
+			...(isApp ? { viewport: 'width=device-width, initial-scale=1, viewport-fit=cover' } : {}),
 			link: [
-				{ rel: 'preconnect', href: 'https://www.googletagmanager.com' },
+				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
 			meta: [
-				{ name: 'google-adsense-account', content: 'ca-pub-8134902947215331' },
+				...(isApp ? [] : [{ name: 'google-adsense-account', content: 'ca-pub-8134902947215331' }]),
 				{ name: 'theme-color', content: '#dc2626' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
 			],
-			script: [
+			script: isApp ? [
+				{
+					innerHTML: themeBootScript,
+				},
+			] : [
 				{
 					innerHTML: `window.adBreak=window.adBreak||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};window.adConfig=window.adConfig||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};`,
 				},
@@ -103,7 +118,7 @@ export default defineNuxtConfig({
 					}),
 				},
 				{
-					innerHTML: `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`,
+					innerHTML: themeBootScript,
 				},
 				{
 					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),

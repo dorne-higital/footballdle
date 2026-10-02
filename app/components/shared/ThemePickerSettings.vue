@@ -67,7 +67,10 @@
 			</div>
 		</div>
 
-		<div class="setting-group support-group">
+		<div
+			v-if="!$config.public.isApp"
+			class="setting-group support-group"
+		>
 			<label>Support Footballdle</label>
 			<p>Enjoying the game? Help keep it free and ad-light.</p>
 			<a

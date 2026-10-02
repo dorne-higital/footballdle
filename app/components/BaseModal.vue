@@ -117,6 +117,8 @@
 					height: 100dvh;
 					max-height: 100dvh;
 					max-width: 100vw;
+					padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+					padding-top: calc(0.5rem + env(safe-area-inset-top));
 					width: 100vw;
 				}
 			}
