@@ -48,4 +48,7 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true
+        # Uploads land in TestFlight for internal testers automatically. Submitting
+        # for external beta review needs Test Information filled in first, so it
+        # stays off until you want outside testers.
+        submit_to_testflight: false
