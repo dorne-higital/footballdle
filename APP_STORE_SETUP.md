@@ -113,7 +113,10 @@ App Store Connect → your app → **Monetization → In-App Purchases** → **+
 
 | Type | Reference name | Product ID | Suggested price |
 |---|---|---|---|
-| Non-Consumable | Footballdle Pro | `footballdle_pro` | £2.99 |
+| Non-Consumable | Footballdle Pro (unlimited hints) | `footballdle_pro` | £4.99 |
+| Consumable | 1 Hint | `footballdle_hint_1` | £0.49 |
+| Consumable | 5 Hints | `footballdle_hints_5` | £1.49 |
+| Consumable | 15 Hints | `footballdle_hints_15` | £2.99 |
 | Consumable | Small Tip | `footballdle_tip_small` | £0.99 |
 | Consumable | Medium Tip | `footballdle_tip_medium` | £2.99 |
 | Consumable | Large Tip | `footballdle_tip_large` | £4.99 |
@@ -129,7 +132,7 @@ https://www.revenuecat.com. It's free until the app makes real money.
 1. Create a project → add an **App Store** app with bundle ID `uk.co.footballdle.app`.
 2. Give it an **In-App Purchase key**: App Store Connect → Users and Access → Integrations →
    **In-App Purchase** → generate, then upload the `.p8` to RevenueCat with its Key ID and Issuer ID.
-3. **Product catalog → Products** → import or add all four product IDs above.
+3. **Product catalog → Products** → import or add all seven product IDs above.
 4. **Entitlements** → create one called exactly **`pro`** → attach `footballdle_pro` only (not the tips).
 5. **API keys** → copy the **Apple public key** (starts `appl_`) → put it in `codemagic.yaml` as `REVENUECAT_APPLE_KEY`.
 

@@ -62,7 +62,7 @@ MADE FOR IPHONE
 
 Squads are updated for the current season and refreshed during the transfer window.
 
-Footballdle Pro is an optional one-off purchase that reveals clues early in the Daily. The tip jar is there if you'd like to support the game. Neither is needed to play every mode, every day.
+Stuck on the Daily? Buy a single hint or a pack to use whenever you like, or unlock unlimited hints for good with Footballdle Pro. The tip jar is there if you'd like to support the game. None of it is needed to play every mode, every day.
 ```
 
 ## What's New in this version (4000)

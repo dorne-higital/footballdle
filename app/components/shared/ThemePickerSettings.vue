@@ -96,7 +96,12 @@
 				<label>Footballdle Pro</label>
 				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
 				<template v-else>
-					<p>Reveal the club, nationality and position early on the daily game. One-off purchase, no subscription.</p>
+					<p>
+						Unlimited hints on the daily game. One-off purchase, no subscription.
+						<template v-if="purchases.hintBank > 0">
+							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
+						</template>
+					</p>
 					<button
 						type="button"
 						class="store-button"

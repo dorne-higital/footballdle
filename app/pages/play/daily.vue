@@ -80,10 +80,10 @@
 				@click="handleAppHint"
 			>
 				<Icon
-					:name="purchases.isPro ? 'solar:lightbulb-linear' : 'solar:crown-linear'"
+					name="solar:lightbulb-linear"
 					size="1rem"
 				/>
-				{{ purchases.isPro ? 'Reveal a hint' : 'Unlock hints with Pro' }}
+				{{ appHintLabel }}
 			</button>
 
 			<Keyboard
@@ -233,6 +233,63 @@
 							: 'Enjoying Footballdle? Buy me a coffee'
 					}}
 				</a>
+			</template>
+		</PitchCardModal>
+
+		<!-- iOS app: hint shop -->
+		<PitchCardModal
+			v-if="showHintShop"
+			heading="Get hints"
+			accent="info"
+			variant="small"
+			@close="showHintShop = false"
+		>
+			<template #body>
+				<div class="hint-shop">
+					<p class="hint-shop-intro">
+						Each hint reveals the next clue: club, then nationality, then position. Hints you don't use
+						stay in the bank for another day.
+					</p>
+					<p
+						v-if="!purchases.hintPacks.length && !purchases.proProduct"
+						class="hint-shop-empty"
+					>
+						Hints aren't available right now. Check your connection and try again.
+					</p>
+					<button
+						v-for="pack in purchases.hintPacks"
+						:key="pack.id"
+						type="button"
+						class="hint-pack"
+						:disabled="purchases.busy"
+						@click="handleBuyHints(pack)"
+					>
+						<span class="pack-name">{{ pack.count === 1 ? '1 hint' : `${pack.count} hints` }}</span>
+						<span class="pack-price">{{ pack.product.priceString }}</span>
+					</button>
+					<button
+						v-if="purchases.proProduct"
+						type="button"
+						class="hint-pack pro"
+						:disabled="purchases.busy"
+						@click="handleBuyPro"
+					>
+						<span class="pack-name">
+							<Icon
+								name="solar:crown-linear"
+								size="1rem"
+							/>
+							Pro: unlimited hints
+						</span>
+						<span class="pack-price">{{ purchases.proProduct.priceString }}</span>
+					</button>
+					<p
+						v-if="purchases.message"
+						class="hint-shop-message"
+					>
+						{{ purchases.message }}
+					</p>
+				</div>
 			</template>
 		</PitchCardModal>
 
@@ -587,9 +644,32 @@
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
 
-	// iOS app: Pro replaces the rewarded ad. Non-Pro taps go straight to the purchase sheet.
-	async function handleAppHint() {
-		if (purchases.isPro || (await purchases.buyPro())) gameStore.unlockHint()
+	// iOS app: hints come from Pro or the hint bank instead of a rewarded ad
+	const showHintShop = ref(false)
+
+	const appHintLabel = computed(() => {
+		if (purchases.isPro) return 'Reveal a hint'
+		if (purchases.hintBank > 0) return `Use a hint · ${purchases.hintBank} left`
+		return 'Get hints'
+	})
+
+	function handleAppHint() {
+		if (purchases.spendHint()) gameStore.unlockHint()
+		else showHintShop.value = true
+	}
+
+	// A purchase from the shop reveals a hint straight away; the rest stay banked
+	function revealAfterPurchase() {
+		if (gameStore.canPurchaseHint && purchases.spendHint()) gameStore.unlockHint()
+		showHintShop.value = false
+	}
+
+	async function handleBuyHints(pack: (typeof purchases.hintPacks)[number]) {
+		if (await purchases.buyHints(pack)) revealAfterPurchase()
+	}
+
+	async function handleBuyPro() {
+		if (await purchases.buyPro()) revealAfterPurchase()
 	}
 
 	function handleWatchAd() {
@@ -969,6 +1049,68 @@
 		&:hover:not(:disabled) {
 			border-color: var(--primary-color);
 			color: var(--primary-color);
+		}
+	}
+
+	// iOS app hint shop
+	.hint-shop {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		text-align: left;
+		width: 100%;
+
+		.hint-shop-intro,
+		.hint-shop-empty {
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			line-height: 1.4;
+			margin: 0 0 0.25rem;
+		}
+
+		.hint-pack {
+			align-items: center;
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 14px;
+			color: var(--text-primary);
+			cursor: pointer;
+			display: flex;
+			font-family: var(--font-body);
+			justify-content: space-between;
+			min-height: 3.4rem;
+			padding: 0 1rem;
+
+			&:disabled {
+				opacity: 0.6;
+			}
+
+			&.pro {
+				border-color: color-mix(in srgb, var(--tertiary-color) 50%, transparent);
+			}
+
+			.pack-name {
+				align-items: center;
+				display: flex;
+				font-size: 1rem;
+				font-weight: 800;
+				gap: 0.4rem;
+			}
+
+			.pack-price {
+				background: var(--primary-color);
+				border-radius: 999px;
+				color: var(--on-success, #fff);
+				font-size: 0.9rem;
+				font-weight: 800;
+				padding: 0.35rem 0.8rem;
+			}
+		}
+
+		.hint-shop-message {
+			font-size: 0.9rem;
+			font-weight: 700;
+			margin: 0.25rem 0 0;
 		}
 	}
 

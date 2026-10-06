@@ -2,10 +2,22 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import type { CustomerInfo, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
-import { PRO_ENTITLEMENT, PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
+import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
 
 // Cached so Pro perks still work offline / before RevenueCat answers
 const PRO_CACHE_KEY = 'footballdle-pro'
+// Bought-but-unused hints. Consumables can't be restored by Apple, so the bank
+// lives on the device.
+const HINT_BANK_KEY = 'footballdle-hint-bank'
+
+function readHintBank(): number {
+	if (!import.meta.client) return 0
+	try {
+		return Math.max(0, Number.parseInt(localStorage.getItem(HINT_BANK_KEY) || '0', 10) || 0)
+	} catch {
+		return 0
+	}
+}
 
 // In-app purchases for the iOS app via RevenueCat. Inert on the website.
 export const usePurchasesStore = defineStore('purchases', () => {
@@ -17,6 +29,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const products = ref<PurchasesStoreProduct[]>([])
 	const busy = ref(false)
 	const message = ref('')
+	const hintBank = ref(readHintBank())
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
@@ -29,9 +42,39 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		),
 	)
 
+	const hintPacks = computed(() =>
+		HINT_PACKS.map(pack => ({ ...pack, product: products.value.find(p => p.identifier === pack.id) })).filter(
+			(pack): pack is (typeof HINT_PACKS)[number] & { product: PurchasesStoreProduct } => !!pack.product,
+		),
+	)
+
 	// ============================================================================
 	// FUNCTIONS
 	// ============================================================================
+	function saveHintBank() {
+		try {
+			localStorage.setItem(HINT_BANK_KEY, String(hintBank.value))
+		} catch {}
+	}
+
+	async function buyHints(pack: { product: PurchasesStoreProduct; count: number }) {
+		const ok = await purchase(pack.product)
+		if (ok) {
+			hintBank.value += pack.count
+			saveHintBank()
+			message.value = pack.count === 1 ? 'Hint added.' : `${pack.count} hints added.`
+		}
+		return ok
+	}
+
+	/** Spends a hint: free with Pro, otherwise one from the bank. False if none left. */
+	function spendHint(): boolean {
+		if (isPro.value) return true
+		if (hintBank.value <= 0) return false
+		hintBank.value--
+		saveHintBank()
+		return true
+	}
 	async function getSdk() {
 		return (await import('@revenuecat/purchases-capacitor')).Purchases
 	}
@@ -90,7 +133,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			return false
 		}
 		const ok = await purchase(proProduct.value)
-		if (ok) message.value = 'Pro unlocked. Cheers!'
+		if (ok) message.value = 'Pro unlocked. Unlimited hints, cheers!'
 		return ok
 	}
 
@@ -122,14 +165,18 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		isPro,
 		busy,
 		message,
+		hintBank,
 
 		// Computed
 		proProduct,
 		tipProducts,
+		hintPacks,
 
 		// Functions
 		init,
 		buyPro,
+		buyHints,
+		spendHint,
 		tip,
 		restore,
 	}

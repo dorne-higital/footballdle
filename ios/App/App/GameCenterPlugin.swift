@@ -13,25 +13,53 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "showLeaderboards", returnType: CAPPluginReturnPromise)
     ]
 
-    @objc func authenticate(_ call: CAPPluginCall) {
-        let player = GKLocalPlayer.local
-        if player.isAuthenticated {
-            call.resolve(["authenticated": true])
-            return
-        }
+    // GameKit allows one authenticate handler per launch. Calls made while sign-in is
+    // in progress wait here, and a sign-in sheet that couldn't be shown yet (the app
+    // was still launching) is kept so the next authenticate call can present it.
+    private var waitingCalls: [CAPPluginCall] = []
+    private var handlerInstalled = false
+    private var pendingSignIn: UIViewController?
+    private var lastError: String?
 
-        // GameKit may call this handler more than once (e.g. after the sign-in
-        // sheet closes), so only resolve the JS promise the first time.
-        var resolved = false
-        player.authenticateHandler = { [weak self] viewController, _ in
-            DispatchQueue.main.async {
-                if let viewController = viewController {
-                    self?.bridge?.viewController?.present(viewController, animated: true)
-                    return
+    @objc func authenticate(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            let player = GKLocalPlayer.local
+            if player.isAuthenticated {
+                call.resolve(["authenticated": true])
+                return
+            }
+
+            if let signIn = self.pendingSignIn {
+                self.waitingCalls.append(call)
+                self.present(signIn)
+                return
+            }
+
+            if self.handlerInstalled {
+                // Sign-in already finished (cancelled or failed) or is still running
+                if self.lastError != nil {
+                    call.resolve(["authenticated": false, "error": self.lastError ?? ""])
+                } else {
+                    self.waitingCalls.append(call)
                 }
-                if !resolved {
-                    resolved = true
-                    call.resolve(["authenticated": player.isAuthenticated])
+                return
+            }
+
+            self.handlerInstalled = true
+            self.waitingCalls.append(call)
+            player.authenticateHandler = { [weak self] viewController, error in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    if let viewController = viewController {
+                        self.pendingSignIn = viewController
+                        self.present(viewController)
+                        return
+                    }
+                    self.pendingSignIn = nil
+                    self.lastError = player.isAuthenticated
+                        ? nil
+                        : (error?.localizedDescription ?? "Not signed in to Game Center")
+                    self.resolveWaiting()
                 }
             }
         }
@@ -58,6 +86,10 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func showLeaderboards(_ call: CAPPluginCall) {
         DispatchQueue.main.async {
+            guard GKLocalPlayer.local.isAuthenticated else {
+                call.reject("Not signed in to Game Center")
+                return
+            }
             let gameCenterVC: GKGameCenterViewController
             if let leaderboardId = call.getString("leaderboardId") {
                 gameCenterVC = GKGameCenterViewController(leaderboardID: leaderboardId, playerScope: .global, timeScope: .allTime)
@@ -65,8 +97,34 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
                 gameCenterVC = GKGameCenterViewController(state: .leaderboards)
             }
             gameCenterVC.gameCenterDelegate = self
-            self.bridge?.viewController?.present(gameCenterVC, animated: true)
+            guard self.present(gameCenterVC) else {
+                call.reject("Couldn't open Game Center right now")
+                return
+            }
             call.resolve()
+        }
+    }
+
+    // Presents on the app's root screen; false if it isn't on screen or is busy
+    @discardableResult
+    private func present(_ viewController: UIViewController) -> Bool {
+        guard let host = bridge?.viewController,
+              host.view.window != nil,
+              host.presentedViewController == nil else { return false }
+        host.present(viewController, animated: true)
+        return true
+    }
+
+    private func resolveWaiting() {
+        let authenticated = GKLocalPlayer.local.isAuthenticated
+        let calls = waitingCalls
+        waitingCalls = []
+        for call in calls {
+            if authenticated {
+                call.resolve(["authenticated": true])
+            } else {
+                call.resolve(["authenticated": false, "error": lastError ?? "Not signed in to Game Center"])
+            }
         }
     }
 }

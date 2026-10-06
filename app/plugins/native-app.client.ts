@@ -12,7 +12,7 @@ import { LEADERBOARD_IDS } from '../utils/appStore'
 const REVIEW_PROMPT_STREAKS = [3, 10]
 
 // Native-only setup for the iOS app; does nothing on the website.
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
 	if (!Capacitor.isNativePlatform()) return
 
 	// The app is always the dark Floodlights look; Style.Dark = light status bar text
@@ -42,22 +42,26 @@ export default defineNuxtPlugin(() => {
 		},
 	)
 
-	// Submit after sign-in (backfilling existing stats), then whenever they improve
+	// Sign in once the app is on screen (iOS can't show the sign-in sheet mid-launch).
+	// Scores go up whenever the player is signed in, including a later sign-in from the
+	// Ranks tab, and again whenever they improve; earlier stats are backfilled.
 	const gameCenter = useGameCenter()
-	gameCenter.authenticate().then((authenticated) => {
-		if (!authenticated) return
-
-		const totalWins = computed(
-			() => daily.stats.wins + scout.stats.wins + spotball.stats.wins + challenge.stats.wins,
-		)
-		const scores: [string, () => number][] = [
-			[LEADERBOARD_IDS.dailyStreak, () => daily.stats.maxStreak],
-			[LEADERBOARD_IDS.scoutStreak, () => scout.stats.maxStreak],
-			[LEADERBOARD_IDS.spotballStreak, () => spotball.stats.maxStreak],
-			[LEADERBOARD_IDS.totalWins, () => totalWins.value],
-		]
-		for (const [leaderboardId, score] of scores) {
-			watch(score, value => gameCenter.submitScore(leaderboardId, value), { immediate: true })
-		}
+	nuxtApp.hook('app:mounted', () => {
+		setTimeout(() => gameCenter.authenticate(), 800)
 	})
+
+	const totalWins = computed(
+		() => daily.stats.wins + scout.stats.wins + spotball.stats.wins + challenge.stats.wins,
+	)
+	const scores: [string, () => number][] = [
+		[LEADERBOARD_IDS.dailyStreak, () => daily.stats.maxStreak],
+		[LEADERBOARD_IDS.scoutStreak, () => scout.stats.maxStreak],
+		[LEADERBOARD_IDS.spotballStreak, () => spotball.stats.maxStreak],
+		[LEADERBOARD_IDS.totalWins, () => totalWins.value],
+	]
+	for (const [leaderboardId, score] of scores) {
+		watch([score, gameCenter.isAuthenticated], ([value, signedIn]) => {
+			if (signedIn) gameCenter.submitScore(leaderboardId, value)
+		})
+	}
 })
