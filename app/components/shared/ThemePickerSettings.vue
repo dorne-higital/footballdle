@@ -132,16 +132,17 @@
 			>
 				<label>Tip Jar</label>
 				<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
-				<div class="tip-row">
+				<div class="tip-list">
 					<button
 						v-for="product in purchases.tipProducts"
 						:key="product.identifier"
 						type="button"
-						class="store-button"
+						class="tip-option"
 						:disabled="purchases.busy"
 						@click="purchases.tip(product)"
 					>
-						{{ product.priceString }}
+						<span class="tip-name">{{ product.title }}</span>
+						<span class="tip-price">{{ product.priceString }}</span>
 					</button>
 				</div>
 			</div>
@@ -254,13 +255,43 @@
 				}
 			}
 
-			.tip-row {
+			// Tip names come from App Store Connect, so they can be renamed without a release
+			.tip-list {
 				display: flex;
-				flex-wrap: wrap;
+				flex-direction: column;
 				gap: 0.5rem;
+				width: 100%;
+			}
 
-				.store-button {
-					margin-top: 0;
+			.tip-option {
+				align-items: center;
+				background: var(--bg-primary);
+				border: 1px solid var(--border);
+				border-radius: 14px;
+				color: var(--text-primary);
+				cursor: pointer;
+				display: flex;
+				font-family: var(--font-body);
+				justify-content: space-between;
+				min-height: 3.2rem;
+				padding: 0 1rem;
+
+				&:disabled {
+					opacity: 0.6;
+				}
+
+				.tip-name {
+					font-size: 0.95rem;
+					font-weight: 800;
+				}
+
+				.tip-price {
+					background: var(--tertiary-color);
+					border-radius: 999px;
+					color: var(--on-present, #fff);
+					font-size: 0.85rem;
+					font-weight: 800;
+					padding: 0.3rem 0.75rem;
 				}
 			}
 

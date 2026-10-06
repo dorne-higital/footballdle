@@ -113,13 +113,13 @@ App Store Connect → your app → **Monetization → In-App Purchases** → **+
 
 | Type | Reference name | Product ID | Suggested price |
 |---|---|---|---|
-| Non-Consumable | Footballdle Pro (unlimited hints) | `footballdle_pro` | £4.99 |
-| Consumable | 1 Hint | `footballdle_hint_1` | £0.49 |
-| Consumable | 5 Hints | `footballdle_hints_5` | £1.49 |
-| Consumable | 15 Hints | `footballdle_hints_15` | £2.99 |
-| Consumable | Small Tip | `footballdle_tip_small` | £0.99 |
-| Consumable | Medium Tip | `footballdle_tip_medium` | £2.99 |
-| Consumable | Large Tip | `footballdle_tip_large` | £4.99 |
+| Non-Consumable | Footballdle Pro (unlimited hints) | `footballdle_pro` | £9.99 |
+| Consumable | 1 Hint | `footballdle_hint_1` | £0.99 |
+| Consumable | 5 Hints | `footballdle_hints_5` | £2.99 |
+| Consumable | 15 Hints | `footballdle_hints_15` | £7.99 |
+| Consumable | Orange Slices (tip) | `footballdle_tip_small` | £0.99 |
+| Consumable | Half-Time Pie (tip) | `footballdle_tip_medium` | £2.99 |
+| Consumable | Matchday Programme (tip) | `footballdle_tip_large` | £4.99 |
 
 For each one, add an English (UK) display name and description, plus a **review screenshot**
 (a screenshot of the Settings screen showing the buttons, taken from TestFlight).
