@@ -57,22 +57,35 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
+	// The app only reveals clues through hints, up to five; the website also unlocks the
+	// first three as you guess (club after guess 2, nationality after 3, position after 4)
+	const MAX_APP_HINTS = 5
+
 	const hints = computed(() => {
 		const player = getPlayerData(answer)
 		if (!player) return []
 
-		// The app only reveals clues through hints; the website also unlocks them as you guess
-		const effective = isApp ? purchasedHints.value + 1 : guesses.value.length + purchasedHints.value
-		const revealed: { label: string; value: string; icon: string }[] = []
-		if (effective >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
-		if (effective >= 3) revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
-		if (effective >= 4) revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
+		const surname = answer.toUpperCase()
+		const clues = [
+			{ value: player.club, icon: 'solar:shield-linear' },
+			{ value: player.nationality, icon: 'solar:earth-linear' },
+			{ value: player.position, icon: 'solar:football-linear' },
+			{ value: `Starts with ${surname.slice(0, 1)}`, icon: 'solar:text-square-linear' },
+			{ value: `Starts with ${surname.slice(0, 2)}`, icon: 'solar:text-square-linear' },
+		]
+		const unlocked = isApp
+			? purchasedHints.value
+			: Math.min(3, Math.max(0, guesses.value.length + purchasedHints.value - 1))
 
-		return revealed
+		// The second letter hint replaces the first rather than sitting beside it
+		const shown = clues.slice(0, unlocked)
+		if (unlocked >= 5) shown.splice(3, 1)
+		return shown
 	})
 
-	const canPurchaseHint = computed(
-		() => !gameOver.value && (isApp ? purchasedHints.value : guesses.value.length + purchasedHints.value) < (isApp ? 3 : 4),
+	const canPurchaseHint = computed(() =>
+		!gameOver.value &&
+		(isApp ? purchasedHints.value < MAX_APP_HINTS : guesses.value.length + purchasedHints.value < 4),
 	)
 
 	function unlockHint() {

@@ -33,6 +33,8 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const busy = ref(false)
 	const message = ref('')
 	const hintBank = ref(readHintBank())
+	// Why products didn't load, shown in the hint shop so failures aren't a mystery
+	const loadError = ref('')
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
@@ -107,26 +109,36 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		} catch {}
 	}
 
+	let configured = false
+
+	/** Sets up RevenueCat once, then (re)loads products; safe to call again to retry */
 	async function init() {
 		grantWelcomeHints()
-		if (isReady.value || !Capacitor.isNativePlatform()) return
+		if (!Capacitor.isNativePlatform()) return
 		const apiKey = useRuntimeConfig().public.revenuecatAppleKey
-		if (!apiKey) return
-
-		try {
-			isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
-		} catch {}
+		if (!apiKey) {
+			loadError.value = 'Purchases aren\'t set up in this build.'
+			return
+		}
 
 		try {
 			const Purchases = await getSdk()
-			await Purchases.configure({ apiKey })
-			await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
-			const { customerInfo } = await Purchases.getCustomerInfo()
-			applyCustomerInfo(customerInfo)
+			if (!configured) {
+				try {
+					isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
+				} catch {}
+				await Purchases.configure({ apiKey })
+				await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
+				configured = true
+				const { customerInfo } = await Purchases.getCustomerInfo()
+				applyCustomerInfo(customerInfo)
+			}
 			const result = await Purchases.getProducts({ productIdentifiers: Object.values(PRODUCT_IDS) })
 			products.value = result.products
-			isReady.value = true
-		} catch (error) {
+			isReady.value = result.products.length > 0
+			loadError.value = isReady.value ? '' : 'The App Store returned no products.'
+		} catch (error: any) {
+			loadError.value = error?.message ?? String(error)
 			console.warn('In-app purchases unavailable:', error)
 		}
 	}
@@ -189,6 +201,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		busy,
 		message,
 		hintBank,
+		loadError,
 
 		// Computed
 		proProduct,

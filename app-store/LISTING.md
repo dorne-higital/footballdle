@@ -41,7 +41,7 @@ Think you know your footballers? Prove it, every single day.
 Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their six-letter surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
 
 THREE MODES, ONE MATCHDAY
-• Daily: guess the hidden six-letter surname in six tries. Stuck? Use a hint to reveal the player's club, then nationality, then position.
+• Daily: guess the hidden six-letter surname in six tries. Stuck? Use a hint to reveal the player's club, nationality and position, then the first letters of their surname.
 • Scout Report: name any player from the top flight and get scouting clues on club, nation and position after every guess.
 • Spot the Baller: ten rapid-fire rounds against the clock. Pick the right name before time runs out.
 • Challenge mode: finish the Daily to unlock unlimited games against a 45-second clock.

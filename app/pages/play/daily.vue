@@ -247,8 +247,8 @@
 			<template #body>
 				<div class="hint-shop">
 					<p class="hint-shop-intro">
-						Each hint reveals the next clue: club, then nationality, then position. Hints you don't use
-						stay in the bank for another day.
+						Each hint reveals the next clue: club, nationality, position, then the first and second
+						letters of the surname. Up to five per game; hints you don't use stay in the bank.
 					</p>
 					<p
 						v-if="purchases.isPro || purchases.hintBank > 0"
@@ -265,6 +265,12 @@
 						class="hint-shop-empty"
 					>
 						Hints aren't available right now. Check your connection and try again.
+						<small
+							v-if="purchases.loadError"
+							class="hint-shop-reason"
+						>
+							{{ purchases.loadError }}
+						</small>
 					</p>
 					<button
 						v-for="pack in purchases.hintPacks"
@@ -658,6 +664,10 @@
 	// Shared so the hint pill in the top bar can open it too
 	const showHintShop = useState('hint-shop-open', () => false)
 	onBeforeUnmount(() => { showHintShop.value = false })
+	// Products may not have loaded at launch (offline, or the store was slow), so retry
+	watch(showHintShop, (open) => {
+		if (open && !purchases.hintPacks.length) purchases.init()
+	})
 
 	const appHintLabel = computed(() => {
 		if (purchases.isPro) return 'Reveal a hint'
@@ -1078,6 +1088,13 @@
 			font-size: 0.9rem;
 			line-height: 1.4;
 			margin: 0 0 0.25rem;
+		}
+
+		.hint-shop-reason {
+			display: block;
+			font-size: 0.75rem;
+			margin-top: 0.35rem;
+			opacity: 0.7;
 		}
 
 		.hint-shop-balance {
