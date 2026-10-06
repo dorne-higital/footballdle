@@ -83,18 +83,24 @@ Kick-off! Footballdle lands on iPhone with three daily modes, activity rings, Ga
 | Privacy Policy URL | https://footballdle.co.uk/privacy-policy |
 | Copyright | 2026 [YOUR NAME] |
 
-## Screenshots (6.9" iPhone, 1260 × 2736)
+## Screenshots
 
-Upload in this order. App Store Connect scales them down for smaller iPhones.
+Two sets, one per display slot in App Store Connect (version page → Previews and Screenshots).
+Upload the same six, in this order, into each slot:
 
-1. `screenshots/iphone-6.9/captioned/01-guess.png`
-2. `screenshots/iphone-6.9/captioned/02-matchday.png`
-3. `screenshots/iphone-6.9/captioned/03-streak.png`
-4. `screenshots/iphone-6.9/raw/05-scout.png`
-5. `screenshots/iphone-6.9/raw/06-spot.png`
-6. `screenshots/iphone-6.9/raw/04-stats.png`
+| Slot | Folder | Size |
+|---|---|---|
+| iPhone 6.9" Display | `screenshots/iphone-6.9/` | 1320 × 2868 |
+| iPhone 6.5" Display | `screenshots/iphone-6.5/` | 1284 × 2778 |
 
-The other raw shots in `screenshots/iphone-6.9/raw/` work as alternates.
+1. `captioned/01-guess.png`
+2. `captioned/02-matchday.png`
+3. `captioned/03-streak.png`
+4. `raw/05-scout.png`
+5. `raw/06-spot.png`
+6. `raw/04-stats.png`
+
+The other files in `raw/` work as alternates.
 
 ## Trademark note
 
