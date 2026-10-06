@@ -9,6 +9,9 @@ const PRO_CACHE_KEY = 'footballdle-pro'
 // Bought-but-unused hints. Consumables can't be restored by Apple, so the bank
 // lives on the device.
 const HINT_BANK_KEY = 'footballdle-hint-bank'
+// Everyone starts the app with a few free hints, given once per install
+const WELCOME_HINTS = 3
+const WELCOME_HINTS_KEY = 'footballdle-welcome-hints'
 
 function readHintBank(): number {
 	if (!import.meta.client) return 0
@@ -51,6 +54,18 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// ============================================================================
 	// FUNCTIONS
 	// ============================================================================
+	function grantWelcomeHints() {
+		if (!import.meta.client || !useRuntimeConfig().public.isApp) return
+		try {
+			if (localStorage.getItem(WELCOME_HINTS_KEY)) return
+			localStorage.setItem(WELCOME_HINTS_KEY, '1')
+		} catch {
+			return
+		}
+		hintBank.value += WELCOME_HINTS
+		saveHintBank()
+	}
+
 	function saveHintBank() {
 		try {
 			localStorage.setItem(HINT_BANK_KEY, String(hintBank.value))
@@ -93,6 +108,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	}
 
 	async function init() {
+		grantWelcomeHints()
 		if (isReady.value || !Capacitor.isNativePlatform()) return
 		const apiKey = useRuntimeConfig().public.revenuecatAppleKey
 		if (!apiKey) return

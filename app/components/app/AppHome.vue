@@ -5,16 +5,19 @@
 				<p class="date">{{ todayLabel }}</p>
 				<h1>Matchday</h1>
 			</div>
-			<span
-				class="streak-pill"
-				:aria-label="`${dailyStats.stats.currentStreak} day streak`"
-			>
-				<Icon
-					name="solar:fire-bold"
-					size="1.05rem"
-				/>
-				{{ dailyStats.stats.currentStreak }}
-			</span>
+			<div class="header-pills">
+				<HintPill />
+				<span
+					class="streak-pill"
+					:aria-label="`${dailyStats.stats.currentStreak} day streak`"
+				>
+					<Icon
+						name="solar:fire-bold"
+						size="1.05rem"
+					/>
+					{{ dailyStats.stats.currentStreak }}
+				</span>
+			</div>
 		</header>
 
 		<section
@@ -136,6 +139,7 @@
 <script setup lang="ts">
 	import { computed, onMounted, onUnmounted, ref } from 'vue'
 	import ActivityRings from './ActivityRings.vue'
+	import HintPill from './HintPill.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { getPuzzleNumber } from '../../composables/useFootballers'
@@ -269,7 +273,14 @@
 		}
 	}
 
+	.header-pills {
+		align-items: center;
+		display: flex;
+		gap: 0.5rem;
+	}
+
 	.streak-pill {
+		height: 2.5rem;
 		align-items: center;
 		background: color-mix(in srgb, var(--tertiary-color) 15%, transparent);
 		border-radius: 999px;
@@ -279,7 +290,7 @@
 		font-variant-numeric: tabular-nums;
 		font-weight: 800;
 		gap: 0.35rem;
-		padding: 0.5rem 0.8rem;
+		padding: 0 0.8rem;
 	}
 
 	.rings-card {

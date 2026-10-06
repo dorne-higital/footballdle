@@ -18,10 +18,19 @@ const lastError = ref('')
 export function useGameCenter() {
 	const isAvailable = Capacitor.getPlatform() === 'ios'
 
-	async function authenticate() {
+	// GameKit can sit on a sign-in it never shows, so a tap never waits forever
+	async function authenticate(timeoutMs = 0) {
 		if (!isAvailable) return false
 		try {
-			const result = await GameCenter.authenticate()
+			const signIn = GameCenter.authenticate()
+			const result = timeoutMs
+				? await Promise.race([
+						signIn,
+						new Promise<{ authenticated: boolean; error?: string }>(resolve =>
+							setTimeout(() => resolve({ authenticated: false, error: 'Game Center didn\'t respond' }), timeoutMs),
+						),
+					])
+				: await signIn
 			isAuthenticated.value = result.authenticated
 			lastError.value = result.error ?? ''
 		} catch (error: any) {
@@ -50,7 +59,7 @@ export function useGameCenter() {
 	// Opened from a tap, so failures are shown rather than swallowed
 	async function showLeaderboards(leaderboardId?: string) {
 		if (!isAvailable) return
-		if (!isAuthenticated.value && !(await authenticate())) {
+		if (!isAuthenticated.value && !(await authenticate(10000))) {
 			window.alert(
 				`Couldn't sign in to Game Center${lastError.value ? `: ${lastError.value}` : ''}.\n\n` +
 					'Check you are signed in under Settings → Game Center, then try again.',

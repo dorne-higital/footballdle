@@ -251,6 +251,16 @@
 						stay in the bank for another day.
 					</p>
 					<p
+						v-if="purchases.isPro || purchases.hintBank > 0"
+						class="hint-shop-intro hint-shop-balance"
+					>
+						<Icon
+							name="solar:lightbulb-bold"
+							size="1rem"
+						/>
+						{{ purchases.isPro ? 'You have unlimited hints with Pro.' : `You've got ${purchases.hintBank} ${purchases.hintBank === 1 ? 'hint' : 'hints'} banked.` }}
+					</p>
+					<p
 						v-if="!purchases.hintPacks.length && !purchases.proProduct"
 						class="hint-shop-empty"
 					>
@@ -497,7 +507,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
+	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
@@ -645,7 +655,9 @@
 	]
 
 	// iOS app: hints come from Pro or the hint bank instead of a rewarded ad
-	const showHintShop = ref(false)
+	// Shared so the hint pill in the top bar can open it too
+	const showHintShop = useState('hint-shop-open', () => false)
+	onBeforeUnmount(() => { showHintShop.value = false })
 
 	const appHintLabel = computed(() => {
 		if (purchases.isPro) return 'Reveal a hint'
@@ -1066,6 +1078,14 @@
 			font-size: 0.9rem;
 			line-height: 1.4;
 			margin: 0 0 0.25rem;
+		}
+
+		.hint-shop-balance {
+			align-items: center;
+			color: var(--pitchcard-accent-win);
+			display: flex;
+			font-weight: 700;
+			gap: 0.4rem;
 		}
 
 		.hint-pack {

@@ -134,12 +134,14 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
         }
     }
 
-    // Presents on the app's root screen; false if it isn't on screen or is busy
+    // Presents over whatever is on top; false if the app isn't on screen yet
     @discardableResult
     private func present(_ viewController: UIViewController) -> Bool {
-        guard let host = bridge?.viewController,
-              host.view.window != nil,
-              host.presentedViewController == nil else { return false }
+        guard var host = bridge?.viewController, host.view.window != nil else { return false }
+        while let top = host.presentedViewController {
+            if top === viewController { return true }
+            host = top
+        }
         host.present(viewController, animated: true)
         return true
     }

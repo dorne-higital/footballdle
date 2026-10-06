@@ -13,6 +13,7 @@
 		</NuxtLink>
 		<p class="bar-title">{{ title }}</p>
 		<div class="bar-actions">
+			<HintPill v-if="isDaily" />
 			<button
 				type="button"
 				class="bar-btn"
@@ -41,6 +42,7 @@
 
 <script setup lang="ts">
 	import { computed } from 'vue'
+	import HintPill from './HintPill.vue'
 	import { useModalsStore } from '../../stores/modals'
 	import { useHaptics } from '../../composables/useHaptics'
 
@@ -61,6 +63,8 @@
 		const path = route.path.replace(/\/+$/, '') || '/'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
+
+	const isDaily = computed(() => route.path.startsWith('/play/daily'))
 
 	function open(action: () => unknown) {
 		haptics.select()
