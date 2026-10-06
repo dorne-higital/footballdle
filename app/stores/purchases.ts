@@ -33,6 +33,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const busy = ref(false)
 	const message = ref('')
 	const hintBank = ref(readHintBank())
+	// Read once while the store is created: later calls (e.g. a retry from a watcher)
+	// run outside the Nuxt context, where useRuntimeConfig() throws
+	const { isApp, revenuecatAppleKey } = useRuntimeConfig().public
 	// Why products didn't load, shown in the hint shop so failures aren't a mystery
 	const loadError = ref('')
 
@@ -57,7 +60,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// FUNCTIONS
 	// ============================================================================
 	function grantWelcomeHints() {
-		if (!import.meta.client || !useRuntimeConfig().public.isApp) return
+		if (!import.meta.client || !isApp) return
 		try {
 			if (localStorage.getItem(WELCOME_HINTS_KEY)) return
 			localStorage.setItem(WELCOME_HINTS_KEY, '1')
@@ -110,16 +113,25 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	}
 
 	let configured = false
+	let loading = false
 
 	/** Sets up RevenueCat once, then (re)loads products; safe to call again to retry */
 	async function init() {
 		grantWelcomeHints()
 		if (!Capacitor.isNativePlatform()) return
-		const apiKey = useRuntimeConfig().public.revenuecatAppleKey
+		const apiKey = revenuecatAppleKey
 		if (!apiKey) {
 			loadError.value = 'Purchases aren\'t set up in this build.'
 			return
 		}
+
+		if (loading) return
+		loading = true
+		let stage = 'starting purchases'
+		loadError.value = 'Connecting to the App Store…'
+		const timeout = setTimeout(() => {
+			if (loading) loadError.value = `No response while ${stage}.`
+		}, 15000)
 
 		try {
 			const Purchases = await getSdk()
@@ -127,19 +139,32 @@ export const usePurchasesStore = defineStore('purchases', () => {
 				try {
 					isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
 				} catch {}
+				stage = 'configuring RevenueCat'
 				await Purchases.configure({ apiKey })
 				await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
 				configured = true
-				const { customerInfo } = await Purchases.getCustomerInfo()
-				applyCustomerInfo(customerInfo)
+				// Pro status arrives on its own; products don't wait for it
+				Purchases.getCustomerInfo()
+					.then(({ customerInfo }) => applyCustomerInfo(customerInfo))
+					.catch(() => {})
 			}
+			stage = 'loading products'
 			const result = await Purchases.getProducts({ productIdentifiers: Object.values(PRODUCT_IDS) })
 			products.value = result.products
 			isReady.value = result.products.length > 0
-			loadError.value = isReady.value ? '' : 'The App Store returned no products.'
+			const known = new Set<string>(Object.values(PRODUCT_IDS))
+			const matched = result.products.filter(p => known.has(p.identifier)).length
+			loadError.value = !result.products.length
+				? 'The App Store returned no products.'
+				: matched
+					? ''
+					: `Unexpected products: ${result.products.map(p => p.identifier).join(', ')}`
 		} catch (error: any) {
 			loadError.value = error?.message ?? String(error)
 			console.warn('In-app purchases unavailable:', error)
+		} finally {
+			loading = false
+			clearTimeout(timeout)
 		}
 	}
 

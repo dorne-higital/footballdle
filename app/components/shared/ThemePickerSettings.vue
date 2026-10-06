@@ -115,6 +115,12 @@
 						Get <span class="accent">Pro</span>
 						<template v-if="purchases.proProduct">· {{ purchases.proProduct.priceString }}</template>
 					</button>
+					<p
+						v-if="!purchases.proProduct && purchases.loadError"
+						class="store-status"
+					>
+						{{ purchases.loadError }}
+					</p>
 				</template>
 				<button
 					type="button"
@@ -503,5 +509,10 @@
 				}
 			}
 		}
+	}
+	.store-status {
+		font-size: 0.75rem;
+		margin-top: 0.4rem;
+		opacity: 0.7;
 	}
 </style>
