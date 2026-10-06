@@ -5,6 +5,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core'
 interface GameCenterPlugin {
 	authenticate(): Promise<{ authenticated: boolean; error?: string }>
 	submitScore(options: { leaderboardId: string; score: number }): Promise<void>
+	reportAchievements(options: { achievements: { id: string; percent: number }[] }): Promise<void>
 	showLeaderboards(options?: { leaderboardId?: string }): Promise<void>
 }
 
@@ -36,6 +37,16 @@ export function useGameCenter() {
 		GameCenter.submitScore({ leaderboardId, score }).catch(() => {})
 	}
 
+	async function reportAchievements(achievements: { id: string; percent: number }[]) {
+		if (!isAuthenticated.value || !achievements.length) return false
+		try {
+			await GameCenter.reportAchievements({ achievements })
+			return true
+		} catch {
+			return false
+		}
+	}
+
 	// Opened from a tap, so failures are shown rather than swallowed
 	async function showLeaderboards(leaderboardId?: string) {
 		if (!isAvailable) return
@@ -53,5 +64,5 @@ export function useGameCenter() {
 		}
 	}
 
-	return { isAvailable, isAuthenticated, lastError, authenticate, submitScore, showLeaderboards }
+	return { isAvailable, isAuthenticated, lastError, authenticate, submitScore, reportAchievements, showLeaderboards }
 }

@@ -109,17 +109,17 @@ IAP products won't load in the app until the agreement is **Active**.
 
 ### 9. In-app purchases (App Store Connect)
 
-App Store Connect → your app → **Monetization → In-App Purchases** → **+**. IDs must match `app/utils/appStore.ts` exactly.
+App Store Connect → your app → **Monetization → In-App Purchases** → **+**. IDs below are the ones created in App Store Connect and must match `app/utils/appStore.ts`.
 
 | Type | Reference name | Product ID | Suggested price |
 |---|---|---|---|
-| Non-Consumable | Footballdle Pro (unlimited hints) | `footballdle_pro` | £9.99 |
-| Consumable | 1 Hint | `footballdle_hint_1` | £0.99 |
-| Consumable | 5 Hints | `footballdle_hints_5` | £2.99 |
-| Consumable | 15 Hints | `footballdle_hints_15` | £7.99 |
-| Consumable | Orange Slices (tip) | `footballdle_tip_small` | £0.99 |
-| Consumable | Half-Time Pie (tip) | `footballdle_tip_medium` | £2.99 |
-| Consumable | Matchday Programme (tip) | `footballdle_tip_large` | £4.99 |
+| Non-Consumable | Footballdle Pro (unlimited hints) | `pro` | £9.99 |
+| Consumable | 1 Hint | `fh1` | £0.99 |
+| Consumable | 5 Hints | `fh5` | £2.99 |
+| Consumable | 15 Hints | `fh15` | £7.99 |
+| Consumable | Orange Slices (tip) | `fts` | £0.99 |
+| Consumable | Half-Time Pie (tip) | `ftm` | £2.99 |
+| Consumable | Matchday Programme (tip) | `ftl` | £3.99 |
 
 For each one, add an English (UK) display name and description, plus a **review screenshot**
 (a screenshot of the Settings screen showing the buttons, taken from TestFlight).
@@ -133,7 +133,7 @@ https://www.revenuecat.com. It's free until the app makes real money.
 2. Give it an **In-App Purchase key**: App Store Connect → Users and Access → Integrations →
    **In-App Purchase** → generate, then upload the `.p8` to RevenueCat with its Key ID and Issuer ID.
 3. **Product catalog → Products** → import or add all seven product IDs above.
-4. **Entitlements** → create one called exactly **`pro`** → attach `footballdle_pro` only (not the tips).
+4. **Entitlements** → create one called exactly **`pro`** → attach the `pro` product only (not the hints or tips).
 5. **API keys** → copy the **Apple public key** (starts `appl_`) → put it in `codemagic.yaml` as `REVENUECAT_APPLE_KEY`.
 
 TestFlight builds use Apple's sandbox automatically, so test purchases are free.
@@ -145,10 +145,10 @@ version too). Create four **Classic** leaderboards with score format **Integer**
 
 | Leaderboard ID | Display name |
 |---|---|
-| `footballdle.daily.best_streak` | Longest Daily Streak |
-| `footballdle.scout.best_streak` | Longest Scout Report Streak |
-| `footballdle.spotball.best_streak` | Longest Spot the Baller Streak |
-| `footballdle.total_wins` | Total Wins |
+| `1` | Longest Daily Streak |
+| `2` | Longest Scout Report Streak |
+| `3` | Longest Spot the Baller Streak |
+| `4` | Total Wins |
 
 The app signs players in to Game Center on launch and submits their best streaks and total wins
 automatically, including history from before Game Center existed. The trophy icon in the header opens the boards.

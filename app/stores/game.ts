@@ -76,6 +76,8 @@ export const useGameStore = defineStore('game', () => {
 	function unlockHint() {
 		purchasedHints.value++
 		saveState()
+		// Remembered for the "Tactical Review" Game Center achievement
+		localStorage.setItem('footballdle-hint-used', '1')
 	}
 
 	// Derived from the store's own reactive `gameOver` ref rather than reading

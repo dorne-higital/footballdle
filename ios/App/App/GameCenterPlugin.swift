@@ -10,6 +10,7 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "authenticate", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "submitScore", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "reportAchievements", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "showLeaderboards", returnType: CAPPluginReturnPromise)
     ]
 
@@ -76,6 +77,34 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
         }
 
         GKLeaderboard.submitScore(score, context: 0, player: GKLocalPlayer.local, leaderboardIDs: [leaderboardId]) { error in
+            if let error = error {
+                call.reject(error.localizedDescription)
+            } else {
+                call.resolve()
+            }
+        }
+    }
+
+    // Progress is 0–100; Game Center keeps the highest value reported and shows its
+    // own banner when one reaches 100.
+    @objc func reportAchievements(_ call: CAPPluginCall) {
+        guard GKLocalPlayer.local.isAuthenticated else {
+            call.reject("Not signed in to Game Center")
+            return
+        }
+        let items = call.getArray("achievements", JSObject.self) ?? []
+        let achievements: [GKAchievement] = items.compactMap { item in
+            guard let id = item["id"] as? String else { return nil }
+            let achievement = GKAchievement(identifier: id)
+            achievement.percentComplete = (item["percent"] as? NSNumber)?.doubleValue ?? 0
+            achievement.showsCompletionBanner = true
+            return achievement
+        }
+        guard !achievements.isEmpty else {
+            call.resolve()
+            return
+        }
+        GKAchievement.report(achievements) { error in
             if let error = error {
                 call.reject(error.localizedDescription)
             } else {
