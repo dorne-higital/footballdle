@@ -163,6 +163,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		// State
 		isReady,
 		isPro,
+		products,
 		busy,
 		message,
 		hintBank,
