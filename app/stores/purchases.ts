@@ -67,6 +67,12 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		return ok
 	}
 
+	/** Free hints, e.g. streak rewards, go into the same bank as bought ones */
+	function grantHints(count: number) {
+		hintBank.value += count
+		saveHintBank()
+	}
+
 	/** Spends a hint: free with Pro, otherwise one from the bank. False if none left. */
 	function spendHint(): boolean {
 		if (isPro.value) return true
@@ -178,6 +184,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		buyPro,
 		buyHints,
 		spendHint,
+		grantHints,
 		tip,
 		restore,
 	}

@@ -49,7 +49,7 @@
 			>
 				<div
 					v-for="hint in gameStore.hints"
-					:key="hint.label"
+					:key="hint.icon"
 					class="hint-chip"
 				>
 					<Icon

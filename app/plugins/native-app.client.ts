@@ -16,6 +16,9 @@ const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
 // Daily streaks at which we ask for an App Store rating (iOS rate-limits the prompt itself)
 const REVIEW_PROMPT_STREAKS = [3, 10]
 
+const STREAK_HINT_EVERY = 5
+const STREAK_REWARD_KEY = 'footballdle-streak-reward'
+
 // Native-only setup for the iOS app; does nothing on the website.
 export default defineNuxtPlugin((nuxtApp) => {
 	if (!Capacitor.isNativePlatform()) return
@@ -23,7 +26,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 	// The app is always the dark Floodlights look; Style.Dark = light status bar text
 	StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
 
-	usePurchasesStore().init()
+	const purchases = usePurchasesStore()
+	purchases.init()
+
 
 	const daily = useModeStatsStore('daily')
 	const scout = useModeStatsStore('scout')
@@ -44,6 +49,20 @@ export default defineNuxtPlugin((nuxtApp) => {
 			if (streak > previous && REVIEW_PROMPT_STREAKS.includes(streak)) {
 				InAppReview.requestReview().catch(() => {})
 			}
+		},
+	)
+
+	// A free hint for every 5 days of Daily streak. Keyed by streak and date so a
+	// reload or stats refresh can't pay out the same milestone twice.
+	watch(
+		() => daily.stats.currentStreak,
+		(streak, previous) => {
+			if (streak <= previous || streak % STREAK_HINT_EVERY !== 0) return
+			const key = `${streak}-${daily.stats.lastPlayedDate}`
+			if (localStorage.getItem(STREAK_REWARD_KEY) === key) return
+			localStorage.setItem(STREAK_REWARD_KEY, key)
+			purchases.grantHints(1)
+			purchases.message = `${streak}-day streak! A free hint has been added.`
 		},
 	)
 

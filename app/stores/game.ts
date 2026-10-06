@@ -39,6 +39,7 @@ export const useGameStore = defineStore('game', () => {
 	const showIntro = ref(true)
 	const errorMessage = ref('')
 	const purchasedHints = ref(0)
+	const isApp = !!useRuntimeConfig().public.isApp
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
@@ -60,7 +61,8 @@ export const useGameStore = defineStore('game', () => {
 		const player = getPlayerData(answer)
 		if (!player) return []
 
-		const effective = guesses.value.length + purchasedHints.value
+		// The app only reveals clues through hints; the website also unlocks them as you guess
+		const effective = isApp ? purchasedHints.value + 1 : guesses.value.length + purchasedHints.value
 		const revealed: { label: string; value: string; icon: string }[] = []
 		if (effective >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
 		if (effective >= 3) revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
@@ -70,7 +72,7 @@ export const useGameStore = defineStore('game', () => {
 	})
 
 	const canPurchaseHint = computed(
-		() => !gameOver.value && guesses.value.length + purchasedHints.value < 4,
+		() => !gameOver.value && (isApp ? purchasedHints.value : guesses.value.length + purchasedHints.value) < (isApp ? 3 : 4),
 	)
 
 	function unlockHint() {
