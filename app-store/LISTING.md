@@ -22,7 +22,7 @@ Guess the footballer daily
 Can be changed any time without a new app review, so use it for season or transfer-window news.
 
 ```
-A new footballer to find every day. Guess the surname in six tries, close all three rings and keep your streak alive. Fresh puzzles drop at midnight.
+A new footballer to find every day. Start with 3 free hints, unlock 25 trophies and climb the Game Center leaderboards. Fresh puzzles drop at midnight.
 ```
 
 ## Keywords (100)
@@ -38,69 +38,71 @@ football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,scout,club,leag
 ```
 Think you know your footballers? Prove it, every single day.
 
-Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their six-letter surname in six tries, with green and amber tiles showing how close you are. Then move on to two more modes and close all three of your activity rings.
+Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their six-letter surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
 
 THREE MODES, ONE MATCHDAY
-• Daily: guess the hidden six-letter surname in six tries. Clues on club, nationality and position unlock as you go.
+• Daily: guess the hidden six-letter surname in six tries. Stuck? Use a hint to reveal the player's club, then nationality, then position.
 • Scout Report: name any player from the top flight and get scouting clues on club, nation and position after every guess.
 • Spot the Baller: ten rapid-fire rounds against the clock. Pick the right name before time runs out.
 • Challenge mode: finish the Daily to unlock unlimited games against a 45-second clock.
 
+25 TROPHIES TO UNLOCK
+• From Off the Mark to Club Legend, earn badges for wins, streaks, quickfire finishes and perfect rounds
+• One hidden trophy for the true worldie
+• Track your progress on the Trophies screen and in Game Center
+
 BUILD YOUR STREAK
 • Activity rings track your progress across all three modes each day
 • Separate streaks and full stats for every mode, including your guess distribution and recent form
+• Earn a free hint for every five days of your Daily streak
 • Share your result grid with your mates without spoiling the answer
 
 COMPETE WITH EVERYONE
 • Game Center leaderboards for your longest streaks and total wins
-• Your best streaks are submitted automatically
+• Your scores and trophies are submitted automatically
 
 MADE FOR IPHONE
 • A floodlit design built for one-handed play, with haptic feedback on every key
-• Works offline once installed
 • No account, no sign-up, no ads
 
-Squads are updated for the current season and refreshed during the transfer window.
+HINTS AND PRO
+Everyone starts with 3 free hints. Want more? Buy a single hint or a pack to use whenever you like, or unlock unlimited hints for good with Footballdle Pro, a one-off purchase with no subscription. The tip jar is there if you'd like to support the game. None of it is needed to play every mode, every day.
 
-Stuck on the Daily? Buy a single hint or a pack to use whenever you like, or unlock unlimited hints for good with Footballdle Pro. The tip jar is there if you'd like to support the game. None of it is needed to play every mode, every day.
+Squads are updated for the current season and refreshed during the transfer window.
 ```
 
 ## What's New in this version (4000)
 
+Apple doesn't allow this on a first release; use it from version 1.1.
+
 ```
-Kick-off! Footballdle lands on iPhone with three daily modes, activity rings, Game Center leaderboards and a fresh new look.
+Kick-off! Footballdle lands on iPhone with three daily modes, activity rings, 25 trophies to unlock, Game Center leaderboards and 3 free hints to get you started.
 ```
 
 ## Other fields
 
 | Field | Value |
 |---|---|
-| Primary category | Games → Word |
-| Secondary category | Games → Trivia |
-| Age rating | 4+ (answer "None" to every content question) |
+| Primary category | Games (subcategories Word and Trivia) |
+| Secondary category | Sports |
+| Age rating | 4+ (every content question None/No; no ads, chat, user content, web access or loot boxes) |
 | Support URL | https://footballdle.co.uk |
 | Marketing URL | https://footballdle.co.uk |
 | Privacy Policy URL | https://footballdle.co.uk/privacy-policy |
-| Copyright | 2026 [YOUR NAME] |
+| Copyright | 2026 Daniel Horne |
 
 ## Screenshots
 
-Two sets, one per display slot in App Store Connect (version page → Previews and Screenshots).
-Upload the same six, in this order, into each slot:
+Uploaded to App Store Connect, four per display slot, in this order:
+`captioned/01-guess.png`, `02-matchday.png`, `03-streak.png`, `04-trophies.png`.
 
 | Slot | Folder | Size |
 |---|---|---|
 | iPhone 6.9" Display | `screenshots/iphone-6.9/` | 1320 × 2868 |
 | iPhone 6.5" Display | `screenshots/iphone-6.5/` | 1284 × 2778 |
+| iPhone 6.1"/6.3" Display | `screenshots/iphone-6.3/` | 1206 × 2622 |
 
-1. `captioned/01-guess.png`
-2. `captioned/02-matchday.png`
-3. `captioned/03-streak.png`
-4. `raw/05-scout.png`
-5. `raw/06-spot.png`
-6. `raw/04-stats.png`
-
-The other files in `raw/` work as alternates.
+The files in each `raw/` folder work as alternates.
 
 ## Trademark note
 
