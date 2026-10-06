@@ -21,8 +21,7 @@ workflows:
         APP_STORE_APPLE_ID: 6819602707
         # RevenueCat → Project settings → API keys → Apple public key (starts appl_).
         # Public by design, so fine to commit. Left unset = purchases switched off.
-        # Codemagic rejects empty values, so keep this commented out until the key exists.
-        # REVENUECAT_APPLE_KEY: appl_xxxxxxxx
+        REVENUECAT_APPLE_KEY: appl_kIyXcoPRcOBMxGjRbTWUoaLyLnT
       node: 22
       # Pinned: the "latest" (26.6) machine pool was queueing for ages
       xcode: 26.5
