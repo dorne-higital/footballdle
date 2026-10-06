@@ -1,12 +1,15 @@
 <template>
 	<div class="hub-page">
-		<ModeSelectHub
-			:daily-streak="statsStore.stats.currentStreak"
-			:scout-streak="scoutStatsStore.stats.currentStreak"
-			:spotball-streak="spotballStatsStore.stats.currentStreak"
-		/>
+		<AppHome v-if="$config.public.isApp" />
+		<template v-else>
+			<ModeSelectHub
+				:daily-streak="statsStore.stats.currentStreak"
+				:scout-streak="scoutStatsStore.stats.currentStreak"
+				:spotball-streak="spotballStatsStore.stats.currentStreak"
+			/>
 
-		<HubStatsStrip :modes="modeSummaries" />
+			<HubStatsStrip :modes="modeSummaries" />
+		</template>
 
 		<!-- Settings Modal -->
 		<PitchCardModal
@@ -68,6 +71,7 @@
 	import { useHead } from 'nuxt/app'
 	import ModeSelectHub from '../components/hub/ModeSelectHub.vue'
 	import HubStatsStrip from '../components/hub/HubStatsStrip.vue'
+	import AppHome from '../components/app/AppHome.vue'
 	import ThemePickerSettings from '../components/shared/ThemePickerSettings.vue'
 
 	definePageMeta({ layout: 'play' })

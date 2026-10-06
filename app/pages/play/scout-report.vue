@@ -253,6 +253,9 @@
 		scoutStore.loadState()
 		scoutStore.startCountdown()
 		sessionStartTime.value = Date.now()
+
+		// iOS app: the Matchday home links straight into play, skipping the intro screen
+		if (useRoute().query.start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
 	})
 
 	onUnmounted(() => {

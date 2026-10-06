@@ -284,7 +284,7 @@
 		100% {
 			background: var(--color-success);
 			border-color: var(--color-success);
-			color: #fff;
+			color: var(--on-success, #fff);
 			transform: rotateX(0deg) scale(1);
 		}
 	}
@@ -307,7 +307,7 @@
 		100% {
 			background: var(--color-present);
 			border-color: var(--color-present);
-			color: #fff;
+			color: var(--on-present, #fff);
 			transform: rotateX(0deg) scale(1);
 		}
 	}

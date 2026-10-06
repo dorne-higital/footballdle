@@ -684,6 +684,13 @@
 		challengeStatsStore.loadStats()
 
 		sessionStartTime.value = Date.now()
+
+		// iOS app: the Matchday home links straight into play, skipping the intro screen
+		const start = useRoute().query.start
+		if (gameStore.showIntro && !challengeStore.isActive) {
+			if (start === 'play' && gameStore.canPlay) handleStartGame()
+			else if (start === 'challenge' && challengeStore.isUnlocked) handleStartChallenge()
+		}
 	})
 
 	onUnmounted(() => {

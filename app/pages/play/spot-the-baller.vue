@@ -265,6 +265,9 @@
 		spotStore.loadTierHistogram()
 		spotStore.startCountdown()
 		sessionStartTime.value = Date.now()
+
+		// iOS app: the Matchday home links straight into play, skipping the intro screen
+		if (useRoute().query.start === 'play' && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
 	})
 
 	onUnmounted(() => {

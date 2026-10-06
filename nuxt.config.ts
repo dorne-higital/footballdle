@@ -39,6 +39,9 @@ export default defineNuxtConfig({
 		families: [
 			{ name: 'Jost', provider: 'google', weights: [500, 600, 700, 800], display: 'swap', preload: true },
 			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
+			// iOS app "Floodlights" look (assets/_app-shell.scss)
+			{ name: 'Archivo Black', provider: 'google', weights: [400], display: 'swap' },
+			{ name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800], display: 'swap' },
 		],
 		defaults: {
 			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },
@@ -88,8 +91,14 @@ export default defineNuxtConfig({
 
 	// Optional: Add meta tags for Google Analytics
 	app: {
+		...(isApp ? { pageTransition: { name: 'app-slide', mode: 'out-in' } } : {}),
 		head: {
-			...(isApp ? { viewport: 'width=device-width, initial-scale=1, viewport-fit=cover' } : {}),
+			...(isApp
+				? {
+						viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
+						htmlAttrs: { class: 'app-shell' },
+					}
+				: {}),
 			link: [
 				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },

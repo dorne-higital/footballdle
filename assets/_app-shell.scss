@@ -1,0 +1,225 @@
+// iOS app "Floodlights" look. Only the app build puts .app-shell on <html>
+// (nuxt.config.ts), so nothing here reaches the website. Most of the restyle comes
+// from overriding the theme tokens; the rest turns website patterns into app ones.
+// `html.app-shell` outranks the `.dark` / `.greyscale` / `.theme-pastel` theme classes.
+
+html.app-shell {
+	--font-display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
+	--font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+
+	--text-primary: #eaf5ee;
+	--text-secondary: #8fa89a;
+	--bg-primary: #07130d;
+	--bg-secondary: #0f2219;
+	--bg-gradient: linear-gradient(160deg, #07130d 0%, #0f2219 100%);
+	--primary-color: #2fe08a;
+	--secondary-color: #eaf5ee;
+	--accent-color: #2fe08a;
+	--tertiary-color: #f2b84b;
+	--color-success: #2fe08a;
+	--color-present: #f2b84b;
+	--color-absent: #24352d;
+	--on-success: #04130b;
+	--on-present: #1b1203;
+	--color-gradient: linear-gradient(135deg, #2fe08a 0%, #1fa866 100%);
+	--subtle-gradient: linear-gradient(135deg, #163126 0%, #0f2219 100%);
+	--global-border-radius: 14px;
+	--border: rgb(255 255 255 / 8%);
+	--border-hover: #2fe08a;
+
+	--turf-base: #0b1a12;
+	--turf-stripe: #0f2219;
+	--touchline-color: rgb(255 255 255 / 6%);
+	--pitchcard-accent-win: #2fe08a;
+	--pitchcard-accent-loss: #ff8a80;
+	--pitchcard-accent-neutral: #eaf5ee;
+	--pitchcard-accent-info: #8fa89a;
+	--scoreboard-bg: #0b1a12;
+	--scoreboard-fg: #eaf5ee;
+	--scoreboard-accent: #2fe08a;
+
+	// App-only extras
+	--fl-raised: #163126;
+	--fl-blue: #6ea8ff;
+	--fl-red: #ff8a80;
+
+	background: var(--bg-primary);
+	color-scheme: dark;
+	// Archivo Black ships one weight; don't fake-bold it where CSS asks for 700
+	font-synthesis: none;
+	overscroll-behavior: none;
+
+	body {
+		background: var(--bg-primary);
+		overscroll-behavior: none;
+	}
+
+	// Stadium floodlight glow behind every screen
+	.play-layout,
+	.app-page-layout {
+		background:
+			radial-gradient(ellipse 120% 45% at 50% -8%, rgb(47 224 138 / 16%) 0%, rgb(47 224 138 / 0%) 70%),
+			var(--bg-primary);
+	}
+
+	// The pitch-stripe texture fights the glow; the app doesn't need it
+	.pitch-texture {
+		display: none;
+	}
+
+	.has-tab-bar .play-content {
+		padding-bottom: 0;
+	}
+
+	// The layout lifts page content into its own layer above the pitch texture, which
+	// would trap modals under the tab bar. No texture in the app, so drop the layer.
+	.play-layout .play-content > :not(.pitch-texture) {
+		z-index: auto;
+	}
+
+	// Dock the keyboard to the bottom like a real one
+	.game-screen > .keyboard {
+		margin-top: auto;
+		padding-bottom: 0.25rem;
+	}
+
+	.app-page-layout {
+		min-height: 100%;
+	}
+
+	.site-footer {
+		display: none;
+	}
+
+	// ---------------------------------------------------------------------------
+	// Board and keyboard
+	// ---------------------------------------------------------------------------
+	.game-board .guess-row .letter {
+		border-width: 1.5px;
+		font-weight: 400;
+
+		&.correct {
+			box-shadow: 0 0 20px rgb(47 224 138 / 45%);
+		}
+	}
+
+	.keyboard .row button {
+		background: #1e3329;
+		border-color: transparent;
+		border-radius: 10px;
+		font-weight: 800;
+
+		&:active {
+			background: #2a4437;
+			transform: scale(0.94);
+		}
+
+		&[data-key='ENTER'] {
+			background: var(--primary-color);
+			border-color: var(--primary-color);
+			color: var(--on-success);
+			font-family: var(--font-body);
+			font-weight: 800;
+		}
+
+		&[data-key='BACKSPACE'] {
+			color: var(--text-primary);
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Modals become iOS-style bottom sheets
+	// ---------------------------------------------------------------------------
+	.base-modal {
+		align-items: flex-end;
+		backdrop-filter: blur(4px);
+		background: rgb(0 0 0 / 55%);
+		animation: app-fade-in 0.2s ease;
+	}
+
+	.base-modal .modal.modal:not(.fullscreen) {
+		animation: app-sheet-up 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+		border: 0;
+		border-radius: 28px 28px 0 0;
+		box-shadow: 0 -12px 40px -12px rgb(0 0 0 / 60%);
+		max-height: 88dvh;
+		max-width: 100%;
+		padding: 1.25rem 0.75rem calc(env(safe-area-inset-bottom) + 0.75rem);
+		width: 100%;
+
+		// Grabber handle
+		&::before {
+			background: rgb(255 255 255 / 22%);
+			border-radius: 999px;
+			content: '';
+			height: 5px;
+			left: 50%;
+			position: absolute;
+			top: 0.5rem;
+			transform: translateX(-50%);
+			width: 38px;
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Buttons feel pressable
+	// ---------------------------------------------------------------------------
+	.button,
+	button {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.button.primary {
+		color: var(--on-success);
+	}
+}
+
+// Page change: a short iOS-style slide
+.app-slide-enter-active,
+.app-slide-leave-active {
+	transition:
+		opacity 0.18s ease,
+		transform 0.18s ease;
+}
+
+.app-slide-enter-from {
+	opacity: 0;
+	transform: translateX(18px);
+}
+
+.app-slide-leave-to {
+	opacity: 0;
+	transform: translateX(-18px);
+}
+
+@keyframes app-sheet-up {
+	from {
+		transform: translateY(100%);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+
+@keyframes app-fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.app-slide-enter-active,
+	.app-slide-leave-active {
+		transition: none;
+	}
+
+	html.app-shell .base-modal,
+	html.app-shell .base-modal .modal.modal {
+		animation: none;
+	}
+}

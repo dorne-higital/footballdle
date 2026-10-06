@@ -1,6 +1,9 @@
 <template>
 	<div class="settings-section">
-		<div class="setting-group">
+		<div
+			v-if="!$config.public.isApp"
+			class="setting-group"
+		>
 			<label>Choose Theme</label>
 			<p>Select your preferred theme</p>
 
@@ -163,6 +166,24 @@
 			>
 				{{ purchases.message }}
 			</p>
+
+			<div class="setting-group support-group">
+				<label>Help</label>
+				<div class="link-list">
+					<NuxtLink
+						to="/how-to-play"
+						@click="modalsStore.closeSettings()"
+					>
+						How to play
+					</NuxtLink>
+					<NuxtLink
+						to="/privacy-policy"
+						@click="modalsStore.closeSettings()"
+					>
+						Privacy policy
+					</NuxtLink>
+				</div>
+			</div>
 		</template>
 	</div>
 </template>
@@ -171,10 +192,12 @@
 	import { useThemeStore } from '../../stores/theme'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
+	import { useModalsStore } from '../../stores/modals'
 
 	const themeStore = useThemeStore()
 	const purchases = usePurchasesStore()
 	const gameCenter = useGameCenter()
+	const modalsStore = useModalsStore()
 
 	defineEmits(['buy-coffee'])
 </script>
@@ -187,6 +210,12 @@
 			border-top: 1px solid var(--border);
 			padding-top: 1.5rem;
 			text-align: left;
+
+			// In the app the theme picker is hidden, so this can be the first group
+			&:first-child {
+				border-top: 0;
+				padding-top: 0.5rem;
+			}
 
 			.coffee-button,
 			.store-button {
@@ -239,6 +268,18 @@
 				margin-top: 0.75rem;
 				padding: 0;
 				text-decoration: underline;
+			}
+		}
+
+		.link-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+
+			a {
+				color: var(--text-primary);
+				font-weight: 600;
+				text-decoration: none;
 			}
 		}
 
