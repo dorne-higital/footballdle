@@ -8,12 +8,12 @@ const config: CapacitorConfig = {
 	webDir: '.output/public',
 	ios: {
 		contentInset: 'never',
-		backgroundColor: '#f8fafc',
+		backgroundColor: '#07130d',
 	},
 	plugins: {
 		SplashScreen: {
 			launchShowDuration: 0,
-			backgroundColor: '#f8fafc',
+			backgroundColor: '#07130d',
 		},
 	},
 }
