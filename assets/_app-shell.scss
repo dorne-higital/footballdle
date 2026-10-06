@@ -261,39 +261,9 @@ html.app-shell {
 		top: auto;
 	}
 
-	// Spot: countdown ring up top, clues as rows, big answers within thumb reach
+	// Spot: the round card fills the frame so answers sit at the bottom
 	.spot-round-card {
 		flex: 1;
 		min-height: 0;
-
-		.timer-track {
-			display: none;
-		}
-
-		.clue-chips {
-			flex-direction: column;
-			gap: 0.5rem;
-			margin-bottom: 1rem;
-
-			.chip {
-				border-radius: 14px;
-				font-size: 1rem;
-				gap: 0.6rem;
-				justify-content: center;
-				padding: 0.75rem 1rem;
-			}
-		}
-
-		.options-grid {
-			gap: 0.6rem;
-			grid-template-columns: 1fr;
-			margin-top: auto;
-		}
-
-		.option-btn {
-			border-radius: 16px;
-			font-size: 1.05rem;
-			min-height: 3.4rem;
-		}
 	}
 }

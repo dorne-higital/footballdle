@@ -53,6 +53,9 @@
 					:time-remaining="spotStore.timeRemaining"
 					:round-time="roundTime"
 					:picked-name="lastPickedName"
+					:round-number="spotStore.roundIndex + 1"
+					:total-rounds="spotStore.maxGuesses"
+					:score="spotStore.score"
 					@pick="handlePick"
 				/>
 			</PlaySurfaceFrame>
