@@ -1,7 +1,7 @@
 <template>
 	<div class="scout-board">
 		<div
-			v-if="results.length"
+			v-if="results.length || $config.public.isApp"
 			class="board-header"
 		>
 			<span>Player</span>
@@ -16,6 +16,20 @@
 				:key="i"
 				:result="result"
 			/>
+			<!-- iOS app: empty slots for the guesses still to come -->
+			<template v-if="$config.public.isApp && !gameOver">
+				<div
+					v-for="n in maxGuesses - results.length"
+					:key="`empty-${n}`"
+					class="empty-row"
+					aria-hidden="true"
+				>
+					<span
+						v-for="c in 4"
+						:key="c"
+					></span>
+				</div>
+			</template>
 		</div>
 
 		<p
@@ -76,6 +90,19 @@
 			margin-bottom: 0.75rem;
 			max-height: 42vh;
 			overflow-y: auto;
+		}
+
+		.empty-row {
+			display: grid;
+			gap: 0.4rem;
+			grid-template-columns: 1.1fr 1fr 1fr 1fr;
+			margin-bottom: 0.4rem;
+
+			span {
+				border: 1.5px dashed var(--border);
+				border-radius: calc(var(--global-border-radius) - 4px);
+				min-height: 2.6rem;
+			}
 		}
 
 		.error-toast {

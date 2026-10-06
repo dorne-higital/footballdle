@@ -90,7 +90,9 @@ Upload in this order. App Store Connect scales them down for smaller iPhones.
 1. `screenshots/iphone-6.9/captioned/01-guess.png`
 2. `screenshots/iphone-6.9/captioned/02-matchday.png`
 3. `screenshots/iphone-6.9/captioned/03-streak.png`
-4. `screenshots/iphone-6.9/raw/04-stats.png`
+4. `screenshots/iphone-6.9/raw/05-scout.png`
+5. `screenshots/iphone-6.9/raw/06-spot.png`
+6. `screenshots/iphone-6.9/raw/04-stats.png`
 
 The other raw shots in `screenshots/iphone-6.9/raw/` work as alternates.
 

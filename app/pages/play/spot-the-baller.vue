@@ -27,7 +27,23 @@
 				:streak="statsStore.stats.currentStreak"
 			/>
 
-			<p class="score-line">Score: <strong>{{ spotStore.score }}</strong> / {{ spotStore.maxGuesses }}</p>
+			<div
+				v-if="$config.public.isApp"
+				class="round-dots"
+				:aria-label="`Score ${spotStore.score} of ${spotStore.maxGuesses}`"
+			>
+				<span
+					v-for="(state, i) in roundDots"
+					:key="i"
+					:class="['dot', state]"
+				></span>
+			</div>
+			<p
+				v-else
+				class="score-line"
+			>
+				Score: <strong>{{ spotStore.score }}</strong> / {{ spotStore.maxGuesses }}
+			</p>
 
 			<PlaySurfaceFrame>
 				<SpotRoundCard
@@ -214,6 +230,14 @@
 	// REACTIVE STATE
 	// ============================================================================
 	const roundTime = SPOT_ROUND_TIME
+
+	const roundDots = computed(() =>
+		Array.from({ length: spotStore.maxGuesses }, (_, i) => {
+			const result = spotStore.roundResults[i]
+			if (result) return result.correct ? 'hit' : 'miss'
+			return i === spotStore.roundIndex ? 'current' : ''
+		}),
+	)
 	const lastPickedName = ref<string | null>(null)
 
 	const spotUspTiles = [
@@ -344,6 +368,35 @@
 			flex-direction: column;
 			height: 100%;
 			overflow: hidden;
+		}
+	}
+
+	// iOS app: one dot per round, filled in as the match goes on
+	.round-dots {
+		display: flex;
+		gap: 0.4rem;
+		justify-content: center;
+		margin: 0.25rem 0 0.75rem;
+
+		.dot {
+			background: color-mix(in srgb, var(--text-secondary) 25%, transparent);
+			border-radius: 999px;
+			height: 0.5rem;
+			transition: all 0.2s ease;
+			width: 0.5rem;
+
+			&.hit {
+				background: var(--color-success);
+			}
+
+			&.miss {
+				background: var(--pitchcard-accent-loss);
+			}
+
+			&.current {
+				background: var(--text-primary);
+				width: 1.4rem;
+			}
 		}
 	}
 

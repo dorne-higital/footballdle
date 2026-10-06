@@ -223,3 +223,88 @@ html.app-shell {
 		animation: none;
 	}
 }
+
+// -----------------------------------------------------------------------------
+// Scout Report and Spot the Baller fill the screen instead of stopping half way
+// -----------------------------------------------------------------------------
+html.app-shell {
+	.scout-page .play-surface-frame,
+	.spot-page .play-surface-frame {
+		flex: 1;
+		margin-bottom: 0.5rem;
+		min-height: 0;
+		overflow: hidden;
+		padding-bottom: 0.75rem;
+	}
+
+	// Scout: guess slots fill the space, search box sits at the bottom
+	.scout-board {
+		flex: 1;
+		min-height: 0;
+
+		.rows {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 0.4rem;
+			max-height: none;
+			min-height: 0;
+
+			// Six slots share the height evenly, capped so they don't balloon
+			.scout-row,
+			.empty-row {
+				flex: 1 1 0;
+				margin-bottom: 0;
+				max-height: 4.75rem;
+				min-height: 2.6rem;
+			}
+
+			.scout-row .cell {
+				font-size: 0.8rem;
+			}
+		}
+	}
+
+	.scout-autocomplete .suggestions {
+		bottom: 100%;
+		margin: 0 0 0.4rem;
+		max-height: 45vh;
+		top: auto;
+	}
+
+	// Spot: countdown ring up top, clues as rows, big answers within thumb reach
+	.spot-round-card {
+		flex: 1;
+		min-height: 0;
+
+		.timer-track {
+			display: none;
+		}
+
+		.clue-chips {
+			flex-direction: column;
+			gap: 0.5rem;
+			margin-bottom: 1rem;
+
+			.chip {
+				border-radius: 14px;
+				font-size: 1rem;
+				gap: 0.6rem;
+				justify-content: center;
+				padding: 0.75rem 1rem;
+			}
+		}
+
+		.options-grid {
+			gap: 0.6rem;
+			grid-template-columns: 1fr;
+			margin-top: auto;
+		}
+
+		.option-btn {
+			border-radius: 16px;
+			font-size: 1.05rem;
+			min-height: 3.4rem;
+		}
+	}
+}

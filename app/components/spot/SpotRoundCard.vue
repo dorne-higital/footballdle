@@ -8,6 +8,34 @@
 			/>
 		</div>
 
+		<div
+			v-if="$config.public.isApp"
+			:class="['app-timer', { urgent: timeRemaining <= 3 }]"
+			role="timer"
+			:aria-label="`${secondsLeft} seconds left`"
+		>
+			<svg
+				viewBox="0 0 120 120"
+				aria-hidden="true"
+			>
+				<circle
+					class="ring-track"
+					cx="60"
+					cy="60"
+					r="52"
+				/>
+				<circle
+					class="ring-arc"
+					cx="60"
+					cy="60"
+					r="52"
+					:stroke-dasharray="`${timerArc} ${RING_LENGTH}`"
+					transform="rotate(-90 60 60)"
+				/>
+			</svg>
+			<span class="seconds">{{ secondsLeft }}</span>
+		</div>
+
 		<p class="prompt">Who is this?</p>
 
 		<div class="clue-chips">
@@ -54,9 +82,10 @@
 </template>
 
 <script setup lang="ts">
+	import { computed } from 'vue'
 	import type { SpotRound } from '../../composables/useSpotFootballers'
 
-	withDefaults(
+	const props = withDefaults(
 		defineProps<{
 			round: SpotRound
 			revealState: 'idle' | 'correct' | 'wrong'
@@ -70,6 +99,11 @@
 	)
 
 	defineEmits<{ pick: [name: string] }>()
+
+	// iOS app countdown ring
+	const RING_LENGTH = 2 * Math.PI * 52
+	const timerArc = computed(() => RING_LENGTH * Math.max(0, props.timeRemaining / props.roundTime))
+	const secondsLeft = computed(() => Math.max(0, Math.ceil(props.timeRemaining)))
 </script>
 
 <style scoped lang="scss">
@@ -94,6 +128,57 @@
 
 				&.urgent {
 					background: var(--pitchcard-accent-loss);
+				}
+			}
+		}
+
+		.app-timer {
+			align-self: center;
+			display: grid;
+			height: 9rem;
+			margin: 0.5rem 0 1rem;
+			place-items: center;
+			position: relative;
+			width: 9rem;
+
+			svg {
+				grid-area: 1 / 1;
+				height: 100%;
+				width: 100%;
+			}
+
+			.ring-track {
+				fill: none;
+				stroke: color-mix(in srgb, var(--primary-color) 16%, transparent);
+				stroke-width: 9;
+			}
+
+			.ring-arc {
+				fill: none;
+				filter: drop-shadow(0 0 6px color-mix(in srgb, var(--primary-color) 60%, transparent));
+				stroke: var(--primary-color);
+				stroke-linecap: round;
+				stroke-width: 9;
+				transition:
+					stroke-dasharray 1s linear,
+					stroke 0.2s ease;
+			}
+
+			.seconds {
+				font-family: var(--font-display);
+				font-size: 3.25rem;
+				font-variant-numeric: tabular-nums;
+				grid-area: 1 / 1;
+				line-height: 1;
+			}
+
+			&.urgent {
+				.ring-arc {
+					stroke: var(--pitchcard-accent-loss);
+				}
+
+				.seconds {
+					color: var(--pitchcard-accent-loss);
 				}
 			}
 		}
@@ -167,7 +252,7 @@
 			&.correct {
 				background: var(--color-success);
 				border-color: var(--color-success);
-				color: #fff;
+				color: var(--on-success, #fff);
 			}
 
 			&.wrong {
