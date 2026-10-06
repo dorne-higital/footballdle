@@ -11,7 +11,8 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "authenticate", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "submitScore", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "reportAchievements", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "showLeaderboards", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "showLeaderboards", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "showAchievements", returnType: CAPPluginReturnPromise)
     ]
 
     // GameKit allows one authenticate handler per launch. Calls made while sign-in is
@@ -125,6 +126,22 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
             } else {
                 gameCenterVC = GKGameCenterViewController(state: .leaderboards)
             }
+            gameCenterVC.gameCenterDelegate = self
+            guard self.present(gameCenterVC) else {
+                call.reject("Couldn't open Game Center right now")
+                return
+            }
+            call.resolve()
+        }
+    }
+
+    @objc func showAchievements(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard GKLocalPlayer.local.isAuthenticated else {
+                call.reject("Not signed in to Game Center")
+                return
+            }
+            let gameCenterVC = GKGameCenterViewController(state: .achievements)
             gameCenterVC.gameCenterDelegate = self
             guard self.present(gameCenterVC) else {
                 call.reject("Couldn't open Game Center right now")

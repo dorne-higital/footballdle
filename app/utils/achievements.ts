@@ -1,4 +1,5 @@
 import type { ModeStats } from '../stores/modeStats'
+import { getUKDateString } from './dateStreak'
 
 // Game Center achievements. Each `id` must exist with the same Achievement ID in
 // App Store Connect, along with the title, descriptions, points and badge
@@ -69,3 +70,28 @@ export const ACHIEVEMENTS: Achievement[] = [
 	{ id: 'fd_all_wins_250', title: 'Hall of Famer', goal: 'Win 250 games across every mode.', earned: 'You won 250 games across every mode.', points: 75, progress: c => towards(allModes(c).reduce((n, s) => n + s.wins, 0), 250) },
 	{ id: 'fd_hint_first', title: 'Tactical Review', goal: 'Use a hint in the Daily.', earned: 'You used a hint in the Daily.', points: 5, progress: c => (c.hintUsed ? 100 : 0) },
 ]
+
+// Sections for the in-app Trophies screen, matched on the ID prefix
+export const ACHIEVEMENT_GROUPS = [
+	{ title: 'Daily', prefix: 'fd_daily_' },
+	{ title: 'Scout Report', prefix: 'fd_scout_' },
+	{ title: 'Spot the Baller', prefix: 'fd_spot_' },
+	{ title: 'Challenge', prefix: 'fd_challenge_' },
+	{ title: 'Across every mode', prefix: 'fd_all_', extra: ['fd_hint_first'] },
+].map(group => ({
+	title: group.title,
+	achievements: ACHIEVEMENTS.filter(a => a.id.startsWith(group.prefix) || group.extra?.includes(a.id)),
+}))
+
+export const TOTAL_ACHIEVEMENT_POINTS = ACHIEVEMENTS.reduce((sum, a) => sum + a.points, 0)
+
+/** Context from the mode stats plus the extras the stats stores don't track */
+export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' | 'scout' | 'spot' | 'challenge'>): AchievementContext {
+	let spotPerfectGames = 0
+	let hintUsed = false
+	try {
+		spotPerfectGames = JSON.parse(localStorage.getItem('footballdle-spot-tiers') || 'null')?.['6'] ?? 0
+		hintUsed = localStorage.getItem('footballdle-hint-used') === '1'
+	} catch {}
+	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed }
+}

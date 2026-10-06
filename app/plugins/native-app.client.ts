@@ -7,8 +7,7 @@ import { usePurchasesStore } from '../stores/purchases'
 import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
 import { LEADERBOARD_IDS } from '../utils/appStore'
-import { ACHIEVEMENTS } from '../utils/achievements'
-import { getUKDateString } from '../utils/dateStreak'
+import { ACHIEVEMENTS, buildAchievementContext } from '../utils/achievements'
 
 // Progress already sent to Game Center, so only changes are reported
 const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
@@ -100,15 +99,12 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	async function reportAchievementProgress() {
 		if (!gameCenter.isAuthenticated.value) return
-		const ctx = {
+		const ctx = buildAchievementContext({
 			daily: daily.stats,
 			scout: scout.stats,
 			spot: spotball.stats,
 			challenge: challenge.stats,
-			today: getUKDateString(),
-			spotPerfectGames: readJson('footballdle-spot-tiers')?.['6'] ?? 0,
-			hintUsed: localStorage.getItem('footballdle-hint-used') === '1',
-		}
+		})
 		const sent: Record<string, number> = readJson(ACHIEVEMENTS_SENT_KEY) ?? {}
 		const changed = ACHIEVEMENTS.map(a => ({ id: a.id, percent: Math.round(a.progress(ctx)) })).filter(
 			a => a.percent > (sent[a.id] ?? 0),

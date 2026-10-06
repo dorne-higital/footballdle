@@ -7,6 +7,7 @@ interface GameCenterPlugin {
 	submitScore(options: { leaderboardId: string; score: number }): Promise<void>
 	reportAchievements(options: { achievements: { id: string; percent: number }[] }): Promise<void>
 	showLeaderboards(options?: { leaderboardId?: string }): Promise<void>
+	showAchievements(): Promise<void>
 }
 
 const GameCenter = registerPlugin<GameCenterPlugin>('GameCenter')
@@ -57,7 +58,7 @@ export function useGameCenter() {
 	}
 
 	// Opened from a tap, so failures are shown rather than swallowed
-	async function showLeaderboards(leaderboardId?: string) {
+	async function openDashboard(what: 'leaderboards' | 'achievements', leaderboardId?: string) {
 		if (!isAvailable) return
 		if (!isAuthenticated.value && !(await authenticate(10000))) {
 			window.alert(
@@ -67,11 +68,15 @@ export function useGameCenter() {
 			return
 		}
 		try {
-			await GameCenter.showLeaderboards(leaderboardId ? { leaderboardId } : {})
+			if (what === 'achievements') await GameCenter.showAchievements()
+			else await GameCenter.showLeaderboards(leaderboardId ? { leaderboardId } : {})
 		} catch (error: any) {
-			window.alert(`Couldn't open the leaderboards: ${error?.message ?? error}`)
+			window.alert(`Couldn't open Game Center: ${error?.message ?? error}`)
 		}
 	}
 
-	return { isAvailable, isAuthenticated, lastError, authenticate, submitScore, reportAchievements, showLeaderboards }
+	const showLeaderboards = (leaderboardId?: string) => openDashboard('leaderboards', leaderboardId)
+	const showAchievements = () => openDashboard('achievements')
+
+	return { isAvailable, isAuthenticated, lastError, authenticate, submitScore, reportAchievements, showLeaderboards, showAchievements }
 }
