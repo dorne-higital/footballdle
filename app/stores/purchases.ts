@@ -101,8 +101,12 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		saveHintBank()
 		return true
 	}
+	// Wrapped in an object on purpose: a Capacitor plugin is a Proxy that answers to any
+	// method name, including `then`, so returning it straight from an async function
+	// makes the promise call Purchases.then() on the native side and never settle
 	async function getSdk() {
-		return (await import('@revenuecat/purchases-capacitor')).Purchases
+		const { Purchases } = await import('@revenuecat/purchases-capacitor')
+		return { Purchases }
 	}
 
 	function applyCustomerInfo(info: CustomerInfo) {
@@ -134,7 +138,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		}, 15000)
 
 		try {
-			const Purchases = await getSdk()
+			const { Purchases } = await getSdk()
 			if (!configured) {
 				try {
 					isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
@@ -173,7 +177,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		busy.value = true
 		message.value = ''
 		try {
-			const Purchases = await getSdk()
+			const { Purchases } = await getSdk()
 			const { customerInfo } = await Purchases.purchaseStoreProduct({ product })
 			applyCustomerInfo(customerInfo)
 			return true
@@ -207,7 +211,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		busy.value = true
 		message.value = ''
 		try {
-			const Purchases = await getSdk()
+			const { Purchases } = await getSdk()
 			const { customerInfo } = await Purchases.restorePurchases()
 			applyCustomerInfo(customerInfo)
 			message.value = isPro.value ? 'Pro restored.' : 'No previous purchases found.'
