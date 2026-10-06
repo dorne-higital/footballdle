@@ -261,6 +261,15 @@ html.app-shell {
 		top: auto;
 	}
 
+	// While the keyboard is up the screen is ~300px shorter: keep the guesses and the
+	// search field, drop the extras
+	&.keyboard-open {
+		.scout-page .scoreboard-strip,
+		.scout-board .app-footer {
+			display: none;
+		}
+	}
+
 	// Spot: the round card fills the frame so answers sit at the bottom
 	.spot-round-card {
 		flex: 1;

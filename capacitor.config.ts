@@ -15,6 +15,12 @@ const config: CapacitorConfig = {
 			launchShowDuration: 0,
 			backgroundColor: '#07130d',
 		},
+		// Shrink the web view above the keyboard instead of letting iOS scroll the
+		// whole page up when a text field is focused (Scout Report search)
+		Keyboard: {
+			resize: 'native',
+			resizeOnFullScreen: true,
+		},
 	},
 }
 

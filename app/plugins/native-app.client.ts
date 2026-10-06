@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
+import { Keyboard } from '@capacitor/keyboard'
 import { InAppReview } from '@capacitor-community/in-app-review'
 import { computed, watch } from 'vue'
 import { useModeStatsStore } from '../stores/modeStats'
@@ -24,6 +25,18 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	// The app is always the dark Floodlights look; Style.Dark = light status bar text
 	StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
+
+	// Keyboard: no "^ v Done" bar, and the page stays pinned to the top while the
+	// web view resizes around the keyboard (see capacitor.config.ts)
+	Keyboard.setAccessoryBarVisible({ isVisible: false }).catch(() => {})
+	// html.keyboard-open lets screens hide extras while typing (assets/_app-shell.scss)
+	const root = document.documentElement
+	Keyboard.addListener('keyboardWillShow', () => {
+		root.classList.add('keyboard-open')
+		window.scrollTo(0, 0)
+	}).catch(() => {})
+	Keyboard.addListener('keyboardDidShow', () => window.scrollTo(0, 0)).catch(() => {})
+	Keyboard.addListener('keyboardWillHide', () => root.classList.remove('keyboard-open')).catch(() => {})
 
 	const purchases = usePurchasesStore()
 	purchases.init()
