@@ -16,11 +16,11 @@
 
 		<main class="static-main">
 			<h1>Privacy Policy</h1>
-			<p class="updated">Last updated: 29 May 2026</p>
+			<p class="updated">Last updated: 6 October 2026</p>
 
 			<p>
-				Footballdle ("we", "us", "our") operates the website footballdle.co.uk. This page explains what
-				information is collected when you use the site and how it is used.
+				Footballdle ("we", "us", "our") operates the website footballdle.co.uk and the Footballdle iPhone app.
+				This page explains what information is collected when you use either and how it is used.
 			</p>
 
 			<h2>Information we collect</h2>
@@ -30,7 +30,36 @@
 				localStorage and never transmitted to our servers.
 			</p>
 
-			<h2>Analytics</h2>
+			<h2>The iPhone app</h2>
+			<p>
+				The app has no analytics, no advertising and no tracking. Your game state, statistics, trophies and hint
+				balance are stored on your device and are never sent to our servers.
+			</p>
+			<p>
+				<strong>Game Center.</strong> If you are signed in to Apple Game Center, your best streaks, total wins
+				and trophy progress are sent to Apple so they can appear on leaderboards and in your Game Center
+				profile. This is handled by Apple under
+				<a
+					href="https://www.apple.com/legal/privacy/"
+					target="_blank"
+					rel="noopener noreferrer"
+					>Apple's privacy policy</a
+				>, and you can turn Game Center off at any time in your iPhone's Settings.
+			</p>
+			<p>
+				<strong>In-app purchases.</strong> Purchases are processed by Apple; we never see your payment
+				details. We use RevenueCat to confirm purchases and restore Footballdle Pro. RevenueCat receives your
+				purchase history and a random, anonymous app user ID that is not linked to your name or Apple ID.
+				See
+				<a
+					href="https://www.revenuecat.com/privacy/"
+					target="_blank"
+					rel="noopener noreferrer"
+					>RevenueCat's privacy policy</a
+				>.
+			</p>
+
+			<h2>Analytics (website)</h2>
 			<p>
 				We use Google Analytics 4 to understand how visitors use the site. This service collects anonymised data
 				such as pages visited, time spent, and general location (country/region). No personally identifiable
@@ -43,7 +72,7 @@
 				>.
 			</p>
 
-			<h2>Advertising</h2>
+			<h2>Advertising (website)</h2>
 			<p>
 				We use Google AdSense to display advertisements. Google may use cookies to serve ads based on your prior
 				visits to this website or other websites. You can opt out of personalised advertising by visiting
