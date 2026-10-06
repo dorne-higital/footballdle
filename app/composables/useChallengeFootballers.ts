@@ -1,3 +1,5 @@
+import { roster } from './useFootballers'
+
 const CHALLENGE_SHUFFLE_SEED = 20260102
 
 function seededShuffle<T>(arr: T[], seed: number): T[] {
@@ -11,131 +13,19 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
 	return result
 }
 
-// 5-letter Premier League footballer surnames for challenge mode
-const challengeFootballers = [
-	'ABBEY',
-	'ADAMS',
-	'AGYEI',
-	'AJALA',
-	'ALABI',
-	'AYARI',
-	'AZNOU',
-	'BAKWA',
-	'BARRY',
-	'BATES',
-	'BENTT',
-	'BERGE',
-	'BEYER',
-	'BIJOL',
-	'BIZOT',
-	'BLAKE',
-	'BOGLE',
-	'BOWEN',
-	'BROJA',
-	'BROWN',
-	'BUENO',
-	'BYRAM',
-	'CASEY',
-	'CLARK',
-	'CLYNE',
-	'CREWE',
-	'CUNHA',
-	'DALOT',
-	'DANNS',
-	'DANSO',
-	'DELAP',
-	'DERRY',
-	'DIGNE',
-	'DIOUF',
-	'DIXON',
-	'DORGU',
-	'EKDAL',
-	'FODEN',
-	'GAKPO',
-	'GOMES',
-	'GOMEZ',
-	'GRUEV',
-	'GUSTO',
-	'HANKS',
-	'HARDY',
-	'HECKE',
-	'HENRY',
-	'IWOBI',
-	'JAMES',
-	'JESUS',
-	'JONES',
-	'JULIO',
-	'KANTE',
-	'KEANE',
-	'KONSA',
-	'KUDUS',
-	'LACEY',
-	'LAVIA',
-	'LEONI',
-	'LERMA',
-	'LEWIS',
-	'LUCCA',
-	'LUCKY',
-	'MARCH',
-	'MARSH',
-	'MILEY',
-	'MINGS',
-	'MOORE',
-	'MOUNT',
-	'MUANI',
-	'MUNIZ',
-	'NALLO',
-	'NDOYE',
-	'NEAVE',
-	'NOBLE',
-	'NOURI',
-	'NUNES',
-	'NYONI',
-	'NYPAN',
-	'ONANA',
-	'ONIEN',
-	'OSULA',
-	'PAULA',
-	'PECSI',
-	'PEDRO',
-	'PERRI',
-	'PIRES',
-	'PIROE',
-	'PORRO',
-	'POTTS',
-	'RAYAN',
-	'RODON',
-	'RODRI',
-	'ROEFS',
-	'ROUTH',
-	'RUDDY',
-	'SALAH',
-	'SAMBA',
-	'SCOTT',
-	'SILVA',
-	'SMITH',
-	'SOLER',
-	'SOUZA',
-	'STACH',
-	'TALBI',
-	'THIAW',
-	'WALSH',
-	'WEISS',
-	'WELCH',
-	'WHITE',
-	'WILEY',
-	'WIRTZ',
-	'WISSA',
-	'WOLFE',
-	'XHAKA',
-	'YATES',
+// 5-letter Premier League surnames for Challenge mode, from app/data/players.json
+// (yarn update-players). Answers are players people have heard of; any current
+// player's 5-letter surname is a valid guess.
+const challengeAnswers = [
+	...new Set(roster.filter(p => p.dailyKnown && p.lastName.length === 5).map(p => p.lastName.toUpperCase())),
 ]
+const challengeFootballers = [...new Set(roster.filter(p => p.lastName.length === 5).map(p => p.lastName.toUpperCase()))]
 
 // Create a Set for O(1) lookups
 const challengeFootballerSet = new Set(challengeFootballers)
 
-// Shuffled once at module load — order is deterministic and permanent
-const shuffledChallengeFootballers = seededShuffle(challengeFootballers, CHALLENGE_SHUFFLE_SEED)
+// Shuffled once at module load; games run through it in order
+const shuffledChallengeFootballers = seededShuffle(challengeAnswers, CHALLENGE_SHUFFLE_SEED)
 
 export function getChallengeFootballerByIndex(idx: number): string {
 	const len = shuffledChallengeFootballers.length

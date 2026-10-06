@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { getAnswerForDay, isValidFootballer, getPlayerData, getPuzzleNumber } from '../composables/useFootballers'
+import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getPuzzleNumber } from '../composables/useFootballers'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -62,7 +62,7 @@ export const useGameStore = defineStore('game', () => {
 	const MAX_APP_HINTS = 5
 
 	const hints = computed(() => {
-		const player = getPlayerData(answer)
+		const player = getAnswerPlayerForDay(todayStr)
 		if (!player) return []
 
 		const surname = answer.toUpperCase()

@@ -513,6 +513,7 @@
 </template>
 
 <script setup lang="ts">
+	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
 	import { useModeStatsStore } from '../../stores/modeStats'
@@ -655,7 +656,7 @@
 
 	const dailyUspTiles = [
 		{ icon: 'solar:calendar-linear', text: 'New player to guess every day' },
-		{ icon: 'solar:football-outline', text: '25/26 Premier League players' },
+		{ icon: 'solar:football-outline', text: `${playerMeta.season.slice(2)} Premier League players` },
 		{ icon: 'solar:magnifer-linear', text: 'Only players with 6 letter surnames' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]

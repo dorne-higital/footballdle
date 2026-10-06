@@ -24,7 +24,7 @@
 
 			<h2>The basics</h2>
 			<p>
-				Every answer is a six-letter surname belonging to a player in the current 2025/26 Premier League
+				Every answer is a six-letter surname belonging to a player in the current {{ season }} Premier League
 				season. Type any valid Premier League surname and press Enter to submit your guess. After each guess
 				the tiles change colour to show how close you are — use the clues to narrow down the answer.
 			</p>
@@ -66,7 +66,7 @@
 
 			<h2>Rules</h2>
 			<ul>
-				<li>Each guess must be a real Premier League player from the 2025/26 season with a six-letter surname.</li>
+				<li>Each guess must be a real Premier League player from the {{ season }} season with a six-letter surname.</li>
 				<li>You have a maximum of six guesses per day.</li>
 				<li>Letters can appear more than once in an answer — yellow/green hints reflect each instance separately.</li>
 				<li>The on-screen keyboard tracks which letters you have used: green, yellow, and grey keys update after every guess.</li>
@@ -98,14 +98,14 @@
 
 			<h2>Why can't I submit my guess?</h2>
 			<p>
-				Only valid Premier League surnames from the current 2025/26 season are accepted. If a name is not
+				Only valid Premier League surnames from the current {{ season }} season are accepted. If a name is not
 				recognised, check the spelling — some players are listed under an anglicised version of their name
 				rather than a nickname or shortened form.
 			</p>
 
 			<h2>The player I'm thinking of isn't in the game</h2>
 			<p>
-				The player list covers active 2025/26 Premier League squads and is updated regularly. Players must
+				The player list covers active {{ season }} Premier League squads and is updated regularly. Players must
 				have exactly six letters in their surname to qualify for the daily puzzle. If you think someone is
 				missing, drop us an email at
 				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a> and we'll add them.
@@ -154,6 +154,11 @@
 </template>
 
 <script setup lang="ts">
+	import playerMeta from '../data/meta.json'
+
+	// Season of the current player list (updated by yarn update-players)
+	const season = playerMeta.season
+
 	useHead({
 		title: 'How to Play Footballdle | Rules, Tips & Game Modes',
 		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/how-to-play' }],

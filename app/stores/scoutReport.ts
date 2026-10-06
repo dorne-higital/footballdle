@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { getPuzzleNumber, getPositionGroup } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
+	getScoutAnswerPlayerForDay,
 	isValidFullFootballer,
 	getFullPlayerData,
 	searchFullFootballers,
@@ -83,11 +84,13 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 
 	// One row per guess, with each attribute compared against the answer.
 	const guessResults = computed<ScoutGuessResult[]>(() => {
-		const answerPlayer = getFullPlayerData(answer)
+		// The answer as frozen on the day (it may have moved club since)
+		const answerPlayer = getScoutAnswerPlayerForDay(todayStr)
 		if (!answerPlayer) return []
+		const isAnswer = (name: string) => getFullPlayerData(name)?.name === getFullPlayerData(answer)?.name
 
 		return guesses.value.map((name) => {
-			const player = getFullPlayerData(name)
+			const player = isAnswer(name) ? answerPlayer : getFullPlayerData(name)
 			if (!player) {
 				return {
 					name,

@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-	import { getAnswerForDay, getPlayerData, getPuzzleNumber } from '../../composables/useFootballers'
+	import { getAnswerForDay, getAnswerPlayerForDay, getPuzzleNumber } from '../../composables/useFootballers'
 
 	const { public: { adsensePublisherId } } = useRuntimeConfig()
 
@@ -169,7 +169,7 @@
 	const ukDateStr = toUKDateStr(parsedDate)
 	const puzzleNumber = getPuzzleNumber(ukDateStr)
 	const answer = getAnswerForDay(ukDateStr)
-	const playerData = getPlayerData(answer)
+	const playerData = getAnswerPlayerForDay(ukDateStr)
 
 	const formattedDate = parsedDate.toLocaleDateString('en-GB', {
 		day: 'numeric',
