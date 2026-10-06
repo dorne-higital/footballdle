@@ -24,7 +24,8 @@ workflows:
         # Codemagic rejects empty values, so keep this commented out until the key exists.
         # REVENUECAT_APPLE_KEY: appl_xxxxxxxx
       node: 22
-      xcode: latest
+      # Pinned: the "latest" (26.6) machine pool was queueing for ages
+      xcode: 26.5
     # No triggering block: builds are started manually from the Codemagic
     # dashboard so free build minutes aren't burnt on every push.
     scripts:
