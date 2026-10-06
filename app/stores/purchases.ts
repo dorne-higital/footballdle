@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, toRaw } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import type { CustomerInfo, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
 import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
@@ -178,12 +178,19 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		message.value = ''
 		try {
 			const { Purchases } = await getSdk()
-			const { customerInfo } = await Purchases.purchaseStoreProduct({ product })
+			// A plain copy: Vue's reactive Proxy doesn't survive the trip to native code,
+			// which then can't recognise the product
+			const plainProduct = JSON.parse(JSON.stringify(toRaw(product))) as PurchasesStoreProduct
+			const { customerInfo } = await Purchases.purchaseStoreProduct({ product: plainProduct })
 			applyCustomerInfo(customerInfo)
 			return true
 		} catch (error: any) {
 			const cancelled = error?.code === '1' || error?.userCancelled
-			if (!cancelled) message.value = 'Purchase failed. Please try again.'
+			if (!cancelled) {
+				const reason = error?.message || error?.errorMessage || ''
+				message.value = `Purchase failed${reason ? ` (${reason})` : ''}. Please try again.`
+				console.warn('Purchase failed:', error)
+			}
 			return false
 		} finally {
 			busy.value = false
@@ -215,8 +222,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			const { customerInfo } = await Purchases.restorePurchases()
 			applyCustomerInfo(customerInfo)
 			message.value = isPro.value ? 'Pro restored.' : 'No previous purchases found.'
-		} catch {
-			message.value = 'Restore failed. Please try again.'
+		} catch (error: any) {
+			const reason = error?.message || ''
+			message.value = `Restore failed${reason ? ` (${reason})` : ''}. Please try again.`
 		} finally {
 			busy.value = false
 		}
