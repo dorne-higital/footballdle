@@ -10,9 +10,9 @@ export const PRODUCT_IDS = {
 	hint1: 'fh1', // footballdle_hint_1
 	hints5: 'fh5', // footballdle_hint_5
 	hints15: 'fh15', // footballdle_hint_15
-	tipSmall: 'fts', // footballdle_tip_small (Orange Slices)
-	tipMedium: 'ftm', // footballdle_tip_medium (Half-Time Pie)
-	tipLarge: 'ftl', // footballdle_tip_large (Matchday Programme)
+	tipSmall: 'fts', // footballdle_tip_small (Small Tip)
+	tipMedium: 'ftm', // footballdle_tip_medium (Medium Tip)
+	tipLarge: 'ftl', // footballdle_tip_large (Large Tip)
 } as const
 
 export const TIP_PRODUCT_IDS = [PRODUCT_IDS.tipSmall, PRODUCT_IDS.tipMedium, PRODUCT_IDS.tipLarge]
