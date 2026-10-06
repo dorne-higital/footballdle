@@ -53,6 +53,7 @@
 		'/how-to-play': 'How to play',
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
+		'/trophies': 'Trophies',
 	}
 
 	const route = useRoute()

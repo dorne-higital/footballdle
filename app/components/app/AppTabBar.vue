@@ -26,18 +26,17 @@
 			/>
 			Stats
 		</button>
-		<button
-			v-if="gameCenter.isAvailable"
-			type="button"
+		<NuxtLink
+			to="/trophies"
 			class="tab"
-			@click="open(() => gameCenter.showLeaderboards())"
+			@click="haptics.select()"
 		>
 			<Icon
 				name="solar:cup-star-linear"
 				size="1.55rem"
 			/>
-			Ranks
-		</button>
+			Trophies
+		</NuxtLink>
 		<button
 			type="button"
 			class="tab"
@@ -54,11 +53,9 @@
 
 <script setup lang="ts">
 	import { useModalsStore } from '../../stores/modals'
-	import { useGameCenter } from '../../composables/useGameCenter'
 	import { useHaptics } from '../../composables/useHaptics'
 
 	const modalsStore = useModalsStore()
-	const gameCenter = useGameCenter()
 	const haptics = useHaptics()
 
 	function open(action: () => unknown) {
