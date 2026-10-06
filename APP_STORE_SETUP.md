@@ -117,9 +117,9 @@ App Store Connect → your app → **Monetization → In-App Purchases** → **+
 | Consumable | 1 Hint | `fh1` | £0.99 |
 | Consumable | 5 Hints | `fh5` | £2.99 |
 | Consumable | 15 Hints | `fh15` | £7.99 |
-| Consumable | Orange Slices (tip) | `fts` | £0.99 |
-| Consumable | Half-Time Pie (tip) | `ftm` | £2.99 |
-| Consumable | Matchday Programme (tip) | `ftl` | £3.99 |
+| Consumable | Small Tip | `fts` | £0.99 |
+| Consumable | Medium Tip | `ftm` | £2.99 |
+| Consumable | Large Tip | `ftl` | £3.99 |
 
 For each one, add an English (UK) display name and description, plus a **review screenshot**
 (a screenshot of the Settings screen showing the buttons, taken from TestFlight).

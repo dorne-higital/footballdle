@@ -140,14 +140,16 @@
 				<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
 				<div class="tip-list">
 					<button
-						v-for="product in purchases.tipProducts"
+						v-for="(product, i) in purchases.tipProducts"
 						:key="product.identifier"
 						type="button"
 						class="tip-option"
 						:disabled="purchases.busy"
+						:aria-label="`${TIP_SIZES[i]} tip, ${product.priceString}`"
 						@click="purchases.tip(product)"
 					>
-						<span class="tip-name">{{ product.title }}</span>
+						<CoinStack :count="i + 1" />
+						<span class="tip-name">{{ TIP_SIZES[i] }}</span>
 						<span class="tip-price">{{ product.priceString }}</span>
 					</button>
 				</div>
@@ -205,6 +207,10 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
 	import { useModalsStore } from '../../stores/modals'
+	import CoinStack from './CoinStack.vue'
+
+	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
+	const TIP_SIZES = ['Small', 'Medium', 'Large']
 
 	const themeStore = useThemeStore()
 	const purchases = usePurchasesStore()
@@ -263,9 +269,9 @@
 
 			// Tip names come from App Store Connect, so they can be renamed without a release
 			.tip-list {
-				display: flex;
-				flex-direction: column;
+				display: grid;
 				gap: 0.5rem;
+				grid-template-columns: repeat(3, 1fr);
 				width: 100%;
 			}
 
@@ -273,22 +279,30 @@
 				align-items: center;
 				background: var(--bg-primary);
 				border: 1px solid var(--border);
-				border-radius: 14px;
+				border-radius: 16px;
 				color: var(--text-primary);
 				cursor: pointer;
 				display: flex;
+				flex-direction: column;
 				font-family: var(--font-body);
-				justify-content: space-between;
-				min-height: 3.2rem;
-				padding: 0 1rem;
+				gap: 0.35rem;
+				padding: 0.85rem 0.4rem 0.75rem;
+				transition: transform 0.1s ease;
+
+				&:active:not(:disabled) {
+					transform: scale(0.96);
+				}
 
 				&:disabled {
 					opacity: 0.6;
 				}
 
 				.tip-name {
-					font-size: 0.95rem;
+					color: var(--text-secondary);
+					font-size: 0.75rem;
 					font-weight: 800;
+					letter-spacing: 0.06em;
+					text-transform: uppercase;
 				}
 
 				.tip-price {
@@ -297,7 +311,7 @@
 					color: var(--on-present, #fff);
 					font-size: 0.85rem;
 					font-weight: 800;
-					padding: 0.3rem 0.75rem;
+					padding: 0.3rem 0.7rem;
 				}
 			}
 
