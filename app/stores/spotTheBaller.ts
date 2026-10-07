@@ -145,14 +145,16 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		advanceTimer = setTimeout(() => advanceRound(), 900)
 	}
 
-	function advanceRound() {
+	function advanceRound(startTimer = true) {
+		advanceTimer = null
 		if (roundIndex.value + 1 >= maxGuesses) {
 			finishGame()
 			return
 		}
 		roundIndex.value++
 		revealState.value = 'idle'
-		startRoundTimer()
+		timeRemaining.value = SPOT_ROUND_TIME
+		if (startTimer) startRoundTimer()
 		saveState()
 	}
 
@@ -174,13 +176,16 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	// ROUND TIMER
 	// ============================================================================
-	function startRoundTimer() {
+	function startRoundTimer(from = SPOT_ROUND_TIME) {
 		stopRoundTimer()
-		timeRemaining.value = SPOT_ROUND_TIME
+		timeRemaining.value = from
 		timerInterval = setInterval(() => {
 			timeRemaining.value--
 			if (timeRemaining.value <= 0) {
 				handleTimeout()
+			} else {
+				// Saved every tick so a relaunch can't hand back a fuller clock
+				saveState()
 			}
 		}, 1000)
 	}
@@ -190,6 +195,23 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 			clearInterval(timerInterval)
 			timerInterval = null
 		}
+	}
+
+	/** Leaving the screen or backgrounding the app: the clock stops where it is.
+	 *  A pick that was mid-reveal is settled so the next round waits, unstarted. */
+	function pauseRound() {
+		stopRoundTimer()
+		if (advanceTimer) {
+			clearTimeout(advanceTimer)
+			advanceRound(false)
+		}
+		if (roundResults.value.length || roundIndex.value) saveState()
+	}
+
+	function resumeRound() {
+		if (gameOver.value || showIntro.value || revealState.value !== 'idle' || timerInterval) return
+		if (roundResults.value.length > roundIndex.value) return
+		startRoundTimer(timeRemaining.value > 0 ? timeRemaining.value : SPOT_ROUND_TIME)
 	}
 
 	// ============================================================================
@@ -243,6 +265,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 			gameOver: gameOver.value,
 			isWin: isWin.value,
 			showIntro: showIntro.value,
+			timeRemaining: timeRemaining.value,
 		}
 		localStorage.setItem('footballdle-spot', JSON.stringify(state))
 	}
@@ -260,7 +283,17 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 				showGameOverModal.value = false
 				showIntro.value = gameOver.value
 				if (!gameOver.value) {
-					startRoundTimer()
+					// Left mid-reveal: that round is answered, so move on to the next one
+					if (roundResults.value.length > roundIndex.value) {
+						roundIndex.value = roundResults.value.length - 1
+						advanceRound(false)
+						if (gameOver.value) return
+					} else {
+						const t = Number(parsed.timeRemaining)
+						timeRemaining.value = t > 0 && t <= SPOT_ROUND_TIME ? t : SPOT_ROUND_TIME
+					}
+					revealState.value = 'idle'
+					startRoundTimer(timeRemaining.value)
 				}
 			}
 		}
@@ -294,6 +327,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		// Functions
 		startGame,
 		pickOption,
+		pauseRound,
+		resumeRound,
 		closeGameOverModal,
 		startCountdown,
 		stopCountdown,

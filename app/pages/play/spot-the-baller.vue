@@ -295,9 +295,18 @@
 
 		// iOS app: the Matchday home links straight into play, skipping the intro screen
 		if (useRoute().query.start === 'play' && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
+		document.addEventListener('visibilitychange', onVisibility)
 	})
 
+	// The round clock only runs while you can see it
+	function onVisibility() {
+		if (document.hidden) spotStore.pauseRound()
+		else spotStore.resumeRound()
+	}
+
 	onUnmounted(() => {
+		document.removeEventListener('visibilitychange', onVisibility)
+		spotStore.pauseRound()
 		if (spotStore.roundResults.length > 0 && !spotStore.gameOver) {
 			trackGameAbandon(spotStore.roundResults.length, 'spot_the_baller')
 		}
