@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { getSpotRoundsForDay, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
 import { getDisplayNumber } from '../composables/useFootballers'
@@ -73,9 +74,9 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	const tierHistogram = ref<Record<string, number>>({ '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0 })
 
 	function loadTierHistogram() {
-		const saved = localStorage.getItem('footballdle-spot-tiers')
+		const saved = readSavedObject<Record<string, number>>('footballdle-spot-tiers')
 		if (saved) {
-			tierHistogram.value = { ...tierHistogram.value, ...JSON.parse(saved) }
+			tierHistogram.value = { ...tierHistogram.value, ...saved }
 		}
 	}
 
@@ -101,11 +102,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	const canPlay = computed(() => {
 		if (!import.meta.client) return true
-		const savedGame = localStorage.getItem('footballdle-spot')
-		if (savedGame) {
-			const { date, gameOver: savedGameOver } = JSON.parse(savedGame)
-			if (date === todayStr) return !savedGameOver
-		}
+		const saved = readSavedObject('footballdle-spot')
+		if (saved?.date === todayStr) return !saved.gameOver
 		return true
 	})
 
@@ -304,13 +302,12 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	}
 
 	function loadState() {
-		const saved = localStorage.getItem('footballdle-spot')
-		if (saved) {
-			const parsed = JSON.parse(saved)
+		const parsed = readSavedObject('footballdle-spot')
+		if (parsed) {
 			if (parsed.date === todayStr) {
-				roundIndex.value = parsed.roundIndex ?? 0
-				score.value = parsed.score ?? 0
-				roundResults.value = parsed.roundResults ?? []
+				roundIndex.value = Number(parsed.roundIndex) || 0
+				score.value = Number(parsed.score) || 0
+				roundResults.value = Array.isArray(parsed.roundResults) ? parsed.roundResults : []
 				gameOver.value = parsed.gameOver ?? false
 				isWin.value = parsed.isWin ?? false
 				showGameOverModal.value = false

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getDisplayNumber } from '../composables/useFootballers'
 import { useHaptics } from '../composables/useHaptics'
@@ -218,14 +219,14 @@ export const useGameStore = defineStore('game', () => {
 	}
 
 	function loadState() {
-		const savedGame = localStorage.getItem('footballdle-game')
-		if (savedGame) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedPurchasedHints } = JSON.parse(savedGame)
+		const saved = readSavedObject('footballdle-game')
+		if (saved) {
+			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedPurchasedHints } = saved
 			if (date === todayStr) {
-				guesses.value = savedGuesses
-				gameOver.value = savedOver
-				isWin.value = savedWin
-				purchasedHints.value = savedPurchasedHints || 0
+				guesses.value = Array.isArray(savedGuesses) ? savedGuesses : []
+				gameOver.value = !!savedOver
+				isWin.value = !!savedWin
+				purchasedHints.value = Number(savedPurchasedHints) || 0
 				showGameOverModal.value = false
 				showIntro.value = savedOver
 			}

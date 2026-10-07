@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 import { getChallengeFootballerByIndex, useChallengeFootballers } from '../composables/useChallengeFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString } from '../utils/dateStreak'
+import { readSavedObject } from '../utils/storage'
 import { useHaptics } from '../composables/useHaptics'
 
 const { isValidChallengeFootballer } = useChallengeFootballers()
@@ -269,13 +270,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function loadChallengeState() {
-		const saved = localStorage.getItem('footballdle-challenge')
-		if (saved) {
-			const state = JSON.parse(saved)
+		const state = readSavedObject('footballdle-challenge')
+		if (state) {
 			isUnlocked.value = state.isUnlocked || false
 			isActive.value = state.isActive || false
 			currentAnswer.value = state.currentAnswer || ''
-			guesses.value = state.guesses || []
+			guesses.value = Array.isArray(state.guesses) ? state.guesses : []
 			currentGuess.value = state.currentGuess || ''
 			gameOver.value = state.gameOver || false
 			isWin.value = state.isWin || false

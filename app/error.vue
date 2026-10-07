@@ -1,6 +1,9 @@
 <template>
 	<div class="error-page">
-		<nav class="error-nav">
+		<nav
+			v-if="!$config.public.isApp"
+			class="error-nav"
+		>
 			<NuxtLink
 				to="/"
 				class="back-link"
@@ -39,9 +42,29 @@
 					size="1rem"
 				/>
 			</NuxtLink>
+
+			<!-- Last resort if saved data keeps crashing the game: wipes game progress and
+			     stats, but keeps purchases and settings -->
+			<div
+				v-if="error.statusCode !== 404"
+				class="reset-box"
+			>
+				<p>Still stuck?</p>
+				<button
+					type="button"
+					class="reset-btn"
+					@click="resetData"
+				>
+					{{ confirmReset ? 'Tap again to reset' : 'Reset game data' }}
+				</button>
+				<small>Clears your games and stats. Your hints and Pro are kept.</small>
+			</div>
 		</main>
 
-		<footer class="error-footer">
+		<footer
+			v-if="!$config.public.isApp"
+			class="error-footer"
+		>
 			<p>Daily Premier League footballer guessing game.</p>
 			<NuxtLink
 				to="/"
@@ -54,6 +77,38 @@
 </template>
 
 <script setup lang="ts">
+	import { ref } from 'vue'
+
+	// Paid for or chosen by the player, so a reset never touches them
+	const KEEP_KEYS = [
+		'footballdle-hint-bank',
+		'footballdle-pro',
+		'footballdle-welcome-hints',
+		'footballdle-streak-reward',
+		'footballdle-app-appearance',
+		'footballdle-theme',
+		'footballdle-reminder',
+		'footballdle-reminders',
+		'footballdle-hint-used',
+		'footballdle-achievements-sent',
+		'footballdle-achievement-best',
+	]
+
+	const confirmReset = ref(false)
+
+	function resetData() {
+		if (!confirmReset.value) {
+			confirmReset.value = true
+			return
+		}
+		try {
+			for (const key of Object.keys(localStorage)) {
+				if (key.startsWith('footballdle-') && !KEEP_KEYS.includes(key)) localStorage.removeItem(key)
+			}
+		} catch {}
+		window.location.replace('/')
+	}
+
 	defineProps<{
 		error: {
 			statusCode: number
@@ -148,6 +203,38 @@
 				opacity: 0.9;
 			}
 		}
+	}
+
+	.reset-box {
+		align-items: center;
+		border-top: 1px solid var(--border);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+
+		p {
+			color: var(--text-primary);
+			font-weight: 700;
+			margin: 0;
+		}
+
+		small {
+			color: var(--text-secondary);
+		}
+	}
+
+	.reset-btn {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: var(--global-border-radius);
+		color: var(--text-primary);
+		cursor: pointer;
+		font: inherit;
+		font-weight: 700;
+		min-height: 44px;
+		padding: 0 1.25rem;
 	}
 
 	.error-footer {

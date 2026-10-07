@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { useHaptics } from '../composables/useHaptics'
 import { getDisplayNumber, getPositionGroup } from '../composables/useFootballers'
@@ -72,11 +73,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// ============================================================================
 	const canPlay = computed(() => {
 		if (!import.meta.client) return true
-		const savedGame = localStorage.getItem('footballdle-scout')
-		if (savedGame) {
-			const { date, gameOver: savedGameOver } = JSON.parse(savedGame)
-			if (date === todayStr) return !savedGameOver
-		}
+		const saved = readSavedObject('footballdle-scout')
+		if (saved?.date === todayStr) return !saved.gameOver
 		return true
 	})
 
@@ -223,13 +221,13 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	}
 
 	function loadState() {
-		const saved = localStorage.getItem('footballdle-scout')
+		const saved = readSavedObject('footballdle-scout')
 		if (saved) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin } = JSON.parse(saved)
+			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin } = saved
 			if (date === todayStr) {
-				guesses.value = savedGuesses
-				gameOver.value = savedOver
-				isWin.value = savedWin
+				guesses.value = Array.isArray(savedGuesses) ? savedGuesses : []
+				gameOver.value = !!savedOver
+				isWin.value = !!savedWin
 				showGameOverModal.value = false
 				showIntro.value = savedOver
 			}
