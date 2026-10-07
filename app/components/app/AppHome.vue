@@ -61,7 +61,22 @@
 				<span class="eyebrow">Daily · #{{ puzzleNumber }}</span>
 				<span class="league">Premier League</span>
 			</div>
+			<!-- Full time: the answer spelled out, green if you got it, red if not -->
 			<div
+				v-if="dailyFinished && dailyAnswer"
+				:class="['tile-preview', 'answer-tiles', daily.status]"
+				:aria-label="`The answer was ${dailyAnswer.name}`"
+			>
+				<span
+					v-for="(letter, i) in dailyAnswer.name.toUpperCase().split('')"
+					:key="i"
+					class="tile"
+					:style="{ animationDelay: `${i * 60}ms` }"
+					>{{ letter }}</span
+				>
+			</div>
+			<div
+				v-else
 				class="tile-preview"
 				aria-hidden="true"
 			>
@@ -75,7 +90,31 @@
 				<h2>{{ heroTitle }}</h2>
 				<p>{{ heroSubtitle }}</p>
 			</div>
-			<span class="hero-cta">{{ heroCta }}</span>
+			<div
+				v-if="dailyFinished"
+				class="fulltime-row"
+			>
+				<span class="next-player">
+					Next player in
+					<strong>{{ countdown }}</strong>
+				</span>
+				<button
+					type="button"
+					class="share-btn"
+					@click.prevent.stop="shareDaily"
+				>
+					<Icon
+						name="solar:share-linear"
+						size="1.1rem"
+					/>
+					{{ shareCopied ? 'Copied!' : 'Share' }}
+				</button>
+			</div>
+			<span
+				v-else
+				class="hero-cta"
+				>{{ heroCta }}</span
+			>
 		</NuxtLink>
 
 		<div class="mode-grid">
@@ -90,6 +129,16 @@
 				/>
 				<span class="mode-text">
 					<strong>Scout Report</strong>
+					<span
+						v-if="scoutAnswer"
+						:class="['answer-line', scout.status]"
+					>
+						<Icon
+							:name="scout.status === 'won' ? 'solar:check-circle-bold' : 'solar:close-circle-bold'"
+							size="0.95rem"
+						/>
+						{{ scoutAnswer }}
+					</span>
 					<span>{{ scout.label }}</span>
 				</span>
 			</NuxtLink>
@@ -104,7 +153,20 @@
 				/>
 				<span class="mode-text">
 					<strong>Spot the Baller</strong>
-					<span>{{ spot.label }}</span>
+					<template v-if="spotResults.length">
+						<span class="spot-score">{{ spotResults.filter(Boolean).length }}/{{ spotResults.length }}</span>
+						<span
+							class="spot-dots"
+							aria-hidden="true"
+						>
+							<i
+								v-for="(hit, i) in spotResults"
+								:key="i"
+								:class="{ hit }"
+							></i>
+						</span>
+					</template>
+					<span v-else>{{ spot.label }}</span>
 				</span>
 			</NuxtLink>
 		</div>
@@ -129,7 +191,10 @@
 			/>
 		</NuxtLink>
 
-		<div class="kickoff">
+		<div
+			v-if="!dailyFinished"
+			class="kickoff"
+		>
 			<span>Next kick-off</span>
 			<strong>{{ countdown }}</strong>
 		</div>
@@ -145,13 +210,18 @@
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { getPuzzleNumber } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
+	import { useShare } from '../../composables/useShare'
+	import { useHaptics } from '../../composables/useHaptics'
 
 	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
 
 	const dailyStats = useModeStatsStore('daily')
 	// Days in a row with at least one game finished, win or lose
 	const playStreak = usePlayStreakStore()
-	const { daily, scout, spot, dailyLastGuess, refresh } = useTodayProgress()
+	const { daily, scout, spot, dailyLastGuess, dailyGuesses, dailyAnswer, scoutAnswer, spotResults, refresh } =
+		useTodayProgress()
+	const { onShare } = useShare()
+	const haptics = useHaptics()
 
 	const puzzleNumber = getPuzzleNumber(getUKDateString())
 	const todayLabel = new Date().toLocaleDateString('en-GB', {
@@ -187,14 +257,23 @@
 		dailyLastGuess.value.length ? dailyLastGuess.value : Array(6).fill('empty'),
 	)
 
+	const dailyFinished = computed(() => daily.value.status === 'won' || daily.value.status === 'lost')
+
 	const heroTitle = computed(
 		() =>
 			({
 				new: "Guess today's player",
 				playing: 'Back in the game',
-				won: 'Back of the net',
-				lost: 'Unlucky today',
+				won: `Solved in ${dailyGuesses.value.length}/6`,
+				lost: 'Missed it today',
 			})[daily.value.status],
+	)
+
+	// Finished: who it was, as club · position · nation
+	const playerSummary = computed(() =>
+		dailyAnswer.value
+			? [dailyAnswer.value.club, dailyAnswer.value.position, dailyAnswer.value.nationality].join(' · ')
+			: '',
 	)
 
 	const heroSubtitle = computed(
@@ -202,10 +281,27 @@
 			({
 				new: 'Six letters. Six tries. One player a day.',
 				playing: `You're on ${daily.value.label.toLowerCase()}.`,
-				won: `${daily.value.label}. Streak on ${dailyStats.stats.currentStreak}.`,
-				lost: 'New player at midnight. Go again tomorrow.',
+				won: playerSummary.value,
+				lost: playerSummary.value,
 			})[daily.value.status],
 	)
+
+	const shareCopied = ref(false)
+	async function shareDaily() {
+		if (!dailyAnswer.value) return
+		haptics.select()
+		const copied = await onShare(
+			dailyGuesses.value,
+			dailyAnswer.value.name,
+			daily.value.status === 'won',
+			`#${puzzleNumber}`,
+			dailyStats.stats.currentStreak,
+		)
+		if (copied) {
+			shareCopied.value = true
+			setTimeout(() => (shareCopied.value = false), 2000)
+		}
+	}
 
 	const heroCta = computed(
 		() => ({ new: 'Play now', playing: 'Continue', won: 'See result', lost: 'See result' })[daily.value.status],
@@ -439,6 +535,70 @@
 			}
 		}
 
+		.answer-tiles .tile {
+			align-items: center;
+			animation: tile-flip 0.45s ease both;
+			color: #06140d;
+			display: flex;
+			font-family: var(--font-display);
+			font-size: 1.25rem;
+			justify-content: center;
+		}
+
+		.answer-tiles.won .tile {
+			background: var(--color-success);
+			box-shadow: 0 0 16px color-mix(in srgb, var(--color-success) 45%, transparent);
+		}
+
+		.answer-tiles.lost .tile {
+			background: color-mix(in srgb, var(--fl-red) 85%, transparent);
+			color: #2a0a07;
+		}
+
+		.fulltime-row {
+			align-items: center;
+			display: flex;
+			gap: 0.75rem;
+			justify-content: space-between;
+		}
+
+		.next-player {
+			color: var(--text-secondary);
+			display: flex;
+			flex-direction: column;
+			font-size: 0.75rem;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+
+			strong {
+				color: var(--text-primary);
+				font-family: var(--font-display);
+				font-size: 1.2rem;
+				font-variant-numeric: tabular-nums;
+				letter-spacing: 0;
+			}
+		}
+
+		.share-btn {
+			align-items: center;
+			background: var(--primary-color);
+			border: 0;
+			border-radius: 1rem;
+			color: var(--on-success);
+			cursor: pointer;
+			display: flex;
+			font: inherit;
+			font-size: 1rem;
+			font-weight: 800;
+			gap: 0.45rem;
+			height: 3rem;
+			padding: 0 1.3rem;
+
+			&:active {
+				transform: scale(0.96);
+			}
+		}
+
 		.hero-cta {
 			align-items: center;
 			background: var(--primary-color);
@@ -449,6 +609,58 @@
 			font-weight: 800;
 			height: 3.25rem;
 			justify-content: center;
+		}
+	}
+
+	.answer-line {
+		align-items: center;
+		color: var(--text-primary) !important;
+		display: flex;
+		font-weight: 800;
+		gap: 0.3rem;
+		text-transform: capitalize;
+
+		&.won .iconify {
+			color: var(--color-success);
+		}
+
+		&.lost .iconify {
+			color: var(--fl-red);
+		}
+	}
+
+	.spot-score {
+		color: var(--text-primary) !important;
+		font-family: var(--font-display);
+		font-size: 1.15rem !important;
+	}
+
+	.spot-dots {
+		display: flex;
+		gap: 0.2rem;
+		margin-top: 0.15rem;
+
+		i {
+			background: var(--fl-red);
+			border-radius: 50%;
+			height: 0.45rem;
+			width: 0.45rem;
+
+			&.hit {
+				background: var(--color-success);
+			}
+		}
+	}
+
+	@keyframes tile-flip {
+		from {
+			opacity: 0;
+			transform: rotateX(90deg);
+		}
+
+		to {
+			opacity: 1;
+			transform: rotateX(0);
 		}
 	}
 

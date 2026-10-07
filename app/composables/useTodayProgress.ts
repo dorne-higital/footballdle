@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { getUKDateString } from '../utils/dateStreak'
-import { getAnswerForDay } from './useFootballers'
+import { getAnswerForDay, getAnswerPlayerForDay, type Footballer } from './useFootballers'
+import { getScoutAnswerForDay } from './useAllFootballers'
 import { SPOT_ROUNDS_PER_MATCH } from './useSpotFootballers'
 
 export type TileState = 'correct' | 'present' | 'absent'
@@ -66,16 +67,26 @@ export function useTodayProgress() {
 	const scout = ref<ModeProgress>(guessProgress(null))
 	const spot = ref<ModeProgress>({ status: 'new', progress: 0, label: 'Not played' })
 	const dailyLastGuess = ref<TileState[]>([])
+	// Filled in once each game is finished, for the home screen's full-time cards
+	const dailyGuesses = ref<string[]>([])
+	const dailyAnswer = ref<Footballer | null>(null)
+	const scoutAnswer = ref('')
+	const spotResults = ref<boolean[]>([])
 
 	function refresh() {
 		const savedDaily = readSaved('footballdle-game')
 		daily.value = guessProgress(savedDaily, 'Guess')
 		const last = savedDaily?.guesses?.at(-1)
 		dailyLastGuess.value = last ? scoreGuess(last, getAnswerForDay(getUKDateString()) || '') : []
+		dailyGuesses.value = savedDaily?.guesses ?? []
+		dailyAnswer.value = savedDaily?.gameOver ? (getAnswerPlayerForDay(getUKDateString()) ?? null) : null
 
-		scout.value = guessProgress(readSaved('footballdle-scout'), 'Guess')
+		const savedScout = readSaved('footballdle-scout')
+		scout.value = guessProgress(savedScout, 'Guess')
+		scoutAnswer.value = savedScout?.gameOver ? getScoutAnswerForDay(getUKDateString()) : ''
 
 		const savedSpot = readSaved('footballdle-spot')
+		spotResults.value = savedSpot?.gameOver ? (savedSpot.roundResults ?? []).map((r: any) => !!r?.correct) : []
 		if (savedSpot?.gameOver) {
 			spot.value = { status: 'won', progress: 1, label: `Scored ${savedSpot.score ?? 0}` }
 		} else if (savedSpot && (savedSpot.roundIndex ?? 0) > 0) {
@@ -90,5 +101,5 @@ export function useTodayProgress() {
 		}
 	}
 
-	return { daily, scout, spot, dailyLastGuess, refresh }
+	return { daily, scout, spot, dailyLastGuess, dailyGuesses, dailyAnswer, scoutAnswer, spotResults, refresh }
 }
