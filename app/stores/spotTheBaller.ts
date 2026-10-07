@@ -4,6 +4,7 @@ import { getSpotRoundsForDay, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotR
 import { getDisplayNumber } from '../composables/useFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString } from '../utils/dateStreak'
+import { useHaptics } from '../composables/useHaptics'
 
 export interface SpotRoundResult {
 	picked: string | null
@@ -52,6 +53,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	const roundResults = ref<SpotRoundResult[]>([])
 	const revealState = ref<'idle' | 'correct' | 'wrong'>('idle')
 	const timeRemaining = ref(SPOT_ROUND_TIME)
+	const haptics = useHaptics()
 	let timerInterval: ReturnType<typeof setInterval> | null = null
 	// A match picked up again (relaunch, back from another screen or the background)
 	// waits for a tap before its clock runs, so nobody lands on a ticking round
@@ -139,6 +141,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		revealState.value = correct ? 'correct' : 'wrong'
 		roundResults.value.push({ picked: name, correct })
 		if (correct) score.value++
+		if (correct) haptics.success()
+		else haptics.error()
 		saveState()
 
 		advanceTimer = setTimeout(() => advanceRound(), correct ? REVEAL_MS.correct : REVEAL_MS.wrong)
@@ -149,6 +153,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		stopRoundTimer()
 		revealState.value = 'wrong'
 		roundResults.value.push({ picked: null, correct: false })
+		haptics.error()
 		saveState()
 
 		advanceTimer = setTimeout(() => advanceRound(), REVEAL_MS.wrong)
@@ -200,6 +205,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 			if (timeRemaining.value <= 0) {
 				handleTimeout()
 			} else {
+				// A light tick for each of the last 3 seconds
+				if (timeRemaining.value <= 3) haptics.select()
 				// Saved every tick so a relaunch can't hand back a fuller clock
 				saveState()
 			}

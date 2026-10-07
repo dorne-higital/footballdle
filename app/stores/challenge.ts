@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 import { getChallengeFootballerByIndex, useChallengeFootballers } from '../composables/useChallengeFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString } from '../utils/dateStreak'
+import { useHaptics } from '../composables/useHaptics'
 
 const { isValidChallengeFootballer } = useChallengeFootballers()
 
@@ -30,10 +31,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	const isPaused = ref(false)
 
 	const errorMessage = ref('')
+	const haptics = useHaptics()
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
 		errorMessage.value = msg
+		haptics.error()
 		if (errorTimer) clearTimeout(errorTimer)
 		errorTimer = setTimeout(() => {
 			errorMessage.value = ''
@@ -189,6 +192,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 			timeRemaining.value--
 			// Saved every tick so a relaunch can't hand back a fuller clock
 			if (timeRemaining.value > 0) saveChallengeState()
+			// A light tick for each of the last 3 seconds
+			if (timeRemaining.value > 0 && timeRemaining.value <= 3) haptics.select()
 			if (timeRemaining.value <= 0) {
 				isWin.value = false
 				gameOver.value = true

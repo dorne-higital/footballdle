@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getDisplayNumber } from '../composables/useFootballers'
+import { useHaptics } from '../composables/useHaptics'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -40,11 +41,13 @@ export const useGameStore = defineStore('game', () => {
 	const showIntro = ref(true)
 	const errorMessage = ref('')
 	const purchasedHints = ref(0)
+	const haptics = useHaptics()
 	const isApp = !!useRuntimeConfig().public.isApp
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
 		errorMessage.value = msg
+		haptics.error()
 		if (errorTimer) clearTimeout(errorTimer)
 		errorTimer = setTimeout(() => {
 			errorMessage.value = ''
@@ -91,6 +94,7 @@ export const useGameStore = defineStore('game', () => {
 
 	function unlockHint() {
 		purchasedHints.value++
+		haptics.tap()
 		saveState()
 		// Remembered for the "Tactical Review" Game Center achievement
 		localStorage.setItem('footballdle-hint-used', '1')

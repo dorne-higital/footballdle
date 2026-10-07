@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { useHaptics } from '../composables/useHaptics'
 import { getDisplayNumber, getPositionGroup } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
@@ -41,10 +42,12 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	const showGameOverModal = ref(false)
 	const showIntro = ref(true)
 	const errorMessage = ref('')
+	const haptics = useHaptics()
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
 		errorMessage.value = msg
+		haptics.error()
 		if (errorTimer) clearTimeout(errorTimer)
 		errorTimer = setTimeout(() => {
 			errorMessage.value = ''
@@ -154,6 +157,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 			gameOver.value = true
 			showGameOverModal.value = true
 		}
+		// Full time has its own buzz (native-app plugin), so only mid-game guesses tap
+		if (!gameOver.value) haptics.tap()
 		saveState()
 	}
 
