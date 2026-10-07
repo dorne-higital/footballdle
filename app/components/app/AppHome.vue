@@ -191,6 +191,8 @@
 			/>
 		</NuxtLink>
 
+		<FactCard />
+
 		<div
 			v-if="!dailyFinished"
 			class="kickoff"
@@ -205,6 +207,7 @@
 	import { computed, onMounted, onUnmounted, ref } from 'vue'
 	import ActivityRings from './ActivityRings.vue'
 	import HintPill from './HintPill.vue'
+	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
