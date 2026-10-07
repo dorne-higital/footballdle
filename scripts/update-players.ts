@@ -63,6 +63,8 @@ interface Player {
 	dailyKnown: boolean
 	/** Sort key: higher = better known */
 	pop: number
+	/** FPL's short display name ('Saka', 'Alisson', 'B.Fernandes'): how fans refer to them */
+	webName?: string
 }
 /** [name, club, nationality, position] — a frozen copy of the player as they were that day */
 type Snapshot = [string, string, string, string]
@@ -166,6 +168,22 @@ const snapshot = (p: Pick<Player, 'name' | 'club' | 'nationality' | 'position'>)
 	p.nationality,
 	p.position,
 ]
+/** Fit to be a Daily answer: the six letters have to be the name people actually call
+ *  them. Leaves out double-barrelled and multi-part surnames (Lewis-Skelly, Strand
+ *  Larsen, De Cuyper) and players known by another name (Alisson, Bruno G.). */
+// Known by their first name even though FPL shows the surname ('A.Becker')
+const KNOWN_BY_FIRST_NAME = new Set(['alisson becker'])
+
+function dailyEligible(p: Player): boolean {
+	if (KNOWN_BY_FIRST_NAME.has(key(p.name))) return false
+	const parts = p.name.trim().split(/\s+/)
+	if (parts.length !== 2 || parts[1]!.includes('-')) return false
+	if (!p.webName) return true
+	// 'B.Fernandes' -> 'fernandes'; 'Alisson' stays 'alisson' and doesn't match 'becker'
+	const shown = tokens(p.webName.replace(/\./g, ' ')).pop() ?? ''
+	return shown.replace(/[^a-z]/g, '') === p.lastName
+}
+
 // The Daily board is six letters, so its answers are surnames, not full names
 const dailySnapshot = (p: Player): Snapshot => [p.lastName, p.club, p.nationality, p.position]
 const DAILY_ANSWER = /^[a-z]{6}$/
@@ -264,6 +282,7 @@ function buildRoster(fpl: any, fd: any, previous: Map<string, Player>): Player[]
 			known,
 			dailyKnown,
 			pop: Math.round(minutes + ownership * 100),
+			webName: String(e.web_name || ''),
 		})
 	}
 
@@ -368,7 +387,7 @@ async function main() {
 	const joined = roster.filter(p => !before.has(key(p.name)))
 	const left = previousPlayers.filter(p => !after.has(key(p.name)))
 	const known = roster.filter(p => p.known)
-	const dailyPool = roster.filter(p => p.dailyKnown && p.lastName.length === 6)
+	const dailyPool = roster.filter(p => p.dailyKnown && p.lastName.length === 6 && dailyEligible(p))
 
 	console.log(`\nClubs: ${[...new Set(roster.map(p => p.club))].sort().join(', ')}`)
 	const challengePool = roster.filter(p => p.dailyKnown && p.lastName.length === 5)
@@ -386,12 +405,19 @@ async function main() {
 	const lastPuzzle = today + HORIZON_DAYS
 	// Past and today's answers are locked; a malformed future Daily answer (e.g. a
 	// full name) is dropped along with everything after it and planned again
-	const badDaily = schedule.daily.answers.findIndex(a => !DAILY_ANSWER.test(a[0]))
+	// Also re-plan upcoming answers whose player no longer qualifies (see dailyEligible)
+	const ineligible = (a: Snapshot) => {
+		const p = roster.find(r => r.lastName === a[0] && r.club === a[1])
+		return !!p && !dailyEligible(p)
+	}
+	const badDaily = schedule.daily.answers.findIndex(
+		(a, i) => !DAILY_ANSWER.test(a[0]) || (schedule.daily.start + i > today && ineligible(a)),
+	)
 	if (badDaily !== -1) {
 		const puzzle = schedule.daily.start + badDaily
 		if (puzzle <= today) throw new Error(`Daily #${puzzle} (${schedule.daily.answers[badDaily]![0]}) is live and not a 6-letter surname`)
 		const dropped = schedule.daily.answers.splice(badDaily).length
-		console.log(`Re-planning ${dropped} Daily answers from #${puzzle} (first bad one: a non-surname answer)`)
+		console.log(`Re-planning ${dropped} Daily answers from #${puzzle} (malformed, or the player no longer qualifies)`)
 	}
 	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot)
 	const stillBad = schedule.daily.answers.filter(a => !DAILY_ANSWER.test(a[0]))
