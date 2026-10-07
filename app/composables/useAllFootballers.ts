@@ -1,6 +1,10 @@
 import type { Footballer } from './useFootballers'
 import { answerSchedule, fromSnapshot, getPuzzleNumber, recentFrom, roster } from './useFootballers'
 
+// Letters that don't decompose into base letter + accent, so NFD alone leaves them
+// ("odegaard" has to find "ødegaard")
+const TRANSLIT: Record<string, string> = { ø: 'o', đ: 'd', ł: 'l', ı: 'i', æ: 'ae', œ: 'oe', ß: 'ss', ð: 'd', þ: 'th' }
+
 // Full first+last name roster (no letter-count restriction), used by Scout Report and
 // Spot the Baller — both pick a player via autocomplete/multiple choice rather than
 // typing into a fixed-length grid like Daily. Current players (app/data/players.json,
@@ -28,10 +32,6 @@ export const allFootballers: Footballer[] = (() => {
 // Diacritic-insensitive comparison key — search/validation shouldn't require
 // typing accented characters (e.g. "traore" should find "traoré"); the
 // accented form is still what's displayed and stored.
-// Letters that don't decompose into base letter + accent, so NFD alone leaves them
-// ("odegaard" has to find "ødegaard")
-const TRANSLIT: Record<string, string> = { ø: 'o', đ: 'd', ł: 'l', ı: 'i', æ: 'ae', œ: 'oe', ß: 'ss', ð: 'd', þ: 'th' }
-
 function normaliseKey(name: string): string {
 	return name
 		.trim()
