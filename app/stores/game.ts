@@ -255,6 +255,7 @@ export const useGameStore = defineStore('game', () => {
 
 		// Computed
 		hints,
+		purchasedHints,
 		canPlay,
 		canPurchaseHint,
 

@@ -76,8 +76,26 @@
 				{{ adLoading ? 'Loading ad...' : 'Watch an ad for a hint' }}
 			</button>
 
+			<div
+				v-if="gameStore.canPurchaseHint && $config.public.isApp && pendingHint"
+				class="app-hint-btn pending"
+				role="status"
+			>
+				<span class="pending-text">Revealing the {{ nextClueName }}…</span>
+				<button
+					type="button"
+					class="undo-btn"
+					@click="cancelHint"
+				>
+					Undo
+				</button>
+				<span
+					class="pending-bar"
+					aria-hidden="true"
+				></span>
+			</div>
 			<button
-				v-if="gameStore.canPurchaseHint && $config.public.isApp"
+				v-else-if="gameStore.canPurchaseHint && $config.public.isApp"
 				class="app-hint-btn"
 				:disabled="purchases.busy"
 				@click="handleAppHint"
@@ -628,10 +646,37 @@
 		return 'Get hints'
 	})
 
+	// A banked hint is paid for, so there's a short window to undo a mis-tap before it's
+	// spent and the clue shown. Pro hints are unlimited, so those reveal straight away.
+	const HINT_UNDO_MS = 3000
+	const CLUE_NAMES = ['club', 'nationality', 'position', 'first letter', 'second letter']
+	const pendingHint = ref(false)
+	let pendingTimer: ReturnType<typeof setTimeout> | null = null
+	const nextClueName = computed(() => CLUE_NAMES[gameStore.purchasedHints] ?? 'next clue')
+
 	function handleAppHint() {
-		if (purchases.spendHint()) gameStore.unlockHint()
-		else showHintShop.value = true
+		if (purchases.isPro) {
+			if (purchases.spendHint()) gameStore.unlockHint()
+			return
+		}
+		if (purchases.hintBank <= 0) {
+			showHintShop.value = true
+			return
+		}
+		pendingHint.value = true
+		pendingTimer = setTimeout(() => {
+			pendingHint.value = false
+			pendingTimer = null
+			if (gameStore.canPurchaseHint && purchases.spendHint()) gameStore.unlockHint()
+		}, HINT_UNDO_MS)
 	}
+
+	function cancelHint() {
+		if (pendingTimer) clearTimeout(pendingTimer)
+		pendingTimer = null
+		pendingHint.value = false
+	}
+	onBeforeUnmount(cancelHint)
 
 	// A purchase from the shop reveals a hint straight away; the rest stay banked
 	function handleWatchAd() {
@@ -1014,6 +1059,46 @@
 				font-size: 0.92rem;
 				font-weight: 700;
 			}
+		}
+	}
+
+	.app-hint-btn.pending {
+		cursor: default;
+		justify-content: space-between;
+		overflow: hidden;
+		position: relative;
+
+		.pending-text {
+			font-weight: 700;
+		}
+
+		.undo-btn {
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 0.7rem;
+			color: var(--text-primary);
+			cursor: pointer;
+			font: inherit;
+			font-weight: 800;
+			min-height: 34px;
+			padding: 0 0.9rem;
+		}
+
+		// Drains over the undo window
+		.pending-bar {
+			animation: hint-undo 3s linear forwards;
+			background: var(--primary-color);
+			bottom: 0;
+			height: 3px;
+			left: 0;
+			position: absolute;
+			width: 100%;
+		}
+	}
+
+	@keyframes hint-undo {
+		to {
+			width: 0;
 		}
 	}
 
