@@ -31,7 +31,9 @@ export default defineNuxtConfig({
 
 	icon: {
 		clientBundle: {
-			scan: true,
+			// .ts too: icon names live in stores and utils (hint clues, app tabs), and
+			// anything missed would be fetched from the network at runtime
+			scan: { globInclude: ['**/*.{vue,ts}'] },
 		},
 	},
 

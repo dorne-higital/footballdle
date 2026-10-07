@@ -4,66 +4,31 @@
 		aria-label="Main"
 	>
 		<NuxtLink
-			to="/"
-			class="tab active"
-			aria-current="page"
+			v-for="tab in APP_TABS"
+			:key="tab.to"
+			:to="tab.to"
+			:class="['tab', { active: active === tab.to }]"
+			:aria-current="active === tab.to ? 'page' : undefined"
 			@click="haptics.select()"
 		>
 			<Icon
-				name="solar:play-circle-linear"
+				:name="active === tab.to ? tab.iconActive : tab.icon"
 				size="1.55rem"
 			/>
-			Play
+			{{ tab.label }}
 		</NuxtLink>
-		<button
-			type="button"
-			class="tab"
-			@click="open(modalsStore.openStats)"
-		>
-			<Icon
-				name="solar:chart-2-linear"
-				size="1.55rem"
-			/>
-			Stats
-		</button>
-		<NuxtLink
-			to="/trophies"
-			class="tab"
-			@click="haptics.select()"
-		>
-			<Icon
-				name="solar:cup-star-linear"
-				size="1.55rem"
-			/>
-			Trophies
-		</NuxtLink>
-		<button
-			type="button"
-			class="tab"
-			@click="open(modalsStore.openSettings)"
-		>
-			<Icon
-				name="solar:settings-linear"
-				size="1.55rem"
-			/>
-			Settings
-		</button>
 	</nav>
 </template>
 
 <script setup lang="ts">
-	import { useModalsStore } from '../../stores/modals'
+	import { computed } from 'vue'
 	import { useHaptics } from '../../composables/useHaptics'
+	import { APP_TABS, tabFor } from '../../utils/appTabs'
 
-	const modalsStore = useModalsStore()
+	const route = useRoute()
 	const haptics = useHaptics()
-
-	function open(action: () => unknown) {
-		haptics.select()
-		action()
-	}
+	const active = computed(() => tabFor(route.path))
 </script>
-
 <style scoped lang="scss">
 	.app-tab-bar {
 		align-items: center;

@@ -1,6 +1,11 @@
 <template>
 	<header class="app-top-bar">
+		<span
+			v-if="isTab"
+			aria-hidden="true"
+		></span>
 		<NuxtLink
+			v-else
 			to="/"
 			class="bar-btn"
 			aria-label="Back to Matchday"
@@ -12,7 +17,10 @@
 			/>
 		</NuxtLink>
 		<p class="bar-title">{{ title }}</p>
-		<div class="bar-actions">
+		<div
+			v-if="!isTab"
+			class="bar-actions"
+		>
 			<HintPill v-if="isDaily" />
 			<button
 				type="button"
@@ -45,6 +53,7 @@
 	import HintPill from './HintPill.vue'
 	import { useModalsStore } from '../../stores/modals'
 	import { useHaptics } from '../../composables/useHaptics'
+	import { tabFor } from '../../utils/appTabs'
 
 	const TITLES: Record<string, string> = {
 		'/play/daily': 'Daily',
@@ -54,6 +63,8 @@
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
 		'/trophies': 'Trophies',
+		'/stats': 'Stats',
+		'/settings': 'Settings',
 	}
 
 	const route = useRoute()
@@ -66,6 +77,8 @@
 	})
 
 	const isDaily = computed(() => route.path.startsWith('/play/daily'))
+	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
+	const isTab = computed(() => tabFor(route.path) !== null)
 
 	function open(action: () => unknown) {
 		haptics.select()
