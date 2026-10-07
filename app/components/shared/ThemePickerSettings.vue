@@ -103,23 +103,48 @@
 						</template>
 					</p>
 					<button
+						v-if="purchases.proProduct"
 						type="button"
-						class="store-button"
-						:disabled="purchases.busy || !purchases.proProduct"
+						class="store-button pro-button"
+						:disabled="purchases.busy"
 						@click="purchases.buyPro()"
 					>
 						<Icon
-							name="solar:crown-linear"
+							name="solar:crown-bold"
 							size="1rem"
 						/>
-						Get <span class="accent">Pro</span>
-						<template v-if="purchases.proProduct">· {{ purchases.proProduct.priceString }}</template>
+						Get Pro · {{ purchases.proProduct.priceString }}
+					</button>
+					<button
+						v-else-if="purchases.loadingProducts"
+						type="button"
+						class="store-button pro-button"
+						disabled
+					>
+						<Icon
+							name="solar:refresh-linear"
+							size="1rem"
+							class="spin"
+						/>
+						Getting the price…
+					</button>
+					<button
+						v-else
+						type="button"
+						class="store-button"
+						@click="purchases.init()"
+					>
+						<Icon
+							name="solar:refresh-linear"
+							size="1rem"
+						/>
+						Try again
 					</button>
 					<p
-						v-if="!purchases.proProduct && purchases.loadError"
+						v-if="!purchases.proProduct && !purchases.loadingProducts && purchases.loadError"
 						class="store-status"
 					>
-						{{ purchases.loadError }}
+						{{ purchases.loadError }} Check your connection and tap Try again.
 					</p>
 				</template>
 				<button
@@ -255,7 +280,7 @@
 </template>
 
 <script setup lang="ts">
-	import { onUnmounted } from 'vue'
+	import { onMounted, onUnmounted } from 'vue'
 	import { useThemeStore } from '../../stores/theme'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
@@ -269,6 +294,11 @@
 	const reminders = useRemindersStore()
 	// Purchase messages belong to this visit to Settings, not the next one
 	onUnmounted(() => (usePurchasesStore().message = ''))
+	// Products may not have loaded at launch (offline, or the store was slow)
+	onMounted(() => {
+		const store = usePurchasesStore()
+		if (!store.products.length) store.init()
+	})
 	reminders.load()
 
 	async function toggleReminder() {
@@ -320,6 +350,17 @@
 
 				.accent {
 					color: var(--tertiary-color);
+				}
+
+				// Pro is the one thing for sale here, so it gets the brand colour
+				&.pro-button {
+					background: var(--primary-color);
+					border-color: var(--primary-color);
+					color: #06140d;
+				}
+
+				.spin {
+					animation: spin 1s linear infinite;
 				}
 
 				&:hover:not(:disabled) {
@@ -663,5 +704,11 @@
 		font-size: 0.75rem;
 		margin-top: 0.4rem;
 		opacity: 0.7;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
 	}
 </style>

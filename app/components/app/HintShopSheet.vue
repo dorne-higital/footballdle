@@ -68,14 +68,19 @@
 					v-if="!purchases.hintPacks.length && !purchases.proProduct"
 					class="hint-shop-empty"
 				>
-					Can't reach the App Store to buy more right now.
-					{{ purchases.hintBank > 0 || purchases.isPro ? 'Your banked hints still work.' : 'Try again in a moment.' }}
-					<small
-						v-if="isDev && purchases.loadError"
-						class="hint-shop-reason"
+					<template v-if="purchases.loadingProducts">Getting prices from the App Store…</template>
+					<template v-else>
+						Can't reach the App Store to buy more right now.
+						{{ purchases.hintBank > 0 || purchases.isPro ? 'Your banked hints still work.' : '' }}
+					</template>
+					<button
+						v-if="!purchases.loadingProducts"
+						type="button"
+						class="hint-link"
+						@click="purchases.init()"
 					>
-						{{ purchases.loadError }}
-					</small>
+						Try again
+					</button>
 				</p>
 				<button
 					v-for="pack in purchases.hintPacks"
@@ -134,7 +139,6 @@
 	const challengeStore = useChallengeStore()
 	const progress = useTodayProgress()
 	const route = useRoute()
-	const isDev = import.meta.dev
 
 	const onDailyGame = computed(
 		() =>

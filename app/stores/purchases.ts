@@ -39,8 +39,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// Read once while the store is created: later calls (e.g. a retry from a watcher)
 	// run outside the Nuxt context, where useRuntimeConfig() throws
 	const { isApp, revenuecatAppleKey } = useRuntimeConfig().public
-	// Why products didn't load, shown in the hint shop so failures aren't a mystery
+	// Why products didn't load, in words a player understands (details go to the console)
 	const loadError = ref('')
+	const loadingProducts = ref(false)
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
@@ -119,8 +120,47 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		} catch {}
 	}
 
-	let configured = false
-	let loading = false
+	const STORE_UNREACHABLE = 'Couldn\'t reach the App Store.'
+	const LOAD_TIMEOUT_MS = 15000
+
+	// Gives up on a call that never answers, so a retry is always possible
+	function withTimeout<T>(promise: Promise<T>, what: string): Promise<T> {
+		return new Promise<T>((resolve, reject) => {
+			const timer = setTimeout(() => reject(new Error(`No response while ${what}`)), LOAD_TIMEOUT_MS)
+			promise.then(
+				(value) => {
+					clearTimeout(timer)
+					resolve(value)
+				},
+				(error) => {
+					clearTimeout(timer)
+					reject(error)
+				},
+			)
+		})
+	}
+
+	// Shared so a retry while configure is still in flight waits for it rather than
+	// configuring RevenueCat twice; cleared on failure so the next try starts again
+	let configuring: Promise<void> | null = null
+	function configure(apiKey: string) {
+		configuring ??= (async () => {
+			try {
+				isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
+			} catch {}
+			const { Purchases } = await getSdk()
+			await Purchases.configure({ apiKey })
+			await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
+			// Pro status arrives on its own; products don't wait for it
+			Purchases.getCustomerInfo()
+				.then(({ customerInfo }) => applyCustomerInfo(customerInfo))
+				.catch(() => {})
+		})().catch((error) => {
+			configuring = null
+			throw error
+		})
+		return configuring
+	}
 
 	/** Sets up RevenueCat once, then (re)loads products; safe to call again to retry */
 	async function init() {
@@ -132,46 +172,28 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			return
 		}
 
-		if (loading) return
-		loading = true
-		let stage = 'starting purchases'
-		loadError.value = 'Connecting to the App Store…'
-		const timeout = setTimeout(() => {
-			if (loading) loadError.value = `No response while ${stage}.`
-		}, 15000)
-
+		if (loadingProducts.value) return
+		loadingProducts.value = true
+		loadError.value = ''
 		try {
+			await withTimeout(configure(apiKey), 'configuring RevenueCat')
 			const { Purchases } = await getSdk()
-			if (!configured) {
-				try {
-					isPro.value = localStorage.getItem(PRO_CACHE_KEY) === '1'
-				} catch {}
-				stage = 'configuring RevenueCat'
-				await Purchases.configure({ apiKey })
-				await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
-				configured = true
-				// Pro status arrives on its own; products don't wait for it
-				Purchases.getCustomerInfo()
-					.then(({ customerInfo }) => applyCustomerInfo(customerInfo))
-					.catch(() => {})
-			}
-			stage = 'loading products'
-			const result = await Purchases.getProducts({ productIdentifiers: Object.values(PRODUCT_IDS) })
+			const result = await withTimeout(
+				Purchases.getProducts({ productIdentifiers: Object.values(PRODUCT_IDS) }),
+				'loading products',
+			)
 			products.value = result.products
 			isReady.value = result.products.length > 0
 			const known = new Set<string>(Object.values(PRODUCT_IDS))
-			const matched = result.products.filter(p => known.has(p.identifier)).length
-			loadError.value = !result.products.length
-				? 'The App Store returned no products.'
-				: matched
-					? ''
-					: `Unexpected products: ${result.products.map(p => p.identifier).join(', ')}`
+			if (!result.products.some(p => known.has(p.identifier))) {
+				loadError.value = STORE_UNREACHABLE
+				console.warn('In-app purchases: no known products', result.products.map(p => p.identifier))
+			}
 		} catch (error: any) {
-			loadError.value = error?.message ?? String(error)
+			loadError.value = STORE_UNREACHABLE
 			console.warn('In-app purchases unavailable:', error)
 		} finally {
-			loading = false
-			clearTimeout(timeout)
+			loadingProducts.value = false
 		}
 	}
 
@@ -243,6 +265,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		rewardNote,
 		hintBank,
 		loadError,
+		loadingProducts,
 
 		// Computed
 		proProduct,
