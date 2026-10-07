@@ -120,6 +120,7 @@
 		ACHIEVEMENTS,
 		ACHIEVEMENT_GROUPS,
 		TOTAL_ACHIEVEMENT_POINTS,
+		achievementProgress,
 		buildAchievementContext,
 	} from '../utils/achievements'
 
@@ -145,7 +146,7 @@
 			spot: spotball.stats,
 			challenge: challenge.stats,
 		})
-		return Object.fromEntries(ACHIEVEMENTS.map(a => [a.id, Math.round(a.progress(ctx))]))
+		return achievementProgress(ctx)
 	})
 
 	const groups = computed(() =>

@@ -12,7 +12,7 @@ import { useRemindersStore } from '../stores/reminders'
 import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
 import { LEADERBOARD_IDS } from '../utils/appStore'
-import { ACHIEVEMENTS, buildAchievementContext } from '../utils/achievements'
+import { ACHIEVEMENTS, achievementProgress, buildAchievementContext } from '../utils/achievements'
 
 // Progress already sent to Game Center, so only changes are reported
 const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
@@ -139,7 +139,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 			challenge: challenge.stats,
 		})
 		const sent: Record<string, number> = readJson(ACHIEVEMENTS_SENT_KEY) ?? {}
-		const changed = ACHIEVEMENTS.map(a => ({ id: a.id, percent: Math.round(a.progress(ctx)) })).filter(
+		const progress = achievementProgress(ctx)
+		const changed = ACHIEVEMENTS.map(a => ({ id: a.id, percent: progress[a.id] ?? 0 })).filter(
 			a => a.percent > (sent[a.id] ?? 0),
 		)
 		if (changed.length && (await gameCenter.reportAchievements(changed))) {

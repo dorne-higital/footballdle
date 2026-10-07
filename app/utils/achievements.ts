@@ -95,3 +95,32 @@ export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' 
 	} catch {}
 	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed }
 }
+
+const BEST_KEY = 'footballdle-achievement-best'
+
+/** Progress per achievement, 0-100, that never goes backwards: rounded down (249/250
+ *  is 99%, not done) and kept at its best, so a one-day trophy like The Treble stays
+ *  earned once hit. Mirrors Game Center, which never un-earns either. */
+export function achievementProgress(ctx: AchievementContext): Record<string, number> {
+	let best: Record<string, number> = {}
+	try {
+		best = JSON.parse(localStorage.getItem(BEST_KEY) || 'null') ?? {}
+		// Anything already reported to Game Center counts as reached
+		const sent = JSON.parse(localStorage.getItem('footballdle-achievements-sent') || 'null') ?? {}
+		for (const [id, pct] of Object.entries(sent)) best[id] = Math.max(best[id] ?? 0, Number(pct) || 0)
+	} catch {}
+	let changed = false
+	const result: Record<string, number> = {}
+	for (const a of ACHIEVEMENTS) {
+		const live = Math.min(100, Math.floor(a.progress(ctx)))
+		const value = Math.max(live, best[a.id] ?? 0)
+		if (value !== (best[a.id] ?? 0)) changed = true
+		result[a.id] = value
+	}
+	if (changed) {
+		try {
+			localStorage.setItem(BEST_KEY, JSON.stringify(result))
+		} catch {}
+	}
+	return result
+}
