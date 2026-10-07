@@ -112,8 +112,8 @@
 
 			<h2>Contact</h2>
 			<p>
-				If you have any questions about this privacy policy please contact us at
-				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a>.
+				If you have any questions about this privacy policy please contact us using the
+				<NuxtLink to="/feedback?topic=other" title="Contact Footballdle">feedback form</NuxtLink>.
 			</p>
 		</main>
 

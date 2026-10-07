@@ -63,6 +63,7 @@
 		'/how-to-play': 'How to play',
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
+		'/feedback': 'Feedback',
 		'/trophies': 'Trophies',
 		'/stats': 'Stats',
 		'/settings': 'Settings',

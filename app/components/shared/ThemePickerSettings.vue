@@ -237,6 +237,12 @@
 						How to play
 					</NuxtLink>
 					<NuxtLink
+						to="/feedback"
+						@click="modalsStore.closeSettings()"
+					>
+						Send feedback
+					</NuxtLink>
+					<NuxtLink
 						to="/privacy-policy"
 						@click="modalsStore.closeSettings()"
 					>

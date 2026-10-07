@@ -101,8 +101,8 @@
 
 			<h2>Contact</h2>
 			<p>
-				For missing players, bug reports, or anything else:
-				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a>
+				For missing players, bug reports, or anything else, use the
+				<NuxtLink to="/feedback" title="Send feedback">feedback form</NuxtLink>.
 			</p>
 			<p>
 				Response times vary — this is a one-person operation run in spare time — but every message gets

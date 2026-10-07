@@ -107,8 +107,8 @@
 			<p>
 				The player list covers active {{ season }} Premier League squads and is updated regularly. Players must
 				have exactly six letters in their surname to qualify for the daily puzzle. If you think someone is
-				missing, drop us an email at
-				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a> and we'll add them.
+				missing,
+				<NuxtLink to="/feedback?topic=missing-player" title="Report a missing player">let us know</NuxtLink> and we'll add them.
 			</p>
 
 			<h2>I lost my streak — what happened?</h2>
