@@ -33,6 +33,10 @@ export const SPOT_TIER_LABELS = SCORE_TIERS.map((t) => t.label)
 
 const WIN_THRESHOLD = 6
 
+// How long a revealed answer stays up before the next round. A miss gets longer, so
+// there's time to take in who it actually was (a tap skips ahead).
+const REVEAL_MS = { correct: 900, wrong: 1800 }
+
 export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	// REACTIVE STATE
@@ -132,7 +136,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		if (correct) score.value++
 		saveState()
 
-		advanceTimer = setTimeout(() => advanceRound(), 900)
+		advanceTimer = setTimeout(() => advanceRound(), correct ? REVEAL_MS.correct : REVEAL_MS.wrong)
 	}
 
 	function handleTimeout() {
@@ -142,7 +146,14 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		roundResults.value.push({ picked: null, correct: false })
 		saveState()
 
-		advanceTimer = setTimeout(() => advanceRound(), 900)
+		advanceTimer = setTimeout(() => advanceRound(), REVEAL_MS.wrong)
+	}
+
+	/** Tap during the reveal to move on straight away */
+	function skipReveal() {
+		if (!advanceTimer) return
+		clearTimeout(advanceTimer)
+		advanceRound()
 	}
 
 	function advanceRound(startTimer = true) {
@@ -329,6 +340,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		pickOption,
 		pauseRound,
 		resumeRound,
+		skipReveal,
 		closeGameOverModal,
 		startCountdown,
 		stopCountdown,

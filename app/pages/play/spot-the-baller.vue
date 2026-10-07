@@ -58,6 +58,15 @@
 					:score="spotStore.score"
 					@pick="handlePick"
 				/>
+				<button
+					v-if="spotStore.currentRound && spotStore.revealState !== 'idle' && !spotStore.gameOver"
+					type="button"
+					class="reveal-skip"
+					aria-label="Next round"
+					@click="spotStore.skipReveal()"
+				>
+					<span>Tap to continue</span>
+				</button>
 			</PlaySurfaceFrame>
 		</div>
 
@@ -338,6 +347,45 @@
 </script>
 
 <style scoped lang="scss">
+	// Covers the round while an answer is revealed; tapping moves on early
+	.reveal-skip {
+		// Hint sits at the top of the frame, clear of the revealed answer
+		align-items: flex-start;
+		background: transparent;
+		border: 0;
+		cursor: pointer;
+		display: flex;
+		inset: 0;
+		justify-content: center;
+		padding: 0.15rem 0 0;
+		position: absolute;
+		z-index: 3;
+
+		span {
+			animation: reveal-hint 0.3s 0.5s ease-out both;
+			background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+			border: 1px solid var(--border);
+			border-radius: 999px;
+			color: var(--text-secondary);
+			font-size: 0.78rem;
+			font-weight: 700;
+			padding: 0.2rem 0.7rem;
+		}
+	}
+
+	@keyframes reveal-hint {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.reveal-skip span {
+			animation: none;
+		}
+	}
+
 	.spot-page-wrapper {
 		align-items: flex-start;
 		display: flex;
