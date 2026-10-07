@@ -1,6 +1,9 @@
 <template>
 	<div class="static-page">
-		<nav class="static-nav">
+		<nav
+			v-if="!$config.public.isApp"
+			class="static-nav"
+		>
 			<NuxtLink
 				to="/play/daily"
 				class="back-link"
@@ -20,8 +23,15 @@
 				Footballdle is a free daily word game for Premier League football fans. Each day a hidden
 				six-letter player surname is chosen from the current {{ season }} Premier League season — your job is
 				to guess it in up to six tries. After every guess the tiles change colour to reveal how close you
-				are, Wordle-style. There are no ads chasing you around the page, no account required, and no
-				paywalls. Just a clean daily puzzle that takes a couple of minutes to play.
+				are, Wordle-style.
+				<template v-if="$config.public.isApp">
+					There are no ads and no account to make. Every game is free to play, with optional hints if you get
+					stuck.
+				</template>
+				<template v-else>
+					There are no ads chasing you around the page, no account required, and no paywalls.
+				</template>
+				Just a clean daily puzzle that takes a couple of minutes to play.
 			</p>
 
 			<h2>Where the idea came from</h2>
@@ -45,7 +55,11 @@
 				full list has been exhausted. The puzzle resets at midnight UK time — everyone around the world
 				gets the same answer on the same day, which is part of what makes it fun to compare scores.
 			</p>
-			<p>
+			<p v-if="$config.public.isApp">
+				Your streak, statistics and game history are stored on your iPhone. No personal data is collected
+				and there is nothing to sign up for. The downside is that deleting the app resets your stats.
+			</p>
+			<p v-else>
 				Your streak, statistics, and game history are stored locally in your browser using
 				<code>localStorage</code>. Nothing is sent to a server and no personal data is collected. The
 				downside is that clearing your browser data will reset your stats — the upside is that there is

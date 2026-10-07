@@ -1,6 +1,9 @@
 <template>
 	<div class="static-page">
-		<nav class="static-nav">
+		<nav
+			v-if="!$config.public.isApp"
+			class="static-nav"
+		>
 			<NuxtLink
 				to="/play/daily"
 				class="back-link"
@@ -70,7 +73,7 @@
 				<li>You have a maximum of six guesses per day.</li>
 				<li>Letters can appear more than once in an answer — yellow/green hints reflect each instance separately.</li>
 				<li>The on-screen keyboard tracks which letters you have used: green, yellow, and grey keys update after every guess.</li>
-				<li>You can also type on a physical keyboard — press Enter to submit and Backspace to delete.</li>
+				<li v-if="!$config.public.isApp">You can also type on a physical keyboard — press Enter to submit and Backspace to delete.</li>
 			</ul>
 
 			<h2>Tips and strategy</h2>
@@ -94,6 +97,35 @@
 				letter instincts before the next daily puzzle.
 			</p>
 
+			<template v-if="$config.public.isApp">
+				<h2>Scout Report</h2>
+				<p>
+					Guess any Premier League player in six tries. Each guess shows how it compares with the mystery
+					player's club, nationality and position: green is a match, amber is close (for example, a nationality from the
+					same continent), grey is a miss.
+				</p>
+
+				<h2>Spot the Baller</h2>
+				<p>
+					Ten rapid-fire rounds. Each round gives you club, nationality and position clues and four names:
+					pick the right player before the 8-second clock runs out. Get 6 or more right to win the day.
+				</p>
+
+				<h2>Hints</h2>
+				<p>
+					Stuck on the Daily? A hint reveals a clue about the answer: club, nationality, position, then the
+					first and second letters. You start with 3 free hints and earn another for every 5 days of Daily
+					streak. Banked hints never expire. You can buy more hints, or get Pro once for unlimited hints. Both
+					are optional, and every game is free to play without them.
+				</p>
+
+				<h2>Streaks</h2>
+				<p>
+					Each mode keeps its own winning streak. Your Matchday streak on the home screen counts the days in a
+					row you've finished at least one game, win or lose.
+				</p>
+			</template>
+
 			<h2>Frequently asked questions</h2>
 
 			<h2>Why can't I submit my guess?</h2>
@@ -112,7 +144,11 @@
 			</p>
 
 			<h2>I lost my streak — what happened?</h2>
-			<p>
+			<p v-if="$config.public.isApp">
+				Streaks and stats are stored on your iPhone. Deleting the app or switching phones will reset them.
+				There is currently no cloud save, so play on the same phone each day to keep your streak going.
+			</p>
+			<p v-else>
 				Streaks and stats are stored on your device. Deleting the app, clearing your browser data, switching
 				devices or using a private window will reset them. There is currently no cloud save, so play on the
 				same device each day to keep your streak intact.
@@ -120,7 +156,13 @@
 
 			<h2>Is Footballdle free?</h2>
 			<p>
-				Yes — completely free, no sign-up, no subscription.
+				<template v-if="$config.public.isApp">
+					Yes, every game is free to play with no sign-up and no subscription. Extra hints and Pro are
+					optional purchases.
+				</template>
+				<template v-else>
+					Yes — completely free, no sign-up, no subscription.
+				</template>
 				<template v-if="!$config.public.isApp">
 					If you enjoy playing and want to support the game, you can
 					<a
