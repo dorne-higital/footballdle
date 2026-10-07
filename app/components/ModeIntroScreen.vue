@@ -7,7 +7,7 @@
 
 		<div class="intro-content">
 			<div class="eyebrow-row">
-				<span class="eyebrow">{{ eyebrowLabel }}</span>
+				<span class="eyebrow">Today's match</span>
 				<span class="match-no">{{ kickoffLabel }}</span>
 			</div>
 
@@ -56,7 +56,7 @@
 					@click="$emit('start-game')"
 					class="button primary play-button"
 				>
-					{{ hasIncompleteGame ? 'Resume Game' : 'Play Now' }}
+					{{ hasIncompleteGame ? 'Resume game' : 'Play now' }}
 				</button>
 			</div>
 
@@ -111,7 +111,7 @@
 							name="solar:history-linear"
 							size="0.9rem"
 						/>
-						Prev answer
+						Yesterday's answer
 					</NuxtLink>
 				</div>
 
@@ -167,7 +167,7 @@
 						@click="$emit('start-challenge')"
 						class="button primary full large challenge play-button"
 					>
-						Play now!
+						Play now
 					</button>
 				</div>
 			</div>
@@ -221,7 +221,6 @@
 	const todayUK = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
 	const puzzleNumber = getDisplayNumber(todayUK)
 
-	const eyebrowLabel = computed(() => `${props.modeName} Match`)
 	// The reset is UK midnight; say it in the player's own time ("8:00 am" in Sydney).
 	// Worked out on the device, since the website's HTML is rendered elsewhere.
 	const resetTime = ref('midnight UK')
@@ -279,8 +278,10 @@
 			.eyebrow-row {
 				align-items: baseline;
 				display: flex;
+				gap: 0.5rem;
 				justify-content: space-between;
 				margin-bottom: 0.4rem;
+				white-space: nowrap;
 
 				.eyebrow {
 					background: color-mix(in srgb, var(--primary-color) 14%, transparent);
