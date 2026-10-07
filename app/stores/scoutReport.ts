@@ -135,7 +135,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		const trimmed = name.trim()
 		if (!trimmed) return
 		if (!isValidFullFootballer(trimmed)) {
-			setError('Not a valid footballer')
+			setError("Not in this season's Premier League squads")
 			return
 		}
 		if (guesses.value.some((g) => g.toUpperCase() === trimmed.toUpperCase())) {

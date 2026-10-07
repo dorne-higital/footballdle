@@ -55,12 +55,24 @@
 				<span class="s-meta">{{ player.club }}</span>
 			</li>
 		</ul>
+		<ul
+			v-else-if="query.trim().length >= 3"
+			class="suggestions"
+		>
+			<li
+				class="empty"
+				role="status"
+			>
+				No {{ season }} Premier League player matches "{{ query.trim() }}"
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { ref, computed, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
+	import playerMeta from '../../data/meta.json'
 
 	withDefaults(
 		defineProps<{
@@ -73,6 +85,7 @@
 
 	const store = useScoutReportStore()
 	const isApp = !!useRuntimeConfig().public.isApp
+	const season = playerMeta.season
 	const query = ref('')
 	const highlightedIndex = ref(0)
 	const inputEl = ref<HTMLInputElement | null>(null)
@@ -237,8 +250,15 @@
 			justify-content: space-between;
 			padding: 0.5rem 0.6rem;
 
+			&.empty {
+				color: var(--text-secondary);
+				cursor: default;
+				font-size: 0.85rem;
+				justify-content: flex-start;
+			}
+
 			&.active,
-			&:hover {
+			&:not(.empty):hover {
 				background: color-mix(in srgb, var(--primary-color) 12%, transparent);
 			}
 

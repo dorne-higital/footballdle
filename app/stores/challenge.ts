@@ -83,7 +83,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		}
 
 		if (!isValidChallengeFootballer(guess)) {
-			setError('Not a valid footballer')
+			setError("Not a current Premier League surname")
 			return
 		}
 

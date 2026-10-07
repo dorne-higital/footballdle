@@ -114,7 +114,7 @@ export const useGameStore = defineStore('game', () => {
 			return
 		}
 		if (!isValidFootballer(guess)) {
-			setError('Not a valid footballer')
+			setError("Not a current Premier League surname")
 			return
 		}
 		if (guesses.value.map((g) => g.toUpperCase()).includes(guess)) {
