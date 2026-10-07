@@ -83,12 +83,15 @@
 							height="56"
 							loading="lazy"
 						/>
-						<Icon
+						<span
 							v-if="!item.earned"
-							name="solar:lock-keyhole-minimalistic-bold"
-							size="1.1rem"
 							class="lock"
-						/>
+						>
+							<Icon
+								name="solar:lock-keyhole-minimalistic-bold"
+								size="0.8rem"
+							/>
+						</span>
 					</div>
 					<div class="trophy-text">
 						<p class="trophy-title">{{ item.secret ? 'Hidden trophy' : item.title }}</p>
@@ -102,7 +105,7 @@
 							<span :style="{ width: `${item.percent}%` }"></span>
 						</div>
 					</div>
-					<span class="points">{{ item.points }}</span>
+					<span class="points">{{ item.points }}<small> pts</small></span>
 				</li>
 			</ul>
 		</section>
@@ -161,6 +164,8 @@
 					secret: !!a.hidden && !earned,
 				}
 			})
+			// Closest to unlocking first, so there's always something to aim for; earned ones after
+			items.sort((a, b) => Number(a.earned) - Number(b.earned) || (a.earned ? 0 : b.percent - a.percent))
 			return { title: group.title, items, earned: items.filter(i => i.earned).length }
 		}),
 	)
@@ -320,19 +325,32 @@
 
 			img {
 				border-radius: 50%;
-				filter: grayscale(1) brightness(0.45);
+				// Locked: the real badge, faded, so each one is recognisable
+				filter: grayscale(0.85);
 				height: 100%;
+				opacity: 0.4;
 				width: 100%;
 			}
 
 			.lock {
-				color: var(--text-secondary);
+				align-items: center;
+				background: var(--bg-primary);
+				border: 1px solid var(--border);
+				border-radius: 50%;
+				bottom: -0.2rem;
+				color: var(--text-primary);
+				display: flex;
+				height: 1.45rem;
+				justify-content: center;
 				position: absolute;
+				right: -0.2rem;
+				width: 1.45rem;
 			}
 		}
 
 		&.earned .badge img {
 			filter: none;
+			opacity: 1;
 		}
 
 		.trophy-text {
@@ -357,6 +375,12 @@
 			font-size: 0.85rem;
 			font-variant-numeric: tabular-nums;
 			font-weight: 700;
+			white-space: nowrap;
+
+			small {
+				font-size: 0.72rem;
+				font-weight: 600;
+			}
 		}
 
 		&.earned .points {
