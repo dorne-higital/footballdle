@@ -181,6 +181,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 			if (isPaused.value) return
 
 			timeRemaining.value--
+			// Saved every tick so a relaunch can't hand back a fuller clock
+			if (timeRemaining.value > 0) saveChallengeState()
 			if (timeRemaining.value <= 0) {
 				isWin.value = false
 				gameOver.value = true
@@ -206,6 +208,20 @@ export const useChallengeStore = defineStore('challenge', () => {
 			clearInterval(timerInterval.value)
 			timerInterval.value = null
 		}
+	}
+
+	/** Leaving the screen or backgrounding the app: the clock stops where it is
+	 *  (unlike togglePause, nothing on screen changes) */
+	function pauseTimer() {
+		if (!timerInterval.value) return
+		stopTimer()
+		saveChallengeState()
+	}
+
+	/** Back on the challenge screen: carry on from the time that was left */
+	function resumeTimer() {
+		if (!isActive.value || gameOver.value || isPaused.value || timeRemaining.value <= 0 || timerInterval.value) return
+		startTimer()
 	}
 
 	// ============================================================================
@@ -254,10 +270,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 			timeRemaining.value = state.timeRemaining || 45
 			isPaused.value = state.isPaused || false
 			sessionGameIndex.value = state.sessionGameIndex || 0
-
-			if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
-				startTimer()
-			}
+			// The clock isn't restarted here: the challenge screen calls resumeTimer
+			// once it's actually showing
 		}
 	}
 
@@ -302,6 +316,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 		endChallenge,
 		closeGameOverModal,
 		togglePause,
+		pauseTimer,
+		resumeTimer,
 		startTimer,
 		stopTimer,
 		saveChallengeState,

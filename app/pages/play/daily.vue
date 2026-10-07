@@ -1,9 +1,9 @@
 <template>
 	<div class="daily-page-wrapper">
-	<div :class="['daily-page', { 'is-intro': gameStore.showIntro }]">
+	<div :class="['daily-page', { 'is-intro': gameStore.showIntro && !challengeStore.isActive }]">
 		<!-- Intro / ready-to-play screen -->
 		<ModeIntroScreen
-			v-if="gameStore.showIntro"
+			v-if="gameStore.showIntro && !challengeStore.isActive"
 			mode-name="Daily"
 			mode-tagline="Guess the Premier League footballer"
 			:usp-tiles="dailyUspTiles"
@@ -767,6 +767,10 @@
 
 		challengeStore.loadChallengeState()
 		challengeStatsStore.loadStats()
+		// A challenge in progress shows straight away (not behind the intro) and its
+		// clock only runs while the screen is visible
+		challengeStore.resumeTimer()
+		document.addEventListener('visibilitychange', onChallengeVisibility)
 
 		sessionStartTime.value = Date.now()
 
@@ -789,7 +793,14 @@
 
 	onUnmounted(() => {
 		gameStore.stopCountdown()
+		document.removeEventListener('visibilitychange', onChallengeVisibility)
+		challengeStore.pauseTimer()
 	})
+
+	function onChallengeVisibility() {
+		if (document.hidden) challengeStore.pauseTimer()
+		else challengeStore.resumeTimer()
+	}
 
 	// ============================================================================
 	// WATCHERS
