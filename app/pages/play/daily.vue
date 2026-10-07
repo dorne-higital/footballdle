@@ -210,7 +210,7 @@
 
 			<template #footer>
 				<div v-if="gameStore.getNextGameTime">
-					<p class="caption">Next game in:</p>
+					<p class="caption">New puzzles in</p>
 					<h3>{{ gameStore.countdown }}</h3>
 				</div>
 				<NuxtLink
@@ -661,7 +661,7 @@
 
 	const dailyUspTiles = [
 		{ icon: 'solar:calendar-linear', text: 'New player to guess every day' },
-		{ icon: 'solar:football-outline', text: `${playerMeta.season.slice(2)} Premier League players` },
+		{ icon: 'solar:football-outline', text: `${playerMeta.season} Premier League players` },
 		{ icon: 'solar:magnifer-linear', text: 'Only players with 6 letter surnames' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]

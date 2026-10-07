@@ -95,7 +95,7 @@
 				class="fulltime-row"
 			>
 				<span class="next-player">
-					Next player in
+					New puzzles in
 					<strong>{{ countdown }}</strong>
 				</span>
 				<button
@@ -195,7 +195,7 @@
 			v-if="!dailyFinished"
 			class="kickoff"
 		>
-			<span>Next kick-off</span>
+			<span>New puzzles in</span>
 			<strong>{{ countdown }}</strong>
 		</div>
 	</div>

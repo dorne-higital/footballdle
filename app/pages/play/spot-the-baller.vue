@@ -147,7 +147,7 @@
 
 			<template #footer>
 				<div v-if="spotStore.getNextGameTime">
-					<p class="caption">Next game in:</p>
+					<p class="caption">New puzzles in</p>
 					<h3>{{ spotStore.countdown }}</h3>
 				</div>
 				<a

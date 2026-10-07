@@ -82,7 +82,7 @@
 				class="already-played-section"
 			>
 				<h3 class="heading">{{ modeName }} played!</h3>
-				<p class="caption">Looks like you have played today, come back tomorrow to play it again</p>
+				<p class="caption">You've played today's. New puzzles drop at {{ resetTime }}.</p>
 
 				<div class="countdown">
 					<h4>{{ countdown }}</h4>
@@ -98,7 +98,7 @@
 							name="solar:share-linear"
 							size="1rem"
 						/>
-						Todays result
+						Today's result
 					</button>
 
 					<NuxtLink
@@ -159,7 +159,7 @@
 								size="1.5rem"
 							/>
 
-							<h6>Unlimed plays</h6>
+							<h6>Unlimited plays</h6>
 						</div>
 					</div>
 

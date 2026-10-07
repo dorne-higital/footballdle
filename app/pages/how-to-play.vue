@@ -19,7 +19,7 @@
 			<p>
 				Footballdle is a free daily word game for football fans. Your goal is to guess a hidden Premier League
 				footballer's surname in six tries or fewer. A new puzzle drops every day at midnight UK time — your
-				streak and statistics are saved automatically in your browser, no account needed.
+				streak and statistics are saved automatically on your device, no account needed.
 			</p>
 
 			<h2>The basics</h2>
@@ -113,9 +113,9 @@
 
 			<h2>I lost my streak — what happened?</h2>
 			<p>
-				Streaks and stats are stored locally in your browser. Clearing your browser history, switching
-				devices, or using a private/incognito window will reset them. There is currently no cloud save, so
-				play in the same browser each day to keep your streak intact.
+				Streaks and stats are stored on your device. Deleting the app, clearing your browser data, switching
+				devices or using a private window will reset them. There is currently no cloud save, so play on the
+				same device each day to keep your streak intact.
 			</p>
 
 			<h2>Is Footballdle free?</h2>

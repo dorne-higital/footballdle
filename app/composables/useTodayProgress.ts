@@ -35,7 +35,7 @@ function guessProgress(saved: any, noun = 'guess'): ModeProgress {
 	if (count > 0) {
 		return { status: 'playing', progress: count / MAX_GUESSES, label: `${noun} ${count + 1} of ${MAX_GUESSES}` }
 	}
-	return { status: 'new', progress: 0, label: 'Not played' }
+	return { status: 'new', progress: 0, label: 'To play' }
 }
 
 // Feedback colours for a guess, matching the board's duplicate-letter rules
@@ -65,7 +65,7 @@ function scoreGuess(guess: string, answer: string): TileState[] {
 export function useTodayProgress() {
 	const daily = ref<ModeProgress>(guessProgress(null))
 	const scout = ref<ModeProgress>(guessProgress(null))
-	const spot = ref<ModeProgress>({ status: 'new', progress: 0, label: 'Not played' })
+	const spot = ref<ModeProgress>({ status: 'new', progress: 0, label: 'To play' })
 	const dailyLastGuess = ref<TileState[]>([])
 	// Filled in once each game is finished, for the home screen's full-time cards
 	const dailyGuesses = ref<string[]>([])
@@ -97,7 +97,7 @@ export function useTodayProgress() {
 				label: `Round ${round + 1} of ${SPOT_ROUNDS_PER_MATCH}`,
 			}
 		} else {
-			spot.value = { status: 'new', progress: 0, label: 'Not played' }
+			spot.value = { status: 'new', progress: 0, label: 'To play' }
 		}
 	}
 

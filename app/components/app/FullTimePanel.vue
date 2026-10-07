@@ -11,7 +11,7 @@
 			v-if="countdown"
 			class="ft-next"
 		>
-			Next game in <strong>{{ countdown }}</strong>
+			New puzzles in <strong>{{ countdown }}</strong>
 		</p>
 		<div class="ft-actions">
 			<button

@@ -1,6 +1,9 @@
 <template>
 	<div class="solution-page">
-		<nav class="solution-nav">
+		<nav
+			v-if="!$config.public.isApp"
+			class="solution-nav"
+		>
 			<NuxtLink
 				to="/play/daily"
 				class="back-link"
@@ -64,9 +67,8 @@
 				class="solution-description"
 			>
 				The answer to Footballdle puzzle #{{ puzzleNumber }} on {{ formattedDate }} was
-				<strong>{{ answer.toUpperCase() }}</strong> — a {{ playerData.nationality }}
-				{{ playerData.position.toLowerCase() }} who plays for {{ playerData.club }} in the Premier
-				League. Did you get it? Come back tomorrow for a new puzzle.
+				<strong>{{ answer.toUpperCase() }}</strong>, who plays as {{ positionPhrase }} for
+				{{ playerData.club }} ({{ playerData.nationality }}). Did you get it? Come back tomorrow for a new puzzle.
 			</p>
 
 			<AdUnit />
@@ -100,10 +102,13 @@
 					</NuxtLink>
 				</div>
 			</div>
-			<AdUnit />
+			<AdUnit v-if="!$config.public.isApp" />
 		</main>
 
-		<footer class="solution-footer">
+		<footer
+			v-if="!$config.public.isApp"
+			class="solution-footer"
+		>
 			<p>A new Premier League footballer to guess every day at midnight (UK time).</p>
 			<NuxtLink to="/" title="Play Footballdle">footballdle.co.uk</NuxtLink>
 		</footer>
@@ -162,7 +167,8 @@
 
 	const ukToday = getUKToday()
 
-	if (parsedDate > ukToday) {
+	// Today's answer stays hidden until tomorrow
+	if (parsedDate >= ukToday) {
 		throw createError({ statusCode: 404, statusMessage: 'This puzzle has not been released yet' })
 	}
 
@@ -191,10 +197,13 @@
 		.slice(0, 5)
 
 	const answerUpper = answer.toUpperCase()
+	// "Central Midfield" -> "a central midfielder", "Attacking Midfield" -> "an attacking midfielder"
+	const positionNoun = (playerData?.position ?? '').toLowerCase().replace(/midfield$/, 'midfielder')
+	const positionPhrase = `${/^[aeiou]/.test(positionNoun) ? 'an' : 'a'} ${positionNoun}`
 	const playerDesc = playerData ? ` – ${playerData.position} for ${playerData.club}` : ''
 
 	const faqAnswer = playerData
-		? `The Footballdle answer on ${formattedDate} was ${answerUpper} — a ${playerData.nationality} ${playerData.position.toLowerCase()} who plays for ${playerData.club} in the Premier League.`
+		? `The Footballdle answer on ${formattedDate} was ${answerUpper}, who plays as ${positionPhrase} for ${playerData.club} (${playerData.nationality}).`
 		: `The Footballdle answer on ${formattedDate} was ${answerUpper}.`
 
 	useHead({
