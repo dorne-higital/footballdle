@@ -101,6 +101,17 @@ const NATIONALITY_NAMES: Record<string, string> = {
 }
 const nation = (name: string) => NATIONALITY_NAMES[name] ?? name
 
+// Players neither source gives a nationality for (matched by key(name)). Only add
+// ones you're sure of: a wrong nation is worse than 'Unknown' in Scout.
+const NATIONALITY_OVERRIDES: Record<string, string> = {
+	'ali al hamadi': 'Iraq',
+	'amario cozier-duberry': 'England',
+	'christantus uche': 'Nigeria',
+	'diego coppola': 'Italy',
+	'jahnoah markelo': 'Netherlands',
+	'norman bassette': 'Belgium',
+}
+
 const FPL_POSITIONS: Record<number, Position> = { 1: 'Goalkeeper', 2: 'Defender', 3: 'Midfielder', 4: 'Forward' }
 const POSITION_GROUPS: Record<string, string> = {
 	Goalkeeper: 'Goalkeeper',
@@ -234,7 +245,8 @@ function buildRoster(fpl: any, fd: any, previous: Map<string, Player>): Player[]
 		const coarse = FPL_POSITIONS[e.element_type] ?? 'Midfielder'
 		// Keep a detailed position we already had (e.g. Centre-Back) if it still fits
 		const position = prev && group(prev.position) === coarse ? prev.position : coarse
-		const nationality = fdMatch?.nationality || regionNationality.get(e.region) || prev?.nationality || 'Unknown'
+		const nationality =
+			fdMatch?.nationality || regionNationality.get(e.region) || NATIONALITY_OVERRIDES[key(name)] || prev?.nationality || 'Unknown'
 		const minutes = Number(e.minutes) || 0
 		const ownership = Number(e.selected_by_percent) || 0
 		const known =

@@ -81,6 +81,7 @@ const NATIONALITY_CONFEDERATION: Record<string, Confederation> = {
 	Tunisia: 'CAF',
 
 	Australia: 'AFC',
+	Iraq: 'AFC',
 	Japan: 'AFC',
 	'South Korea': 'AFC',
 	Uzbekistan: 'AFC',
