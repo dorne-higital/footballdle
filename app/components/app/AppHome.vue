@@ -184,7 +184,18 @@
 				<strong>Challenge mode</strong>
 				<span>{{ challengeUnlocked ? 'Unlimited games against the clock' : 'Finish today\'s Daily to unlock' }}</span>
 			</span>
+			<span
+				v-if="!challengeUnlocked"
+				class="lock-chip"
+			>
+				<Icon
+					name="solar:lock-keyhole-minimalistic-bold"
+					size="0.8rem"
+				/>
+				Locked
+			</span>
 			<Icon
+				v-else
 				name="solar:alt-arrow-right-linear"
 				size="1.2rem"
 				class="chevron"
@@ -714,8 +725,20 @@
 		gap: 0.85rem;
 		padding: 0.9rem 1rem;
 
-		&.locked {
-			opacity: 0.7;
+		// Locked: full-contrast text with a lock chip, rather than fading the whole row
+		.lock-chip {
+			align-items: center;
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 999px;
+			color: var(--text-secondary);
+			display: inline-flex;
+			flex-shrink: 0;
+			font-size: 0.72rem;
+			font-weight: 800;
+			gap: 0.25rem;
+			margin-left: auto;
+			padding: 0.25rem 0.55rem;
 		}
 
 		.chevron {
@@ -740,21 +763,22 @@
 			color: var(--primary-color);
 			font-size: 11rem;
 			height: 11rem;
-			opacity: 0.1;
-			right: -2rem;
+			opacity: 0.07;
+			right: -3rem;
 			top: 1.5rem;
 			bottom: auto;
 			width: 11rem;
 		}
 
+		// Kept faint so they read as texture behind the text, not as smudges
 		&.scout {
 			color: var(--fl-blue);
-			opacity: 0.22;
+			opacity: 0.1;
 		}
 
 		&.spot {
 			color: var(--tertiary-color);
-			opacity: 0.22;
+			opacity: 0.1;
 		}
 
 		&.challenge {
@@ -762,7 +786,7 @@
 			color: var(--fl-red);
 			font-size: 5.5rem;
 			height: 5.5rem;
-			opacity: 0.22;
+			opacity: 0.1;
 			right: 2.25rem;
 			width: 5.5rem;
 		}
