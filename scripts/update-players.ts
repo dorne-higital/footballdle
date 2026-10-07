@@ -27,6 +27,8 @@ const META_PATH = join(ROOT, 'app/data/meta.json')
 const DRY_RUN = process.argv.includes('--dry-run')
 // Re-plan the schedule from the saved players.json without fetching anything
 const OFFLINE = process.argv.includes('--offline')
+// Re-plan every upcoming Daily answer (from tomorrow), e.g. after changing how they're picked
+const REPLAN_DAILY = process.argv.includes('--replan-daily')
 
 // football-data.org free-tier token (it only reads public squad lists)
 const FOOTBALL_DATA_TOKEN = process.env.FOOTBALL_DATA_TOKEN || 'f425457f0ccb4f5cb2b99e8574ebb762'
@@ -65,6 +67,11 @@ interface Player {
 	pop: number
 	/** FPL's short display name ('Saka', 'Alisson', 'B.Fernandes'): how fans refer to them */
 	webName?: string
+	/** FPL price in tenths (55 = £5.5m): the best 'have people heard of them' signal, since
+	 *  it holds up for injured stars when minutes and ownership don't */
+	cost?: number
+	/** FPL position code: 1 goalkeeper, 2 defender, 3 midfielder, 4 forward */
+	fplType?: number
 }
 /** [name, club, nationality, position] — a frozen copy of the player as they were that day */
 type Snapshot = [string, string, string, string]
@@ -176,6 +183,8 @@ const KNOWN_BY_FIRST_NAME = new Set(['alisson becker'])
 
 function dailyEligible(p: Player): boolean {
 	if (KNOWN_BY_FIRST_NAME.has(key(p.name))) return false
+	// Backup and third-choice keepers (FPL prices them under £4.5m)
+	if (p.fplType === 1 && p.cost !== undefined && p.cost < 45) return false
 	const parts = p.name.trim().split(/\s+/)
 	if (parts.length !== 2 || parts[1]!.includes('-')) return false
 	if (!p.webName) return true
@@ -283,6 +292,8 @@ function buildRoster(fpl: any, fd: any, previous: Map<string, Player>): Player[]
 			dailyKnown,
 			pop: Math.round(minutes + ownership * 100),
 			webName: String(e.web_name || ''),
+			cost: Number(e.now_cost) || 0,
+			fplType: Number(e.element_type) || 0,
 		})
 	}
 
@@ -309,21 +320,42 @@ function extendAnswers(
 	noRepeat: number,
 	seed: number,
 	snap: (p: Player) => Snapshot = snapshot,
+	weight?: (p: Player) => number,
+	gapShare = 0.8,
 ) {
 	let added = 0
 	// Never ask for a gap longer than most of the pool, or picks would run dry
-	const gap = Math.min(noRepeat, Math.floor(pool.length * 0.8))
+	const gap = Math.min(noRepeat, Math.floor(pool.length * gapShare))
 	while (list.start + list.answers.length - 1 < lastPuzzle) {
 		const puzzle = list.start + list.answers.length
 		const recent = new Set(list.answers.slice(-gap).map(s => key(s[0])))
 		const candidates = pool.filter(p => !recent.has(key(snap(p)[0])))
 		const from = candidates.length ? candidates : pool
-		const pick = seededShuffle(from, seed + puzzle)[0]!
+		const pick = weight ? weightedPick(from, weight, seed + puzzle) : seededShuffle(from, seed + puzzle)[0]!
 		list.answers.push(snap(pick))
 		added++
 	}
 	return added
 }
+
+/** Deterministic weighted choice: the same seed always gives the same player */
+function weightedPick(from: Player[], weight: (p: Player) => number, seed: number): Player {
+	const sorted = [...from].sort((a, b) => a.name.localeCompare(b.name))
+	const weights = sorted.map(p => Math.max(0, weight(p)))
+	const total = weights.reduce((a, b) => a + b, 0)
+	let s = seed >>> 0
+	for (let i = 0; i < 3; i++) s = (Math.imul(s, 1664525) + 1013904223) >>> 0
+	let r = (s / 2 ** 32) * total
+	for (let i = 0; i < sorted.length; i++) {
+		r -= weights[i]!
+		if (r < 0) return sorted[i]!
+	}
+	return sorted[sorted.length - 1]!
+}
+
+// Daily picks lean towards players people know: weight rises with FPL price, so a
+// £10m star turns up far more often than a £4.5m squad player (who still can)
+const dailyWeight = (p: Player) => Math.max(1, (p.cost || 45) - 38) ** 2
 
 function similarity(a: Player, b: Player) {
 	let score = 0
@@ -411,7 +443,8 @@ async function main() {
 		return !!p && !dailyEligible(p)
 	}
 	const badDaily = schedule.daily.answers.findIndex(
-		(a, i) => !DAILY_ANSWER.test(a[0]) || (schedule.daily.start + i > today && ineligible(a)),
+		(a, i) =>
+			!DAILY_ANSWER.test(a[0]) || (schedule.daily.start + i > today && (REPLAN_DAILY || ineligible(a))),
 	)
 	if (badDaily !== -1) {
 		const puzzle = schedule.daily.start + badDaily
@@ -419,7 +452,8 @@ async function main() {
 		const dropped = schedule.daily.answers.splice(badDaily).length
 		console.log(`Re-planning ${dropped} Daily answers from #${puzzle} (malformed, or the player no longer qualifies)`)
 	}
-	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot)
+	// A shorter no-repeat gap than Scout so the weighting has room to favour well-known names
+	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot, dailyWeight, 0.5)
 	const stillBad = schedule.daily.answers.filter(a => !DAILY_ANSWER.test(a[0]))
 	if (stillBad.length) throw new Error(`Daily answers must be 6-letter surnames: ${stillBad.map(a => a[0]).join(', ')}`)
 	const addedScout = extendAnswers(schedule.scout, known, lastPuzzle, NO_REPEAT_DAYS.scout, 20260102)
