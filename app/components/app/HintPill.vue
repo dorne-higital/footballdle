@@ -24,10 +24,9 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useHaptics } from '../../composables/useHaptics'
 
-	// Hint bank shown on screen; tapping opens the Daily hint shop
+	// Hint bank shown on screen; tapping opens the hint shop
 	const purchases = usePurchasesStore()
 	const haptics = useHaptics()
-	const route = useRoute()
 	const showHintShop = useState('hint-shop-open', () => false)
 
 	// A quick pulse whenever hints arrive (a purchase, the welcome gift or a streak reward)
@@ -42,9 +41,9 @@
 		},
 	)
 
-	async function openShop() {
+	// Opens the shop over whatever screen you're on (components/app/HintShopSheet.vue)
+	function openShop() {
 		haptics.select()
-		if (!route.path.startsWith('/play/daily')) await navigateTo('/play/daily')
 		showHintShop.value = true
 	}
 </script>
