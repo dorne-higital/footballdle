@@ -823,16 +823,7 @@
 	// ============================================================================
 	// WATCHERS
 	// ============================================================================
-	watch(
-		() => gameStore.getUKDateString(),
-		(newDate, oldDate) => {
-			if (newDate !== oldDate) {
-				gameStore.resetGame()
-				challengeStore.resetDaily()
-				location.reload()
-			}
-		},
-	)
+	// A new UK day is handled by plugins/day-rollover.client.ts (reloads the app)
 
 	watch(
 		() => gameStore.showGameOverModal,
