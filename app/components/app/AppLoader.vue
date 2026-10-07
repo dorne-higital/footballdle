@@ -135,7 +135,9 @@
 
 	// iOS app intro: takes over from the native splash, plays a short floodlight
 	// animation while the first screen settles, then fades away
-	const MIN_SHOW_MS = 1400
+	// Long enough for the ring to draw, short enough not to feel like a wait. With
+	// Reduce Motion there's no animation to watch, so it goes as soon as it can.
+	const MIN_SHOW_MS = 800
 	const visible = ref(true)
 
 	onMounted(() => {
@@ -143,7 +145,8 @@
 		// The web view now looks identical to the launch screen, so drop the native one
 		requestAnimationFrame(() => SplashScreen.hide({ fadeOutDuration: 0 }).catch(() => {}))
 		const finish = () => {
-			const wait = Math.max(0, MIN_SHOW_MS - (performance.now() - shownAt))
+			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			const wait = reduced ? 0 : Math.max(0, MIN_SHOW_MS - (performance.now() - shownAt))
 			setTimeout(() => (visible.value = false), wait)
 		}
 		if (document.readyState === 'complete') finish()
@@ -178,7 +181,7 @@
 	}
 
 	.ring-draw {
-		animation: draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards;
+		animation: draw 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.05s forwards;
 		fill: none;
 		stroke: #2fe08a;
 		stroke-dasharray: 2074;
@@ -188,7 +191,7 @@
 	}
 
 	.halfway {
-		animation: sweep 0.9s ease-out 0.35s both;
+		animation: sweep 0.55s ease-out 0.2s both;
 		transform-box: fill-box;
 		transform-origin: center;
 	}
@@ -199,11 +202,11 @@
 	}
 
 	.wordmark {
-		animation: rise 0.6s ease-out 0.5s both;
+		animation: rise 0.4s ease-out 0.25s both;
 		bottom: calc(env(safe-area-inset-bottom) + 12vh);
 		color: #eaf5ee;
 		font-family: var(--font-display);
-		font-size: 1.1rem;
+		font-size: 1.4rem;
 		letter-spacing: 0.04em;
 		margin: 0;
 		opacity: 0.85;
@@ -212,8 +215,8 @@
 
 	.loader-leave-active {
 		transition:
-			opacity 0.45s ease,
-			transform 0.45s ease;
+			opacity 0.3s ease,
+			transform 0.3s ease;
 	}
 
 	.loader-leave-to {
@@ -258,6 +261,27 @@
 		to {
 			opacity: 0.85;
 			transform: translateY(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ring-draw,
+		.halfway,
+		.glow,
+		.wordmark {
+			animation: none;
+		}
+
+		.ring-draw {
+			stroke-dashoffset: 0;
+		}
+
+		.loader-leave-active {
+			transition: opacity 0.2s ease;
+		}
+
+		.loader-leave-to {
+			transform: none;
 		}
 	}
 </style>
