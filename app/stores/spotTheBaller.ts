@@ -52,6 +52,9 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	const revealState = ref<'idle' | 'correct' | 'wrong'>('idle')
 	const timeRemaining = ref(SPOT_ROUND_TIME)
 	let timerInterval: ReturnType<typeof setInterval> | null = null
+	// A match picked up again (relaunch, back from another screen or the background)
+	// waits for a tap before its clock runs, so nobody lands on a ticking round
+	const awaitingResume = ref(false)
 	let advanceTimer: ReturnType<typeof setTimeout> | null = null
 
 	const gameOver = ref(false)
@@ -113,6 +116,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	function startGame() {
 		showIntro.value = false
+		awaitingResume.value = false
 		roundIndex.value = 0
 		score.value = 0
 		roundResults.value = []
@@ -219,7 +223,17 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		if (roundResults.value.length || roundIndex.value) saveState()
 	}
 
+	/** Back on screen: hold the round until the player taps to carry on */
 	function resumeRound() {
+		if (gameOver.value || showIntro.value || revealState.value !== 'idle' || timerInterval) return
+		if (roundResults.value.length > roundIndex.value) return
+		awaitingResume.value = true
+	}
+
+	/** The tap: the clock picks up from where it stopped */
+	function continueRound() {
+		if (!awaitingResume.value) return
+		awaitingResume.value = false
 		if (gameOver.value || showIntro.value || revealState.value !== 'idle' || timerInterval) return
 		if (roundResults.value.length > roundIndex.value) return
 		startRoundTimer(timeRemaining.value > 0 ? timeRemaining.value : SPOT_ROUND_TIME)
@@ -304,7 +318,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 						timeRemaining.value = t > 0 && t <= SPOT_ROUND_TIME ? t : SPOT_ROUND_TIME
 					}
 					revealState.value = 'idle'
-					startRoundTimer(timeRemaining.value)
+					awaitingResume.value = true
 				}
 			}
 		}
@@ -340,6 +354,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		pickOption,
 		pauseRound,
 		resumeRound,
+		continueRound,
+		awaitingResume,
 		skipReveal,
 		closeGameOverModal,
 		startCountdown,

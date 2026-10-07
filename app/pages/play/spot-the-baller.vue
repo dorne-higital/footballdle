@@ -84,6 +84,21 @@
 					@pick="handlePick"
 				/>
 				<button
+					v-if="spotStore.awaitingResume && !spotStore.gameOver"
+					type="button"
+					class="resume-cover"
+					@click="spotStore.continueRound()"
+				>
+					<span class="resume-card">
+						<Icon
+							name="solar:play-circle-bold"
+							size="2.4rem"
+						/>
+						<strong>Round {{ spotStore.roundIndex + 1 }} of {{ spotStore.maxGuesses }}</strong>
+						<span>{{ spotStore.timeRemaining }}s on the clock. Tap to continue.</span>
+					</span>
+				</button>
+				<button
 					v-if="spotStore.currentRound && spotStore.revealState !== 'idle' && !spotStore.gameOver"
 					type="button"
 					class="reveal-skip"
@@ -518,6 +533,40 @@
 
 		.share-result-btn {
 			width: 100%;
+		}
+	}
+
+	// A resumed match waits behind this until the player taps
+	.resume-cover {
+		align-items: center;
+		backdrop-filter: blur(10px);
+		background: color-mix(in srgb, var(--bg-primary) 70%, transparent);
+		border: 0;
+		cursor: pointer;
+		display: flex;
+		inset: 0;
+		justify-content: center;
+		position: absolute;
+		z-index: 4;
+
+		.resume-card {
+			align-items: center;
+			color: var(--text-secondary);
+			display: flex;
+			flex-direction: column;
+			font-size: 0.9rem;
+			gap: 0.4rem;
+
+			.iconify,
+			svg {
+				color: var(--primary-color);
+			}
+
+			strong {
+				color: var(--text-primary);
+				font-family: var(--font-display);
+				font-size: 1.2rem;
+			}
 		}
 	}
 
