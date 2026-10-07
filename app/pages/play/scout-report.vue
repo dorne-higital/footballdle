@@ -36,6 +36,13 @@
 					@guess="handleGuess"
 				/>
 			</PlaySurfaceFrame>
+			<FullTimePanel
+				v-if="$config.public.isApp && scoutStore.gameOver"
+				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
+				:is-win="scoutStore.isWin"
+				:countdown="scoutStore.countdown"
+				@result="scoutStore.showGameOverModal = true"
+			/>
 		</div>
 
 		<!-- Game Over Modal -->
@@ -176,6 +183,7 @@
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
+	import FullTimePanel from '../../components/app/FullTimePanel.vue'
 	import { useShare } from '../../composables/useShare'
 
 	definePageMeta({ layout: 'play' })
@@ -290,8 +298,14 @@
 		scoutStore.startCountdown()
 		sessionStartTime.value = Date.now()
 
-		// iOS app: the Matchday home links straight into play, skipping the intro screen
-		if (useRoute().query.start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
+		// iOS app: the Matchday home links straight into play, skipping the intro screen,
+		// and a finished game opens on its board (result sheet too from "See result")
+		const start = useRoute().query.start
+		if (start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
+		if (useRuntimeConfig().public.isApp && scoutStore.gameOver) {
+			scoutStore.showIntro = false
+			if (start === 'result') scoutStore.showGameOverModal = true
+		}
 	})
 
 	onUnmounted(() => {

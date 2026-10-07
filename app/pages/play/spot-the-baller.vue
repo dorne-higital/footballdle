@@ -46,8 +46,33 @@
 			</p>
 
 			<PlaySurfaceFrame>
+				<ol
+					v-if="isAppBuild && spotStore.gameOver"
+					class="spot-recap"
+					aria-label="Round by round"
+				>
+					<li
+						v-for="(round, i) in spotStore.rounds"
+						:key="i"
+						:class="spotStore.roundResults[i]?.correct ? 'right' : 'wrong'"
+					>
+						<span class="recap-num">{{ i + 1 }}</span>
+						<span class="recap-name">{{ round.target.name }}</span>
+						<span
+							v-if="!spotStore.roundResults[i]?.correct"
+							class="recap-pick"
+						>
+							{{ spotStore.roundResults[i]?.picked || 'Ran out of time' }}
+						</span>
+						<Icon
+							:name="spotStore.roundResults[i]?.correct ? 'solar:check-circle-bold' : 'solar:close-circle-bold'"
+							size="1.15rem"
+							class="recap-icon"
+						/>
+					</li>
+				</ol>
 				<SpotRoundCard
-					v-if="spotStore.currentRound"
+					v-else-if="spotStore.currentRound"
 					:round="spotStore.currentRound"
 					:reveal-state="spotStore.revealState"
 					:time-remaining="spotStore.timeRemaining"
@@ -68,6 +93,13 @@
 					<span>Tap to continue</span>
 				</button>
 			</PlaySurfaceFrame>
+			<FullTimePanel
+				v-if="isAppBuild && spotStore.gameOver"
+				:summary="`${spotStore.score}/${spotStore.maxGuesses} · ${spotStore.scoreLabel}`"
+				:is-win="spotStore.isWin"
+				:countdown="spotStore.countdown"
+				@result="spotStore.showGameOverModal = true"
+			/>
 		</div>
 
 		<!-- Game Over Modal -->
@@ -201,7 +233,10 @@
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
+	import FullTimePanel from '../../components/app/FullTimePanel.vue'
 	import { useShare } from '../../composables/useShare'
+
+	const isAppBuild = !!useRuntimeConfig().public.isApp
 
 	definePageMeta({ layout: 'play' })
 
@@ -330,8 +365,14 @@
 		spotStore.startCountdown()
 		sessionStartTime.value = Date.now()
 
-		// iOS app: the Matchday home links straight into play, skipping the intro screen
-		if (useRoute().query.start === 'play' && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
+		// iOS app: the Matchday home links straight into play, skipping the intro screen,
+		// and a finished game opens on its recap (result sheet too from "See result")
+		const start = useRoute().query.start
+		if (start === 'play' && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
+		if (isAppBuild && spotStore.gameOver) {
+			spotStore.showIntro = false
+			if (start === 'result') spotStore.showGameOverModal = true
+		}
 		document.addEventListener('visibilitychange', onVisibility)
 	})
 
@@ -375,6 +416,62 @@
 </script>
 
 <style scoped lang="scss">
+	// Finished game (app): who each round was, and what you picked when wrong
+	.spot-recap {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		list-style: none;
+		margin: 0;
+		overflow-y: auto;
+		padding: 0.25rem 0.4rem 0.6rem;
+
+		li {
+			align-items: center;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 0.8rem;
+			display: grid;
+			gap: 0.1rem 0.6rem;
+			grid-template-columns: 1.4rem 1fr auto;
+			padding: 0.45rem 0.7rem;
+			text-align: left;
+		}
+
+		.recap-num {
+			color: var(--text-secondary);
+			font-size: 0.75rem;
+			font-weight: 800;
+			grid-row: span 2;
+		}
+
+		.recap-name {
+			font-weight: 700;
+			text-transform: capitalize;
+		}
+
+		.recap-icon {
+			grid-column: 3;
+			grid-row: 1 / span 2;
+		}
+
+		.right .recap-icon {
+			color: var(--color-success);
+		}
+
+		.wrong .recap-icon {
+			color: var(--color-error, #ff6b6b);
+		}
+
+		.recap-pick {
+			color: var(--text-secondary);
+			font-size: 0.75rem;
+			grid-column: 2;
+			text-decoration: line-through;
+			text-transform: capitalize;
+		}
+	}
+
 
 	// Result-sheet share preview (Scout rows / Spot dots) and button
 	.result-share {

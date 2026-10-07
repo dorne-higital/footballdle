@@ -89,7 +89,16 @@
 				{{ appHintLabel }}
 			</button>
 
+			<FullTimePanel
+				v-if="$config.public.isApp && gameStore.gameOver"
+				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
+				:is-win="gameStore.isWin"
+				:countdown="gameStore.countdown"
+				:challenge="challengeStore.isUnlocked"
+				@result="gameStore.showGameOverModal = true"
+			/>
 			<Keyboard
+				v-else
 				:disabled="gameStore.gameOver"
 				:guesses="gameStore.guesses"
 				:answer="gameStore.answer"
@@ -503,6 +512,7 @@
 	import { useChallengeStore } from '../../stores/challenge'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
+	import FullTimePanel from '../../components/app/FullTimePanel.vue'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
@@ -513,6 +523,8 @@
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
+
+	const isAppBuild = !!useRuntimeConfig().public.isApp
 
 	definePageMeta({ layout: 'play' })
 
@@ -780,6 +792,12 @@
 			if (start === 'play' && gameStore.canPlay) handleStartGame()
 			else if (start === 'challenge' && challengeStore.isUnlocked) handleStartChallenge()
 		}
+		// iOS app: a finished Daily opens on its board (no web intro), with the result
+		// sheet straight away when coming from the Matchday "See result" card
+		if (isAppBuild && gameStore.gameOver && !challengeStore.isActive) {
+			gameStore.showIntro = false
+			if (start === 'result') gameStore.showGameOverModal = true
+		}
 	})
 
 	onUnmounted(() => {
@@ -910,7 +928,8 @@
 			trackChallengeAbandon(45 - challengeStore.timeRemaining)
 		}
 		challengeStore.endChallenge()
-		gameStore.showIntro = true
+		// The app goes back to the finished board; the website to its intro
+		gameStore.showIntro = !isAppBuild
 	}
 
 	function handleChallengePlayAgain() {

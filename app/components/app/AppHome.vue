@@ -49,7 +49,7 @@
 		</section>
 
 		<NuxtLink
-			:to="{ path: '/play/daily', query: daily.status === 'new' || daily.status === 'playing' ? { start: 'play' } : {} }"
+			:to="{ path: '/play/daily', query: { start: daily.status === 'new' || daily.status === 'playing' ? 'play' : 'result' } }"
 			class="daily-hero"
 		>
 			<Icon
@@ -119,7 +119,7 @@
 
 		<div class="mode-grid">
 			<NuxtLink
-				:to="{ path: '/play/scout-report', query: scout.status === 'won' || scout.status === 'lost' ? {} : { start: 'play' } }"
+				:to="{ path: '/play/scout-report', query: { start: scout.status === 'won' || scout.status === 'lost' ? 'result' : 'play' } }"
 				class="mode-card"
 			>
 				<Icon
@@ -143,7 +143,7 @@
 				</span>
 			</NuxtLink>
 			<NuxtLink
-				:to="{ path: '/play/spot-the-baller', query: spot.status === 'won' ? {} : { start: 'play' } }"
+				:to="{ path: '/play/spot-the-baller', query: { start: spot.status === 'won' || spot.status === 'lost' ? 'result' : 'play' } }"
 				class="mode-card"
 			>
 				<Icon
