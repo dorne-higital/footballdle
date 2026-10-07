@@ -10,7 +10,8 @@
 		"pop": 7840,
 		"webName": "Haaland",
 		"cost": 156,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 450
 	},
 	{
 		"name": "joão pedro",
@@ -23,7 +24,8 @@
 		"pop": 6820,
 		"webName": "João Pedro",
 		"cost": 77,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 360
 	},
 	{
 		"name": "riccardo calafiori",
@@ -36,7 +38,8 @@
 		"pop": 5476,
 		"webName": "Calafiori",
 		"cost": 59,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 416
 	},
 	{
 		"name": "david raya",
@@ -49,7 +52,8 @@
 		"pop": 4690,
 		"webName": "Raya",
 		"cost": 61,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "morgan rogers",
@@ -62,7 +66,8 @@
 		"pop": 4527,
 		"webName": "Rogers",
 		"cost": 78,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 437
 	},
 	{
 		"name": "bruno fernandes",
@@ -75,7 +80,8 @@
 		"pop": 4290,
 		"webName": "B.Fernandes",
 		"cost": 119,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "dominik szoboszlai",
@@ -88,7 +94,8 @@
 		"pop": 3680,
 		"webName": "Szoboszlai",
 		"cost": 69,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 440
 	},
 	{
 		"name": "pascal groß",
@@ -101,7 +108,8 @@
 		"pop": 3440,
 		"webName": "Groß",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "maxim de cuyper",
@@ -114,7 +122,8 @@
 		"pop": 3243,
 		"webName": "De Cuyper",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 423
 	},
 	{
 		"name": "rayan cherki",
@@ -127,7 +136,8 @@
 		"pop": 3142,
 		"webName": "Cherki",
 		"cost": 78,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 302
 	},
 	{
 		"name": "joško gvardiol",
@@ -140,7 +150,8 @@
 		"pop": 3124,
 		"webName": "Gvardiol",
 		"cost": 57,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 434
 	},
 	{
 		"name": "cole palmer",
@@ -153,7 +164,8 @@
 		"pop": 2962,
 		"webName": "Palmer",
 		"cost": 97,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 442
 	},
 	{
 		"name": "dominic calvert-lewin",
@@ -166,7 +178,8 @@
 		"pop": 2889,
 		"webName": "Calvert-Lewin",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 419
 	},
 	{
 		"name": "gabriel magalhães",
@@ -179,7 +192,8 @@
 		"pop": 2720,
 		"webName": "Gabriel",
 		"cost": 80,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "alexander isak",
@@ -192,7 +206,8 @@
 		"pop": 2613,
 		"webName": "Isak",
 		"cost": 91,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 413
 	},
 	{
 		"name": "bart verbruggen",
@@ -205,7 +220,8 @@
 		"pop": 2610,
 		"webName": "Verbruggen",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "bryan mbeumo",
@@ -218,7 +234,8 @@
 		"pop": 2500,
 		"webName": "Mbeumo",
 		"cost": 79,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "martin ødegaard",
@@ -231,7 +248,8 @@
 		"pop": 2367,
 		"webName": "Ødegaard",
 		"cost": 68,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 377
 	},
 	{
 		"name": "yoane wissa",
@@ -244,7 +262,8 @@
 		"pop": 2311,
 		"webName": "Wissa",
 		"cost": 62,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 441
 	},
 	{
 		"name": "marc guéhi",
@@ -257,7 +276,8 @@
 		"pop": 2260,
 		"webName": "Guéhi",
 		"cost": 60,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "lewis hall",
@@ -270,7 +290,8 @@
 		"pop": 2219,
 		"webName": "Hall",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 449
 	},
 	{
 		"name": "ezri konsa",
@@ -283,7 +304,8 @@
 		"pop": 2191,
 		"webName": "Konsa",
 		"cost": 46,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 281
 	},
 	{
 		"name": "antonín kinský",
@@ -296,7 +318,8 @@
 		"pop": 2160,
 		"webName": "Kinsky",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "james tarkowski",
@@ -309,7 +332,8 @@
 		"pop": 2140,
 		"webName": "Tarkowski",
 		"cost": 62,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "virgil van dijk",
@@ -322,7 +346,8 @@
 		"pop": 2070,
 		"webName": "Virgil",
 		"cost": 65,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "morgan gibbs-white",
@@ -335,7 +360,8 @@
 		"pop": 2020,
 		"webName": "Gibbs-White",
 		"cost": 80,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "antoine semenyo",
@@ -348,7 +374,8 @@
 		"pop": 1950,
 		"webName": "Semenyo",
 		"cost": 84,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "bukayo saka",
@@ -361,7 +388,8 @@
 		"pop": 1846,
 		"webName": "Saka",
 		"cost": 96,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 416
 	},
 	{
 		"name": "semi ajayi",
@@ -374,7 +402,8 @@
 		"pop": 1813,
 		"webName": "Ajayi",
 		"cost": 42,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 423
 	},
 	{
 		"name": "konstantinos tzolakis",
@@ -387,7 +416,8 @@
 		"pop": 1740,
 		"webName": "Tzolakis",
 		"cost": 47,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "issa diop",
@@ -400,7 +430,8 @@
 		"pop": 1710,
 		"webName": "Diop",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "martin dúbravka",
@@ -413,7 +444,8 @@
 		"pop": 1700,
 		"webName": "Dubravka",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "kevin schade",
@@ -426,7 +458,8 @@
 		"pop": 1667,
 		"webName": "Schade",
 		"cost": 62,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 447
 	},
 	{
 		"name": "cody gakpo",
@@ -439,7 +472,8 @@
 		"pop": 1580,
 		"webName": "Gakpo",
 		"cost": 72,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 370
 	},
 	{
 		"name": "declan rice",
@@ -452,7 +486,8 @@
 		"pop": 1551,
 		"webName": "Rice",
 		"cost": 74,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 411
 	},
 	{
 		"name": "christos tzolis",
@@ -465,7 +500,8 @@
 		"pop": 1532,
 		"webName": "Tzolis",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 362
 	},
 	{
 		"name": "senne lammens",
@@ -478,7 +514,8 @@
 		"pop": 1430,
 		"webName": "Lammens",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "jordan pickford",
@@ -491,7 +528,8 @@
 		"pop": 1370,
 		"webName": "Pickford",
 		"cost": 55,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "thiago",
@@ -504,7 +542,8 @@
 		"pop": 1362,
 		"webName": "Thiago",
 		"cost": 78,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 442
 	},
 	{
 		"name": "neco williams",
@@ -517,7 +556,8 @@
 		"pop": 1310,
 		"webName": "N.Williams",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "mamadou sangare",
@@ -530,7 +570,8 @@
 		"pop": 1301,
 		"webName": "M.Sangaré",
 		"cost": 56,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 321
 	},
 	{
 		"name": "harry maguire",
@@ -543,7 +584,8 @@
 		"pop": 1300,
 		"webName": "Maguire",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "bobby thomas",
@@ -556,7 +598,8 @@
 		"pop": 1297,
 		"webName": "Thomas",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 437
 	},
 	{
 		"name": "thierno barry",
@@ -569,7 +612,8 @@
 		"pop": 1257,
 		"webName": "Barry",
 		"cost": 57,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 417
 	},
 	{
 		"name": "kai havertz",
@@ -582,7 +626,8 @@
 		"pop": 1237,
 		"webName": "Havertz",
 		"cost": 76,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 437
 	},
 	{
 		"name": "nico o'reilly",
@@ -595,7 +640,8 @@
 		"pop": 1233,
 		"webName": "O'Reilly",
 		"cost": 63,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 163
 	},
 	{
 		"name": "milan van ewijk",
@@ -608,7 +654,8 @@
 		"pop": 1220,
 		"webName": "van Ewijk",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "gianluigi donnarumma",
@@ -621,7 +668,8 @@
 		"pop": 1210,
 		"webName": "Donnarumma",
 		"cost": 55,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "leif davis",
@@ -634,7 +682,8 @@
 		"pop": 1150,
 		"webName": "Davis",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "john egan",
@@ -647,7 +696,8 @@
 		"pop": 1137,
 		"webName": "Egan",
 		"cost": 41,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 437
 	},
 	{
 		"name": "jayden bogle",
@@ -660,7 +710,8 @@
 		"pop": 1105,
 		"webName": "Bogle",
 		"cost": 46,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 365
 	},
 	{
 		"name": "marcus tavernier",
@@ -673,7 +724,8 @@
 		"pop": 1104,
 		"webName": "Tavernier",
 		"cost": 61,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 424
 	},
 	{
 		"name": "luke shaw",
@@ -686,7 +738,8 @@
 		"pop": 1095,
 		"webName": "Shaw",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 335
 	},
 	{
 		"name": "jan paul van hecke",
@@ -699,7 +752,8 @@
 		"pop": 1090,
 		"webName": "Van Hecke",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "brian brobbey",
@@ -712,7 +766,8 @@
 		"pop": 1079,
 		"webName": "Brobbey",
 		"cost": 57,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 399
 	},
 	{
 		"name": "caoimhin kelleher",
@@ -725,7 +780,8 @@
 		"pop": 1060,
 		"webName": "Kelleher",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "michael kayode",
@@ -738,7 +794,8 @@
 		"pop": 1054,
 		"webName": "Kayode",
 		"cost": 46,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 294
 	},
 	{
 		"name": "harvey barnes",
@@ -751,7 +808,8 @@
 		"pop": 1050,
 		"webName": "Barnes",
 		"cost": 61,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "iliman ndiaye",
@@ -764,7 +822,8 @@
 		"pop": 1045,
 		"webName": "Ndiaye",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 385
 	},
 	{
 		"name": "maxence lacroix",
@@ -777,7 +836,8 @@
 		"pop": 1044,
 		"webName": "Lacroix",
 		"cost": 59,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 364
 	},
 	{
 		"name": "kiernan dewsbury hall",
@@ -790,7 +850,8 @@
 		"pop": 1040,
 		"webName": "Dewsbury-Hall",
 		"cost": 66,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "tyrick mitchell",
@@ -803,7 +864,8 @@
 		"pop": 1029,
 		"webName": "Mitchell",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 419
 	},
 	{
 		"name": "alex scott",
@@ -816,7 +878,8 @@
 		"pop": 1006,
 		"webName": "Scott",
 		"cost": 61,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 446
 	},
 	{
 		"name": "james trafford",
@@ -829,7 +892,8 @@
 		"pop": 1000,
 		"webName": "Trafford",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "matheus cunha",
@@ -842,7 +906,8 @@
 		"pop": 987,
 		"webName": "Cunha",
 		"cost": 79,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 407
 	},
 	{
 		"name": "florian wirtz",
@@ -855,7 +920,8 @@
 		"pop": 972,
 		"webName": "Wirtz",
 		"cost": 73,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 402
 	},
 	{
 		"name": "regan slater",
@@ -868,7 +934,8 @@
 		"pop": 957,
 		"webName": "Slater",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 437
 	},
 	{
 		"name": "pedro porro",
@@ -881,7 +948,8 @@
 		"pop": 948,
 		"webName": "Pedro Porro",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 198
 	},
 	{
 		"name": "mohamed belloumi",
@@ -894,7 +962,8 @@
 		"pop": 924,
 		"webName": "Belloumi",
 		"cost": 51,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 394
 	},
 	{
 		"name": "tarik muharemović",
@@ -907,7 +976,8 @@
 		"pop": 880,
 		"webName": "Muharemović",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "alisson becker",
@@ -920,7 +990,8 @@
 		"pop": 870,
 		"webName": "A.Becker",
 		"cost": 55,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "nobel mendy",
@@ -933,7 +1004,8 @@
 		"pop": 869,
 		"webName": "Mendy",
 		"cost": 41,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 249
 	},
 	{
 		"name": "reece james",
@@ -946,7 +1018,8 @@
 		"pop": 862,
 		"webName": "James",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 292
 	},
 	{
 		"name": "vitalii mykolenko",
@@ -959,7 +1032,8 @@
 		"pop": 860,
 		"webName": "Mykolenko",
 		"cost": 46,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "gonzalo garcía",
@@ -972,7 +1046,8 @@
 		"pop": 845,
 		"webName": "Gonzalo",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 425
 	},
 	{
 		"name": "kristoffer ajer",
@@ -985,7 +1060,8 @@
 		"pop": 840,
 		"webName": "Ajer",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "charalampos kostoulas",
@@ -998,7 +1074,8 @@
 		"pop": 833,
 		"webName": "Kostoulas",
 		"cost": 56,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 353
 	},
 	{
 		"name": "emiliano martínez",
@@ -1011,7 +1088,8 @@
 		"pop": 830,
 		"webName": "Martinez",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 360
 	},
 	{
 		"name": "daniel muñoz",
@@ -1024,7 +1102,8 @@
 		"pop": 827,
 		"webName": "Muñoz",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 257
 	},
 	{
 		"name": "diego gómez",
@@ -1037,7 +1116,8 @@
 		"pop": 823,
 		"webName": "Gomez",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 433
 	},
 	{
 		"name": "luka vušković",
@@ -1050,7 +1130,8 @@
 		"pop": 817,
 		"webName": "Vuskovic",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 437
 	},
 	{
 		"name": "elliot anderson",
@@ -1063,7 +1144,8 @@
 		"pop": 813,
 		"webName": "Anderson",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 413
 	},
 	{
 		"name": "granit xhaka",
@@ -1076,7 +1158,8 @@
 		"pop": 810,
 		"webName": "Xhaka",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "ben white",
@@ -1089,7 +1172,8 @@
 		"pop": 795,
 		"webName": "White",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 315
 	},
 	{
 		"name": "bernd leno",
@@ -1102,7 +1186,8 @@
 		"pop": 790,
 		"webName": "Leno",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "matty cash",
@@ -1115,7 +1200,8 @@
 		"pop": 776,
 		"webName": "Cash",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 296
 	},
 	{
 		"name": "enzo le fée",
@@ -1128,7 +1214,8 @@
 		"pop": 768,
 		"webName": "E.Le Fée",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 438
 	},
 	{
 		"name": "jeremy jacquet",
@@ -1141,7 +1228,8 @@
 		"pop": 765,
 		"webName": "Jacquet",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 415
 	},
 	{
 		"name": "adrien truffert",
@@ -1154,7 +1242,8 @@
 		"pop": 750,
 		"webName": "Truffert",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "đorđe petrović",
@@ -1167,7 +1256,8 @@
 		"pop": 750,
 		"webName": "Petrović",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "will hughes",
@@ -1180,7 +1270,8 @@
 		"pop": 749,
 		"webName": "Hughes",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 29
 	},
 	{
 		"name": "evanilson",
@@ -1193,7 +1284,8 @@
 		"pop": 744,
 		"webName": "Evanilson",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 424
 	},
 	{
 		"name": "mickey van de ven",
@@ -1206,7 +1298,8 @@
 		"pop": 740,
 		"webName": "Van de Ven",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "ryan john giles",
@@ -1219,7 +1312,8 @@
 		"pop": 734,
 		"webName": "Giles",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 444
 	},
 	{
 		"name": "joshua king",
@@ -1232,7 +1326,8 @@
 		"pop": 725,
 		"webName": "King",
 		"cost": 56,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 425
 	},
 	{
 		"name": "dara o'shea",
@@ -1245,7 +1340,8 @@
 		"pop": 710,
 		"webName": "O'Shea",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "jarrad branthwaite",
@@ -1258,7 +1354,8 @@
 		"pop": 700,
 		"webName": "Branthwaite",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "vitaly janelt",
@@ -1271,7 +1368,8 @@
 		"pop": 700,
 		"webName": "Janelt",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "anton stach",
@@ -1284,7 +1382,8 @@
 		"pop": 697,
 		"webName": "Stach",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 447
 	},
 	{
 		"name": "daniel ballard",
@@ -1297,7 +1396,8 @@
 		"pop": 690,
 		"webName": "Ballard",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "robin roefs",
@@ -1310,7 +1410,8 @@
 		"pop": 690,
 		"webName": "Roefs",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "emersonn",
@@ -1323,7 +1424,8 @@
 		"pop": 687,
 		"webName": "Emersonn",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 317
 	},
 	{
 		"name": "anthony elanga",
@@ -1336,7 +1438,8 @@
 		"pop": 672,
 		"webName": "Elanga",
 		"cost": 61,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 232
 	},
 	{
 		"name": "malick thiaw",
@@ -1349,7 +1452,8 @@
 		"pop": 670,
 		"webName": "Thiaw",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "murillo",
@@ -1362,7 +1466,8 @@
 		"pop": 659,
 		"webName": "Murillo",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 449
 	},
 	{
 		"name": "john mcginn",
@@ -1375,7 +1480,8 @@
 		"pop": 654,
 		"webName": "McGinn",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 434
 	},
 	{
 		"name": "enzo fernández",
@@ -1388,7 +1494,8 @@
 		"pop": 641,
 		"webName": "Enzo",
 		"cost": 69,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 271
 	},
 	{
 		"name": "rúben dias",
@@ -1401,7 +1508,8 @@
 		"pop": 640,
 		"webName": "Rúben",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "oliver mcburnie",
@@ -1414,7 +1522,8 @@
 		"pop": 631,
 		"webName": "McBurnie",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 441
 	},
 	{
 		"name": "malick yalcouyé",
@@ -1427,7 +1536,8 @@
 		"pop": 626,
 		"webName": "Yalcouyé",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 236
 	},
 	{
 		"name": "andrew robertson",
@@ -1440,7 +1550,8 @@
 		"pop": 616,
 		"webName": "Robertson",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 366
 	},
 	{
 		"name": "matz sels",
@@ -1453,7 +1564,8 @@
 		"pop": 610,
 		"webName": "Sels",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "sandro tonali",
@@ -1466,7 +1578,8 @@
 		"pop": 607,
 		"webName": "Tonali",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 427
 	},
 	{
 		"name": "milos kerkez",
@@ -1479,7 +1592,8 @@
 		"pop": 605,
 		"webName": "Kerkez",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 385
 	},
 	{
 		"name": "lukáš horníček",
@@ -1492,7 +1606,8 @@
 		"pop": 600,
 		"webName": "Horníček",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "rayan",
@@ -1505,7 +1620,8 @@
 		"pop": 594,
 		"webName": "Rayan",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 434
 	},
 	{
 		"name": "ronald araújo",
@@ -1518,7 +1634,8 @@
 		"pop": 594,
 		"webName": "Araujo",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 284
 	},
 	{
 		"name": "james justin",
@@ -1531,7 +1648,8 @@
 		"pop": 590,
 		"webName": "Justin",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "antonee robinson",
@@ -1544,7 +1662,8 @@
 		"pop": 579,
 		"webName": "Robinson",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 429
 	},
 	{
 		"name": "keane lewis-potter",
@@ -1557,7 +1676,8 @@
 		"pop": 576,
 		"webName": "Lewis-Potter",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 406
 	},
 	{
 		"name": "youri tielemans",
@@ -1570,7 +1690,8 @@
 		"pop": 552,
 		"webName": "Tielemans",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 402
 	},
 	{
 		"name": "nordi mukiele",
@@ -1583,7 +1704,8 @@
 		"pop": 550,
 		"webName": "Mukiele",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "zion suzuki",
@@ -1596,7 +1718,8 @@
 		"pop": 550,
 		"webName": "Suzuki",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 360
 	},
 	{
 		"name": "omar marmoush",
@@ -1609,7 +1732,8 @@
 		"pop": 549,
 		"webName": "Marmoush",
 		"cost": 70,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 339
 	},
 	{
 		"name": "liam delap",
@@ -1622,7 +1746,8 @@
 		"pop": 547,
 		"webName": "Delap",
 		"cost": 56,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 277
 	},
 	{
 		"name": "ethan ampadu",
@@ -1635,7 +1760,8 @@
 		"pop": 540,
 		"webName": "Ampadu",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 450
 	},
 	{
 		"name": "jonah kusi-asare",
@@ -1648,7 +1774,8 @@
 		"pop": 540,
 		"webName": "Kusi-Asare",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "ola aina",
@@ -1661,7 +1788,8 @@
 		"pop": 536,
 		"webName": "Aina",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 306
 	},
 	{
 		"name": "carl rushworth",
@@ -1674,7 +1802,8 @@
 		"pop": 530,
 		"webName": "Rushworth",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 450
 	},
 	{
 		"name": "james hill",
@@ -1687,7 +1816,8 @@
 		"pop": 530,
 		"webName": "Hill",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "calvin bassey",
@@ -1700,7 +1830,8 @@
 		"pop": 520,
 		"webName": "Bassey",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "sven botman",
@@ -1713,7 +1844,8 @@
 		"pop": 520,
 		"webName": "Botman",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "igor jesus",
@@ -1726,7 +1858,8 @@
 		"pop": 517,
 		"webName": "Igor Jesus",
 		"cost": 58,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 257
 	},
 	{
 		"name": "jay dasilva",
@@ -1739,7 +1872,8 @@
 		"pop": 514,
 		"webName": "Dasilva",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 444
 	},
 	{
 		"name": "chris richards",
@@ -1752,7 +1886,8 @@
 		"pop": 510,
 		"webName": "Richards",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "lewis dunk",
@@ -1765,7 +1900,8 @@
 		"pop": 510,
 		"webName": "Dunk",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "timothy castagne",
@@ -1778,7 +1914,8 @@
 		"pop": 508,
 		"webName": "Castagne",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 408
 	},
 	{
 		"name": "amar dedić",
@@ -1791,7 +1928,8 @@
 		"pop": 507,
 		"webName": "Dedić",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 327
 	},
 	{
 		"name": "adam wharton",
@@ -1804,7 +1942,8 @@
 		"pop": 506,
 		"webName": "Wharton",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 436
 	},
 	{
 		"name": "diogo dalot",
@@ -1817,7 +1956,8 @@
 		"pop": 506,
 		"webName": "Dalot",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 346
 	},
 	{
 		"name": "kobbie mainoo",
@@ -1830,7 +1970,8 @@
 		"pop": 504,
 		"webName": "Mainoo",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 354
 	},
 	{
 		"name": "emiliano buendía",
@@ -1843,7 +1984,8 @@
 		"pop": 501,
 		"webName": "Buendía",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 401
 	},
 	{
 		"name": "julio enciso",
@@ -1856,7 +1998,8 @@
 		"pop": 493,
 		"webName": "Enciso",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 413
 	},
 	{
 		"name": "ferdi kadıoğlu",
@@ -1869,7 +2012,8 @@
 		"pop": 492,
 		"webName": "F.Kadıoğlu",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 332
 	},
 	{
 		"name": "daichi kamada",
@@ -1882,7 +2026,8 @@
 		"pop": 491,
 		"webName": "Kamada",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 441
 	},
 	{
 		"name": "marcus rashford",
@@ -1895,7 +2040,8 @@
 		"pop": 491,
 		"webName": "Rashford",
 		"cost": 70,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 351
 	},
 	{
 		"name": "antonio silva",
@@ -1908,7 +2054,8 @@
 		"pop": 490,
 		"webName": "Silva",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "lisandro martínez",
@@ -1921,7 +2068,8 @@
 		"pop": 490,
 		"webName": "Martinez",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "harrison armstrong",
@@ -1934,7 +2082,8 @@
 		"pop": 486,
 		"webName": "Armstrong",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 446
 	},
 	{
 		"name": "trai hume",
@@ -1947,7 +2096,8 @@
 		"pop": 486,
 		"webName": "Hume",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 206
 	},
 	{
 		"name": "victor nilsson-lindelöf",
@@ -1960,7 +2110,8 @@
 		"pop": 480,
 		"webName": "Lindelöf",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 450
 	},
 	{
 		"name": "alex iwobi",
@@ -1973,7 +2124,8 @@
 		"pop": 478,
 		"webName": "Iwobi",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 408
 	},
 	{
 		"name": "boubacar kamara",
@@ -1986,7 +2138,8 @@
 		"pop": 473,
 		"webName": "Kamara",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 443
 	},
 	{
 		"name": "pedro neto",
@@ -1999,7 +2152,8 @@
 		"pop": 472,
 		"webName": "Neto",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 332
 	},
 	{
 		"name": "jacob greaves",
@@ -2012,7 +2166,8 @@
 		"pop": 467,
 		"webName": "Greaves",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 357
 	},
 	{
 		"name": "olivier boscagli",
@@ -2025,7 +2180,8 @@
 		"pop": 467,
 		"webName": "Boscagli",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 437
 	},
 	{
 		"name": "matt grimes",
@@ -2038,7 +2194,8 @@
 		"pop": 453,
 		"webName": "Grimes",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 443
 	},
 	{
 		"name": "nicolas jackson",
@@ -2051,7 +2208,8 @@
 		"pop": 446,
 		"webName": "N.Jackson",
 		"cost": 65,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 286
 	},
 	{
 		"name": "adam smith",
@@ -2064,7 +2222,8 @@
 		"pop": 444,
 		"webName": "Smith",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 434
 	},
 	{
 		"name": "marcos senesi",
@@ -2077,7 +2236,8 @@
 		"pop": 440,
 		"webName": "Senesi",
 		"cost": 58,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "alexis mac allister",
@@ -2090,7 +2250,8 @@
 		"pop": 436,
 		"webName": "Mac Allister",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 306
 	},
 	{
 		"name": "levi colwill",
@@ -2103,7 +2264,8 @@
 		"pop": 431,
 		"webName": "Colwill",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 341
 	},
 	{
 		"name": "noah sadiki",
@@ -2116,7 +2278,8 @@
 		"pop": 430,
 		"webName": "Sadiki",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 410
 	},
 	{
 		"name": "james mcatee",
@@ -2129,7 +2292,8 @@
 		"pop": 426,
 		"webName": "McAtee",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 416
 	},
 	{
 		"name": "thomas meunier",
@@ -2142,7 +2306,8 @@
 		"pop": 426,
 		"webName": "Meunier",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 396
 	},
 	{
 		"name": "aurele amenda",
@@ -2155,7 +2320,8 @@
 		"pop": 420,
 		"webName": "Amenda",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "kjell scherpen",
@@ -2168,7 +2334,8 @@
 		"pop": 420,
 		"webName": "Scherpen",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 360
 	},
 	{
 		"name": "lewie coyle",
@@ -2181,7 +2348,8 @@
 		"pop": 418,
 		"webName": "Coyle",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 348
 	},
 	{
 		"name": "george hemmings",
@@ -2194,7 +2362,8 @@
 		"pop": 417,
 		"webName": "George Hemmings",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 297
 	},
 	{
 		"name": "jason steele",
@@ -2207,7 +2376,8 @@
 		"pop": 410,
 		"webName": "Steele",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "saša lukić",
@@ -2220,7 +2390,8 @@
 		"pop": 410,
 		"webName": "Lukić",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 400
 	},
 	{
 		"name": "anan khalaili",
@@ -2233,7 +2404,8 @@
 		"pop": 409,
 		"webName": "Khalaili",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 379
 	},
 	{
 		"name": "abdukodir khusanov",
@@ -2246,7 +2418,8 @@
 		"pop": 408,
 		"webName": "Khusanov",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 268
 	},
 	{
 		"name": "lewis miley",
@@ -2259,7 +2432,8 @@
 		"pop": 406,
 		"webName": "L.Miley",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 396
 	},
 	{
 		"name": "dean henderson",
@@ -2272,7 +2446,8 @@
 		"pop": 400,
 		"webName": "Henderson",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 270
 	},
 	{
 		"name": "tyrique george",
@@ -2285,7 +2460,8 @@
 		"pop": 399,
 		"webName": "George",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 309
 	},
 	{
 		"name": "phil foden",
@@ -2298,7 +2474,8 @@
 		"pop": 397,
 		"webName": "Foden",
 		"cost": 69,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 217
 	},
 	{
 		"name": "alex palmer",
@@ -2311,7 +2488,8 @@
 		"pop": 390,
 		"webName": "Palmer",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "reinildo",
@@ -2324,7 +2502,8 @@
 		"pop": 390,
 		"webName": "Reinildo",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "rodrigo bentancur",
@@ -2337,7 +2516,8 @@
 		"pop": 390,
 		"webName": "Bentancur",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 370
 	},
 	{
 		"name": "dan ndoye",
@@ -2350,7 +2530,8 @@
 		"pop": 386,
 		"webName": "Ndoye",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 316
 	},
 	{
 		"name": "xaver schlager",
@@ -2363,7 +2544,8 @@
 		"pop": 386,
 		"webName": "Schlager",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 376
 	},
 	{
 		"name": "ian maatsen",
@@ -2376,7 +2558,8 @@
 		"pop": 385,
 		"webName": "Maatsen",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 335
 	},
 	{
 		"name": "jair paula",
@@ -2389,7 +2572,8 @@
 		"pop": 380,
 		"webName": "Jair Cunha",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "jaydee canvot",
@@ -2402,7 +2586,8 @@
 		"pop": 380,
 		"webName": "Canvot",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 360
 	},
 	{
 		"name": "sander berge",
@@ -2415,7 +2600,8 @@
 		"pop": 379,
 		"webName": "Berge",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 349
 	},
 	{
 		"name": "justin kluivert",
@@ -2428,7 +2614,8 @@
 		"pop": 374,
 		"webName": "Kluivert",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 294
 	},
 	{
 		"name": "oscar bobb",
@@ -2441,7 +2628,8 @@
 		"pop": 373,
 		"webName": "Bobb",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 343
 	},
 	{
 		"name": "yasin ayari",
@@ -2454,7 +2642,8 @@
 		"pop": 373,
 		"webName": "Ayari",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 333
 	},
 	{
 		"name": "abdul fatawu",
@@ -2467,7 +2656,8 @@
 		"pop": 372,
 		"webName": "Fatawu",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 352
 	},
 	{
 		"name": "nikola milenković",
@@ -2480,7 +2670,8 @@
 		"pop": 370,
 		"webName": "Milenković",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 270
 	},
 	{
 		"name": "jørgen strand larsen",
@@ -2493,7 +2684,8 @@
 		"pop": 368,
 		"webName": "Strand Larsen",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 298
 	},
 	{
 		"name": "malo gusto",
@@ -2506,7 +2698,8 @@
 		"pop": 362,
 		"webName": "Gusto",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 272
 	},
 	{
 		"name": "sindre egeli",
@@ -2519,7 +2712,8 @@
 		"pop": 360,
 		"webName": "Walle Egeli",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 10
 	},
 	{
 		"name": "viktor gyökeres",
@@ -2532,7 +2726,8 @@
 		"pop": 359,
 		"webName": "Gyökeres",
 		"cost": 71,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 29
 	},
 	{
 		"name": "bradley barcola",
@@ -2545,7 +2740,8 @@
 		"pop": 358,
 		"webName": "Barcola",
 		"cost": 80,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 168
 	},
 	{
 		"name": "fraser forster",
@@ -2558,7 +2754,8 @@
 		"pop": 350,
 		"webName": "Forster",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "james garner",
@@ -2571,7 +2768,8 @@
 		"pop": 348,
 		"webName": "Garner",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 328
 	},
 	{
 		"name": "jeremie frimpong",
@@ -2584,7 +2782,8 @@
 		"pop": 348,
 		"webName": "Frimpong",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 178
 	},
 	{
 		"name": "víctor muñoz",
@@ -2597,7 +2796,8 @@
 		"pop": 347,
 		"webName": "Munoz",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 257
 	},
 	{
 		"name": "joe willock",
@@ -2610,7 +2810,8 @@
 		"pop": 344,
 		"webName": "Willock",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 284
 	},
 	{
 		"name": "noah okafor",
@@ -2623,7 +2824,8 @@
 		"pop": 339,
 		"webName": "Okafor",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 299
 	},
 	{
 		"name": "jorrel hato",
@@ -2636,7 +2838,8 @@
 		"pop": 338,
 		"webName": "Hato",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 258
 	},
 	{
 		"name": "ross barkley",
@@ -2649,7 +2852,8 @@
 		"pop": 338,
 		"webName": "Barkley",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 308
 	},
 	{
 		"name": "yéremy pino santos",
@@ -2662,7 +2866,8 @@
 		"pop": 337,
 		"webName": "Yeremy",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 307
 	},
 	{
 		"name": "nico elvedi",
@@ -2675,7 +2880,8 @@
 		"pop": 336,
 		"webName": "Elvedi",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 326
 	},
 	{
 		"name": "wesley fofana",
@@ -2688,7 +2894,8 @@
 		"pop": 332,
 		"webName": "Fofana",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 312
 	},
 	{
 		"name": "myles lewis-skelly",
@@ -2701,7 +2908,8 @@
 		"pop": 331,
 		"webName": "Lewis-Skelly",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 271
 	},
 	{
 		"name": "mateus fernandes",
@@ -2714,7 +2922,8 @@
 		"pop": 329,
 		"webName": "Fernandes",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 249
 	},
 	{
 		"name": "cristhian mosquera",
@@ -2727,7 +2936,8 @@
 		"pop": 328,
 		"webName": "Mosquera",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 168
 	},
 	{
 		"name": "archie gray",
@@ -2740,7 +2950,8 @@
 		"pop": 327,
 		"webName": "Gray",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 307
 	},
 	{
 		"name": "frank onyeka",
@@ -2753,7 +2964,8 @@
 		"pop": 324,
 		"webName": "Onyeka",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 314
 	},
 	{
 		"name": "mikkel damsgaard",
@@ -2766,7 +2978,8 @@
 		"pop": 323,
 		"webName": "Damsgaard",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 283
 	},
 	{
 		"name": "nilson angulo",
@@ -2779,7 +2992,8 @@
 		"pop": 323,
 		"webName": "N.Angulo",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 313
 	},
 	{
 		"name": "ainsley maitland-niles",
@@ -2792,7 +3006,8 @@
 		"pop": 317,
 		"webName": "Maitland-Niles",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 177
 	},
 	{
 		"name": "luke o'nien",
@@ -2805,7 +3020,8 @@
 		"pop": 316,
 		"webName": "O'Nien",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 66
 	},
 	{
 		"name": "matheus nunes",
@@ -2818,7 +3034,8 @@
 		"pop": 313,
 		"webName": "Matheus N.",
 		"cost": 59,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 213
 	},
 	{
 		"name": "shea charles",
@@ -2831,7 +3048,8 @@
 		"pop": 313,
 		"webName": "Charles",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 303
 	},
 	{
 		"name": "tyler adams",
@@ -2844,7 +3062,8 @@
 		"pop": 309,
 		"webName": "Adams",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 279
 	},
 	{
 		"name": "brandon thomas-asante",
@@ -2857,7 +3076,8 @@
 		"pop": 307,
 		"webName": "Thomas-Asante",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 227
 	},
 	{
 		"name": "jack rudoni",
@@ -2870,7 +3090,8 @@
 		"pop": 307,
 		"webName": "Rudoni",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 297
 	},
 	{
 		"name": "harry wilson",
@@ -2883,7 +3104,8 @@
 		"pop": 305,
 		"webName": "Wilson",
 		"cost": 62,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 145
 	},
 	{
 		"name": "bruno guimarães",
@@ -2896,7 +3118,8 @@
 		"pop": 303,
 		"webName": "Bruno G.",
 		"cost": 67,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 123
 	},
 	{
 		"name": "tyrone mings",
@@ -2909,7 +3132,8 @@
 		"pop": 301,
 		"webName": "Mings",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 261
 	},
 	{
 		"name": "ryan gravenberch",
@@ -2922,7 +3146,8 @@
 		"pop": 300,
 		"webName": "Gravenberch",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 190
 	},
 	{
 		"name": "sávio",
@@ -2935,7 +3160,8 @@
 		"pop": 300,
 		"webName": "Sávio",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 240
 	},
 	{
 		"name": "ethan pinnock",
@@ -2948,7 +3174,8 @@
 		"pop": 292,
 		"webName": "Pinnock",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 282
 	},
 	{
 		"name": "kevin danso",
@@ -2961,7 +3188,8 @@
 		"pop": 290,
 		"webName": "Danso",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 270
 	},
 	{
 		"name": "jaidon anthony",
@@ -2974,7 +3202,8 @@
 		"pop": 287,
 		"webName": "Anthony",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 267
 	},
 	{
 		"name": "nathan collins",
@@ -2987,7 +3216,8 @@
 		"pop": 286,
 		"webName": "Collins",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 196
 	},
 	{
 		"name": "ao tanaka",
@@ -3000,7 +3230,8 @@
 		"pop": 285,
 		"webName": "Tanaka",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 255
 	},
 	{
 		"name": "exequiel palacios",
@@ -3013,7 +3244,8 @@
 		"pop": 285,
 		"webName": "Palacios",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 275
 	},
 	{
 		"name": "jannik schuster",
@@ -3026,7 +3258,8 @@
 		"pop": 283,
 		"webName": "Schuster",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 253
 	},
 	{
 		"name": "daizen maeda",
@@ -3039,7 +3272,8 @@
 		"pop": 279,
 		"webName": "Maeda",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 259
 	},
 	{
 		"name": "romeo lavia",
@@ -3052,7 +3286,8 @@
 		"pop": 278,
 		"webName": "Lavia",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 258
 	},
 	{
 		"name": "mathys tel",
@@ -3065,7 +3300,8 @@
 		"pop": 277,
 		"webName": "Tel",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 257
 	},
 	{
 		"name": "yehor yarmoliuk",
@@ -3078,7 +3314,8 @@
 		"pop": 276,
 		"webName": "Yarmoliuk",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 216
 	},
 	{
 		"name": "caleb yirenkyi",
@@ -3091,7 +3328,8 @@
 		"pop": 275,
 		"webName": "Yirenkyi",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 265
 	},
 	{
 		"name": "taiwo awoniyi",
@@ -3104,7 +3342,8 @@
 		"pop": 272,
 		"webName": "Awoniyi",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 232
 	},
 	{
 		"name": "gabriel gudmundsson",
@@ -3117,7 +3356,8 @@
 		"pop": 262,
 		"webName": "Gudmundsson",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 252
 	},
 	{
 		"name": "elliot stroud",
@@ -3130,7 +3370,8 @@
 		"pop": 259,
 		"webName": "Stroud",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 249
 	},
 	{
 		"name": "lucas herrington",
@@ -3143,7 +3384,8 @@
 		"pop": 257,
 		"webName": "Herrington",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 197
 	},
 	{
 		"name": "matty crooks",
@@ -3156,7 +3398,8 @@
 		"pop": 253,
 		"webName": "Crooks",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 203
 	},
 	{
 		"name": "quinten timber",
@@ -3169,7 +3412,8 @@
 		"pop": 253,
 		"webName": "Timber",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 253
 	},
 	{
 		"name": "josh acheampong",
@@ -3182,7 +3426,8 @@
 		"pop": 251,
 		"webName": "Acheampong",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 221
 	},
 	{
 		"name": "dominic solanke",
@@ -3195,7 +3440,8 @@
 		"pop": 250,
 		"webName": "Solanke",
 		"cost": 58,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 170
 	},
 	{
 		"name": "ollie watkins",
@@ -3208,7 +3454,8 @@
 		"pop": 250,
 		"webName": "Watkins",
 		"cost": 78,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "merlin röhl",
@@ -3221,7 +3468,8 @@
 		"pop": 249,
 		"webName": "Röhl",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 249
 	},
 	{
 		"name": "brennan johnson",
@@ -3234,7 +3482,8 @@
 		"pop": 248,
 		"webName": "Johnson",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 238
 	},
 	{
 		"name": "wilson isidor",
@@ -3247,7 +3496,8 @@
 		"pop": 247,
 		"webName": "Isidor",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 117
 	},
 	{
 		"name": "césar palacios",
@@ -3260,7 +3510,8 @@
 		"pop": 246,
 		"webName": "Palacios",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 226
 	},
 	{
 		"name": "brenden aaronson",
@@ -3273,7 +3524,8 @@
 		"pop": 244,
 		"webName": "Aaronson",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 194
 	},
 	{
 		"name": "ephron mason-clark",
@@ -3286,7 +3538,8 @@
 		"pop": 241,
 		"webName": "Mason-Clark",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 231
 	},
 	{
 		"name": "benjamin šeško",
@@ -3299,7 +3552,8 @@
 		"pop": 236,
 		"webName": "Šeško",
 		"cost": 70,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 76
 	},
 	{
 		"name": "jaka bijol",
@@ -3312,7 +3566,8 @@
 		"pop": 234,
 		"webName": "Bijol",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 164
 	},
 	{
 		"name": "sean steur",
@@ -3325,7 +3580,8 @@
 		"pop": 233,
 		"webName": "Steur",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 223
 	},
 	{
 		"name": "dango ouattara",
@@ -3338,7 +3594,8 @@
 		"pop": 229,
 		"webName": "O.Dango",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 179
 	},
 	{
 		"name": "pep chavarría",
@@ -3351,7 +3608,8 @@
 		"pop": 228,
 		"webName": "Chavarria",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 208
 	},
 	{
 		"name": "eddie nketiah",
@@ -3364,7 +3622,8 @@
 		"pop": 225,
 		"webName": "Nketiah",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 175
 	},
 	{
 		"name": "loum tchaouna",
@@ -3377,7 +3636,8 @@
 		"pop": 221,
 		"webName": "Tchaouna",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 211
 	},
 	{
 		"name": "patrick dorgu",
@@ -3390,7 +3650,8 @@
 		"pop": 221,
 		"webName": "Dorgu",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 171
 	},
 	{
 		"name": "takehiro tomiyasu",
@@ -3403,7 +3664,8 @@
 		"pop": 219,
 		"webName": "Tomiyasu",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 189
 	},
 	{
 		"name": "pau torres",
@@ -3416,7 +3678,8 @@
 		"pop": 217,
 		"webName": "Pau",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 187
 	},
 	{
 		"name": "ousmane diomande",
@@ -3429,7 +3692,8 @@
 		"pop": 213,
 		"webName": "Diomande",
 		"cost": 54,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 163
 	},
 	{
 		"name": "abdoul ouattara",
@@ -3442,7 +3706,8 @@
 		"pop": 211,
 		"webName": "Ouattara",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 131
 	},
 	{
 		"name": "joachim andersen",
@@ -3455,7 +3720,8 @@
 		"pop": 210,
 		"webName": "Andersen",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 190
 	},
 	{
 		"name": "lewis cook",
@@ -3468,7 +3734,8 @@
 		"pop": 200,
 		"webName": "Cook",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 180
 	},
 	{
 		"name": "chuba akpom",
@@ -3481,7 +3748,8 @@
 		"pop": 198,
 		"webName": "Akpom",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 78
 	},
 	{
 		"name": "joe rodon",
@@ -3494,7 +3762,8 @@
 		"pop": 193,
 		"webName": "Rodon",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 123
 	},
 	{
 		"name": "jean-philippe mateta",
@@ -3507,7 +3776,8 @@
 		"pop": 192,
 		"webName": "Mateta",
 		"cost": 63,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 62
 	},
 	{
 		"name": "jacob murphy",
@@ -3520,7 +3790,8 @@
 		"pop": 191,
 		"webName": "J.Murphy",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 181
 	},
 	{
 		"name": "david affengruber",
@@ -3533,7 +3804,8 @@
 		"pop": 190,
 		"webName": "Affengruber",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 180
 	},
 	{
 		"name": "jack clarke",
@@ -3546,7 +3818,8 @@
 		"pop": 190,
 		"webName": "Clarke",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 170
 	},
 	{
 		"name": "walter benítez",
@@ -3559,7 +3832,8 @@
 		"pop": 190,
 		"webName": "Benitez",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 180
 	},
 	{
 		"name": "danny welbeck",
@@ -3572,7 +3846,8 @@
 		"pop": 185,
 		"webName": "Welbeck",
 		"cost": 59,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 85
 	},
 	{
 		"name": "eberechi eze",
@@ -3585,7 +3860,8 @@
 		"pop": 185,
 		"webName": "Eze",
 		"cost": 62,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 85
 	},
 	{
 		"name": "jack grealish",
@@ -3598,7 +3874,8 @@
 		"pop": 185,
 		"webName": "Grealish",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 135
 	},
 	{
 		"name": "nico gonzalez",
@@ -3611,7 +3888,8 @@
 		"pop": 184,
 		"webName": "N.Gonzalez",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 164
 	},
 	{
 		"name": "mats wieffer",
@@ -3624,7 +3902,8 @@
 		"pop": 176,
 		"webName": "Wieffer",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 156
 	},
 	{
 		"name": "aaron wan-bissaka",
@@ -3637,7 +3916,8 @@
 		"pop": 172,
 		"webName": "Wan-Bissaka",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 152
 	},
 	{
 		"name": "remi matthews",
@@ -3650,7 +3930,8 @@
 		"pop": 170,
 		"webName": "Matthews",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "matias fernandez-pardo",
@@ -3663,7 +3944,8 @@
 		"pop": 167,
 		"webName": "Fernandez-Pardo",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 157
 	},
 	{
 		"name": "matt targett",
@@ -3676,7 +3958,8 @@
 		"pop": 165,
 		"webName": "Targett",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 5
 	},
 	{
 		"name": "ellis simms",
@@ -3689,7 +3972,8 @@
 		"pop": 164,
 		"webName": "Simms",
 		"cost": 49,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 104
 	},
 	{
 		"name": "aaron hickey",
@@ -3702,7 +3986,8 @@
 		"pop": 162,
 		"webName": "Hickey",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 152
 	},
 	{
 		"name": "robert lynch sánchez",
@@ -3715,7 +4000,8 @@
 		"pop": 160,
 		"webName": "Sánchez",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 90
 	},
 	{
 		"name": "hayden hackney",
@@ -3728,7 +4014,8 @@
 		"pop": 157,
 		"webName": "Hackney",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 137
 	},
 	{
 		"name": "conor gallagher",
@@ -3741,7 +4028,8 @@
 		"pop": 154,
 		"webName": "Gallagher",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 134
 	},
 	{
 		"name": "georginio rutter",
@@ -3754,7 +4042,8 @@
 		"pop": 154,
 		"webName": "Georginio",
 		"cost": 53,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 104
 	},
 	{
 		"name": "jurrien timber",
@@ -3767,7 +4056,8 @@
 		"pop": 154,
 		"webName": "J.Timber",
 		"cost": 65,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 104
 	},
 	{
 		"name": "chris wood",
@@ -3780,7 +4070,8 @@
 		"pop": 152,
 		"webName": "Wood",
 		"cost": 58,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 62
 	},
 	{
 		"name": "andrés garcía",
@@ -3793,7 +4084,8 @@
 		"pop": 150,
 		"webName": "A.García",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "marcelino núñez",
@@ -3806,7 +4098,8 @@
 		"pop": 150,
 		"webName": "Núñez",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 140
 	},
 	{
 		"name": "axel disasi",
@@ -3819,7 +4112,8 @@
 		"pop": 149,
 		"webName": "Disasi",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 139
 	},
 	{
 		"name": "martín zubimendi",
@@ -3832,7 +4126,8 @@
 		"pop": 149,
 		"webName": "Zubimendi",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 89
 	},
 	{
 		"name": "rio ngumoha",
@@ -3845,7 +4140,8 @@
 		"pop": 149,
 		"webName": "Ngumoha",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 99
 	},
 	{
 		"name": "noussair mazraoui",
@@ -3858,7 +4154,8 @@
 		"pop": 147,
 		"webName": "Mazraoui",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 97
 	},
 	{
 		"name": "ibrahim sangaré",
@@ -3871,7 +4168,8 @@
 		"pop": 145,
 		"webName": "I.Sangaré",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 105
 	},
 	{
 		"name": "mohammed kudus",
@@ -3884,7 +4182,8 @@
 		"pop": 143,
 		"webName": "Kudus",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 123
 	},
 	{
 		"name": "andrey santos",
@@ -3897,7 +4196,8 @@
 		"pop": 142,
 		"webName": "Andrey Santos",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 82
 	},
 	{
 		"name": "kasey mcateer",
@@ -3910,7 +4210,8 @@
 		"pop": 142,
 		"webName": "McAteer",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 42
 	},
 	{
 		"name": "dillon phillips",
@@ -3923,7 +4224,8 @@
 		"pop": 140,
 		"webName": "Phillips",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "johan manzambi",
@@ -3936,7 +4238,8 @@
 		"pop": 138,
 		"webName": "Manzambi",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 98
 	},
 	{
 		"name": "lucas gourna-douath",
@@ -3949,7 +4252,8 @@
 		"pop": 138,
 		"webName": "Gourna-Douath",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 138
 	},
 	{
 		"name": "christian walton",
@@ -3962,7 +4266,8 @@
 		"pop": 130,
 		"webName": "Walton",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 90
 	},
 	{
 		"name": "joão gomes",
@@ -3975,7 +4280,8 @@
 		"pop": 129,
 		"webName": "Gomes",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 129
 	},
 	{
 		"name": "richarlison",
@@ -3988,7 +4294,8 @@
 		"pop": 127,
 		"webName": "Richarlison",
 		"cost": 59,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 67
 	},
 	{
 		"name": "valentin barco",
@@ -4001,7 +4308,8 @@
 		"pop": 125,
 		"webName": "Barco",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 115
 	},
 	{
 		"name": "matteo ruggeri",
@@ -4014,7 +4322,8 @@
 		"pop": 123,
 		"webName": "Ruggeri",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 113
 	},
 	{
 		"name": "piero hincapié",
@@ -4027,7 +4336,8 @@
 		"pop": 122,
 		"webName": "Hincapie",
 		"cost": 52,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 32
 	},
 	{
 		"name": "mikel merino",
@@ -4040,7 +4350,8 @@
 		"pop": 121,
 		"webName": "Merino",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 81
 	},
 	{
 		"name": "ayden heaven",
@@ -4053,7 +4364,8 @@
 		"pop": 120,
 		"webName": "Heaven",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "sorba thomas",
@@ -4066,7 +4378,8 @@
 		"pop": 119,
 		"webName": "Thomas",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 119
 	},
 	{
 		"name": "pascal struijk",
@@ -4079,7 +4392,8 @@
 		"pop": 118,
 		"webName": "Struijk",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 98
 	},
 	{
 		"name": "destiny udogie",
@@ -4092,7 +4406,8 @@
 		"pop": 116,
 		"webName": "Udogie",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 86
 	},
 	{
 		"name": "lukas nmecha",
@@ -4105,7 +4420,8 @@
 		"pop": 114,
 		"webName": "Nmecha",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 64
 	},
 	{
 		"name": "jack hinshelwood",
@@ -4118,7 +4434,8 @@
 		"pop": 113,
 		"webName": "Hinshelwood",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 63
 	},
 	{
 		"name": "moisés caicedo",
@@ -4131,7 +4448,8 @@
 		"pop": 113,
 		"webName": "Caicedo",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 13
 	},
 	{
 		"name": "benjamin lecomte",
@@ -4144,7 +4462,8 @@
 		"pop": 110,
 		"webName": "Lecomte",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "dane scarlett",
@@ -4157,7 +4476,8 @@
 		"pop": 110,
 		"webName": "Scarlett",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "harrison reed",
@@ -4170,7 +4490,8 @@
 		"pop": 110,
 		"webName": "Reed",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "ryan yates",
@@ -4183,7 +4504,8 @@
 		"pop": 110,
 		"webName": "Yates",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "chema andrés",
@@ -4196,7 +4518,8 @@
 		"pop": 109,
 		"webName": "Andrés",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 109
 	},
 	{
 		"name": "ryan christie",
@@ -4209,7 +4532,8 @@
 		"pop": 102,
 		"webName": "Christie",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 102
 	},
 	{
 		"name": "brandon austin",
@@ -4222,7 +4546,8 @@
 		"pop": 100,
 		"webName": "Austin",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "callum olusesi",
@@ -4235,7 +4560,8 @@
 		"pop": 100,
 		"webName": "Olusesi",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "freddie woodman",
@@ -4248,7 +4574,8 @@
 		"pop": 100,
 		"webName": "Woodman",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "marco bizot",
@@ -4261,7 +4588,8 @@
 		"pop": 100,
 		"webName": "M.Bizot",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 90
 	},
 	{
 		"name": "oliver dovin",
@@ -4274,7 +4602,8 @@
 		"pop": 100,
 		"webName": "Dovin",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "stephen mfuni",
@@ -4287,7 +4616,8 @@
 		"pop": 100,
 		"webName": "Mfuni",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "james maddison",
@@ -4300,7 +4630,8 @@
 		"pop": 99,
 		"webName": "Maddison",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 59
 	},
 	{
 		"name": "mikey moore",
@@ -4313,7 +4644,8 @@
 		"pop": 99,
 		"webName": "Moore",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 89
 	},
 	{
 		"name": "dwight mcneil",
@@ -4326,7 +4658,8 @@
 		"pop": 94,
 		"webName": "McNeil",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 84
 	},
 	{
 		"name": "estevao",
@@ -4339,7 +4672,8 @@
 		"pop": 93,
 		"webName": "Estêvão",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 23
 	},
 	{
 		"name": "beto",
@@ -4352,7 +4686,8 @@
 		"pop": 91,
 		"webName": "Beto",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 31
 	},
 	{
 		"name": "tammy abraham",
@@ -4365,7 +4700,8 @@
 		"pop": 91,
 		"webName": "Abraham",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 71
 	},
 	{
 		"name": "ben davies",
@@ -4378,7 +4714,8 @@
 		"pop": 90,
 		"webName": "Davies",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "cédric kipré",
@@ -4391,7 +4728,8 @@
 		"pop": 90,
 		"webName": "Kipré",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "chido obi",
@@ -4404,7 +4742,8 @@
 		"pop": 90,
 		"webName": "Obi",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "dayann methalie",
@@ -4417,7 +4756,8 @@
 		"pop": 90,
 		"webName": "Methalie",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "honest ahanor",
@@ -4430,7 +4770,8 @@
 		"pop": 90,
 		"webName": "Ahanor",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "jordan henderson",
@@ -4443,7 +4784,8 @@
 		"pop": 90,
 		"webName": "Henderson",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 90
 	},
 	{
 		"name": "jorge cuenca",
@@ -4456,7 +4798,8 @@
 		"pop": 90,
 		"webName": "J.Cuenca",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 90
 	},
 	{
 		"name": "kaye furo",
@@ -4469,7 +4812,8 @@
 		"pop": 90,
 		"webName": "Furo",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "nick pope",
@@ -4482,7 +4826,8 @@
 		"pop": 90,
 		"webName": "Pope",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "jacob ramsey",
@@ -4495,7 +4840,8 @@
 		"pop": 89,
 		"webName": "J.Ramsey",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 69
 	},
 	{
 		"name": "lucas bergvall",
@@ -4508,7 +4854,8 @@
 		"pop": 88,
 		"webName": "Bergvall",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 78
 	},
 	{
 		"name": "alysson",
@@ -4521,7 +4868,8 @@
 		"pop": 87,
 		"webName": "Alysson",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 87
 	},
 	{
 		"name": "jeremy doku",
@@ -4534,7 +4882,8 @@
 		"pop": 85,
 		"webName": "Doku",
 		"cost": 74,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 15
 	},
 	{
 		"name": "william osula",
@@ -4547,7 +4896,8 @@
 		"pop": 85,
 		"webName": "Osula",
 		"cost": 58,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 55
 	},
 	{
 		"name": "ryan sessegnon",
@@ -4560,7 +4910,8 @@
 		"pop": 80,
 		"webName": "Sessegnon",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 50
 	},
 	{
 		"name": "rodrigo muniz",
@@ -4573,7 +4924,8 @@
 		"pop": 78,
 		"webName": "Muniz",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 38
 	},
 	{
 		"name": "darnell furlong",
@@ -4586,7 +4938,8 @@
 		"pop": 77,
 		"webName": "Furlong",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 17
 	},
 	{
 		"name": "mathias jensen",
@@ -4599,7 +4952,8 @@
 		"pop": 76,
 		"webName": "Jensen",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 66
 	},
 	{
 		"name": "rico lewis",
@@ -4612,7 +4966,8 @@
 		"pop": 76,
 		"webName": "Lewis",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 56
 	},
 	{
 		"name": "kostas tsimikas",
@@ -4625,7 +4980,8 @@
 		"pop": 74,
 		"webName": "Tsimikas",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 64
 	},
 	{
 		"name": "chadi riad",
@@ -4638,7 +4994,8 @@
 		"pop": 72,
 		"webName": "Chadi Riad",
 		"cost": 43,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 72
 	},
 	{
 		"name": "leny yoro",
@@ -4651,7 +5008,8 @@
 		"pop": 72,
 		"webName": "Yoro",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 22
 	},
 	{
 		"name": "mohamed ali cho",
@@ -4664,7 +5022,8 @@
 		"pop": 72,
 		"webName": "Cho",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 72
 	},
 	{
 		"name": "dan burn",
@@ -4677,7 +5036,8 @@
 		"pop": 70,
 		"webName": "Burn",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "juan angulo",
@@ -4690,7 +5050,8 @@
 		"pop": 70,
 		"webName": "J.Angulo",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "michael keane",
@@ -4703,7 +5064,8 @@
 		"pop": 70,
 		"webName": "Keane",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "michael zetterer",
@@ -4716,7 +5078,8 @@
 		"pop": 70,
 		"webName": "Zetterer",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "tim iroegbunam",
@@ -4729,7 +5092,8 @@
 		"pop": 70,
 		"webName": "Iroegbunam",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 70
 	},
 	{
 		"name": "zian flemming",
@@ -4742,7 +5106,8 @@
 		"pop": 70,
 		"webName": "Flemming",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 60
 	},
 	{
 		"name": "ben chilwell",
@@ -4755,7 +5120,8 @@
 		"pop": 69,
 		"webName": "Chilwell",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 29
 	},
 	{
 		"name": "nick woltemade",
@@ -4768,7 +5134,8 @@
 		"pop": 69,
 		"webName": "Woltemade",
 		"cost": 59,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 19
 	},
 	{
 		"name": "costinha",
@@ -4781,7 +5148,8 @@
 		"pop": 68,
 		"webName": "Costinha",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 68
 	},
 	{
 		"name": "ismaïla sarr",
@@ -4794,7 +5162,8 @@
 		"pop": 68,
 		"webName": "Sarr",
 		"cost": 62,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 8
 	},
 	{
 		"name": "cody drameh",
@@ -4807,7 +5176,8 @@
 		"pop": 65,
 		"webName": "Drameh",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 65
 	},
 	{
 		"name": "victor torp",
@@ -4820,7 +5190,8 @@
 		"pop": 63,
 		"webName": "Torp",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 53
 	},
 	{
 		"name": "daniel james",
@@ -4833,7 +5204,8 @@
 		"pop": 62,
 		"webName": "James",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 52
 	},
 	{
 		"name": "jaden philogene",
@@ -4846,7 +5218,8 @@
 		"pop": 62,
 		"webName": "Philogene",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 52
 	},
 	{
 		"name": "alejandro garnacho",
@@ -4859,7 +5232,8 @@
 		"pop": 61,
 		"webName": "Garnacho",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 31
 	},
 	{
 		"name": "jefferson lerma",
@@ -4872,7 +5246,8 @@
 		"pop": 61,
 		"webName": "Lerma",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 51
 	},
 	{
 		"name": "kevin santos",
@@ -4885,7 +5260,8 @@
 		"pop": 61,
 		"webName": "Kevin",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 61
 	},
 	{
 		"name": "bazoumana touré",
@@ -4898,7 +5274,8 @@
 		"pop": 60,
 		"webName": "Touré",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 50
 	},
 	{
 		"name": "bradley burrowes",
@@ -4911,7 +5288,8 @@
 		"pop": 60,
 		"webName": "Burrowes",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "daniel bentley",
@@ -4924,7 +5302,8 @@
 		"pop": 60,
 		"webName": "Bentley",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "david button",
@@ -4937,7 +5316,8 @@
 		"pop": 60,
 		"webName": "Button",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "joshua zirkzee",
@@ -4950,7 +5330,8 @@
 		"pop": 60,
 		"webName": "Zirkzee",
 		"cost": 53,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 20
 	},
 	{
 		"name": "malick fofana",
@@ -4963,7 +5344,8 @@
 		"pop": 60,
 		"webName": "Fofana",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 60
 	},
 	{
 		"name": "marco palestra",
@@ -4976,7 +5358,8 @@
 		"pop": 60,
 		"webName": "Palestra",
 		"cost": 53,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "emile smith rowe",
@@ -4989,7 +5372,8 @@
 		"pop": 58,
 		"webName": "Smith Rowe",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 38
 	},
 	{
 		"name": "david brooks",
@@ -5002,7 +5386,8 @@
 		"pop": 55,
 		"webName": "Brooks",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 45
 	},
 	{
 		"name": "brooke norton-cuffy",
@@ -5015,7 +5400,8 @@
 		"pop": 54,
 		"webName": "Norton-Cuffy",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 34
 	},
 	{
 		"name": "evann guessand",
@@ -5028,7 +5414,8 @@
 		"pop": 54,
 		"webName": "Guessand",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 54
 	},
 	{
 		"name": "mateo kovačić",
@@ -5041,7 +5428,8 @@
 		"pop": 52,
 		"webName": "Kovačić",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 42
 	},
 	{
 		"name": "liam millar",
@@ -5054,7 +5442,8 @@
 		"pop": 50,
 		"webName": "Millar",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 50
 	},
 	{
 		"name": "sean neave",
@@ -5067,7 +5456,8 @@
 		"pop": 50,
 		"webName": "Neave",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "shumaira mheuka",
@@ -5080,7 +5470,8 @@
 		"pop": 50,
 		"webName": "Mheuka",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "el hadji malick diouf",
@@ -5093,7 +5484,8 @@
 		"pop": 49,
 		"webName": "Diouf",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 39
 	},
 	{
 		"name": "kenny tete",
@@ -5106,7 +5498,8 @@
 		"pop": 47,
 		"webName": "Tete",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 27
 	},
 	{
 		"name": "jake o'brien",
@@ -5119,7 +5512,8 @@
 		"pop": 46,
 		"webName": "O'Brien",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 16
 	},
 	{
 		"name": "fabian schär",
@@ -5132,7 +5526,8 @@
 		"pop": 45,
 		"webName": "Schär",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 25
 	},
 	{
 		"name": "hidemasa morita",
@@ -5145,7 +5540,8 @@
 		"pop": 45,
 		"webName": "Morita",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 45
 	},
 	{
 		"name": "callum wilson",
@@ -5158,7 +5554,8 @@
 		"pop": 43,
 		"webName": "Wilson",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 13
 	},
 	{
 		"name": "ibrahim mbaye",
@@ -5171,7 +5568,8 @@
 		"pop": 43,
 		"webName": "Mbaye",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 33
 	},
 	{
 		"name": "noni madueke",
@@ -5184,7 +5582,8 @@
 		"pop": 43,
 		"webName": "Madueke",
 		"cost": 62,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 23
 	},
 	{
 		"name": "omar alderete",
@@ -5197,7 +5596,8 @@
 		"pop": 43,
 		"webName": "Alderete",
 		"cost": 48,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 23
 	},
 	{
 		"name": "promise david",
@@ -5210,7 +5610,8 @@
 		"pop": 43,
 		"webName": "David",
 		"cost": 59,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 23
 	},
 	{
 		"name": "valentino livramento",
@@ -5223,7 +5624,8 @@
 		"pop": 43,
 		"webName": "Livramento",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 33
 	},
 	{
 		"name": "ayyoub bouaddi",
@@ -5236,7 +5638,8 @@
 		"pop": 42,
 		"webName": "Bouaddi",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 22
 	},
 	{
 		"name": "gustavo hamer",
@@ -5249,7 +5652,8 @@
 		"pop": 42,
 		"webName": "Hamer",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 32
 	},
 	{
 		"name": "chemsdine talbi",
@@ -5262,7 +5666,8 @@
 		"pop": 41,
 		"webName": "Talbi",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 31
 	},
 	{
 		"name": "daniel jebbison",
@@ -5275,7 +5680,8 @@
 		"pop": 41,
 		"webName": "Jebbison",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 31
 	},
 	{
 		"name": "tatsuhiro sakamoto",
@@ -5288,7 +5694,8 @@
 		"pop": 41,
 		"webName": "Sakamoto",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 31
 	},
 	{
 		"name": "ben wilson",
@@ -5301,7 +5708,8 @@
 		"pop": 40,
 		"webName": "Wilson",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "florentino",
@@ -5314,7 +5722,8 @@
 		"pop": 40,
 		"webName": "Florentino",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 30
 	},
 	{
 		"name": "ibrahim osman",
@@ -5327,7 +5736,8 @@
 		"pop": 40,
 		"webName": "Osman",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 40
 	},
 	{
 		"name": "rayan aït nouri",
@@ -5340,7 +5750,8 @@
 		"pop": 40,
 		"webName": "Aït-Nouri",
 		"cost": 52,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "sidiki cherif",
@@ -5353,7 +5764,8 @@
 		"pop": 40,
 		"webName": "Cherif",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 30
 	},
 	{
 		"name": "trey nyoni",
@@ -5366,7 +5778,8 @@
 		"pop": 38,
 		"webName": "Nyoni",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 38
 	},
 	{
 		"name": "aladji bamba",
@@ -5379,7 +5792,8 @@
 		"pop": 37,
 		"webName": "Bamba",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 27
 	},
 	{
 		"name": "hugo larsson",
@@ -5392,7 +5806,8 @@
 		"pop": 37,
 		"webName": "Larsson",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 37
 	},
 	{
 		"name": "paddy mcnair",
@@ -5405,7 +5820,8 @@
 		"pop": 36,
 		"webName": "McNair",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 26
 	},
 	{
 		"name": "amad diallo",
@@ -5418,7 +5834,8 @@
 		"pop": 30,
 		"webName": "Amad",
 		"cost": 57,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "george shepherd",
@@ -5431,7 +5848,8 @@
 		"pop": 30,
 		"webName": "Shepherd",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "julio soler",
@@ -5444,7 +5862,8 @@
 		"pop": 30,
 		"webName": "Soler",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "kai andrews",
@@ -5457,7 +5876,8 @@
 		"pop": 30,
 		"webName": "Andrews",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "kieran dowell",
@@ -5470,7 +5890,8 @@
 		"pop": 30,
 		"webName": "Dowell",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "liam kitching",
@@ -5483,7 +5904,8 @@
 		"pop": 30,
 		"webName": "Kitching",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "lucas perri",
@@ -5496,7 +5918,8 @@
 		"pop": 30,
 		"webName": "Perri",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "macaulay zepa",
@@ -5509,7 +5932,8 @@
 		"pop": 30,
 		"webName": "Zepa",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "robinio vaz",
@@ -5522,7 +5946,8 @@
 		"pop": 30,
 		"webName": "Vaz",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 20
 	},
 	{
 		"name": "tyler fletcher",
@@ -5535,7 +5960,8 @@
 		"pop": 30,
 		"webName": "Fletcher",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "habib diarra",
@@ -5548,7 +5974,8 @@
 		"pop": 28,
 		"webName": "Diarra",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 28
 	},
 	{
 		"name": "zavier gozo",
@@ -5561,7 +5988,8 @@
 		"pop": 28,
 		"webName": "Gozo",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 28
 	},
 	{
 		"name": "geovany quenda",
@@ -5574,7 +6002,8 @@
 		"pop": 27,
 		"webName": "Quenda",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 27
 	},
 	{
 		"name": "luca netz",
@@ -5587,7 +6016,8 @@
 		"pop": 27,
 		"webName": "Netz",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 27
 	},
 	{
 		"name": "lamare bogarde",
@@ -5600,7 +6030,8 @@
 		"pop": 26,
 		"webName": "Bogarde",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 16
 	},
 	{
 		"name": "óscar mingueza",
@@ -5613,7 +6044,8 @@
 		"pop": 26,
 		"webName": "Mingueza",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 16
 	},
 	{
 		"name": "tyler dibling",
@@ -5626,7 +6058,8 @@
 		"pop": 24,
 		"webName": "Dibling",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 24
 	},
 	{
 		"name": "ben doak",
@@ -5639,7 +6072,8 @@
 		"pop": 22,
 		"webName": "Gannon-Doak",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 12
 	},
 	{
 		"name": "lewis koumas",
@@ -5652,7 +6086,8 @@
 		"pop": 22,
 		"webName": "Koumas",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 22
 	},
 	{
 		"name": "rico henry",
@@ -5665,7 +6100,8 @@
 		"pop": 22,
 		"webName": "Henry",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 2
 	},
 	{
 		"name": "kaden braithwaite",
@@ -5678,7 +6114,8 @@
 		"pop": 21,
 		"webName": "Braithwaite",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 1
 	},
 	{
 		"name": "ryan mcaidoo",
@@ -5691,7 +6128,8 @@
 		"pop": 21,
 		"webName": "McAidoo",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 11
 	},
 	{
 		"name": "alex cairns",
@@ -5704,7 +6142,8 @@
 		"pop": 20,
 		"webName": "Cairns",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "alvaro rodriguez",
@@ -5717,7 +6156,8 @@
 		"pop": 20,
 		"webName": "Rodríguez",
 		"cost": 60,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 10
 	},
 	{
 		"name": "bafodé diakité",
@@ -5730,7 +6170,8 @@
 		"pop": 20,
 		"webName": "Diakité",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "bendito mantato",
@@ -5743,7 +6184,8 @@
 		"pop": 20,
 		"webName": "Bendito Mantato",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "brian madjo",
@@ -5756,7 +6198,8 @@
 		"pop": 20,
 		"webName": "Madjo",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "charlie hughes",
@@ -5769,7 +6212,8 @@
 		"pop": 20,
 		"webName": "Hughes",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "djed spence",
@@ -5782,7 +6226,8 @@
 		"pop": 20,
 		"webName": "Spence",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "eli kroupi",
@@ -5795,7 +6240,8 @@
 		"pop": 20,
 		"webName": "Kroupi.Jr",
 		"cost": 74,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "enis destan",
@@ -5808,7 +6254,8 @@
 		"pop": 20,
 		"webName": "Destan",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "harry amass",
@@ -5821,7 +6268,8 @@
 		"pop": 20,
 		"webName": "Amass",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "harvey davies",
@@ -5834,7 +6282,8 @@
 		"pop": 20,
 		"webName": "Davies",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "james mcconnell",
@@ -5847,7 +6296,8 @@
 		"pop": 20,
 		"webName": "McConnell",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jayden danns",
@@ -5860,7 +6310,8 @@
 		"pop": 20,
 		"webName": "Danns",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "juanlu",
@@ -5873,7 +6324,8 @@
 		"pop": 20,
 		"webName": "Sanchez",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "jules ahoka",
@@ -5886,7 +6338,8 @@
 		"pop": 20,
 		"webName": "Ahoka",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "leo shahar",
@@ -5899,7 +6352,8 @@
 		"pop": 20,
 		"webName": "Shahar",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "marc guiu paz",
@@ -5912,7 +6366,8 @@
 		"pop": 20,
 		"webName": "Marc Guiu",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "matt o'riley",
@@ -5925,7 +6380,8 @@
 		"pop": 20,
 		"webName": "O'Riley",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 10
 	},
 	{
 		"name": "nehemiah oriola",
@@ -5938,7 +6394,8 @@
 		"pop": 20,
 		"webName": "Oriola",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "omar richards",
@@ -5951,7 +6408,8 @@
 		"pop": 20,
 		"webName": "O.Richards",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "sean longstaff",
@@ -5964,7 +6422,8 @@
 		"pop": 20,
 		"webName": "Longstaff",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 10
 	},
 	{
 		"name": "shea lacey",
@@ -5977,7 +6436,8 @@
 		"pop": 20,
 		"webName": "Lacey",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 10
 	},
 	{
 		"name": "souza",
@@ -5990,7 +6450,8 @@
 		"pop": 20,
 		"webName": "Souza",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "triston rowe",
@@ -6003,7 +6464,8 @@
 		"pop": 20,
 		"webName": "Rowe",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "william saliba",
@@ -6016,7 +6478,8 @@
 		"pop": 20,
 		"webName": "Saliba",
 		"cost": 59,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "max dowman",
@@ -6029,7 +6492,8 @@
 		"pop": 19,
 		"webName": "Dowman",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 9
 	},
 	{
 		"name": "jens hjertö-dahl",
@@ -6042,7 +6506,8 @@
 		"pop": 18,
 		"webName": "Hjertø-Dahl",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 8
 	},
 	{
 		"name": "melvin bard",
@@ -6055,7 +6520,8 @@
 		"pop": 18,
 		"webName": "Bard",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 18
 	},
 	{
 		"name": "alex toth",
@@ -6068,7 +6534,8 @@
 		"pop": 17,
 		"webName": "Tóth.A",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 17
 	},
 	{
 		"name": "chris rigg",
@@ -6081,7 +6548,8 @@
 		"pop": 17,
 		"webName": "Rigg",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 17
 	},
 	{
 		"name": "mykhailo mudryk",
@@ -6094,7 +6562,8 @@
 		"pop": 16,
 		"webName": "Mudryk",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 16
 	},
 	{
 		"name": "carlos alcaraz",
@@ -6107,7 +6576,8 @@
 		"pop": 15,
 		"webName": "Alcaraz",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 5
 	},
 	{
 		"name": "tosin adarabioyo",
@@ -6120,7 +6590,8 @@
 		"pop": 15,
 		"webName": "Tosin",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 5
 	},
 	{
 		"name": "michael svoboda",
@@ -6133,7 +6604,8 @@
 		"pop": 14,
 		"webName": "Svoboda",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 4
 	},
 	{
 		"name": "zadok yohanna",
@@ -6146,7 +6618,8 @@
 		"pop": 12,
 		"webName": "Yohanna",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 12
 	},
 	{
 		"name": "arnaud kalimuendo",
@@ -6159,7 +6632,8 @@
 		"pop": 11,
 		"webName": "Kalimuendo",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 1
 	},
 	{
 		"name": "callum hudson-odoi",
@@ -6172,7 +6646,8 @@
 		"pop": 11,
 		"webName": "Hudson-Odoi",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 1
 	},
 	{
 		"name": "nicolás domínguez",
@@ -6185,7 +6660,8 @@
 		"pop": 11,
 		"webName": "Dominguez",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 1
 	},
 	{
 		"name": "adam aznou",
@@ -6198,7 +6674,8 @@
 		"pop": 10,
 		"webName": "Aznou",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "alfie cresswell",
@@ -6211,7 +6688,8 @@
 		"pop": 10,
 		"webName": "Cresswell",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "alfie mcnally",
@@ -6224,7 +6702,8 @@
 		"pop": 10,
 		"webName": "McNally",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "anthony patterson",
@@ -6237,7 +6716,8 @@
 		"pop": 10,
 		"webName": "Patterson",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "arthur masuaku",
@@ -6250,7 +6730,8 @@
 		"pop": 10,
 		"webName": "Masuaku",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "ben johnson",
@@ -6263,7 +6744,8 @@
 		"pop": 10,
 		"webName": "Johnson",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "braiden graham",
@@ -6276,7 +6758,8 @@
 		"pop": 10,
 		"webName": "Graham",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "calvin ramsay",
@@ -6289,7 +6772,8 @@
 		"pop": 10,
 		"webName": "Ramsay",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "carlos baleba",
@@ -6302,7 +6786,8 @@
 		"pop": 10,
 		"webName": "Baleba",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "cathal mccarthy",
@@ -6315,7 +6800,8 @@
 		"pop": 10,
 		"webName": "McCarthy",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "cristian romero",
@@ -6328,7 +6814,8 @@
 		"pop": 10,
 		"webName": "Romero",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "dário essugo",
@@ -6341,7 +6828,8 @@
 		"pop": 10,
 		"webName": "D.Essugo",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "divine mukasa",
@@ -6354,7 +6842,8 @@
 		"pop": 10,
 		"webName": "Mukasa",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "emanuel emegha",
@@ -6367,7 +6856,8 @@
 		"pop": 10,
 		"webName": "Emegha",
 		"cost": 49,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "gabriel jesus",
@@ -6380,7 +6870,8 @@
 		"pop": 10,
 		"webName": "G.Jesus",
 		"cost": 59,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "gabriel martinelli",
@@ -6393,7 +6884,8 @@
 		"pop": 10,
 		"webName": "Martinelli",
 		"cost": 63,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "george hirst",
@@ -6406,7 +6898,8 @@
 		"pop": 10,
 		"webName": "Hirst",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "giorgi mamardashvili",
@@ -6419,7 +6912,8 @@
 		"pop": 10,
 		"webName": "Mamardashvili",
 		"cost": 48,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "guglielmo vicario",
@@ -6432,7 +6926,8 @@
 		"pop": 10,
 		"webName": "Vicario",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "haji wright",
@@ -6445,7 +6940,8 @@
 		"pop": 10,
 		"webName": "Wright",
 		"cost": 53,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "hákon rafn valdimarsson",
@@ -6458,7 +6954,8 @@
 		"pop": 10,
 		"webName": "Valdimarsson",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "hugo ekitike",
@@ -6471,7 +6968,8 @@
 		"pop": 10,
 		"webName": "Ekitiké",
 		"cost": 74,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "jack butland",
@@ -6484,7 +6982,8 @@
 		"pop": 10,
 		"webName": "Butland",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "jake bidwell",
@@ -6497,7 +6996,8 @@
 		"pop": 10,
 		"webName": "Bidwell",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "james rowswell",
@@ -6510,7 +7010,8 @@
 		"pop": 10,
 		"webName": "Rowswell",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "james wright",
@@ -6523,7 +7024,8 @@
 		"pop": 10,
 		"webName": "Wright",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "jayden lienou",
@@ -6536,7 +7038,8 @@
 		"pop": 10,
 		"webName": "Lienou",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "joél drakes-thomas",
@@ -6549,7 +7052,8 @@
 		"pop": 10,
 		"webName": "Drakes-Thomas",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "joël piroe",
@@ -6562,7 +7066,8 @@
 		"pop": 10,
 		"webName": "Piroe",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "john",
@@ -6575,7 +7080,8 @@
 		"pop": 10,
 		"webName": "John",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "jun'ai byfield",
@@ -6588,7 +7094,8 @@
 		"pop": 10,
 		"webName": "Byfield",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "kaine kesler",
@@ -6601,7 +7108,8 @@
 		"pop": 10,
 		"webName": "Kesler-Hayden",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "kepa arrizabalaga",
@@ -6614,7 +7122,8 @@
 		"pop": 10,
 		"webName": "Arrizabalaga",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "kosta nedeljkovic",
@@ -6627,7 +7136,8 @@
 		"pop": 10,
 		"webName": "Nedeljkovic",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "leon bailey",
@@ -6640,7 +7150,8 @@
 		"pop": 10,
 		"webName": "Bailey",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "luc de fougerolles",
@@ -6653,7 +7164,8 @@
 		"pop": 10,
 		"webName": "De Fougerolles",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "luca williams-barnett",
@@ -6666,7 +7178,8 @@
 		"pop": 10,
 		"webName": "Williams-Barnett",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "luka lynch",
@@ -6679,7 +7192,8 @@
 		"pop": 10,
 		"webName": "Lynch",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "luke woolfenden",
@@ -6692,7 +7206,8 @@
 		"pop": 10,
 		"webName": "Woolfenden",
 		"cost": 39,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "mason mount",
@@ -6705,7 +7220,8 @@
 		"pop": 10,
 		"webName": "Mount",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 10
 	},
 	{
 		"name": "mateo fernandez",
@@ -6718,7 +7234,8 @@
 		"pop": 10,
 		"webName": "Mateo Joseph",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "melker ellborg",
@@ -6731,7 +7248,8 @@
 		"pop": 10,
 		"webName": "Ellborg",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "mike penders",
@@ -6744,7 +7262,8 @@
 		"pop": 10,
 		"webName": "Penders",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "omari hutchinson",
@@ -6757,7 +7276,8 @@
 		"pop": 10,
 		"webName": "Hutchinson",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "óscar zambrano",
@@ -6770,7 +7290,8 @@
 		"pop": 10,
 		"webName": "Zambrano",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "pape matar sarr",
@@ -6783,7 +7304,8 @@
 		"pop": 10,
 		"webName": "P.M.Sarr",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "raphael borges rodrigues",
@@ -6796,7 +7318,8 @@
 		"pop": 10,
 		"webName": "Borges Rodrigues",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "sepp van den berg",
@@ -6809,7 +7332,8 @@
 		"pop": 10,
 		"webName": "Van den Berg",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "steven benda",
@@ -6822,7 +7346,8 @@
 		"pop": 10,
 		"webName": "Benda",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "tom heaton",
@@ -6835,7 +7360,8 @@
 		"pop": 10,
 		"webName": "Heaton",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "trevoh chalobah",
@@ -6848,7 +7374,8 @@
 		"pop": 10,
 		"webName": "Chalobah",
 		"cost": 55,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "tyler bindon",
@@ -6861,7 +7388,8 @@
 		"pop": 10,
 		"webName": "Bindon",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "vakhtang salia",
@@ -6874,7 +7402,8 @@
 		"pop": 10,
 		"webName": "Salia",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "wataru endō",
@@ -6887,7 +7416,8 @@
 		"pop": 10,
 		"webName": "Endo",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "wellity lucky",
@@ -6900,7 +7430,8 @@
 		"pop": 10,
 		"webName": "Lucky",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "will dennis",
@@ -6913,7 +7444,8 @@
 		"pop": 10,
 		"webName": "Dennis",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "zach abbott",
@@ -6926,7 +7458,8 @@
 		"pop": 10,
 		"webName": "Abbott",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "joe gelhardt",
@@ -6939,7 +7472,8 @@
 		"pop": 7,
 		"webName": "Gelhardt",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 7
 	},
 	{
 		"name": "fabio carvalho",
@@ -6952,7 +7486,8 @@
 		"pop": 3,
 		"webName": "Carvalho",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 3
 	},
 	{
 		"name": "mahdi nicoll-jazuli",
@@ -6965,7 +7500,8 @@
 		"pop": 3,
 		"webName": "Nicoll-Jazuli",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 3
 	},
 	{
 		"name": "darío osorio",
@@ -6978,7 +7514,8 @@
 		"pop": 1,
 		"webName": "Osorio",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 1
 	},
 	{
 		"name": "jean bahoya",
@@ -6991,7 +7528,8 @@
 		"pop": 1,
 		"webName": "Bahoya",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 1
 	},
 	{
 		"name": "joel latibeaudiere",
@@ -7004,7 +7542,8 @@
 		"pop": 1,
 		"webName": "Latibeaudiere",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 1
 	},
 	{
 		"name": "romaine mundle",
@@ -7017,7 +7556,8 @@
 		"pop": 1,
 		"webName": "Mundle",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 1
 	},
 	{
 		"name": "vitor reis",
@@ -7030,7 +7570,8 @@
 		"pop": 1,
 		"webName": "Vitor Reis",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 1
 	},
 	{
 		"name": "aaron anselmino",
@@ -7043,7 +7584,8 @@
 		"pop": 0,
 		"webName": "Anselmino",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "abdülkadir ömür",
@@ -7056,7 +7598,8 @@
 		"pop": 0,
 		"webName": "Ömür",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "abu kamara",
@@ -7069,7 +7612,8 @@
 		"pop": 0,
 		"webName": "Kamara",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "ali al hamadi",
@@ -7082,7 +7626,8 @@
 		"pop": 0,
 		"webName": "Al-Hamadi",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "allan",
@@ -7095,7 +7640,8 @@
 		"pop": 0,
 		"webName": "Allan",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "altay bayındır",
@@ -7108,7 +7654,8 @@
 		"pop": 0,
 		"webName": "Bayindir",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "amadou onana",
@@ -7121,7 +7668,8 @@
 		"pop": 0,
 		"webName": "Onana",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "amario cozier-duberry",
@@ -7134,7 +7682,8 @@
 		"pop": 0,
 		"webName": "Cozier-Duberry",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "amine adli",
@@ -7147,7 +7696,8 @@
 		"pop": 0,
 		"webName": "Adli",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "anis mehmeti",
@@ -7160,7 +7710,8 @@
 		"pop": 0,
 		"webName": "Mehmeti",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "antoni milambo",
@@ -7173,7 +7724,8 @@
 		"pop": 0,
 		"webName": "Milambo",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "armin pecsi",
@@ -7186,7 +7738,8 @@
 		"pop": 0,
 		"webName": "Pecsi",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "ashley phillips",
@@ -7199,7 +7752,8 @@
 		"pop": 0,
 		"webName": "Phillips",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "azor matusiwa",
@@ -7212,7 +7766,8 @@
 		"pop": 0,
 		"webName": "Matusiwa",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "benjamin fredrick",
@@ -7225,7 +7780,8 @@
 		"pop": 0,
 		"webName": "Fredrick",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "benoît badiashile mukinayi",
@@ -7238,7 +7794,8 @@
 		"pop": 0,
 		"webName": "B.Badiashile",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "borna sosa",
@@ -7251,7 +7808,8 @@
 		"pop": 0,
 		"webName": "Sosa",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "cameron humphreys",
@@ -7264,7 +7822,8 @@
 		"pop": 0,
 		"webName": "Humphreys",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "cheick doucouré",
@@ -7277,7 +7836,8 @@
 		"pop": 0,
 		"webName": "Doucouré",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "chiedozie ogbene",
@@ -7290,7 +7850,8 @@
 		"pop": 0,
 		"webName": "Ogbene",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "christantus uche",
@@ -7303,7 +7864,8 @@
 		"pop": 0,
 		"webName": "Uche",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "christian nørgaard",
@@ -7316,7 +7878,8 @@
 		"pop": 0,
 		"webName": "Nørgaard",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "christos mouzakitis",
@@ -7329,7 +7892,8 @@
 		"pop": 0,
 		"webName": "Mouzakitis",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "claudio echeverri",
@@ -7342,7 +7906,8 @@
 		"pop": 0,
 		"webName": "Echeverri",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "conor bradley",
@@ -7355,7 +7920,8 @@
 		"pop": 0,
 		"webName": "Bradley",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "curtis jones",
@@ -7368,7 +7934,8 @@
 		"pop": 0,
 		"webName": "C.Jones",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "darko gyabi",
@@ -7381,7 +7948,8 @@
 		"pop": 0,
 		"webName": "Gyabi",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "david akintola",
@@ -7394,7 +7962,8 @@
 		"pop": 0,
 		"webName": "Akintola",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "dejan kulusevski",
@@ -7407,7 +7976,8 @@
 		"pop": 0,
 		"webName": "Kulusevski",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "diego coppola",
@@ -7420,7 +7990,8 @@
 		"pop": 0,
 		"webName": "Coppola",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "dilane bakwa",
@@ -7433,7 +8004,8 @@
 		"pop": 0,
 		"webName": "Bakwa",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "eliot matazo",
@@ -7446,7 +8018,8 @@
 		"pop": 0,
 		"webName": "Matazo",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "ellery balcombe",
@@ -7459,7 +8032,8 @@
 		"pop": 0,
 		"webName": "Balcombe",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "enes ünal",
@@ -7472,7 +8046,8 @@
 		"pop": 0,
 		"webName": "Enes Ünal",
 		"cost": 55,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "ethan nwaneri",
@@ -7485,7 +8060,8 @@
 		"pop": 0,
 		"webName": "Nwaneri",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "evan ferguson",
@@ -7498,7 +8074,8 @@
 		"pop": 0,
 		"webName": "Ferguson",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "ewen jaouen",
@@ -7511,7 +8088,8 @@
 		"pop": 0,
 		"webName": "Jaouen",
 		"cost": 44,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "fábio vieira",
@@ -7524,7 +8102,8 @@
 		"pop": 0,
 		"webName": "Fábio Vieira",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "facundo buonanotte",
@@ -7537,7 +8116,8 @@
 		"pop": 0,
 		"webName": "Buonanotte",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "federico chiesa",
@@ -7550,7 +8130,8 @@
 		"pop": 0,
 		"webName": "Chiesa",
 		"cost": 53,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "femi azeez",
@@ -7563,7 +8144,8 @@
 		"pop": 0,
 		"webName": "Azeez",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "filip jörgensen",
@@ -7576,7 +8158,8 @@
 		"pop": 0,
 		"webName": "Jörgensen",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "floyd samba",
@@ -7589,7 +8172,8 @@
 		"pop": 0,
 		"webName": "Samba",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "géronimo rulli",
@@ -7602,7 +8186,8 @@
 		"pop": 0,
 		"webName": "Rulli",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "giovanni leoni",
@@ -7615,7 +8200,8 @@
 		"pop": 0,
 		"webName": "Leoni",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "gustavo gomes",
@@ -7628,7 +8214,8 @@
 		"pop": 0,
 		"webName": "Nunes",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "harry howell",
@@ -7641,7 +8228,8 @@
 		"pop": 0,
 		"webName": "Howell",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "harvey cartwright",
@@ -7654,7 +8242,8 @@
 		"pop": 0,
 		"webName": "Cartwright",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "harvey elliott",
@@ -7667,7 +8256,8 @@
 		"pop": 0,
 		"webName": "Elliott",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "igor julio",
@@ -7680,7 +8270,8 @@
 		"pop": 0,
 		"webName": "Igor",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "ilia gruev",
@@ -7693,7 +8284,8 @@
 		"pop": 0,
 		"webName": "Gruev",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "illan meslier",
@@ -7706,7 +8298,8 @@
 		"pop": 0,
 		"webName": "Meslier",
 		"cost": 49,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "ilyas ansah",
@@ -7719,7 +8312,8 @@
 		"pop": 0,
 		"webName": "Ansah",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "jack fletcher",
@@ -7732,7 +8326,8 @@
 		"pop": 0,
 		"webName": "J.Fletcher",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jack harrison",
@@ -7745,7 +8340,8 @@
 		"pop": 0,
 		"webName": "Harrison",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jack taylor",
@@ -7758,7 +8354,8 @@
 		"pop": 0,
 		"webName": "Taylor",
 		"cost": 44,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jahnoah markelo",
@@ -7771,7 +8368,8 @@
 		"pop": 0,
 		"webName": "Markelo",
 		"cost": 50,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "jamie bynoe-gittens",
@@ -7784,7 +8382,8 @@
 		"pop": 0,
 		"webName": "Gittens",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jaouen hadjam",
@@ -7797,7 +8396,8 @@
 		"pop": 0,
 		"webName": "Hadjam",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "jenson seelt",
@@ -7810,7 +8410,8 @@
 		"pop": 0,
 		"webName": "Seelt",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "jeremy monga",
@@ -7823,7 +8424,8 @@
 		"pop": 0,
 		"webName": "Monga",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "jesurun rak-sakyi",
@@ -7836,7 +8438,8 @@
 		"pop": 0,
 		"webName": "J.Rak-Sakyi",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "ji-soo kim",
@@ -7849,7 +8452,8 @@
 		"pop": 0,
 		"webName": "Ji-soo",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "jocelin bi",
@@ -7862,7 +8466,8 @@
 		"pop": 0,
 		"webName": "Jocelin.T",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "joe gomez",
@@ -7875,7 +8480,8 @@
 		"pop": 0,
 		"webName": "Gomez",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "joelinton",
@@ -7888,7 +8494,8 @@
 		"pop": 0,
 		"webName": "Joelinton",
 		"cost": 54,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "josh dasilva",
@@ -7901,7 +8508,8 @@
 		"pop": 0,
 		"webName": "Dasilva",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "josh eccles",
@@ -7914,7 +8522,8 @@
 		"pop": 0,
 		"webName": "Eccles",
 		"cost": 48,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "julian araujo",
@@ -7927,7 +8536,8 @@
 		"pop": 0,
 		"webName": "J.Araujo",
 		"cost": 44,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "justin devenny",
@@ -7940,7 +8550,8 @@
 		"pop": 0,
 		"webName": "Devenny",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "kalvin phillips",
@@ -7953,7 +8564,8 @@
 		"pop": 0,
 		"webName": "Phillips",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "kaoru mitoma",
@@ -7966,7 +8578,8 @@
 		"pop": 0,
 		"webName": "Mitoma",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "karl darlow",
@@ -7979,7 +8592,8 @@
 		"pop": 0,
 		"webName": "Darlow",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "kayne van oevelen",
@@ -7992,7 +8606,8 @@
 		"pop": 0,
 		"webName": "Van Oevelen",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "kyran thompson",
@@ -8005,7 +8620,8 @@
 		"pop": 0,
 		"webName": "Thompson",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "leo fuhr hjelde",
@@ -8018,7 +8634,8 @@
 		"pop": 0,
 		"webName": "Hjelde",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "leon goretzka",
@@ -8031,7 +8648,8 @@
 		"pop": 0,
 		"webName": "Goretzka",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "lucas digne",
@@ -8044,7 +8662,8 @@
 		"pop": 0,
 		"webName": "Digne",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "mamadou sarr",
@@ -8057,7 +8676,8 @@
 		"pop": 0,
 		"webName": "M.Sarr",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "manuel angel",
@@ -8070,7 +8690,8 @@
 		"pop": 0,
 		"webName": "Ángel",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "manuel ugarte",
@@ -8083,7 +8704,8 @@
 		"pop": 0,
 		"webName": "Ugarte",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "marcus bettinelli",
@@ -8096,7 +8718,8 @@
 		"pop": 0,
 		"webName": "Bettinelli",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "mark gillespie",
@@ -8109,7 +8732,8 @@
 		"pop": 0,
 		"webName": "Gillespie",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "mark travers",
@@ -8122,7 +8746,8 @@
 		"pop": 0,
 		"webName": "Travers",
 		"cost": 50,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "mason burstow",
@@ -8135,7 +8760,8 @@
 		"pop": 0,
 		"webName": "Burstow",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "mason miley",
@@ -8148,7 +8774,8 @@
 		"pop": 0,
 		"webName": "Miley",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "matheus franca",
@@ -8161,7 +8788,8 @@
 		"pop": 0,
 		"webName": "M.França",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "matthijs de ligt",
@@ -8174,7 +8802,8 @@
 		"pop": 0,
 		"webName": "De Ligt",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "matty jacob",
@@ -8187,7 +8816,8 @@
 		"pop": 0,
 		"webName": "Jacob",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "max alleyne",
@@ -8200,7 +8830,8 @@
 		"pop": 0,
 		"webName": "Alleyne",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "michael mills",
@@ -8213,7 +8844,8 @@
 		"pop": 0,
 		"webName": "Mills",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "michele di gregorio",
@@ -8226,7 +8858,8 @@
 		"pop": 0,
 		"webName": "Di Gregorio",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "miguel brau",
@@ -8239,7 +8872,8 @@
 		"pop": 0,
 		"webName": "Brau",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "miodrag pivas",
@@ -8252,7 +8886,8 @@
 		"pop": 0,
 		"webName": "Pivas",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "morato",
@@ -8265,7 +8900,8 @@
 		"pop": 0,
 		"webName": "Morato",
 		"cost": 50,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "nathan patterson",
@@ -8278,7 +8914,8 @@
 		"pop": 0,
 		"webName": "Patterson",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "nicolò savona",
@@ -8291,7 +8928,8 @@
 		"pop": 0,
 		"webName": "Savona",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "norman bassette",
@@ -8304,7 +8942,8 @@
 		"pop": 0,
 		"webName": "Bassette",
 		"cost": 45,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "reiss nelson",
@@ -8317,7 +8956,8 @@
 		"pop": 0,
 		"webName": "Nelson",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "rio cardines",
@@ -8330,7 +8970,8 @@
 		"pop": 0,
 		"webName": "Cardines",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "rodri",
@@ -8343,7 +8984,8 @@
 		"pop": 0,
 		"webName": "Rodrigo",
 		"cost": 65,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "romain esse",
@@ -8356,7 +8998,8 @@
 		"pop": 0,
 		"webName": "Esse",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "sam szmodics",
@@ -8369,7 +9012,8 @@
 		"pop": 0,
 		"webName": "Szmodics",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "samuel iling-junior",
@@ -8382,7 +9026,8 @@
 		"pop": 0,
 		"webName": "Iling Jr",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "sebastiaan bornauw",
@@ -8395,7 +9040,8 @@
 		"pop": 0,
 		"webName": "Bornauw",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "simon adingra",
@@ -8408,7 +9054,8 @@
 		"pop": 0,
 		"webName": "Adingra",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "stefan bajčetić maquieira",
@@ -8421,7 +9068,8 @@
 		"pop": 0,
 		"webName": "Bajcetic",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "stefanos tzimas",
@@ -8434,7 +9082,8 @@
 		"pop": 0,
 		"webName": "Tzimas",
 		"cost": 54,
-		"fplType": 4
+		"fplType": 4,
+		"minutes": 0
 	},
 	{
 		"name": "taylor harwood-bellis",
@@ -8447,7 +9096,8 @@
 		"pop": 0,
 		"webName": "Harwood-Bellis",
 		"cost": 45,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "thimothée lo-tutala",
@@ -8460,7 +9110,8 @@
 		"pop": 0,
 		"webName": "Lo-Tutala",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "thomas king",
@@ -8473,7 +9124,8 @@
 		"pop": 0,
 		"webName": "King",
 		"cost": 45,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "tijjani reijnders",
@@ -8486,7 +9138,8 @@
 		"pop": 0,
 		"webName": "Reijnders",
 		"cost": 60,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "toby collyer",
@@ -8499,7 +9152,8 @@
 		"pop": 0,
 		"webName": "Collyer",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "tom cairney",
@@ -8512,7 +9166,8 @@
 		"pop": 0,
 		"webName": "Cairney",
 		"cost": 49,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "tom watson",
@@ -8525,7 +9180,8 @@
 		"pop": 0,
 		"webName": "Watson",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "tyler fredricson",
@@ -8538,7 +9194,8 @@
 		"pop": 0,
 		"webName": "Fredricson",
 		"cost": 40,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "veljko milosavljević",
@@ -8551,7 +9208,8 @@
 		"pop": 0,
 		"webName": "Milosavljević",
 		"cost": 49,
-		"fplType": 2
+		"fplType": 2,
+		"minutes": 0
 	},
 	{
 		"name": "vítězslav jaroš",
@@ -8564,7 +9222,8 @@
 		"pop": 0,
 		"webName": "Jaros",
 		"cost": 40,
-		"fplType": 1
+		"fplType": 1,
+		"minutes": 0
 	},
 	{
 		"name": "wes burns",
@@ -8577,7 +9236,8 @@
 		"pop": 0,
 		"webName": "Burns",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "wilfried gnonto",
@@ -8590,7 +9250,8 @@
 		"pop": 0,
 		"webName": "Gnonto",
 		"cost": 50,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "wilson odobert",
@@ -8603,7 +9264,8 @@
 		"pop": 0,
 		"webName": "Odobert",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "xavi simons",
@@ -8616,7 +9278,8 @@
 		"pop": 0,
 		"webName": "Xavi",
 		"cost": 59,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "yankubah minteh",
@@ -8629,7 +9292,8 @@
 		"pop": 0,
 		"webName": "Minteh",
 		"cost": 58,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "yann gboho",
@@ -8642,7 +9306,8 @@
 		"pop": 0,
 		"webName": "Gboho",
 		"cost": 55,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	},
 	{
 		"name": "younes ibrahim",
@@ -8655,6 +9320,7 @@
 		"pop": 0,
 		"webName": "Ibrahim",
 		"cost": 45,
-		"fplType": 3
+		"fplType": 3,
+		"minutes": 0
 	}
 ]

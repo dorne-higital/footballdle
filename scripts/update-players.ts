@@ -72,6 +72,8 @@ interface Player {
 	cost?: number
 	/** FPL position code: 1 goalkeeper, 2 defender, 3 midfielder, 4 forward */
 	fplType?: number
+	/** League minutes this season */
+	minutes?: number
 }
 /** [name, club, nationality, position] — a frozen copy of the player as they were that day */
 type Snapshot = [string, string, string, string]
@@ -183,8 +185,9 @@ const KNOWN_BY_FIRST_NAME = new Set(['alisson becker'])
 
 function dailyEligible(p: Player): boolean {
 	if (KNOWN_BY_FIRST_NAME.has(key(p.name))) return false
-	// Backup and third-choice keepers (FPL prices them under £4.5m)
-	if (p.fplType === 1 && p.cost !== undefined && p.cost < 45) return false
+	// Backup and third-choice keepers: FPL prices them under £4.5m. A cheap keeper who's
+	// actually playing (three full games or more this season) still counts.
+	if (p.fplType === 1 && p.cost !== undefined && p.cost < 45 && (p.minutes ?? 0) < 270) return false
 	const parts = p.name.trim().split(/\s+/)
 	if (parts.length !== 2 || parts[1]!.includes('-')) return false
 	if (!p.webName) return true
@@ -294,6 +297,7 @@ function buildRoster(fpl: any, fd: any, previous: Map<string, Player>): Player[]
 			webName: String(e.web_name || ''),
 			cost: Number(e.now_cost) || 0,
 			fplType: Number(e.element_type) || 0,
+			minutes,
 		})
 	}
 
