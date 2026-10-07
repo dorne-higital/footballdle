@@ -176,8 +176,9 @@
 </template>
 
 <script setup lang="ts">
-	import { computed } from 'vue'
+	import { computed, onMounted, ref } from 'vue'
 	import { getPuzzleNumber } from '../composables/useFootballers'
+	import { nextPuzzleTimeLabel } from '../utils/dateStreak'
 
 	const props = withDefaults(
 		defineProps<{
@@ -221,7 +222,11 @@
 	const puzzleNumber = getPuzzleNumber(todayUK)
 
 	const eyebrowLabel = computed(() => `${props.modeName} Match`)
-	const kickoffLabel = computed(() => `No. ${puzzleNumber} · Kick-off 00:00 GMT`)
+	// The reset is UK midnight; say it in the player's own time ("8:00 am" in Sydney).
+	// Worked out on the device, since the website's HTML is rendered elsewhere.
+	const resetTime = ref('midnight UK')
+	onMounted(() => (resetTime.value = nextPuzzleTimeLabel()))
+	const kickoffLabel = computed(() => `No. ${puzzleNumber} · New puzzle at ${resetTime.value}`)
 
 	defineEmits(['start-game', 'start-challenge', 'show-result'])
 </script>
@@ -291,6 +296,8 @@
 
 				.match-no {
 					color: var(--text-secondary);
+					min-width: 0;
+					overflow-wrap: anywhere;
 					font-family: var(--font-mono);
 					font-size: 0.7rem;
 					letter-spacing: 0.02em;
