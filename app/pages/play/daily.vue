@@ -49,14 +49,17 @@
 			>
 				<div
 					v-for="hint in gameStore.hints"
-					:key="hint.icon"
+					:key="hint.label"
 					class="hint-chip"
 				>
 					<Icon
 						:name="hint.icon"
-						size="0.85rem"
+						size="1rem"
 					/>
-					<span class="hint-value">{{ hint.value }}</span>
+					<span class="hint-text">
+						<span class="hint-label">{{ hint.label }}</span>
+						<span class="hint-value">{{ hint.value }}</span>
+					</span>
 				</div>
 			</TransitionGroup>
 
@@ -75,13 +78,13 @@
 
 			<button
 				v-if="gameStore.canPurchaseHint && $config.public.isApp"
-				class="watch-ad-btn"
+				class="app-hint-btn"
 				:disabled="purchases.busy"
 				@click="handleAppHint"
 			>
 				<Icon
-					name="solar:lightbulb-linear"
-					size="1rem"
+					name="solar:lightbulb-bolt-bold"
+					size="1.2rem"
 				/>
 				{{ appHintLabel }}
 			</button>
@@ -1035,16 +1038,72 @@
 			align-items: center;
 			background: var(--bg-primary);
 			border: 1px solid var(--border);
-			border-radius: 2rem;
+			border-radius: 0.9rem;
 			color: var(--text-primary);
 			display: inline-flex;
-			font-size: 0.8rem;
-			gap: 0.35rem;
-			padding: 0.3rem 0.75rem;
+			gap: 0.45rem;
+			padding: 0.35rem 0.8rem 0.35rem 0.6rem;
+			text-align: left;
+
+			> .iconify,
+			> svg {
+				color: var(--primary-color);
+				flex-shrink: 0;
+			}
+
+			.hint-text {
+				display: flex;
+				flex-direction: column;
+				line-height: 1.15;
+			}
+
+			.hint-label {
+				color: var(--text-secondary);
+				font-size: 0.62rem;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
 
 			.hint-value {
+				font-size: 0.92rem;
 				font-weight: 700;
 			}
+		}
+	}
+
+	// iOS app: hints are how clues are revealed (and what the shop sells), so the
+	// button is a real, full-size control rather than a footnote
+	.app-hint-btn {
+		align-items: center;
+		background: color-mix(in srgb, var(--primary-color) 16%, var(--bg-secondary));
+		border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+		border-radius: 0.9rem;
+		color: var(--text-primary);
+		cursor: pointer;
+		display: flex;
+		flex-shrink: 0;
+		font: inherit;
+		font-size: 0.95rem;
+		font-weight: 700;
+		gap: 0.5rem;
+		justify-content: center;
+		margin: 0.5rem 0.5rem 0;
+		min-height: 44px;
+		padding: 0.5rem 1rem;
+
+		.iconify,
+		svg {
+			color: var(--tertiary-color);
+		}
+
+		&:active:not(:disabled) {
+			transform: scale(0.98);
+		}
+
+		&:disabled {
+			cursor: wait;
+			opacity: 0.5;
 		}
 	}
 

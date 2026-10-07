@@ -67,11 +67,11 @@ export const useGameStore = defineStore('game', () => {
 
 		const surname = answer.toUpperCase()
 		const clues = [
-			{ value: player.club, icon: 'solar:shield-linear' },
-			{ value: player.nationality, icon: 'solar:earth-linear' },
-			{ value: player.position, icon: 'solar:football-linear' },
-			{ value: `Starts with ${surname.slice(0, 1)}`, icon: 'solar:text-square-linear' },
-			{ value: `Starts with ${surname.slice(0, 2)}`, icon: 'solar:text-square-linear' },
+			{ label: 'Club', value: player.club, icon: 'solar:shield-linear' },
+			{ label: 'Nation', value: player.nationality, icon: 'solar:earth-linear' },
+			{ label: 'Position', value: player.position, icon: 'solar:football-linear' },
+			{ label: 'Starts with', value: surname.slice(0, 1), icon: 'solar:text-square-linear' },
+			{ label: 'Starts with', value: surname.slice(0, 2), icon: 'solar:text-square-linear' },
 		]
 		const unlocked = isApp
 			? purchasedHints.value
