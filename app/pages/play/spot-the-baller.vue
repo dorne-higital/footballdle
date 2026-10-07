@@ -80,8 +80,7 @@
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="spotStore.isWin">You win!</h4>
-					<h4 v-else>You lose!</h4>
+
 					<div
 						v-if="spotStore.isWin && statsStore.stats.currentStreak > 1"
 						class="streak-celebration"
@@ -95,6 +94,22 @@
 					<p>
 						You scored <strong class="answer">{{ spotStore.score }} / {{ spotStore.maxGuesses }}</strong>
 					</p>
+					<div class="result-share">
+						<div
+							class="share-row"
+							aria-hidden="true"
+						>
+							<span
+								v-for="(r, i) in spotStore.roundResults"
+								:key="i"
+								:class="['share-tile', 'dot', r.correct ? 'correct' : 'absent']"
+							></span>
+						</div>
+						<ShareResultButton
+							:text="shareText"
+							@shared="trackShare('spot')"
+						/>
+					</div>
 				</div>
 			</template>
 
@@ -185,6 +200,8 @@
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
+	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
+	import { useShare } from '../../composables/useShare'
 
 	definePageMeta({ layout: 'play' })
 
@@ -216,6 +233,16 @@
 	// ============================================================================
 	const spotStore = useSpotTheBallerStore()
 	const statsStore = useModeStatsStore('spotball')
+	const { getSpotShareText } = useShare()
+	const shareText = computed(() =>
+		getSpotShareText(
+			spotStore.roundResults,
+			spotStore.score,
+			spotStore.maxGuesses,
+			spotStore.puzzleNumber,
+			statsStore.stats.currentStreak,
+		),
+	)
 	const dailyStatsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
 	const modalsStore = useModalsStore()
@@ -228,6 +255,7 @@
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackBuyMeCoffee,
+		trackShare,
 	} = useAnalytics()
 
 	function handleBuyMeCoffee(location: string) {
@@ -347,6 +375,55 @@
 </script>
 
 <style scoped lang="scss">
+
+	// Result-sheet share preview (Scout rows / Spot dots) and button
+	.result-share {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+		width: 100%;
+
+		.share-grid {
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+		}
+
+		.share-row {
+			display: flex;
+			gap: 3px;
+			justify-content: center;
+		}
+
+		.share-tile {
+			border-radius: 3px;
+			height: 16px;
+			width: 16px;
+
+			&.correct {
+				background: var(--color-success);
+			}
+
+			&.present {
+				background: var(--color-present);
+			}
+
+			&.absent {
+				background: var(--color-absent);
+			}
+
+			&.dot {
+				border-radius: 50%;
+			}
+		}
+
+		.share-result-btn {
+			width: 100%;
+		}
+	}
+
 	// Covers the round while an answer is revealed; tapping moves on early
 	.reveal-skip {
 		// Hint sits at the top of the frame, clear of the revealed answer

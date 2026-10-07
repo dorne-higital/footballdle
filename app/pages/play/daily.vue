@@ -132,8 +132,8 @@
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="gameStore.isWin">You win!</h4>
-					<h4 v-else>You lose!</h4>
+					<h4 v-if="gameStore.isWin">Solved in {{ gameStore.guesses.length }}/6</h4>
+					<h4 v-else>Not today</h4>
 					<div
 						v-if="gameStore.isWin && statsStore.stats.currentStreak > 1"
 						class="streak-celebration"
@@ -162,17 +162,7 @@
 									v-for="(char, ci) in guess.split('')"
 									:key="ci"
 									class="share-tile"
-									:class="{
-										correct:
-											gameStore.answer[ci] &&
-											char.toUpperCase() === gameStore.answer[ci].toUpperCase(),
-										present:
-											!(
-												gameStore.answer[ci] &&
-												char.toUpperCase() === gameStore.answer[ci].toUpperCase()
-											) && gameStore.answer.toUpperCase().includes(char.toUpperCase()),
-										absent: !gameStore.answer.toUpperCase().includes(char.toUpperCase()),
-									}"
+									:class="tileStates(guess, gameStore.answer)[ci]"
 								></span>
 							</div>
 						</div>
@@ -183,12 +173,13 @@
 							@click="handleShare"
 						>
 							<Icon
-								name="solar:copy-linear"
+								:name="$config.public.isApp ? 'solar:share-linear' : 'solar:copy-linear'"
 								size="1rem"
 							/>
-							{{ shareToast ? 'Copied!' : 'Copy result' }}
+							{{ $config.public.isApp ? 'Share' : shareToast ? 'Copied!' : 'Copy result' }}
 						</button>
 						<button
+							v-if="!$config.public.isApp"
 							class="btn-x"
 							@click="handleShareTwitter"
 						>
@@ -420,20 +411,7 @@
 									v-for="(char, ci) in guess.split('')"
 									:key="ci"
 									class="share-tile"
-									:class="{
-										correct:
-											challengeStore.currentAnswer[ci] &&
-											char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase(),
-										present:
-											!(
-												challengeStore.currentAnswer[ci] &&
-												char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase()
-											) &&
-											challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
-										absent: !challengeStore.currentAnswer
-											.toUpperCase()
-											.includes(char.toUpperCase()),
-									}"
+									:class="tileStates(guess, challengeStore.currentAnswer)[ci]"
 								></span>
 							</div>
 						</div>
@@ -445,12 +423,13 @@
 							@click="handleChallengeShare"
 						>
 							<Icon
-								name="solar:copy-linear"
+								:name="$config.public.isApp ? 'solar:share-linear' : 'solar:copy-linear'"
 								size="1rem"
 							/>
-							{{ shareToast ? 'Copied!' : 'Copy result' }}
+							{{ $config.public.isApp ? 'Share' : shareToast ? 'Copied!' : 'Copy result' }}
 						</button>
 						<button
+							v-if="!$config.public.isApp"
 							class="btn-x"
 							@click="handleChallengeShareTwitter"
 						>
@@ -523,7 +502,7 @@
 	import { useModalsStore } from '../../stores/modals'
 	import { useChallengeStore } from '../../stores/challenge'
 	import { usePurchasesStore } from '../../stores/purchases'
-	import { useShare } from '../../composables/useShare'
+	import { tileStates, useShare } from '../../composables/useShare'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
