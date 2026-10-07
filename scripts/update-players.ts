@@ -120,9 +120,14 @@ const POSITION_GROUPS: Record<string, string> = {
 }
 const group = (p: Position) => POSITION_GROUPS[p] ?? p
 
+// Letters NFD doesn't split into base + accent (same map as useAllFootballers.ts)
+const TRANSLIT: Record<string, string> = { ø: 'o', đ: 'd', ł: 'l', ı: 'i', æ: 'ae', œ: 'oe', ß: 'ss', ð: 'd', þ: 'th' }
+
 /** Lowercase, accent-free, single-spaced — for matching only */
 const key = (s: string) =>
 	s
+		.toLowerCase()
+		.replace(/[øđłıæœßðþ]/g, c => TRANSLIT[c]!)
 		.normalize('NFD')
 		.replace(/[̀-ͯ]/g, '')
 		.toLowerCase()

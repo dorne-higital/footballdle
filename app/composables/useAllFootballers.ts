@@ -28,9 +28,15 @@ export const allFootballers: Footballer[] = (() => {
 // Diacritic-insensitive comparison key — search/validation shouldn't require
 // typing accented characters (e.g. "traore" should find "traoré"); the
 // accented form is still what's displayed and stored.
+// Letters that don't decompose into base letter + accent, so NFD alone leaves them
+// ("odegaard" has to find "ødegaard")
+const TRANSLIT: Record<string, string> = { ø: 'o', đ: 'd', ł: 'l', ı: 'i', æ: 'ae', œ: 'oe', ß: 'ss', ð: 'd', þ: 'th' }
+
 function normaliseKey(name: string): string {
 	return name
 		.trim()
+		.toLowerCase()
+		.replace(/[øđłıæœßðþ]/g, (c) => TRANSLIT[c]!)
 		.toUpperCase()
 		.normalize('NFD')
 		.replace(/[̀-ͯ]/g, '')

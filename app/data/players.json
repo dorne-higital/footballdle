@@ -74,7 +74,7 @@
 		"club": "Brighton & Hove Albion",
 		"nationality": "Germany",
 		"position": "Midfielder",
-		"lastName": "gro",
+		"lastName": "gross",
 		"known": true,
 		"dailyKnown": true,
 		"pop": 3430
@@ -174,7 +174,7 @@
 		"club": "Arsenal",
 		"nationality": "Norway",
 		"position": "Midfielder",
-		"lastName": "degaard",
+		"lastName": "odegaard",
 		"known": true,
 		"dailyKnown": true,
 		"pop": 2367
@@ -1434,7 +1434,7 @@
 		"club": "Brighton & Hove Albion",
 		"nationality": "Turkey",
 		"position": "Defender",
-		"lastName": "kadoglu",
+		"lastName": "kadioglu",
 		"known": true,
 		"dailyKnown": true,
 		"pop": 492
@@ -5464,7 +5464,7 @@
 		"club": "Manchester United",
 		"nationality": "Turkey",
 		"position": "Goalkeeper",
-		"lastName": "bayndr",
+		"lastName": "bayindir",
 		"known": false,
 		"dailyKnown": false,
 		"pop": 0
@@ -5624,7 +5624,7 @@
 		"club": "Everton",
 		"nationality": "Denmark",
 		"position": "Midfielder",
-		"lastName": "nrgaard",
+		"lastName": "norgaard",
 		"known": false,
 		"dailyKnown": false,
 		"pop": 0
