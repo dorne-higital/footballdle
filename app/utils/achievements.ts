@@ -13,6 +13,8 @@ export interface AchievementContext {
 	today: string
 	spotPerfectGames: number
 	hintUsed: boolean
+	/** Best Matchday streak (days in a row with any game finished) */
+	matchdayBest: number
 }
 
 export interface Achievement {
@@ -36,39 +38,64 @@ const allModes = (ctx: AchievementContext) => [ctx.daily, ctx.scout, ctx.spot, c
 
 export const ACHIEVEMENTS: Achievement[] = [
 	// Daily
-	{ id: 'fd_daily_first_win', title: 'Off the Mark', goal: 'Win your first Daily.', earned: 'You won your first Daily.', points: 10, progress: c => towards(c.daily.wins, 1) },
-	{ id: 'fd_daily_wins_10', title: 'Into Double Figures', goal: 'Win 10 Dailies.', earned: 'You won 10 Dailies.', points: 20, progress: c => towards(c.daily.wins, 10) },
-	{ id: 'fd_daily_wins_50', title: 'Half Century', goal: 'Win 50 Dailies.', earned: 'You won 50 Dailies.', points: 40, progress: c => towards(c.daily.wins, 50) },
-	{ id: 'fd_daily_wins_100', title: 'Centurion', goal: 'Win 100 Dailies.', earned: 'You won 100 Dailies.', points: 60, progress: c => towards(c.daily.wins, 100) },
-	{ id: 'fd_daily_streak_3', title: 'Hat-Trick', goal: 'Win the Daily 3 days in a row.', earned: 'You won the Daily 3 days in a row.', points: 10, progress: c => towards(c.daily.maxStreak, 3) },
-	{ id: 'fd_daily_streak_7', title: 'Week In, Week Out', goal: 'Win the Daily 7 days in a row.', earned: 'You won the Daily 7 days in a row.', points: 20, progress: c => towards(c.daily.maxStreak, 7) },
-	{ id: 'fd_daily_streak_30', title: 'Player of the Month', goal: 'Win the Daily 30 days in a row.', earned: 'You won the Daily 30 days in a row.', points: 50, progress: c => towards(c.daily.maxStreak, 30) },
-	{ id: 'fd_daily_streak_100', title: 'Club Legend', goal: 'Win the Daily 100 days in a row.', earned: 'You won the Daily 100 days in a row.', points: 100, progress: c => towards(c.daily.maxStreak, 100) },
-	{ id: 'fd_daily_one_guess', title: 'Worldie', goal: 'Solve the Daily with your first guess.', earned: 'You solved the Daily with your first guess.', points: 50, hidden: true, progress: c => solvedIn(c.daily, 1) },
-	{ id: 'fd_daily_two_guess', title: 'Clinical Finish', goal: 'Solve the Daily in two guesses.', earned: 'You solved the Daily in two guesses.', points: 25, progress: c => solvedIn(c.daily, 2) },
-	{ id: 'fd_daily_last_gasp', title: 'Last-Minute Winner', goal: 'Solve the Daily with your sixth and final guess.', earned: 'You solved the Daily with your final guess.', points: 15, progress: c => solvedIn(c.daily, 6) },
+	{ id: 'fd_daily_first_win', title: 'Off the Mark', goal: 'Win your first Daily.', earned: 'You won your first Daily.', points: 5, progress: c => towards(c.daily.wins, 1) },
+	{ id: 'fd_daily_wins_10', title: 'Into Double Figures', goal: 'Win 10 Dailies.', earned: 'You won 10 Dailies.', points: 15, progress: c => towards(c.daily.wins, 10) },
+	{ id: 'fd_daily_wins_50', title: 'Half Century', goal: 'Win 50 Dailies.', earned: 'You won 50 Dailies.', points: 25, progress: c => towards(c.daily.wins, 50) },
+	{ id: 'fd_daily_wins_100', title: 'Centurion', goal: 'Win 100 Dailies.', earned: 'You won 100 Dailies.', points: 35, progress: c => towards(c.daily.wins, 100) },
+	{ id: 'fd_daily_streak_3', title: 'Hat-Trick', goal: 'Win the Daily 3 days in a row.', earned: 'You won the Daily 3 days in a row.', points: 5, progress: c => towards(c.daily.maxStreak, 3) },
+	{ id: 'fd_daily_streak_7', title: 'Week In, Week Out', goal: 'Win the Daily 7 days in a row.', earned: 'You won the Daily 7 days in a row.', points: 15, progress: c => towards(c.daily.maxStreak, 7) },
+	{ id: 'fd_daily_streak_30', title: 'Player of the Month', goal: 'Win the Daily 30 days in a row.', earned: 'You won the Daily 30 days in a row.', points: 25, progress: c => towards(c.daily.maxStreak, 30) },
+	{ id: 'fd_daily_streak_100', title: 'Club Legend', goal: 'Win the Daily 100 days in a row.', earned: 'You won the Daily 100 days in a row.', points: 35, progress: c => towards(c.daily.maxStreak, 100) },
+	{ id: 'fd_daily_one_guess', title: 'Worldie', goal: 'Solve the Daily with your first guess.', earned: 'You solved the Daily with your first guess.', points: 25, hidden: true, progress: c => solvedIn(c.daily, 1) },
+	{ id: 'fd_daily_two_guess', title: 'Clinical Finish', goal: 'Solve the Daily in two guesses.', earned: 'You solved the Daily in two guesses.', points: 15, progress: c => solvedIn(c.daily, 2) },
+	{ id: 'fd_daily_last_gasp', title: 'Last-Minute Winner', goal: 'Solve the Daily with your sixth and final guess.', earned: 'You solved the Daily with your final guess.', points: 5, progress: c => solvedIn(c.daily, 6) },
+	{ id: 'fd_daily_wins_25', title: 'Quarter Century', goal: 'Win 25 Dailies.', earned: 'You won 25 Dailies.', points: 15, progress: c => towards(c.daily.wins, 25) },
+	{ id: 'fd_daily_wins_250', title: 'Record Breaker', goal: 'Win 250 Dailies.', earned: 'You won 250 Dailies.', points: 35, progress: c => towards(c.daily.wins, 250) },
+	{ id: 'fd_daily_streak_14', title: 'Fortnight of Form', goal: 'Win the Daily 14 days in a row.', earned: 'You won the Daily 14 days in a row.', points: 15, progress: c => towards(c.daily.maxStreak, 14) },
+	{ id: 'fd_daily_streak_50', title: 'Unbeatable', goal: 'Win the Daily 50 days in a row.', earned: 'You won the Daily 50 days in a row.', points: 25, progress: c => towards(c.daily.maxStreak, 50) },
+	{ id: 'fd_daily_three_guess', title: 'Top Bins', goal: 'Solve the Daily in three guesses.', earned: 'You solved the Daily in three guesses.', points: 5, progress: c => solvedIn(c.daily, 3) },
+	{ id: 'fd_daily_played_50', title: 'Matchday Regular', goal: 'Play 50 Dailies, win or lose.', earned: 'You played 50 Dailies.', points: 15, progress: c => towards(c.daily.gamesPlayed, 50) },
 
 	// Scout Report
-	{ id: 'fd_scout_first_win', title: 'Scouting Mission', goal: 'Win your first Scout Report.', earned: 'You won your first Scout Report.', points: 10, progress: c => towards(c.scout.wins, 1) },
-	{ id: 'fd_scout_wins_25', title: 'Chief Scout', goal: 'Win 25 Scout Reports.', earned: 'You won 25 Scout Reports.', points: 30, progress: c => towards(c.scout.wins, 25) },
-	{ id: 'fd_scout_streak_7', title: 'Eye for Talent', goal: 'Win the Scout Report 7 days in a row.', earned: 'You won the Scout Report 7 days in a row.', points: 25, progress: c => towards(c.scout.maxStreak, 7) },
-	{ id: 'fd_scout_two_guess', title: 'Spotted Early', goal: 'Solve the Scout Report in two guesses.', earned: 'You solved the Scout Report in two guesses.', points: 25, progress: c => solvedIn(c.scout, 2) },
+	{ id: 'fd_scout_first_win', title: 'Scouting Mission', goal: 'Win your first Scout Report.', earned: 'You won your first Scout Report.', points: 5, progress: c => towards(c.scout.wins, 1) },
+	{ id: 'fd_scout_wins_25', title: 'Chief Scout', goal: 'Win 25 Scout Reports.', earned: 'You won 25 Scout Reports.', points: 15, progress: c => towards(c.scout.wins, 25) },
+	{ id: 'fd_scout_streak_7', title: 'Eye for Talent', goal: 'Win the Scout Report 7 days in a row.', earned: 'You won the Scout Report 7 days in a row.', points: 15, progress: c => towards(c.scout.maxStreak, 7) },
+	{ id: 'fd_scout_two_guess', title: 'Spotted Early', goal: 'Solve the Scout Report in two guesses.', earned: 'You solved the Scout Report in two guesses.', points: 15, progress: c => solvedIn(c.scout, 2) },
+	{ id: 'fd_scout_wins_10', title: 'Talent Spotter', goal: 'Win 10 Scout Reports.', earned: 'You won 10 Scout Reports.', points: 15, progress: c => towards(c.scout.wins, 10) },
+	{ id: 'fd_scout_wins_50', title: 'Head of Recruitment', goal: 'Win 50 Scout Reports.', earned: 'You won 50 Scout Reports.', points: 25, progress: c => towards(c.scout.wins, 50) },
+	{ id: 'fd_scout_wins_100', title: 'Director of Football', goal: 'Win 100 Scout Reports.', earned: 'You won 100 Scout Reports.', points: 35, progress: c => towards(c.scout.wins, 100) },
+	{ id: 'fd_scout_streak_3', title: 'Scout\'s Honour', goal: 'Win the Scout Report 3 days in a row.', earned: 'You won the Scout Report 3 days in a row.', points: 5, progress: c => towards(c.scout.maxStreak, 3) },
+	{ id: 'fd_scout_streak_30', title: 'Transfer Guru', goal: 'Win the Scout Report 30 days in a row.', earned: 'You won the Scout Report 30 days in a row.', points: 25, progress: c => towards(c.scout.maxStreak, 30) },
+	{ id: 'fd_scout_one_guess', title: 'Love at First Sight', goal: 'Solve the Scout Report with your first guess.', earned: 'You solved the Scout Report with your first guess.', points: 25, hidden: true, progress: c => solvedIn(c.scout, 1) },
 
 	// Spot the Baller
-	{ id: 'fd_spot_first_win', title: 'Spotted', goal: 'Win your first Spot the Baller.', earned: 'You won your first Spot the Baller.', points: 10, progress: c => towards(c.spot.wins, 1) },
-	{ id: 'fd_spot_perfect', title: 'Perfect 10', goal: 'Get all 10 rounds right in Spot the Baller.', earned: 'You got all 10 rounds right in Spot the Baller.', points: 50, progress: c => towards(c.spotPerfectGames, 1) },
-	{ id: 'fd_spot_streak_7', title: 'Sharp Eyes', goal: 'Win Spot the Baller 7 days in a row.', earned: 'You won Spot the Baller 7 days in a row.', points: 25, progress: c => towards(c.spot.maxStreak, 7) },
+	{ id: 'fd_spot_first_win', title: 'Spotted', goal: 'Win your first Spot the Baller.', earned: 'You won your first Spot the Baller.', points: 5, progress: c => towards(c.spot.wins, 1) },
+	{ id: 'fd_spot_perfect', title: 'Perfect 10', goal: 'Get all 10 rounds right in Spot the Baller.', earned: 'You got all 10 rounds right in Spot the Baller.', points: 25, progress: c => towards(c.spotPerfectGames, 1) },
+	{ id: 'fd_spot_streak_7', title: 'Sharp Eyes', goal: 'Win Spot the Baller 7 days in a row.', earned: 'You won Spot the Baller 7 days in a row.', points: 15, progress: c => towards(c.spot.maxStreak, 7) },
+	{ id: 'fd_spot_wins_10', title: 'Keen Eye', goal: 'Win 10 Spot the Ballers.', earned: 'You won 10 Spot the Ballers.', points: 15, progress: c => towards(c.spot.wins, 10) },
+	{ id: 'fd_spot_wins_50', title: 'Eagle Eye', goal: 'Win 50 Spot the Ballers.', earned: 'You won 50 Spot the Ballers.', points: 25, progress: c => towards(c.spot.wins, 50) },
+	{ id: 'fd_spot_streak_3', title: 'Spot On', goal: 'Win Spot the Baller 3 days in a row.', earned: 'You won Spot the Baller 3 days in a row.', points: 5, progress: c => towards(c.spot.maxStreak, 3) },
+	{ id: 'fd_spot_streak_30', title: 'Never Misses', goal: 'Win Spot the Baller 30 days in a row.', earned: 'You won Spot the Baller 30 days in a row.', points: 25, progress: c => towards(c.spot.maxStreak, 30) },
+	{ id: 'fd_spot_perfect_5', title: 'Perfectionist', goal: 'Get all 10 rounds right in Spot the Baller five times.', earned: 'You got a perfect 10 in Spot the Baller five times.', points: 35, progress: c => towards(c.spotPerfectGames, 5) },
 
 	// Challenge
-	{ id: 'fd_challenge_first_win', title: 'Against the Clock', goal: 'Win a Challenge game.', earned: 'You won a Challenge game.', points: 15, progress: c => towards(c.challenge.wins, 1) },
-	{ id: 'fd_challenge_quickfire', title: 'Quickfire', goal: 'Win a Challenge game in under 15 seconds.', earned: 'You won a Challenge game in under 15 seconds.', points: 40, progress: c => (c.challenge.bestTime !== undefined && c.challenge.bestTime < 15 ? 100 : 0) },
-	{ id: 'fd_challenge_wins_25', title: 'Extra Time Specialist', goal: 'Win 25 Challenge games.', earned: 'You won 25 Challenge games.', points: 30, progress: c => towards(c.challenge.wins, 25) },
+	{ id: 'fd_challenge_first_win', title: 'Against the Clock', goal: 'Win a Challenge game.', earned: 'You won a Challenge game.', points: 5, progress: c => towards(c.challenge.wins, 1) },
+	{ id: 'fd_challenge_quickfire', title: 'Quickfire', goal: 'Win a Challenge game in under 15 seconds.', earned: 'You won a Challenge game in under 15 seconds.', points: 25, progress: c => (c.challenge.bestTime !== undefined && c.challenge.bestTime < 15 ? 100 : 0) },
+	{ id: 'fd_challenge_wins_25', title: 'Extra Time Specialist', goal: 'Win 25 Challenge games.', earned: 'You won 25 Challenge games.', points: 15, progress: c => towards(c.challenge.wins, 25) },
+	{ id: 'fd_challenge_wins_10', title: 'Beat the Clock', goal: 'Win 10 Challenge games.', earned: 'You won 10 Challenge games.', points: 15, progress: c => towards(c.challenge.wins, 10) },
+	{ id: 'fd_challenge_wins_100', title: 'Stoppage-Time King', goal: 'Win 100 Challenge games.', earned: 'You won 100 Challenge games.', points: 35, progress: c => towards(c.challenge.wins, 100) },
+	{ id: 'fd_challenge_speed_10', title: 'Lightning Counter', goal: 'Win a Challenge game in under 10 seconds.', earned: 'You won a Challenge game in under 10 seconds.', points: 25, hidden: true, progress: c => (c.challenge.bestTime !== undefined && c.challenge.bestTime < 10 ? 100 : 0) },
+	{ id: 'fd_challenge_played_50', title: 'Glutton for Punishment', goal: 'Play 50 Challenge games.', earned: 'You played 50 Challenge games.', points: 15, progress: c => towards(c.challenge.gamesPlayed, 50) },
 
 	// Across every mode
-	{ id: 'fd_all_treble', title: 'The Treble', goal: 'Win the Daily, Scout Report and Spot the Baller on the same day.', earned: 'You won all three daily modes on the same day.', points: 40, progress: c => ([c.daily, c.scout, c.spot].every(s => wonToday(s, c.today)) ? 100 : 0) },
-	{ id: 'fd_all_games_100', title: 'Season Ticket Holder', goal: 'Play 100 games across every mode.', earned: 'You played 100 games across every mode.', points: 30, progress: c => towards(allModes(c).reduce((n, s) => n + s.gamesPlayed, 0), 100) },
-	{ id: 'fd_all_wins_250', title: 'Hall of Famer', goal: 'Win 250 games across every mode.', earned: 'You won 250 games across every mode.', points: 75, progress: c => towards(allModes(c).reduce((n, s) => n + s.wins, 0), 250) },
+	{ id: 'fd_all_treble', title: 'The Treble', goal: 'Win the Daily, Scout Report and Spot the Baller on the same day.', earned: 'You won all three daily modes on the same day.', points: 25, progress: c => ([c.daily, c.scout, c.spot].every(s => wonToday(s, c.today)) ? 100 : 0) },
+	{ id: 'fd_all_games_100', title: 'Season Ticket Holder', goal: 'Play 100 games across every mode.', earned: 'You played 100 games across every mode.', points: 15, progress: c => towards(allModes(c).reduce((n, s) => n + s.gamesPlayed, 0), 100) },
+	{ id: 'fd_all_wins_250', title: 'Hall of Famer', goal: 'Win 250 games across every mode.', earned: 'You won 250 games across every mode.', points: 35, progress: c => towards(allModes(c).reduce((n, s) => n + s.wins, 0), 250) },
 	{ id: 'fd_hint_first', title: 'Tactical Review', goal: 'Use a hint in the Daily.', earned: 'You used a hint in the Daily.', points: 5, progress: c => (c.hintUsed ? 100 : 0) },
+	{ id: 'fd_matchday_streak_7', title: 'Turned Up', goal: 'Finish a game 7 days in a row (your Matchday streak).', earned: 'You kept a 7-day Matchday streak.', points: 15, progress: c => towards(c.matchdayBest, 7) },
+	{ id: 'fd_matchday_streak_30', title: 'Ever-Present', goal: 'Finish a game 30 days in a row.', earned: 'You kept a 30-day Matchday streak.', points: 25, progress: c => towards(c.matchdayBest, 30) },
+	{ id: 'fd_matchday_streak_100', title: 'Testimonial Year', goal: 'Finish a game 100 days in a row.', earned: 'You kept a 100-day Matchday streak.', points: 35, progress: c => towards(c.matchdayBest, 100) },
+	{ id: 'fd_all_games_500', title: 'Season Ticket Renewed', goal: 'Play 500 games across every mode.', earned: 'You played 500 games across every mode.', points: 25, progress: c => towards(allModes(c).reduce((n, s) => n + s.gamesPlayed, 0), 500) },
 ]
 
 // Sections for the in-app Trophies screen, matched on the ID prefix
@@ -77,6 +104,7 @@ export const ACHIEVEMENT_GROUPS = [
 	{ title: 'Scout Report', prefix: 'fd_scout_' },
 	{ title: 'Spot the Baller', prefix: 'fd_spot_' },
 	{ title: 'Challenge', prefix: 'fd_challenge_' },
+	{ title: 'Matchday streak', prefix: 'fd_matchday_' },
 	{ title: 'Across every mode', prefix: 'fd_all_', extra: ['fd_hint_first'] },
 ].map(group => ({
 	title: group.title,
@@ -89,11 +117,13 @@ export const TOTAL_ACHIEVEMENT_POINTS = ACHIEVEMENTS.reduce((sum, a) => sum + a.
 export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' | 'scout' | 'spot' | 'challenge'>): AchievementContext {
 	let spotPerfectGames = 0
 	let hintUsed = false
+	let matchdayBest = 0
 	try {
 		spotPerfectGames = JSON.parse(localStorage.getItem('footballdle-spot-tiers') || 'null')?.['6'] ?? 0
 		hintUsed = localStorage.getItem('footballdle-hint-used') === '1'
+		matchdayBest = JSON.parse(localStorage.getItem('footballdle-play-streak') || 'null')?.best ?? 0
 	} catch {}
-	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed }
+	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed, matchdayBest }
 }
 
 const BEST_KEY = 'footballdle-achievement-best'
