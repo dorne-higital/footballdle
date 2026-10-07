@@ -27,7 +27,7 @@
 		"lastName": "calafiori",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 5466
+		"pop": 5476
 	},
 	{
 		"name": "david raya",
@@ -37,7 +37,7 @@
 		"lastName": "raya",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 4680
+		"pop": 4690
 	},
 	{
 		"name": "morgan rogers",
@@ -77,7 +77,7 @@
 		"lastName": "gro",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 3420
+		"pop": 3430
 	},
 	{
 		"name": "maxim de cuyper",
@@ -147,7 +147,7 @@
 		"lastName": "isak",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2623
+		"pop": 2613
 	},
 	{
 		"name": "bart verbruggen",
@@ -177,7 +177,7 @@
 		"lastName": "degaard",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2357
+		"pop": 2367
 	},
 	{
 		"name": "yoane wissa",
@@ -237,7 +237,7 @@
 		"lastName": "tarkowski",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2130
+		"pop": 2140
 	},
 	{
 		"name": "virgil van dijk",
@@ -367,7 +367,7 @@
 		"lastName": "lammens",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 1440
+		"pop": 1430
 	},
 	{
 		"name": "jordan pickford",
@@ -430,21 +430,21 @@
 		"pop": 1287
 	},
 	{
-		"name": "kai havertz",
-		"club": "Arsenal",
-		"nationality": "Germany",
-		"position": "Forward",
-		"lastName": "havertz",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 1247
-	},
-	{
 		"name": "thierno barry",
 		"club": "Everton",
 		"nationality": "France",
 		"position": "Forward",
 		"lastName": "barry",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 1257
+	},
+	{
+		"name": "kai havertz",
+		"club": "Arsenal",
+		"nationality": "Germany",
+		"position": "Forward",
+		"lastName": "havertz",
 		"known": true,
 		"dailyKnown": true,
 		"pop": 1247
@@ -457,7 +457,7 @@
 		"lastName": "oreilly",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 1243
+		"pop": 1233
 	},
 	{
 		"name": "milan van ewijk",
@@ -780,6 +780,16 @@
 		"pop": 827
 	},
 	{
+		"name": "charalampos kostoulas",
+		"club": "Brighton & Hove Albion",
+		"nationality": "Greece",
+		"position": "Forward",
+		"lastName": "kostoulas",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 823
+	},
+	{
 		"name": "diego gómez",
 		"club": "Brighton & Hove Albion",
 		"nationality": "Paraguay",
@@ -798,16 +808,6 @@
 		"known": true,
 		"dailyKnown": true,
 		"pop": 817
-	},
-	{
-		"name": "charalampos kostoulas",
-		"club": "Brighton & Hove Albion",
-		"nationality": "Greece",
-		"position": "Forward",
-		"lastName": "kostoulas",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 813
 	},
 	{
 		"name": "elliot anderson",
@@ -880,16 +880,6 @@
 		"pop": 765
 	},
 	{
-		"name": "will hughes",
-		"club": "Crystal Palace",
-		"nationality": "England",
-		"position": "Midfielder",
-		"lastName": "hughes",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 759
-	},
-	{
 		"name": "adrien truffert",
 		"club": "Bournemouth",
 		"nationality": "France",
@@ -908,6 +898,16 @@
 		"known": true,
 		"dailyKnown": true,
 		"pop": 750
+	},
+	{
+		"name": "will hughes",
+		"club": "Crystal Palace",
+		"nationality": "England",
+		"position": "Midfielder",
+		"lastName": "hughes",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 749
 	},
 	{
 		"name": "evanilson",
@@ -2890,6 +2890,16 @@
 		"pop": 154
 	},
 	{
+		"name": "jurrien timber",
+		"club": "Arsenal",
+		"nationality": "Netherlands",
+		"position": "Defender",
+		"lastName": "timber",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 154
+	},
+	{
 		"name": "chris wood",
 		"club": "Nottingham Forest",
 		"nationality": "New Zealand",
@@ -2968,16 +2978,6 @@
 		"known": false,
 		"dailyKnown": true,
 		"pop": 145
-	},
-	{
-		"name": "jurrien timber",
-		"club": "Arsenal",
-		"nationality": "Netherlands",
-		"position": "Defender",
-		"lastName": "timber",
-		"known": false,
-		"dailyKnown": true,
-		"pop": 144
 	},
 	{
 		"name": "mohammed kudus",

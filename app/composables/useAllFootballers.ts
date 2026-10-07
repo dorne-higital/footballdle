@@ -1,11 +1,10 @@
 import type { Footballer } from './useFootballers'
-import { answerSchedule, fromSnapshot, getPuzzleNumber, roster } from './useFootballers'
+import { answerSchedule, fromSnapshot, getPuzzleNumber, recentFrom, roster } from './useFootballers'
 
 // Full first+last name roster (no letter-count restriction), used by Scout Report and
 // Spot the Baller — both pick a player via autocomplete/multiple choice rather than
 // typing into a fixed-length grid like Daily. Current players (app/data/players.json,
-// most famous first) plus anyone who has been a Scout or Spot answer, so frozen
-// answers always resolve.
+// most famous first) plus recent Scout / Spot answers, so today's always resolves.
 export const allFootballers: Footballer[] = (() => {
 	const seen = new Set<string>()
 	const list: Footballer[] = []
@@ -17,8 +16,12 @@ export const allFootballers: Footballer[] = (() => {
 		}
 	}
 	for (const p of roster) add({ name: p.name, club: p.club, nationality: p.nationality, position: p.position })
-	for (const a of answerSchedule.scout.answers) add(fromSnapshot(a))
-	for (const day of answerSchedule.spot.days) for (const r of day) add(fromSnapshot(r.target))
+	for (const a of answerSchedule.scout.answers.slice(Math.max(0, recentFrom - answerSchedule.scout.start))) {
+		add(fromSnapshot(a))
+	}
+	for (const day of answerSchedule.spot.days.slice(Math.max(0, recentFrom - answerSchedule.spot.start))) {
+		for (const r of day) add(fromSnapshot(r.target))
+	}
 	return list
 })()
 

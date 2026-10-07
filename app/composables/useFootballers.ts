@@ -25,6 +25,9 @@ export interface Footballer {
 // (scripts/update-players.ts) — don't edit the JSON by hand.
 import players from '../data/players.json'
 import schedule from '../data/schedule.json'
+import { getUKDateString } from '../utils/dateStreak'
+
+const EPOCH = '01/01/2026' // DD/MM/YYYY — Puzzle #1 launch date
 
 /** A player as stored in app/data/players.json */
 export interface RosterPlayer extends Footballer {
@@ -52,10 +55,16 @@ export const fromSnapshot = ([name, club, nationality, position]: Snapshot): Foo
 	position: position as Position,
 })
 
+// Answers from yesterday on stay usable even if the player has since left the league
+// (today's game must always be guessable); older ones only matter to solution pages,
+// which read the frozen snapshot directly
+export const recentFrom = getPuzzleNumber(getUKDateString()) - 1
+
 // Daily: every current player whose surname is six letters is a valid guess, plus
-// anyone who has been an answer (so past solutions still resolve). Most famous first,
-// so a shared surname maps to the better-known player.
-const dailyHistory = answerSchedule.daily.answers.map(fromSnapshot)
+// recent answers. Most famous first, so a shared surname maps to the better-known player.
+const dailyHistory = answerSchedule.daily.answers
+	.slice(Math.max(0, recentFrom - answerSchedule.daily.start))
+	.map(fromSnapshot)
 export const footballers: Footballer[] = (() => {
 	const seen = new Set<string>()
 	const list: Footballer[] = []
@@ -81,7 +90,6 @@ const footballerMap = new Map(footballers.map((f) => [f.name.toUpperCase(), f]))
 // Cache for memoized daily answers
 const answerCache = new Map<string, string>()
 
-const EPOCH = '01/01/2026' // DD/MM/YYYY — Puzzle #1 launch date
 
 // Seed for the fallback pick only; scheduled answers never depend on it
 const SHUFFLE_SEED = 20260101

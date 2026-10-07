@@ -8,14 +8,14 @@
 			<div class="header-pills">
 				<HintPill />
 				<span
-					class="streak-pill"
-					:aria-label="`${dailyStats.stats.currentStreak} day streak`"
+					:class="['streak-pill', { cold: !playStreak.playedToday }]"
+					:aria-label="`${playStreak.activeStreak} day Matchday streak`"
 				>
 					<Icon
 						name="solar:fire-bold"
 						size="1.05rem"
 					/>
-					{{ dailyStats.stats.currentStreak }}
+					{{ playStreak.activeStreak }}
 				</span>
 			</div>
 		</header>
@@ -141,6 +141,7 @@
 	import ActivityRings from './ActivityRings.vue'
 	import HintPill from './HintPill.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
+	import { usePlayStreakStore } from '../../stores/playStreak'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { getPuzzleNumber } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
@@ -148,6 +149,8 @@
 	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
 
 	const dailyStats = useModeStatsStore('daily')
+	// Days in a row with at least one game finished, win or lose
+	const playStreak = usePlayStreakStore()
 	const { daily, scout, spot, dailyLastGuess, refresh } = useTodayProgress()
 
 	const puzzleNumber = getPuzzleNumber(getUKDateString())
@@ -291,6 +294,12 @@
 		font-weight: 800;
 		gap: 0.35rem;
 		padding: 0 0.8rem;
+	}
+
+	// Not played yet today: the streak is at risk, so the flame dims
+	.streak-pill.cold {
+		filter: grayscale(0.6);
+		opacity: 0.75;
 	}
 
 	.rings-card {

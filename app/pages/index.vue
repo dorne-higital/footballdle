@@ -34,6 +34,21 @@
 		>
 			<template #body>
 				<div class="hub-stats-modal">
+					<div class="play-streak-card">
+						<Icon
+							name="solar:fire-bold"
+							size="1.6rem"
+							class="flame"
+						/>
+						<div class="play-streak-text">
+							<h4>Matchday streak</h4>
+							<p>Days in a row you've finished a game, win or lose</p>
+						</div>
+						<div class="play-streak-numbers">
+							<strong>{{ playStreak.activeStreak }}</strong>
+							<span>Best {{ playStreak.best }}</span>
+						</div>
+					</div>
 					<div
 						v-for="mode in modeSummaries"
 						:key="mode.label"
@@ -67,6 +82,7 @@
 	import { onMounted, computed, defineAsyncComponent } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
 	import { useModalsStore } from '../stores/modals'
+	import { usePlayStreakStore } from '../stores/playStreak'
 	import { useAnalytics } from '../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeSelectHub from '../components/hub/ModeSelectHub.vue'
@@ -129,6 +145,7 @@
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
 	const modalsStore = useModalsStore()
+	const playStreak = usePlayStreakStore()
 	const { trackBuyMeCoffee } = useAnalytics()
 
 	const modeSummaries = computed(() => [
@@ -182,6 +199,53 @@
 		flex-direction: column;
 		gap: 0.75rem;
 		width: 100%;
+
+		.play-streak-card {
+			align-items: center;
+			background: color-mix(in srgb, var(--tertiary-color) 12%, var(--bg-secondary));
+			border: 1px solid color-mix(in srgb, var(--tertiary-color) 35%, transparent);
+			border-radius: var(--global-border-radius);
+			display: flex;
+			gap: 0.75rem;
+			padding: 0.9rem 1rem;
+			text-align: left;
+
+			.flame {
+				color: var(--tertiary-color);
+				flex-shrink: 0;
+			}
+
+			.play-streak-text {
+				flex: 1;
+
+				h4 {
+					margin: 0;
+				}
+
+				p {
+					color: var(--text-secondary);
+					font-size: 0.78rem;
+					margin: 0.15rem 0 0;
+				}
+			}
+
+			.play-streak-numbers {
+				align-items: flex-end;
+				display: flex;
+				flex-direction: column;
+
+				strong {
+					font-family: var(--font-display);
+					font-size: 1.6rem;
+					line-height: 1;
+				}
+
+				span {
+					color: var(--text-secondary);
+					font-size: 0.72rem;
+				}
+			}
+		}
 
 		.mode-row {
 			background: var(--bg-secondary);
