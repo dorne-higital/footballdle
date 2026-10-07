@@ -37,7 +37,7 @@
 		border: 1px solid var(--border);
 		border-radius: 1.5rem;
 		bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
-		box-shadow: 0 18px 40px -12px rgb(0 0 0 / 60%);
+		box-shadow: 0 18px 40px -12px var(--fl-shadow);
 		display: flex;
 		height: 4.25rem;
 		justify-content: space-around;

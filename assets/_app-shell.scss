@@ -42,6 +42,11 @@ html.app-shell {
 	--fl-raised: #163126;
 	--fl-blue: #6ea8ff;
 	--fl-red: #ff8a80;
+	--fl-glow: rgb(47 224 138 / 16%);
+	--fl-key: #1e3329;
+	--fl-key-pressed: #2a4437;
+	--fl-grabber: rgb(255 255 255 / 22%);
+	--fl-shadow: rgb(0 0 0 / 60%);
 
 	background: var(--bg-primary);
 	color-scheme: dark;
@@ -58,7 +63,7 @@ html.app-shell {
 	.play-layout,
 	.app-page-layout {
 		background:
-			radial-gradient(ellipse 120% 45% at 50% -8%, rgb(47 224 138 / 16%) 0%, rgb(47 224 138 / 0%) 70%),
+			radial-gradient(ellipse 120% 45% at 50% -8%, var(--fl-glow) 0%, transparent 70%),
 			var(--bg-primary);
 	}
 
@@ -104,13 +109,13 @@ html.app-shell {
 	}
 
 	.keyboard .row button {
-		background: #1e3329;
+		background: var(--fl-key);
 		border-color: transparent;
 		border-radius: 10px;
 		font-weight: 800;
 
 		&:active {
-			background: #2a4437;
+			background: var(--fl-key-pressed);
 			transform: scale(0.94);
 		}
 
@@ -141,7 +146,7 @@ html.app-shell {
 		animation: app-sheet-up 0.34s cubic-bezier(0.22, 1, 0.36, 1);
 		border: 0;
 		border-radius: 28px 28px 0 0;
-		box-shadow: 0 -12px 40px -12px rgb(0 0 0 / 60%);
+		box-shadow: 0 -12px 40px -12px var(--fl-shadow);
 		max-height: 88dvh;
 		max-width: 100%;
 		padding: 1.25rem 0.75rem calc(env(safe-area-inset-bottom) + 0.75rem);
@@ -149,7 +154,7 @@ html.app-shell {
 
 		// Grabber handle
 		&::before {
-			background: rgb(255 255 255 / 22%);
+			background: var(--fl-grabber);
 			border-radius: 999px;
 			content: '';
 			height: 5px;
@@ -172,6 +177,51 @@ html.app-shell {
 	.button.primary {
 		color: var(--on-success);
 	}
+}
+
+// Light Floodlights (Settings → Appearance). Same layout, daylight colours: the bright
+// pitch green is kept for fills, with a deeper green wherever green is used as text.
+html.app-shell.app-light {
+	--text-primary: #10231a;
+	--text-secondary: #55695e;
+	--bg-primary: #f2f6f3;
+	--bg-secondary: #fff;
+	--bg-gradient: linear-gradient(160deg, #f2f6f3 0%, #e6efe9 100%);
+	--primary-color: #128d53;
+	--secondary-color: #10231a;
+	--accent-color: #128d53;
+	--tertiary-color: #b7790f;
+	--color-success: #22b36b;
+	--color-present: #e3a72f;
+	--color-absent: #7b8b82;
+	--on-success: #04130b;
+	--on-present: #1b1203;
+	--color-gradient: linear-gradient(135deg, #22b36b 0%, #128d53 100%);
+	--subtle-gradient: linear-gradient(135deg, #e6efe9 0%, #fff 100%);
+	--border: rgb(16 35 26 / 11%);
+	--border-hover: #128d53;
+
+	--turf-base: #e6efe9;
+	--turf-stripe: #dde8e1;
+	--touchline-color: rgb(16 35 26 / 8%);
+	--pitchcard-accent-win: #128d53;
+	--pitchcard-accent-loss: #c9483d;
+	--pitchcard-accent-neutral: #10231a;
+	--pitchcard-accent-info: #55695e;
+	--scoreboard-bg: #e6efe9;
+	--scoreboard-fg: #10231a;
+	--scoreboard-accent: #128d53;
+
+	--fl-raised: #fff;
+	--fl-blue: #2f6fd6;
+	--fl-red: #c9483d;
+	--fl-glow: rgb(34 179 107 / 18%);
+	--fl-key: #dbe5df;
+	--fl-key-pressed: #c6d5cc;
+	--fl-grabber: rgb(16 35 26 / 18%);
+	--fl-shadow: rgb(16 35 26 / 18%);
+
+	color-scheme: light;
 }
 
 // Page change: a short iOS-style slide

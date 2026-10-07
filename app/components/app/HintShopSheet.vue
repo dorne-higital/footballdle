@@ -195,6 +195,10 @@
 			font-size: 0.9rem;
 			line-height: 1.4;
 			margin: 0 0 0.25rem;
+
+			.hint-link {
+				margin-left: 0.3rem;
+			}
 		}
 
 		.hint-shop-reason {

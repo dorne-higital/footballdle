@@ -158,6 +158,31 @@
 			</div>
 
 			<div class="setting-group support-group">
+				<label id="appearance-label">Appearance</label>
+				<div
+					class="segmented"
+					role="radiogroup"
+					aria-labelledby="appearance-label"
+				>
+					<button
+						v-for="option in APPEARANCES"
+						:key="option.value"
+						type="button"
+						role="radio"
+						:aria-checked="appearance.appearance === option.value"
+						:class="{ active: appearance.appearance === option.value }"
+						@click="appearance.set(option.value)"
+					>
+						<Icon
+							:name="option.icon"
+							size="1rem"
+						/>
+						{{ option.label }}
+					</button>
+				</div>
+			</div>
+
+			<div class="setting-group support-group">
 				<label>Footballdle Pro</label>
 				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
 				<template v-else>
@@ -287,6 +312,14 @@
 	import { useModalsStore } from '../../stores/modals'
 	import CoinStack from './CoinStack.vue'
 	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
+	import { useAppearanceStore, type Appearance } from '../../stores/appearance'
+
+	const APPEARANCES: { value: Appearance; label: string; icon: string }[] = [
+		{ value: 'dark', label: 'Dark', icon: 'solar:moon-linear' },
+		{ value: 'light', label: 'Light', icon: 'solar:sun-2-linear' },
+		{ value: 'system', label: 'Auto', icon: 'solar:smartphone-linear' },
+	]
+	const appearance = useAppearanceStore()
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
@@ -704,6 +737,39 @@
 		font-size: 0.75rem;
 		margin-top: 0.4rem;
 		opacity: 0.7;
+	}
+
+	.segmented {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 0.9rem;
+		display: grid;
+		gap: 0.25rem;
+		grid-template-columns: repeat(3, 1fr);
+		margin-top: 0.5rem;
+		padding: 0.25rem;
+		width: 100%;
+
+		button {
+			align-items: center;
+			background: none;
+			border: 0;
+			border-radius: 0.7rem;
+			color: var(--text-secondary);
+			cursor: pointer;
+			display: inline-flex;
+			font: inherit;
+			font-size: 0.9rem;
+			font-weight: 700;
+			gap: 0.35rem;
+			justify-content: center;
+			min-height: 40px;
+
+			&.active {
+				background: var(--primary-color);
+				color: var(--on-success);
+			}
+		}
 	}
 
 	@keyframes spin {

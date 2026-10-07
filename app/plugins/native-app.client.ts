@@ -1,5 +1,4 @@
 import { Capacitor } from '@capacitor/core'
-import { StatusBar, Style } from '@capacitor/status-bar'
 import { Keyboard } from '@capacitor/keyboard'
 import { InAppReview } from '@capacitor-community/in-app-review'
 import { App } from '@capacitor/app'
@@ -27,8 +26,7 @@ const STREAK_REWARD_KEY = 'footballdle-streak-reward'
 export default defineNuxtPlugin((nuxtApp) => {
 	if (!Capacitor.isNativePlatform()) return
 
-	// The app is always the dark Floodlights look; Style.Dark = light status bar text
-	StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
+	// Status bar text colour follows Settings → Appearance (stores/appearance.ts)
 
 	// Keyboard: no "^ v Done" bar, and the page stays pinned to the top while the
 	// web view resizes around the keyboard (see capacitor.config.ts)
