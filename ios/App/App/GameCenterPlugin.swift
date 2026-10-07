@@ -27,6 +27,7 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
         DispatchQueue.main.async {
             let player = GKLocalPlayer.local
             if player.isAuthenticated {
+                self.lastError = nil
                 call.resolve(["authenticated": true])
                 return
             }
@@ -62,6 +63,9 @@ public class GameCenterPlugin: CAPPlugin, CAPBridgedPlugin {
                         ? nil
                         : (error?.localizedDescription ?? "Not signed in to Game Center")
                     self.resolveWaiting()
+                    // GameKit calls this handler again whenever sign-in changes (e.g. the
+                    // player signs in from iOS Settings later), so JS hears about it too
+                    self.notifyListeners("authChanged", data: ["authenticated": player.isAuthenticated])
                 }
             }
         }

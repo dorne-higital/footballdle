@@ -1,5 +1,5 @@
 import { ref } from 'vue'
-import { Capacitor, registerPlugin } from '@capacitor/core'
+import { Capacitor, registerPlugin, type PluginListenerHandle } from '@capacitor/core'
 
 // Native side: ios/App/App/GameCenterPlugin.swift
 interface GameCenterPlugin {
@@ -8,6 +8,7 @@ interface GameCenterPlugin {
 	reportAchievements(options: { achievements: { id: string; percent: number }[] }): Promise<void>
 	showLeaderboards(options?: { leaderboardId?: string }): Promise<void>
 	showAchievements(): Promise<void>
+	addListener(event: 'authChanged', handler: (data: { authenticated: boolean }) => void): Promise<PluginListenerHandle>
 }
 
 const GameCenter = registerPlugin<GameCenterPlugin>('GameCenter')
@@ -15,6 +16,7 @@ const GameCenter = registerPlugin<GameCenterPlugin>('GameCenter')
 // Shared across callers: one Game Center session per app launch
 const isAuthenticated = ref(false)
 const lastError = ref('')
+let watchingAuth = false
 
 export function useGameCenter() {
 	const isAvailable = Capacitor.getPlatform() === 'ios'
@@ -39,6 +41,17 @@ export function useGameCenter() {
 			lastError.value = error?.message ?? String(error)
 		}
 		return isAuthenticated.value
+	}
+
+	// Follows sign-ins that happen later in the session (from iOS Settings or the
+	// Game Center sheet), so scores and achievements start going up straight away
+	function watchAuth() {
+		if (!isAvailable || watchingAuth) return
+		watchingAuth = true
+		GameCenter.addListener('authChanged', ({ authenticated }) => {
+			isAuthenticated.value = authenticated
+			if (authenticated) lastError.value = ''
+		}).catch(() => {})
 	}
 
 	// Game Center keeps each player's best, so resubmitting the same score is harmless
@@ -78,5 +91,5 @@ export function useGameCenter() {
 	const showLeaderboards = (leaderboardId?: string) => openDashboard('leaderboards', leaderboardId)
 	const showAchievements = () => openDashboard('achievements')
 
-	return { isAvailable, isAuthenticated, lastError, authenticate, submitScore, reportAchievements, showLeaderboards, showAchievements }
+	return { isAvailable, isAuthenticated, lastError, authenticate, watchAuth, submitScore, reportAchievements, showLeaderboards, showAchievements }
 }

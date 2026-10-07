@@ -103,8 +103,14 @@ export default defineNuxtPlugin((nuxtApp) => {
 	}).catch(() => {})
 
 	nuxtApp.hook('app:mounted', () => {
+		gameCenter.watchAuth()
 		setTimeout(() => gameCenter.authenticate(), 800)
 	})
+	// Back from iOS Settings: pick up a Game Center sign-in made while we were away.
+	// Only shows a sheet if GameKit had one waiting that never got on screen.
+	App.addListener('resume', () => {
+		if (!gameCenter.isAuthenticated.value) gameCenter.authenticate(5000)
+	}).catch(() => {})
 
 	const totalWins = computed(
 		() => daily.stats.wins + scout.stats.wins + spotball.stats.wins + challenge.stats.wins,
