@@ -164,6 +164,12 @@ export function getAnswerForDay(dateStr: string): string {
 	return answer
 }
 
+/** The full name behind a Daily surname, from the roster (same surname and club) */
+export function fullNameFor(player: Footballer): string | undefined {
+	const key = player.name.toLowerCase()
+	return roster.find(p => p.lastName === key && p.club === player.club)?.name
+}
+
 /** The answer for a date with its clues as they were that day (club, nation, position) */
 export function getAnswerPlayerForDay(dateStr: string): Footballer | undefined {
 	const scheduled = dailyEntry(getPuzzleNumber(dateStr))

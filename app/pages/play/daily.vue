@@ -154,7 +154,13 @@
 						{{ streakMessage }}
 					</div>
 					<p>
-						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
+						The answer was <strong class="answer">{{ answerFullName || gameStore.answer }}</strong>
+					</p>
+					<p
+						v-if="answerPlayer"
+						class="answer-details"
+					>
+						{{ answerPlayer.club }} · {{ answerPlayer.position }} · {{ answerPlayer.nationality }}
 					</p>
 					<div class="share-preview">
 						<p class="share-header">
@@ -513,6 +519,7 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
+	import { fullNameFor, getAnswerPlayerForDay } from '../../composables/useFootballers'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
@@ -525,6 +532,10 @@
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 
 	const isAppBuild = !!useRuntimeConfig().public.isApp
+
+	// Who the Daily answer was, for the result sheet: full name and that day's clues
+	const answerPlayer = computed(() => getAnswerPlayerForDay(gameStore.todayStr))
+	const answerFullName = computed(() => (answerPlayer.value ? fullNameFor(answerPlayer.value) : undefined))
 
 	definePageMeta({ layout: 'play' })
 
@@ -1291,6 +1302,12 @@
 			font-weight: 700;
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
+		}
+
+		.answer-details {
+			color: var(--text-secondary);
+			font-size: 0.85rem;
+			margin: -0.35rem 0 0.5rem;
 		}
 
 		.streak-celebration {
