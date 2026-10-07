@@ -2,39 +2,84 @@
 	<div class="challenge-game">
 		<!-- Navigation Header -->
 		<div class="challenge-nav">
-			<!-- Countdown-->
+			<!-- Ring timer: drains over 45s, amber from 10s, red from 5s -->
 			<div
 				class="timer"
 				:class="{ warning: timeRemaining <= 10, danger: timeRemaining <= 5 }"
+				role="timer"
+				:aria-label="`${timeRemaining} seconds left`"
 			>
-				{{ timeFormatted }}
+				<svg
+					viewBox="0 0 44 44"
+					aria-hidden="true"
+				>
+					<circle
+						class="track"
+						cx="22"
+						cy="22"
+						r="19"
+					/>
+					<circle
+						class="fill"
+						cx="22"
+						cy="22"
+						r="19"
+						:style="{ strokeDashoffset: `${119.4 * (1 - Math.max(0, timeRemaining) / 45)}` }"
+					/>
+				</svg>
+				<span>{{ Math.max(0, timeRemaining) }}</span>
 			</div>
 
-			<!-- Icons (pause / play / home) -->
+			<div class="session">
+				<span class="session-label">This session</span>
+				<strong>{{ sessionWins ?? 0 }} won</strong>
+			</div>
+
 			<div class="cta-buttons">
-				<template v-if="!gameOver">
+				<button
+					v-if="!gameOver"
+					type="button"
+					class="nav-btn"
+					@click="togglePause"
+				>
 					<Icon
-						name="solar:alarm-pause-linear"
-						size="1.5rem"
-						@click="togglePause"
+						name="solar:pause-linear"
+						size="1.1rem"
 					/>
-				</template>
-
-				<template v-else>
+					Pause
+				</button>
+				<button
+					v-else
+					type="button"
+					class="nav-btn"
+					@click="playAgain"
+				>
 					<Icon
-						name="solar:play-circle-linear"
-						size="1.5rem"
-						@click="playAgain"
+						name="solar:play-linear"
+						size="1.1rem"
 					/>
-				</template>
-
-				<Icon
-					name="solar:home-smile-linear"
-					size="1.5rem"
+					Next
+				</button>
+				<button
+					type="button"
+					class="nav-btn"
 					@click="endChallenge"
-				/>
+				>
+					<Icon
+						name="solar:close-circle-linear"
+						size="1.1rem"
+					/>
+					End
+				</button>
 			</div>
 		</div>
+
+		<p
+			v-if="!guesses.length && !gameOver"
+			class="rules"
+		>
+			Guess the 5-letter Premier League surname. Six tries, 45 seconds.
+		</p>
 
 		<!-- Error Toast -->
 		<div
@@ -104,6 +149,7 @@
 		isPaused: boolean
 		gameOver: boolean
 		errorMessage?: string
+		sessionWins?: number
 	}>()
 
 	const emit = defineEmits(['key', 'end-challenge', 'toggle-pause', 'play-again'])
@@ -239,24 +285,109 @@
 			padding: 0.5rem 1rem;
 			width: 100%;
 
+			gap: 0.75rem;
+
 			.timer {
-				font-size: 1.2rem;
+				--ring: var(--color-success);
+				color: var(--ring);
+				flex-shrink: 0;
+				height: 3.4rem;
+				position: relative;
+				width: 3.4rem;
+
+				svg {
+					height: 100%;
+					transform: rotate(-90deg);
+					width: 100%;
+				}
+
+				circle {
+					fill: none;
+					stroke-width: 4;
+				}
+
+				.track {
+					stroke: color-mix(in srgb, var(--text-primary) 12%, transparent);
+				}
+
+				.fill {
+					stroke: currentColor;
+					stroke-dasharray: 119.4;
+					stroke-linecap: round;
+					transition:
+						stroke-dashoffset 1s linear,
+						stroke 0.3s;
+				}
+
+				span {
+					display: grid;
+					font-family: var(--font-display);
+					font-size: 1.15rem;
+					font-variant-numeric: tabular-nums;
+					inset: 0;
+					place-items: center;
+					position: absolute;
+				}
 
 				&.warning {
-					color: var(--tertiary-color);
+					--ring: var(--color-present);
 				}
 
 				&.danger {
-					color: var(--primary-color);
+					--ring: #ff6b6b;
+				}
+			}
+
+			.session {
+				display: flex;
+				flex: 1;
+				flex-direction: column;
+				line-height: 1.2;
+				text-align: left;
+
+				.session-label {
+					color: var(--text-secondary);
+					font-size: 0.7rem;
+					font-weight: 700;
+					letter-spacing: 0.06em;
+					text-transform: uppercase;
+				}
+
+				strong {
+					font-size: 1rem;
 				}
 			}
 
 			.cta-buttons {
 				align-items: center;
 				display: flex;
-				gap: 1rem;
+				gap: 0.4rem;
 				justify-content: center;
 			}
+
+			.nav-btn {
+				align-items: center;
+				background: var(--bg-secondary);
+				border: 1px solid var(--border);
+				border-radius: 0.8rem;
+				color: var(--text-primary);
+				cursor: pointer;
+				display: flex;
+				font: inherit;
+				font-size: 0.8rem;
+				font-weight: 700;
+				gap: 0.3rem;
+				min-height: 40px;
+				padding: 0 0.7rem;
+			}
+		}
+
+		.rules {
+			color: var(--text-secondary);
+			font-size: 0.82rem;
+			margin: 0;
+			padding: 0 1rem;
+			text-align: center;
 		}
 
 		.game-board {
@@ -279,6 +410,7 @@
 					display: flex;
 					font-size: 1.2rem;
 					font-weight: 700;
+					border-radius: 0.7rem;
 					height: 3rem;
 					justify-content: center;
 					perspective: 1000px;

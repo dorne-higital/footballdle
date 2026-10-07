@@ -123,6 +123,7 @@
 				:can-play="challengeStore.canPlay"
 				:is-paused="challengeStore.isPaused"
 				:game-over="challengeStore.gameOver"
+				:session-wins="challengeStore.sessionWins"
 				:error-message="challengeStore.errorMessage"
 				@key="handleChallengeKey"
 				@end-challenge="handleEndChallenge"
@@ -405,12 +406,15 @@
 					<h4 v-if="challengeStore.isWin">
 						You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!
 					</h4>
-					<h4 v-else>Better luck next time!</h4>
+					<h4 v-else>Not this time</h4>
 					<p>
 						The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong>
 					</p>
 
-					<div class="share-preview">
+					<div
+						v-if="challengeStore.guesses.length"
+						class="share-preview"
+					>
 						<p class="share-header">
 							Footballdle ⚽ Challenge{{
 								challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : ''
@@ -432,7 +436,10 @@
 						</div>
 					</div>
 
-					<div class="share-buttons">
+					<div
+						v-if="challengeStore.guesses.length"
+						class="share-buttons"
+					>
 						<button
 							class="button primary"
 							@click="handleChallengeShare"
@@ -457,17 +464,13 @@
 					</div>
 
 					<div class="challenge-buttons">
-						<nuxt-link
-							class="button link"
-							to="/play/daily"
+						<button
+							type="button"
+							class="button full end-challenge-btn"
 							@click="handleEndChallenge"
 						>
-							<Icon
-								name="solar:alt-arrow-left-linear"
-								size="1rem"
-							/>
-							Home
-						</nuxt-link>
+							End challenge
+						</button>
 
 						<button
 							class="button primary full"
@@ -1302,6 +1305,12 @@
 			font-weight: 700;
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
+		}
+
+		.end-challenge-btn {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			color: var(--text-primary);
 		}
 
 		.answer-details {

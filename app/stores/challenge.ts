@@ -13,7 +13,11 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	const isUnlocked = ref(false)
 	const isActive = ref(false)
-	const sessionGameIndex = ref(0)
+	// Where this install starts in the shuffled answer list: random, so mates don't all
+	// get the same sequence and spoil it for each other
+	const sessionGameIndex = ref(Math.floor(Math.random() * 10_000))
+	// Challenges won since entering Challenge mode (shown as the session score)
+	const sessionWins = ref(0)
 	const currentAnswer = ref('')
 	const guesses = ref<string[]>([])
 	const currentGuess = ref('')
@@ -96,6 +100,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 
 		if (guess.toUpperCase() === currentAnswer.value.toUpperCase()) {
 			isWin.value = true
+			sessionWins.value++
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
@@ -146,6 +151,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 
 	function endChallenge() {
 		isActive.value = false
+		sessionWins.value = 0
 		gameOver.value = false
 		isWin.value = false
 		guesses.value = []
@@ -252,6 +258,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 			timeRemaining: timeRemaining.value,
 			isPaused: isPaused.value,
 			sessionGameIndex: sessionGameIndex.value,
+			sessionWins: sessionWins.value,
 		}
 		localStorage.setItem('footballdle-challenge', JSON.stringify(state))
 	}
@@ -269,7 +276,9 @@ export const useChallengeStore = defineStore('challenge', () => {
 			isWin.value = state.isWin || false
 			timeRemaining.value = state.timeRemaining || 45
 			isPaused.value = state.isPaused || false
-			sessionGameIndex.value = state.sessionGameIndex || 0
+			// Old saves all started at 0 (same order for everyone), so only keep a real position
+			if (state.sessionGameIndex > 0) sessionGameIndex.value = state.sessionGameIndex
+			sessionWins.value = state.sessionWins || 0
 			// The clock isn't restarted here: the challenge screen calls resumeTimer
 			// once it's actually showing
 		}
@@ -292,6 +301,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		isUnlocked,
 		isActive,
 		sessionGameIndex,
+		sessionWins,
 		currentAnswer,
 		guesses,
 		currentGuess,

@@ -52,6 +52,7 @@
 	import { computed } from 'vue'
 	import HintPill from './HintPill.vue'
 	import { useModalsStore } from '../../stores/modals'
+	import { useChallengeStore } from '../../stores/challenge'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { tabFor } from '../../utils/appTabs'
 
@@ -73,10 +74,14 @@
 
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
+		if (inChallenge.value) return 'Challenge'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
 
-	const isDaily = computed(() => route.path.startsWith('/play/daily'))
+	const challengeStore = useChallengeStore()
+	// Challenge runs on the Daily route but has no hints, so it gets its own title
+	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
+	const isDaily = computed(() => route.path.startsWith('/play/daily') && !challengeStore.isActive)
 	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
 	const isTab = computed(() => tabFor(route.path) !== null)
 
