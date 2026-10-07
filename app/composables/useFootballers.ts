@@ -147,10 +147,17 @@ export function getPuzzleNumber(dateStr: string): number {
 	return diff + 1
 }
 
+// A scheduled Daily answer must fit the six-letter board; anything else (a bad data
+// update) is ignored in favour of the fallback rather than making the day unwinnable
+function dailyEntry(puzzle: number) {
+	const entry = answerSchedule.daily.answers[puzzle - answerSchedule.daily.start]
+	return entry && /^[a-z]{6}$/i.test(entry[0]) ? entry : undefined
+}
+
 export function getAnswerForDay(dateStr: string): string {
 	if (answerCache.has(dateStr)) return answerCache.get(dateStr)!
 	const puzzle = getPuzzleNumber(dateStr)
-	const scheduled = answerSchedule.daily.answers[puzzle - answerSchedule.daily.start]
+	const scheduled = dailyEntry(puzzle)
 	const len = dailyFallbackPool.length
 	const answer = scheduled?.[0] ?? dailyFallbackPool[(((puzzle - 1) % len) + len) % len] ?? ''
 	answerCache.set(dateStr, answer)
@@ -159,7 +166,7 @@ export function getAnswerForDay(dateStr: string): string {
 
 /** The answer for a date with its clues as they were that day (club, nation, position) */
 export function getAnswerPlayerForDay(dateStr: string): Footballer | undefined {
-	const scheduled = answerSchedule.daily.answers[getPuzzleNumber(dateStr) - answerSchedule.daily.start]
+	const scheduled = dailyEntry(getPuzzleNumber(dateStr))
 	return scheduled ? fromSnapshot(scheduled) : getPlayerData(getAnswerForDay(dateStr))
 }
 

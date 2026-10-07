@@ -25,6 +25,8 @@ const PLAYERS_PATH = join(ROOT, 'app/data/players.json')
 const SCHEDULE_PATH = join(ROOT, 'app/data/schedule.json')
 const META_PATH = join(ROOT, 'app/data/meta.json')
 const DRY_RUN = process.argv.includes('--dry-run')
+// Re-plan the schedule from the saved players.json without fetching anything
+const OFFLINE = process.argv.includes('--offline')
 
 // football-data.org free-tier token (it only reads public squad lists)
 const FOOTBALL_DATA_TOKEN = process.env.FOOTBALL_DATA_TOKEN || 'f425457f0ccb4f5cb2b99e8574ebb762'
@@ -148,6 +150,9 @@ const snapshot = (p: Pick<Player, 'name' | 'club' | 'nationality' | 'position'>)
 	p.nationality,
 	p.position,
 ]
+// The Daily board is six letters, so its answers are surnames, not full names
+const dailySnapshot = (p: Player): Snapshot => [p.lastName, p.club, p.nationality, p.position]
+const DAILY_ANSWER = /^[a-z]{6}$/
 
 // ---------------------------------------------------------------------------
 // Fetch
@@ -267,6 +272,7 @@ function extendAnswers(
 	lastPuzzle: number,
 	noRepeat: number,
 	seed: number,
+	snap: (p: Player) => Snapshot = snapshot,
 ) {
 	let added = 0
 	// Never ask for a gap longer than most of the pool, or picks would run dry
@@ -274,10 +280,10 @@ function extendAnswers(
 	while (list.start + list.answers.length - 1 < lastPuzzle) {
 		const puzzle = list.start + list.answers.length
 		const recent = new Set(list.answers.slice(-gap).map(s => key(s[0])))
-		const candidates = pool.filter(p => !recent.has(key(p.name)))
+		const candidates = pool.filter(p => !recent.has(key(snap(p)[0])))
 		const from = candidates.length ? candidates : pool
 		const pick = seededShuffle(from, seed + puzzle)[0]!
-		list.answers.push(snapshot(pick))
+		list.answers.push(snap(pick))
 		added++
 	}
 	return added
@@ -326,17 +332,19 @@ function extendSpot(spot: Schedule['spot'], pool: Player[], roster: Player[], la
 // ---------------------------------------------------------------------------
 async function main() {
 	const season = currentSeason()
-	console.log(`Fetching ${season}/${String(season + 1).slice(2)} squads…`)
-	const [fpl, fd] = await Promise.all([
-		fetchJson('https://fantasy.premierleague.com/api/bootstrap-static/'),
-		fetchJson(`https://api.football-data.org/v4/competitions/PL/teams?season=${season}`, {
-			'X-Auth-Token': FOOTBALL_DATA_TOKEN,
-		}),
-	])
-
+	console.log(OFFLINE ? 'Offline: re-planning from app/data/players.json' : `Fetching ${season}/${String(season + 1).slice(2)} squads…`)
 	const previousPlayers: Player[] = existsSync(PLAYERS_PATH) ? JSON.parse(readFileSync(PLAYERS_PATH, 'utf8')) : []
-	const previous = new Map(previousPlayers.map(p => [key(p.name), p]))
-	const roster = buildRoster(fpl, fd, previous)
+	let roster = previousPlayers
+	if (!OFFLINE) {
+		const [fpl, fd] = await Promise.all([
+			fetchJson('https://fantasy.premierleague.com/api/bootstrap-static/'),
+			fetchJson(`https://api.football-data.org/v4/competitions/PL/teams?season=${season}`, {
+				'X-Auth-Token': FOOTBALL_DATA_TOKEN,
+			}),
+		])
+		const previous = new Map(previousPlayers.map(p => [key(p.name), p]))
+		roster = buildRoster(fpl, fd, previous)
+	}
 
 	const before = new Set(previousPlayers.map(p => key(p.name)))
 	const after = new Set(roster.map(p => key(p.name)))
@@ -357,8 +365,20 @@ async function main() {
 
 	if (!existsSync(SCHEDULE_PATH)) throw new Error('app/data/schedule.json is missing; it must exist before extending')
 	const schedule: Schedule = JSON.parse(readFileSync(SCHEDULE_PATH, 'utf8'))
-	const lastPuzzle = puzzleNumberFor(new Date(), schedule.epoch) + HORIZON_DAYS
-	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101)
+	const today = puzzleNumberFor(new Date(), schedule.epoch)
+	const lastPuzzle = today + HORIZON_DAYS
+	// Past and today's answers are locked; a malformed future Daily answer (e.g. a
+	// full name) is dropped along with everything after it and planned again
+	const badDaily = schedule.daily.answers.findIndex(a => !DAILY_ANSWER.test(a[0]))
+	if (badDaily !== -1) {
+		const puzzle = schedule.daily.start + badDaily
+		if (puzzle <= today) throw new Error(`Daily #${puzzle} (${schedule.daily.answers[badDaily]![0]}) is live and not a 6-letter surname`)
+		const dropped = schedule.daily.answers.splice(badDaily).length
+		console.log(`Re-planning ${dropped} Daily answers from #${puzzle} (first bad one: a non-surname answer)`)
+	}
+	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot)
+	const stillBad = schedule.daily.answers.filter(a => !DAILY_ANSWER.test(a[0]))
+	if (stillBad.length) throw new Error(`Daily answers must be 6-letter surnames: ${stillBad.map(a => a[0]).join(', ')}`)
 	const addedScout = extendAnswers(schedule.scout, known, lastPuzzle, NO_REPEAT_DAYS.scout, 20260102)
 	const addedSpot = extendSpot(schedule.spot, known, roster, lastPuzzle)
 	console.log(`\nSchedule extended to puzzle #${lastPuzzle}: +${addedDaily} Daily, +${addedScout} Scout, +${addedSpot} Spot days`)
@@ -367,8 +387,12 @@ async function main() {
 		console.log('\nDry run: nothing written.')
 		return
 	}
-	writeFileSync(PLAYERS_PATH, `${JSON.stringify(roster, null, '\t')}\n`)
 	writeFileSync(SCHEDULE_PATH, `${JSON.stringify(schedule)}\n`)
+	if (OFFLINE) {
+		console.log('\nWrote app/data/schedule.json (offline: players.json and meta.json untouched)')
+		return
+	}
+	writeFileSync(PLAYERS_PATH, `${JSON.stringify(roster, null, '\t')}\n`)
 	const meta = { season: `${season}/${String(season + 1).slice(2)}`, updated: new Date().toISOString().slice(0, 10) }
 	writeFileSync(META_PATH, `${JSON.stringify(meta, null, '\t')}\n`)
 	console.log('\nWrote app/data/players.json, schedule.json and meta.json')
