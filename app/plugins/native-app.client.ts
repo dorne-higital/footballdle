@@ -2,9 +2,13 @@ import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
 import { Keyboard } from '@capacitor/keyboard'
 import { InAppReview } from '@capacitor-community/in-app-review'
+import { App } from '@capacitor/app'
+import { LocalNotifications } from '@capacitor/local-notifications'
 import { computed, watch } from 'vue'
 import { useModeStatsStore } from '../stores/modeStats'
 import { usePurchasesStore } from '../stores/purchases'
+import { usePlayStreakStore } from '../stores/playStreak'
+import { useRemindersStore } from '../stores/reminders'
 import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
 import { LEADERBOARD_IDS } from '../utils/appStore'
@@ -82,6 +86,22 @@ export default defineNuxtPlugin((nuxtApp) => {
 	// Scores go up whenever the player is signed in, including a later sign-in from the
 	// Ranks tab, and again whenever they improve; earlier stats are backfilled.
 	const gameCenter = useGameCenter()
+	// Daily reminders (opt-in from Settings): keep the next fortnight planned, and drop
+	// today's once a game has been played
+	const reminders = useRemindersStore()
+	reminders.load()
+	reminders.reschedule()
+	App.addListener('resume', () => reminders.reschedule()).catch(() => {})
+	watch(
+		() => usePlayStreakStore().lastDate,
+		() => reminders.reschedule(),
+	)
+	// Tapping a reminder opens the Daily
+	LocalNotifications.addListener('localNotificationActionPerformed', (action) => {
+		const route = action.notification.extra?.route
+		if (typeof route === 'string') navigateTo(route)
+	}).catch(() => {})
+
 	nuxtApp.hook('app:mounted', () => {
 		setTimeout(() => gameCenter.authenticate(), 800)
 	})

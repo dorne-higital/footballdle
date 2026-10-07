@@ -315,6 +315,11 @@
   resolved "https://registry.yarnpkg.com/@capacitor/keyboard/-/keyboard-8.0.6.tgz#361304068b7319ead091a83b846861deb2fb3639"
   integrity sha512-Bbe+9V0qaT6dzEFJEK7BUWR01l2+vZE8FM5ITF/WgKtx+G6eGZ6d5+YiSMRJBAK0VGjdO59v8yiQ10Doa5KyvQ==
 
+"@capacitor/local-notifications@^8":
+  version "8.3.1"
+  resolved "https://registry.yarnpkg.com/@capacitor/local-notifications/-/local-notifications-8.3.1.tgz#16b1387c5fb1dad0e136da4154f17f50180d2cbb"
+  integrity sha512-F7zu/+p/mIR958YP4axOkeI5hBKRaXDyYjbNPrAil2wWfd7OxScPSTvP9t85NpQ0eULVRu0/sntoxOg6ck477A==
+
 "@capacitor/share@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@capacitor/share/-/share-8.0.2.tgz#afd27c8fe3c3993725723f5f0f894b3a8e126dcf"

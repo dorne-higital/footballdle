@@ -156,6 +156,52 @@
 			</div>
 
 			<div
+				v-if="reminders.isAvailable"
+				class="setting-group support-group"
+			>
+				<div class="reminder-head">
+					<div>
+						<label>Daily reminder</label>
+						<p>A nudge to play, skipped on days you've already played.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="reminders.enabled"
+						aria-label="Daily reminder"
+						:class="['switch', { on: reminders.enabled }]"
+						@click="toggleReminder"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div
+					v-if="reminders.enabled"
+					class="reminder-times"
+					role="radiogroup"
+					aria-label="Reminder time"
+				>
+					<button
+						v-for="h in REMINDER_HOURS"
+						:key="h"
+						type="button"
+						role="radio"
+						:aria-checked="reminders.hour === h"
+						:class="['time-chip', { active: reminders.hour === h }]"
+						@click="reminders.setHour(h)"
+					>
+						{{ formatHour(h) }}
+					</button>
+				</div>
+				<p
+					v-if="reminders.denied"
+					class="store-status"
+				>
+					Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
+				</p>
+			</div>
+
+			<div
 				v-if="gameCenter.isAvailable"
 				class="setting-group support-group"
 			>
@@ -208,9 +254,20 @@
 	import { useGameCenter } from '../../composables/useGameCenter'
 	import { useModalsStore } from '../../stores/modals'
 	import CoinStack from './CoinStack.vue'
+	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
+
+	const reminders = useRemindersStore()
+	reminders.load()
+
+	async function toggleReminder() {
+		if (reminders.enabled) await reminders.disable()
+		else await reminders.enable()
+	}
+
+	const formatHour = (h: number) => (h === 12 ? 'Midday' : h < 12 ? `${h}am` : `${h - 12}pm`)
 
 	const themeStore = useThemeStore()
 	const purchases = usePurchasesStore()
@@ -524,6 +581,75 @@
 			}
 		}
 	}
+	.reminder-head {
+		align-items: center;
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		width: 100%;
+
+		p {
+			margin-bottom: 0;
+		}
+	}
+
+	.switch {
+		background: color-mix(in srgb, var(--text-primary) 18%, transparent);
+		border: 0;
+		border-radius: 999px;
+		cursor: pointer;
+		flex-shrink: 0;
+		height: 31px;
+		padding: 2px;
+		position: relative;
+		transition: background 0.2s ease;
+		width: 51px;
+
+		.knob {
+			background: #fff;
+			border-radius: 50%;
+			box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+			display: block;
+			height: 27px;
+			transition: transform 0.2s ease;
+			width: 27px;
+		}
+
+		&.on {
+			background: var(--color-success);
+
+			.knob {
+				transform: translateX(20px);
+			}
+		}
+	}
+
+	.reminder-times {
+		display: grid;
+		gap: 0.4rem;
+		grid-template-columns: repeat(4, 1fr);
+		margin-top: 0.75rem;
+		width: 100%;
+	}
+
+	.time-chip {
+		background: var(--bg-primary);
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		color: var(--text-primary);
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 700;
+		padding: 0.5rem 0;
+
+		&.active {
+			background: var(--color-success);
+			border-color: var(--color-success);
+			color: #06140d;
+		}
+	}
+
 	.store-status {
 		font-size: 0.75rem;
 		margin-top: 0.4rem;
