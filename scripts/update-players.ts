@@ -34,8 +34,8 @@ const REPLAN_DAILY = process.argv.includes('--replan-daily')
 const FOOTBALL_DATA_TOKEN = process.env.FOOTBALL_DATA_TOKEN || 'f425457f0ccb4f5cb2b99e8574ebb762'
 
 // How far ahead to schedule answers. App builds carry the schedule, so this is how long
-// an un-updated app stays in step with the website.
-const HORIZON_DAYS = 60
+// an un-updated app stays in step with the website (about 13 months).
+const HORIZON_DAYS = 400
 // Answers aren't repeated within this many days
 const NO_REPEAT_DAYS = { daily: 150, scout: 150 }
 const SPOT_ROUNDS = 10
