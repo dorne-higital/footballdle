@@ -164,6 +164,19 @@
 				min-height: 0;
 				overflow-y: auto;
 				padding: 1rem 0.5rem;
+				// Centre short content with auto margins rather than justify-content, which
+				// pushes the top of tall content out of scroll reach (`safe center` would
+				// do it too, but older iOS Safari ignores it)
+				justify-content: flex-start;
+
+				// Slotted content carries the parent's scope id, hence :slotted
+				> :slotted(:first-child) {
+					margin-top: auto;
+				}
+
+				> :slotted(:last-child) {
+					margin-bottom: auto;
+				}
 
 				&.left {
 					align-items: flex-start;
