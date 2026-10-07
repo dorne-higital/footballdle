@@ -249,6 +249,7 @@
 </template>
 
 <script setup lang="ts">
+	import { onUnmounted } from 'vue'
 	import { useThemeStore } from '../../stores/theme'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
@@ -260,6 +261,8 @@
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
 
 	const reminders = useRemindersStore()
+	// Purchase messages belong to this visit to Settings, not the next one
+	onUnmounted(() => (usePurchasesStore().message = ''))
 	reminders.load()
 
 	async function toggleReminder() {

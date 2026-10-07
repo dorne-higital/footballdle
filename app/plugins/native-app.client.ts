@@ -78,7 +78,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 			if (localStorage.getItem(STREAK_REWARD_KEY) === key) return
 			localStorage.setItem(STREAK_REWARD_KEY, key)
 			purchases.grantHints(1)
-			purchases.message = `${streak}-day streak! A free hint has been added.`
+			purchases.rewardNote = `${streak}-day streak! Free hint added.`
 		},
 	)
 

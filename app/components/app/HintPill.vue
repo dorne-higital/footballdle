@@ -1,7 +1,7 @@
 <template>
 	<button
 		type="button"
-		class="hint-pill"
+		:class="['hint-pill', { pulse }]"
 		:aria-label="purchases.isPro ? 'Unlimited hints' : `${purchases.hintBank} hints. Get more`"
 		@click="openShop"
 	>
@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+	import { ref, watch } from 'vue'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useHaptics } from '../../composables/useHaptics'
 
@@ -28,6 +29,18 @@
 	const haptics = useHaptics()
 	const route = useRoute()
 	const showHintShop = useState('hint-shop-open', () => false)
+
+	// A quick pulse whenever hints arrive (a purchase, the welcome gift or a streak reward)
+	const pulse = ref(false)
+	watch(
+		() => purchases.hintBank,
+		(now, before) => {
+			if (now <= before) return
+			pulse.value = false
+			requestAnimationFrame(() => (pulse.value = true))
+			setTimeout(() => (pulse.value = false), 1600)
+		},
+	)
 
 	async function openShop() {
 		haptics.select()
@@ -59,6 +72,24 @@
 
 		.plus {
 			opacity: 0.7;
+		}
+
+		&.pulse {
+			animation: pill-pulse 0.5s ease-out 3;
+		}
+	}
+
+	@keyframes pill-pulse {
+		50% {
+			box-shadow: 0 0 0 6px color-mix(in srgb, var(--pitchcard-accent-win) 30%, transparent);
+			transform: scale(1.08);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hint-pill.pulse {
+			animation: none;
+			box-shadow: 0 0 0 2px var(--pitchcard-accent-win);
 		}
 	}
 </style>

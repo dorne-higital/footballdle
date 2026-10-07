@@ -154,6 +154,17 @@
 						/>
 						{{ streakMessage }}
 					</div>
+					<div
+						v-if="purchases.rewardNote"
+						class="reward-note"
+						role="status"
+					>
+						<Icon
+							name="solar:gift-bold"
+							size="1rem"
+						/>
+						{{ purchases.rewardNote }}
+					</div>
 					<p>
 						The answer was <strong class="answer">{{ answerFullName || gameStore.answer }}</strong>
 					</p>
@@ -676,7 +687,16 @@
 	// Products may not have loaded at launch (offline, or the store was slow), so retry
 	watch(showHintShop, (open) => {
 		if (open && !purchases.hintPacks.length) purchases.init()
+		// A shop message ('Hint added', 'Purchase failed…') belongs to that visit
+		if (!open) purchases.message = ''
 	})
+	// The streak reward is shown once, on the result sheet
+	watch(
+		() => gameStore.showGameOverModal,
+		(open) => {
+			if (!open) purchases.rewardNote = ''
+		},
+	)
 
 	const appHintLabel = computed(() => {
 		if (purchases.isPro) return 'Reveal a hint'
@@ -1305,6 +1325,20 @@
 			font-weight: 700;
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
+		}
+
+		.reward-note {
+			align-items: center;
+			background: color-mix(in srgb, var(--tertiary-color) 16%, var(--bg-secondary));
+			border: 1px solid color-mix(in srgb, var(--tertiary-color) 40%, transparent);
+			border-radius: 2rem;
+			color: var(--text-primary);
+			display: inline-flex;
+			font-size: 0.85rem;
+			font-weight: 700;
+			gap: 0.4rem;
+			margin: 0 auto 0.75rem;
+			padding: 0.4rem 0.9rem;
 		}
 
 		.end-challenge-btn {

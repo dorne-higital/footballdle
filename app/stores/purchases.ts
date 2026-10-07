@@ -32,6 +32,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const products = ref<PurchasesStoreProduct[]>([])
 	const busy = ref(false)
 	const message = ref('')
+	// A streak reward to celebrate on the Daily result sheet (separate from shop
+	// messages, which only show in the shop and Settings)
+	const rewardNote = ref('')
 	const hintBank = ref(readHintBank())
 	// Read once while the store is created: later calls (e.g. a retry from a watcher)
 	// run outside the Nuxt context, where useRuntimeConfig() throws
@@ -237,6 +240,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		products,
 		busy,
 		message,
+		rewardNote,
 		hintBank,
 		loadError,
 
