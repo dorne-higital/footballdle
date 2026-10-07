@@ -19,7 +19,12 @@
 
 		<main class="solution-main">
 			<div class="puzzle-meta">
-				<span class="puzzle-number">Puzzle #{{ puzzleNumber }}</span>
+				<span
+					v-if="displayNumber"
+					class="puzzle-number"
+				>
+					Puzzle #{{ displayNumber }}
+				</span>
 				<span class="puzzle-date">{{ formattedDate }}</span>
 			</div>
 
@@ -66,7 +71,7 @@
 				v-if="playerData"
 				class="solution-description"
 			>
-				The answer to Footballdle puzzle #{{ puzzleNumber }} on {{ formattedDate }} was
+				The answer to {{ displayNumber ? `Footballdle puzzle #${displayNumber}` : 'the Footballdle Daily' }} on {{ formattedDate }} was
 				<strong>{{ answer.toUpperCase() }}</strong>, who plays as {{ positionPhrase }} for
 				{{ playerData.club }} ({{ playerData.nationality }}). Did you get it? Come back tomorrow for a new puzzle.
 			</p>
@@ -116,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-	import { getAnswerForDay, getAnswerPlayerForDay, getPuzzleNumber } from '../../composables/useFootballers'
+	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
 	const { public: { adsensePublisherId } } = useRuntimeConfig()
 
@@ -173,7 +178,9 @@
 	}
 
 	const ukDateStr = toUKDateStr(parsedDate)
-	const puzzleNumber = getPuzzleNumber(ukDateStr)
+	// The public number restarted at #1; earlier days are shown by date only
+	const displayNumber = getDisplayNumber(ukDateStr)
+	const numberLabel = displayNumber ? `#${displayNumber} ` : ''
 	const answer = getAnswerForDay(ukDateStr)
 	const playerData = getAnswerPlayerForDay(ukDateStr)
 
@@ -207,17 +214,17 @@
 		: `The Footballdle answer on ${formattedDate} was ${answerUpper}.`
 
 	useHead({
-		title: `Footballdle #${puzzleNumber} Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
+		title: `Footballdle ${numberLabel}Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
 		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/solution/${dateParam}` }],
 		meta: [
 			{
 				name: 'description',
-				content: `The answer to Footballdle puzzle #${puzzleNumber} on ${formattedDate} was ${answerUpper}${playerDesc}. Play today's free Premier League footballer guessing game at footballdle.co.uk.`,
+				content: `The answer to the Footballdle Daily ${numberLabel}on ${formattedDate} was ${answerUpper}${playerDesc}. Play today's free Premier League footballer guessing game at footballdle.co.uk.`,
 			},
-			{ property: 'og:title', content: `Footballdle #${puzzleNumber} Answer – ${answerUpper}` },
+			{ property: 'og:title', content: `Footballdle ${numberLabel}Answer – ${answerUpper}` },
 			{
 				property: 'og:description',
-				content: `Puzzle #${puzzleNumber} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
+				content: `${displayNumber ? `Puzzle #${displayNumber}` : formattedDate} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
 			},
 			{ property: 'og:url', content: `https://footballdle.co.uk/solution/${dateParam}` },
 			{ property: 'og:type', content: 'article' },

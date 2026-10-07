@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { getPuzzleNumber, getPositionGroup } from '../composables/useFootballers'
+import { getDisplayNumber, getPositionGroup } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
 	getScoutAnswerPlayerForDay,
@@ -31,7 +31,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// ============================================================================
 	const todayStr = getUKDateString() || ''
 	const answer = getScoutAnswerForDay(todayStr) || ''
-	const puzzleNumber = getPuzzleNumber(todayStr)
+	// The public number (#1 from the restart), for display and sharing only
+	const puzzleNumber = getDisplayNumber(todayStr)
 
 	const guesses = ref<string[]>([])
 	const maxGuesses = 6

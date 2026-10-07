@@ -176,7 +176,7 @@
 					</p>
 					<div class="share-preview">
 						<p class="share-header">
-							Footballdle ⚽ #{{ gameStore.puzzleNumber }} &nbsp;·&nbsp;
+							Footballdle ⚽ {{ gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr }} &nbsp;·&nbsp;
 							{{ gameStore.isWin ? gameStore.guesses.length : 'X' }}/6
 						</p>
 						<div class="share-emoji-grid">
@@ -792,7 +792,7 @@
 	// EVENT HANDLERS
 	// ============================================================================
 	async function handleShare() {
-		const label = `#${gameStore.puzzleNumber}`
+		const label = gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr
 		const streak = statsStore.stats.currentStreak
 		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, label, streak)
 		if (copied) {
@@ -805,7 +805,7 @@
 
 	function handleShareTwitter() {
 		const streak = statsStore.stats.currentStreak
-		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, `#${gameStore.puzzleNumber}`, streak)
+		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr, streak)
 		trackShare('twitter')
 	}
 

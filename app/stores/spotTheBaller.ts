@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getSpotRoundsForDay, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
-import { getPuzzleNumber } from '../composables/useFootballers'
+import { getDisplayNumber } from '../composables/useFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString } from '../utils/dateStreak'
 
@@ -43,7 +43,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	const todayStr = getUKDateString() || ''
 	const rounds = getSpotRoundsForDay(todayStr)
-	const puzzleNumber = getPuzzleNumber(todayStr)
+	// The public number (#1 from the restart), for display and sharing only
+	const puzzleNumber = getDisplayNumber(todayStr)
 	const maxGuesses = SPOT_ROUNDS_PER_MATCH
 
 	const roundIndex = ref(0)

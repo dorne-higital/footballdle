@@ -147,6 +147,16 @@ export function getPuzzleNumber(dateStr: string): number {
 	return diff + 1
 }
 
+// The number players see. The schedule keeps counting from EPOCH internally, but the
+// public count restarted at #1 on NUMBER_ONE_DATE (DD/MM/YYYY). Earlier days have no
+// public number (null), so show their date instead.
+const NUMBER_ONE_DATE = '07/10/2026'
+
+export function getDisplayNumber(dateStr: string): number | null {
+	const n = getPuzzleNumber(dateStr) - getPuzzleNumber(NUMBER_ONE_DATE) + 1
+	return n >= 1 ? n : null
+}
+
 // A scheduled Daily answer must fit the six-letter board; anything else (a bad data
 // update) is ignored in favour of the fallback rather than making the day unwinnable
 function dailyEntry(puzzle: number) {

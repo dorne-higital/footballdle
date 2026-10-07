@@ -177,7 +177,7 @@
 
 <script setup lang="ts">
 	import { computed, onMounted, ref } from 'vue'
-	import { getPuzzleNumber } from '../composables/useFootballers'
+	import { getDisplayNumber } from '../composables/useFootballers'
 	import { nextPuzzleTimeLabel } from '../utils/dateStreak'
 
 	const props = withDefaults(
@@ -219,14 +219,14 @@
 	// Decorative "match" header — mirrors the daily puzzle numbering used
 	// elsewhere in the app (see stores/game.ts) without requiring a new prop.
 	const todayUK = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
-	const puzzleNumber = getPuzzleNumber(todayUK)
+	const puzzleNumber = getDisplayNumber(todayUK)
 
 	const eyebrowLabel = computed(() => `${props.modeName} Match`)
 	// The reset is UK midnight; say it in the player's own time ("8:00 am" in Sydney).
 	// Worked out on the device, since the website's HTML is rendered elsewhere.
 	const resetTime = ref('midnight UK')
 	onMounted(() => (resetTime.value = nextPuzzleTimeLabel()))
-	const kickoffLabel = computed(() => `No. ${puzzleNumber} · New puzzle at ${resetTime.value}`)
+	const kickoffLabel = computed(() => `${puzzleNumber ? `No. ${puzzleNumber} · ` : ''}New puzzle at ${resetTime.value}`)
 
 	defineEmits(['start-game', 'start-challenge', 'show-result'])
 </script>

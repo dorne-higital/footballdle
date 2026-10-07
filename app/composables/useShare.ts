@@ -32,16 +32,16 @@ export function useShare() {
 	}
 
 	/** One row per guess: club, nation, position */
-	function getScoutShareText(results: ScoutGuessResult[], isWin: boolean, maxGuesses: number, puzzle: number, streak?: number) {
+	function getScoutShareText(results: ScoutGuessResult[], isWin: boolean, maxGuesses: number, puzzle: number | null, streak?: number) {
 		const grid = results
 			.map(r => [r.club, r.nationality, r.position].map(c => EMOJI[c.state as TileState] ?? '⬛').join(''))
 			.join('\n')
-		return `Footballdle Scout Report 🔎 #${puzzle}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
+		return `Footballdle Scout Report 🔎${puzzle ? ` #${puzzle}` : ''}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
 	}
 
-	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number, streak?: number) {
+	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number | null, streak?: number) {
 		const dots = results.map(r => (r.correct ? '🟢' : '🔴')).join('')
-		return `Footballdle Spot the Baller 👀 #${puzzle}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
+		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
 	}
 
 	/** iOS app: the native share sheet (returns false, nothing was copied). Website:

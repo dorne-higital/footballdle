@@ -58,7 +58,7 @@
 				aria-hidden="true"
 			/>
 			<div class="hero-top">
-				<span class="eyebrow">Daily · #{{ puzzleNumber }}</span>
+				<span class="eyebrow">Daily{{ puzzleNumber ? ` · #${puzzleNumber}` : '' }}</span>
 				<span class="league">Premier League</span>
 			</div>
 			<!-- Full time: the answer spelled out, green if you got it, red if not -->
@@ -222,7 +222,7 @@
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
-	import { getPuzzleNumber } from '../../composables/useFootballers'
+	import { getDisplayNumber } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
 	import { useShare } from '../../composables/useShare'
 	import { useHaptics } from '../../composables/useHaptics'
@@ -237,7 +237,7 @@
 	const { onShare } = useShare()
 	const haptics = useHaptics()
 
-	const puzzleNumber = getPuzzleNumber(getUKDateString())
+	const puzzleNumber = getDisplayNumber(getUKDateString())
 	const todayLabel = new Date().toLocaleDateString('en-GB', {
 		weekday: 'short',
 		day: 'numeric',
@@ -308,7 +308,7 @@
 			dailyGuesses.value,
 			dailyAnswer.value.name,
 			daily.value.status === 'won',
-			`#${puzzleNumber}`,
+			puzzleNumber ? `#${puzzleNumber}` : getUKDateString(),
 			dailyStats.stats.currentStreak,
 		)
 		if (copied) {
