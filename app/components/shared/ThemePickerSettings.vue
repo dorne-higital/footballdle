@@ -92,6 +92,71 @@
 		</div>
 
 		<template v-else>
+			<div
+				v-if="gameCenter.isAvailable"
+				class="setting-group support-group"
+			>
+				<label>Leaderboards</label>
+				<p>See how your streaks stack up against everyone else.</p>
+				<button
+					type="button"
+					class="store-button"
+					@click="gameCenter.showLeaderboards()"
+				>
+					<Icon
+						name="uil:trophy"
+						size="1rem"
+					/>
+					Open leaderboards
+				</button>
+			</div>
+
+			<div
+				v-if="reminders.isAvailable"
+				class="setting-group support-group"
+			>
+				<div class="reminder-head">
+					<div>
+						<label>Daily reminder</label>
+						<p>A nudge to play, skipped on days you've already played.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="reminders.enabled"
+						aria-label="Daily reminder"
+						:class="['switch', { on: reminders.enabled }]"
+						@click="toggleReminder"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div
+					v-if="reminders.enabled"
+					class="reminder-times"
+					role="radiogroup"
+					aria-label="Reminder time"
+				>
+					<button
+						v-for="h in REMINDER_HOURS"
+						:key="h"
+						type="button"
+						role="radio"
+						:aria-checked="reminders.hour === h"
+						:class="['time-chip', { active: reminders.hour === h }]"
+						@click="reminders.setHour(h)"
+					>
+						{{ formatHour(h) }}
+					</button>
+				</div>
+				<p
+					v-if="reminders.denied"
+					class="store-status"
+				>
+					Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
+				</p>
+			</div>
+
 			<div class="setting-group support-group">
 				<label>Footballdle Pro</label>
 				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
@@ -178,71 +243,6 @@
 						<span class="tip-price">{{ product.priceString }}</span>
 					</button>
 				</div>
-			</div>
-
-			<div
-				v-if="reminders.isAvailable"
-				class="setting-group support-group"
-			>
-				<div class="reminder-head">
-					<div>
-						<label>Daily reminder</label>
-						<p>A nudge to play, skipped on days you've already played.</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						:aria-checked="reminders.enabled"
-						aria-label="Daily reminder"
-						:class="['switch', { on: reminders.enabled }]"
-						@click="toggleReminder"
-					>
-						<span class="knob"></span>
-					</button>
-				</div>
-				<div
-					v-if="reminders.enabled"
-					class="reminder-times"
-					role="radiogroup"
-					aria-label="Reminder time"
-				>
-					<button
-						v-for="h in REMINDER_HOURS"
-						:key="h"
-						type="button"
-						role="radio"
-						:aria-checked="reminders.hour === h"
-						:class="['time-chip', { active: reminders.hour === h }]"
-						@click="reminders.setHour(h)"
-					>
-						{{ formatHour(h) }}
-					</button>
-				</div>
-				<p
-					v-if="reminders.denied"
-					class="store-status"
-				>
-					Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
-				</p>
-			</div>
-
-			<div
-				v-if="gameCenter.isAvailable"
-				class="setting-group support-group"
-			>
-				<label>Leaderboards</label>
-				<p>See how your streaks stack up against everyone else.</p>
-				<button
-					type="button"
-					class="store-button"
-					@click="gameCenter.showLeaderboards()"
-				>
-					<Icon
-						name="uil:trophy"
-						size="1rem"
-					/>
-					Open leaderboards
-				</button>
 			</div>
 
 			<p
