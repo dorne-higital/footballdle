@@ -32,7 +32,7 @@ export const allFootballers: Footballer[] = (() => {
 // Diacritic-insensitive comparison key — search/validation shouldn't require
 // typing accented characters (e.g. "traore" should find "traoré"); the
 // accented form is still what's displayed and stored.
-function normaliseKey(name: string): string {
+export function normaliseKey(name: string): string {
 	return name
 		.trim()
 		.toLowerCase()

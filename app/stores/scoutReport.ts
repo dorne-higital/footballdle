@@ -9,6 +9,7 @@ import {
 	isValidFullFootballer,
 	getFullPlayerData,
 	searchFullFootballers,
+	normaliseKey,
 } from '../composables/useAllFootballers'
 import { getConfederation, type Confederation } from '../composables/useConfederations'
 import { getUKDateString } from '../utils/dateStreak'
@@ -179,13 +180,17 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 			setError("Not in this season's Premier League squads")
 			return
 		}
-		if (guesses.value.some((g) => g.toUpperCase() === trimmed.toUpperCase())) {
+		// Stored and compared as the roster's own spelling, so 'joao pedro' is the same
+		// guess (and the same answer) as 'João Pedro'
+		const canonical = getFullPlayerData(trimmed)?.name ?? trimmed
+		const key = normaliseKey(canonical)
+		if (guesses.value.some((g) => normaliseKey(g) === key)) {
 			setError('Already guessed!')
 			return
 		}
-		guesses.value.push(trimmed)
+		guesses.value.push(canonical)
 
-		if (trimmed.toUpperCase() === answer.toUpperCase()) {
+		if (key === normaliseKey(answer)) {
 			isWin.value = true
 			gameOver.value = true
 			showGameOverModal.value = true
