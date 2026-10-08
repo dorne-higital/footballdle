@@ -10,6 +10,13 @@
 				<path :d="outline" />
 			</clipPath>
 		</defs>
+		<!-- Outer edge (light theme), so white badges and trims don't vanish; the fill covers its inner half -->
+		<path
+			class="edge"
+			:d="outline"
+			fill="none"
+			stroke-width="4.5"
+		/>
 		<g :clip-path="`url(#${clipId})`">
 			<rect
 				width="40"
@@ -109,5 +116,13 @@
 		height: 2.6rem;
 		overflow: visible;
 		width: auto;
+
+		.edge {
+			stroke: transparent;
+		}
+	}
+
+	:global(html.app-shell.app-light .club-crest .edge) {
+		stroke: rgb(0 0 0 / 32%);
 	}
 </style>
