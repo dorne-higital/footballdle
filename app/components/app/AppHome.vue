@@ -26,8 +26,8 @@
 		>
 			<ActivityRings
 				:rings="rings"
-				:size="116"
-				:stroke="12"
+				:size="88"
+				:stroke="10"
 				label="Today's progress across Daily, Scout Report and Spot the Baller"
 			/>
 			<div class="rings-summary">
@@ -363,6 +363,7 @@
 	.home-header {
 		align-items: flex-end;
 		display: flex;
+		gap: 0.5rem;
 		justify-content: space-between;
 
 		.date {
@@ -376,7 +377,8 @@
 
 		h1 {
 			font-family: var(--font-display);
-			font-size: 2.4rem;
+			// Smaller on narrow phones (SE) so it never runs into the pills
+			font-size: clamp(1.9rem, 9.5vw, 2.4rem);
 			line-height: 1;
 			margin: 0;
 		}
@@ -414,8 +416,8 @@
 		border: 1px solid var(--border);
 		border-radius: 1.5rem;
 		display: flex;
-		gap: 1.1rem;
-		padding: 1rem 1.1rem;
+		gap: 1rem;
+		padding: 0.8rem 1rem;
 
 		.rings-summary {
 			display: flex;
@@ -821,6 +823,17 @@
 			font-size: 1.15rem;
 			font-variant-numeric: tabular-nums;
 			letter-spacing: 0.04em;
+		}
+	}
+
+	// Short phones (iPhone SE): keep all four modes above the tab bar on first view
+	@media (height <= 700px) {
+		.tile-preview:not(.answer-tiles) {
+			display: none;
+		}
+
+		.mode-card {
+			min-height: 5.5rem;
 		}
 	}
 </style>
