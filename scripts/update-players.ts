@@ -29,6 +29,10 @@ const DRY_RUN = process.argv.includes('--dry-run')
 const OFFLINE = process.argv.includes('--offline')
 // Re-plan every upcoming Daily answer (from tomorrow), e.g. after changing how they're picked
 const REPLAN_DAILY = process.argv.includes('--replan-daily')
+// Plan a Player Cards season from this date (YYYY-MM-DD) to the end of May: every
+// Daily in it is a card. Without it, an already-planned season is kept as it is.
+const CARD_SEASON_START = process.argv.find(a => a.startsWith('--card-season='))?.split('=')[1]
+const CARDS_PATH = join(ROOT, 'app/data/cards.json')
 
 // football-data.org free-tier token (it only reads public squad lists)
 const FOOTBALL_DATA_TOKEN = process.env.FOOTBALL_DATA_TOKEN || 'f425457f0ccb4f5cb2b99e8574ebb762'
@@ -75,8 +79,9 @@ interface Player {
 	/** League minutes this season */
 	minutes?: number
 }
-/** [name, club, nationality, position] — a frozen copy of the player as they were that day */
-type Snapshot = [string, string, string, string]
+/** [name, club, nationality, position, fullName?] — a frozen copy of the player as they
+ *  were that day (card-season Daily answers add the full name for the card) */
+type Snapshot = [string, string, string, string] | [string, string, string, string, string]
 interface SpotRoundEntry {
 	target: Snapshot
 	options: string[]
@@ -196,9 +201,9 @@ function dailyEligible(p: Player): boolean {
 	return shown.replace(/[^a-z]/g, '') === p.lastName
 }
 
-// The Daily board is six letters, so its answers are surnames, not full names
+// The Daily board is five or six letters, so its answers are surnames, not full names
 const dailySnapshot = (p: Player): Snapshot => [p.lastName, p.club, p.nationality, p.position]
-const DAILY_ANSWER = /^[a-z]{6}$/
+const DAILY_ANSWER = /^[a-z]{5,6}$/
 
 // ---------------------------------------------------------------------------
 // Fetch
@@ -407,6 +412,144 @@ function extendSpot(spot: Schedule['spot'], pool: Player[], roster: Player[], la
 }
 
 // ---------------------------------------------------------------------------
+// Player Cards season: a fixed set per club, every member scheduled as a Daily
+// ---------------------------------------------------------------------------
+interface CardInfo {
+	name: string
+	surname: string
+	club: string
+	nationality: string
+	position: string
+}
+interface CardSeason {
+	start: string
+	end: string
+	startPuzzle: number
+	endPuzzle: number
+	clubs: Record<string, { size: number; hints: number; members: string[] }>
+	cards: Record<string, CardInfo>
+}
+interface CardsFile {
+	v: 1
+	seasons: Record<string, CardSeason>
+}
+
+// The same surname (two Timbers, two Wilsons) never comes up within this many days
+const CARD_SURNAME_GAP = 60
+// A second chance at a card comes at least this long after its first day
+const CARD_REPEAT_GAP = 60
+// Never more than this many days in a row with the same word length
+const MAX_LENGTH_RUN = 3
+
+/** Completing a club's set pays 1 to 4 hints, by its size */
+const setHints = (size: number) => Math.min(4, Math.max(1, Math.floor((size - 1) / 2)))
+const slug = (s: string) => key(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+const isoDate = (d: Date) => d.toISOString().slice(0, 10)
+
+/** Members per club: everyone eligible when the season is long enough, otherwise the
+ *  best known of each club in proportion (largest remainder), so every set fits */
+function chooseMembers(pool: Player[], days: number): Player[] {
+	const fame = (p: Player) => (p.cost ?? 0) * 100000 + (p.minutes ?? 0)
+	const byClub = new Map<string, Player[]>()
+	for (const p of pool) byClub.set(p.club, [...(byClub.get(p.club) ?? []), p])
+	for (const list of byClub.values()) list.sort((a, b) => fame(b) - fame(a))
+	if (pool.length <= days) return pool
+	const shares = [...byClub].map(([clubName, list]) => {
+		const exact = (list.length * days) / pool.length
+		return { clubName, list, take: Math.floor(exact), rest: exact - Math.floor(exact) }
+	})
+	let left = days - shares.reduce((n, s) => n + s.take, 0)
+	for (const s of [...shares].sort((a, b) => b.rest - a.rest)) {
+		if (left <= 0) break
+		s.take++
+		left--
+	}
+	return shares.flatMap(s => s.list.slice(0, Math.max(1, s.take)))
+}
+
+function planCardSeason(pool: Player[], startDate: string, epoch: string, seed: number) {
+	const start = new Date(`${startDate}T12:00:00Z`)
+	const endYear = start.getUTCMonth() >= 5 ? start.getUTCFullYear() + 1 : start.getUTCFullYear()
+	const end = new Date(Date.UTC(endYear, 4, 31, 12))
+	const startPuzzle = puzzleNumberFor(new Date(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()), epoch)
+	const endPuzzle = puzzleNumberFor(new Date(end.getUTCFullYear(), end.getUTCMonth(), end.getUTCDate()), epoch)
+	const days = endPuzzle - startPuzzle + 1
+	const members = chooseMembers(pool, days)
+	const id = (p: Player) => slug(`${p.club} ${p.name}`)
+
+	// Each member once; spare days are second chances for the best known, spread evenly
+	const spare = days - members.length
+	const fame = (p: Player) => (p.cost ?? 0) * 100000 + (p.minutes ?? 0)
+	const repeatPool = [...members].sort((a, b) => fame(b) - fame(a)).slice(0, spare)
+	const repeatSlots = new Set(Array.from({ length: spare }, (_, i) => Math.floor(((i + 1) * days) / (spare + 1))))
+
+	// A day-by-day greedy fill with restarts on a new shuffle if it gets stuck
+	for (let attempt = 0; attempt < 400; attempt++) {
+		const firsts = seededShuffle(members, seed + attempt * 7919)
+		const repeats = [...repeatPool]
+		const firstDay = new Map<string, number>()
+		const lastSurnameDay = new Map<string, number>()
+		const plan: Player[] = []
+		let ok = true
+		for (let day = 0; day < days; day++) {
+			const prev = plan[day - 1]
+			const run = (len: number) => {
+				let n = 0
+				for (let i = day - 1; i >= 0 && plan[i]!.lastName.length === len; i--) n++
+				return n
+			}
+			const fits = (p: Player) =>
+				(!prev || prev.club !== p.club) &&
+				day - (lastSurnameDay.get(p.lastName) ?? -Infinity) >= CARD_SURNAME_GAP &&
+				run(p.lastName.length) < MAX_LENGTH_RUN
+			// Keep first appearances on pace: never let the remaining ones outnumber the
+			// days left for them
+			const firstsLeft = firsts.length
+			const daysLeft = days - day
+			const mustFirst = firstsLeft >= daysLeft
+			let pick: Player | undefined
+			if (!mustFirst && repeatSlots.has(day)) {
+				const i = repeats.findIndex(p => day - (firstDay.get(id(p)) ?? Infinity) >= CARD_REPEAT_GAP && fits(p))
+				if (i !== -1) pick = repeats.splice(i, 1)[0]
+			}
+			if (!pick) {
+				const i = firsts.findIndex(fits)
+				if (i !== -1) pick = firsts.splice(i, 1)[0]
+			}
+			if (!pick && !mustFirst) {
+				const i = repeats.findIndex(p => firstDay.has(id(p)) && fits(p))
+				if (i !== -1) pick = repeats.splice(i, 1)[0]
+			}
+			if (!pick) {
+				ok = false
+				break
+			}
+			if (!firstDay.has(id(pick))) firstDay.set(id(pick), day)
+			lastSurnameDay.set(pick.lastName, day)
+			plan.push(pick)
+		}
+		if (!ok || plan.length !== days) continue
+
+		const clubs: CardSeason['clubs'] = {}
+		const cards: CardSeason['cards'] = {}
+		for (const p of members) {
+			const c = (clubs[p.club] ??= { size: 0, hints: 0, members: [] })
+			c.members.push(id(p))
+			cards[id(p)] = { name: p.name, surname: p.lastName, club: p.club, nationality: p.nationality, position: p.position }
+		}
+		for (const c of Object.values(clubs)) {
+			c.size = c.members.length
+			c.hints = setHints(c.size)
+		}
+		const label = `${start.getUTCFullYear() - (start.getUTCMonth() >= 5 ? 0 : 1)}-${String((start.getUTCMonth() >= 5 ? start.getUTCFullYear() + 1 : start.getUTCFullYear()) % 100).padStart(2, '0')}`
+		const season: CardSeason = { start: isoDate(start), end: isoDate(end), startPuzzle, endPuzzle, clubs, cards }
+		const answers: Snapshot[] = plan.map(p => [p.lastName, p.club, p.nationality, p.position, p.name])
+		console.log(`Card season ${label}: ${days} days from #${startPuzzle}, ${members.length} cards in ${Object.keys(clubs).length} sets, ${spare} second chances, ${Object.values(clubs).reduce((n, c) => n + c.hints, 0)} hints for every set (attempt ${attempt + 1})`)
+		return { label, season, answers }
+	}
+	throw new Error('Could not plan the card season within the rules; try another start date')
+}
+
 async function main() {
 	const season = currentSeason()
 	console.log(OFFLINE ? 'Offline: re-planning from app/data/players.json' : `Fetching ${season}/${String(season + 1).slice(2)} squads…`)
@@ -428,7 +571,7 @@ async function main() {
 	const joined = roster.filter(p => !before.has(key(p.name)))
 	const left = previousPlayers.filter(p => !after.has(key(p.name)))
 	const known = roster.filter(p => p.known)
-	const dailyPool = roster.filter(p => p.dailyKnown && p.lastName.length === 6 && dailyEligible(p))
+	const dailyPool = roster.filter(p => p.dailyKnown && (p.lastName.length === 5 || p.lastName.length === 6) && dailyEligible(p))
 
 	console.log(`\nClubs: ${[...new Set(roster.map(p => p.club))].sort().join(', ')}`)
 	const challengePool = roster.filter(p => p.dailyKnown && p.lastName.length === 5)
@@ -451,20 +594,38 @@ async function main() {
 		const p = roster.find(r => r.lastName === a[0] && r.club === a[1])
 		return !!p && !dailyEligible(p)
 	}
+	// Player Cards: a season's days are fixed once planned (cards depend on them)
+	const cardsFile: CardsFile = existsSync(CARDS_PATH) ? JSON.parse(readFileSync(CARDS_PATH, 'utf8')) : { v: 1, seasons: {} }
+	const lockedSeasons = Object.values(cardsFile.seasons)
+	const inCardSeason = (puzzle: number) => lockedSeasons.some(s => puzzle >= s.startPuzzle && puzzle <= s.endPuzzle)
+	let newSeason: ReturnType<typeof planCardSeason> | undefined
+	if (CARD_SEASON_START) {
+		newSeason = planCardSeason(dailyPool, CARD_SEASON_START, schedule.epoch, 20261201)
+		if (newSeason.season.startPuzzle <= today) throw new Error(`The card season must start after today (#${today})`)
+	}
 	const badDaily = schedule.daily.answers.findIndex(
 		(a, i) =>
-			!DAILY_ANSWER.test(a[0]) || (schedule.daily.start + i > today && (REPLAN_DAILY || ineligible(a))),
+			!DAILY_ANSWER.test(a[0]) ||
+			(schedule.daily.start + i > today &&
+				!inCardSeason(schedule.daily.start + i) &&
+				(REPLAN_DAILY || ineligible(a) || (newSeason && schedule.daily.start + i >= newSeason.season.startPuzzle))),
 	)
 	if (badDaily !== -1) {
 		const puzzle = schedule.daily.start + badDaily
-		if (puzzle <= today) throw new Error(`Daily #${puzzle} (${schedule.daily.answers[badDaily]![0]}) is live and not a 6-letter surname`)
+		if (puzzle <= today) throw new Error(`Daily #${puzzle} (${schedule.daily.answers[badDaily]![0]}) is live and not a 5 or 6 letter surname`)
 		const dropped = schedule.daily.answers.splice(badDaily).length
 		console.log(`Re-planning ${dropped} Daily answers from #${puzzle} (malformed, or the player no longer qualifies)`)
+	}
+	if (newSeason) {
+		// Fill up to the day before, then the season's days, then carry on as normal
+		extendAnswers(schedule.daily, dailyPool, newSeason.season.startPuzzle - 1, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot, dailyWeight, 0.5)
+		schedule.daily.answers.push(...newSeason.answers)
+		cardsFile.seasons[newSeason.label] = newSeason.season
 	}
 	// A shorter no-repeat gap than Scout so the weighting has room to favour well-known names
 	const addedDaily = extendAnswers(schedule.daily, dailyPool, lastPuzzle, NO_REPEAT_DAYS.daily, 20260101, dailySnapshot, dailyWeight, 0.5)
 	const stillBad = schedule.daily.answers.filter(a => !DAILY_ANSWER.test(a[0]))
-	if (stillBad.length) throw new Error(`Daily answers must be 6-letter surnames: ${stillBad.map(a => a[0]).join(', ')}`)
+	if (stillBad.length) throw new Error(`Daily answers must be 5 or 6 letter surnames: ${stillBad.map(a => a[0]).join(', ')}`)
 	const addedScout = extendAnswers(schedule.scout, known, lastPuzzle, NO_REPEAT_DAYS.scout, 20260102)
 	// Upcoming Spot days with a round that can't be told apart are planned again
 	const byName = new Map(roster.map(p => [p.name, p]))
@@ -492,6 +653,7 @@ async function main() {
 		return
 	}
 	writeFileSync(SCHEDULE_PATH, `${JSON.stringify(schedule)}\n`)
+	if (newSeason) writeFileSync(CARDS_PATH, `${JSON.stringify(cardsFile, null, '\t')}\n`)
 	if (OFFLINE) {
 		console.log('\nWrote app/data/schedule.json (offline: players.json and meta.json untouched)')
 		return
