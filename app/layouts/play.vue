@@ -14,6 +14,8 @@
 		</div>
 
 		<AppTabBar v-if="showTabBar" />
+		<!-- iOS app: the same Stats and Settings sheets as everywhere else -->
+		<HubSheets v-if="$config.public.isApp" />
 	</div>
 </template>
 
@@ -22,6 +24,7 @@
 	import AppHeader from '../components/shared/AppHeader.vue'
 	import AppTopBar from '../components/app/AppTopBar.vue'
 	import AppTabBar from '../components/app/AppTabBar.vue'
+	import HubSheets from '../components/shared/HubSheets.vue'
 
 	const route = useRoute()
 	const { isApp } = useRuntimeConfig().public

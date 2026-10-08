@@ -11,7 +11,7 @@
 			<HubStatsStrip :modes="modeSummaries" />
 		</template>
 
-		<HubSheets />
+		<HubSheets v-if="!$config.public.isApp" />
 	</div>
 </template>
 

@@ -15,54 +15,109 @@
 				<span>Best {{ playStreak.best }}</span>
 			</div>
 		</div>
+
 		<div
-			v-for="mode in modeSummaries"
-			:key="mode.label"
-			class="mode-row"
+			class="mode-tabs"
+			role="tablist"
+			aria-label="Game mode"
 		>
-			<div class="mode-row-top">
-				<h4>{{ mode.label }}</h4>
-				<span
-					v-if="mode.currentStreak > 0"
-					class="streak-tag"
-				>
-					<Icon
-						name="solar:fire-bold"
-						size="0.85rem"
-					/>
-					{{ mode.currentStreak }}
-				</span>
-			</div>
-			<div class="mode-row-stats">
-				<span><strong>{{ mode.gamesPlayed }}</strong> played</span>
-				<span><strong>{{ mode.winRate }}%</strong> win rate</span>
-			</div>
+			<button
+				v-for="m in modes"
+				:key="m.id"
+				type="button"
+				role="tab"
+				:aria-selected="selected === m.id"
+				:class="{ active: selected === m.id }"
+				@click="selected = m.id"
+			>
+				{{ m.label }}
+			</button>
 		</div>
+
+		<p
+			v-if="!current.store.stats.gamesPlayed"
+			class="empty-mode"
+		>
+			<Icon
+				name="solar:football-linear"
+				size="1.6rem"
+			/>
+			No {{ current.label }} games yet. Your stats show up here after your first one.
+		</p>
+		<SeasonFormDashboard
+			v-else
+			:key="selected"
+			:primary-stats="current.primary"
+			:win-percentage="current.store.winPercentage"
+			:distribution="selected === 'spotball' ? undefined : current.store.stats.guessDistribution"
+			:score-histogram="selected === 'spotball' ? spotHistogram : undefined"
+			:recent-form="current.store.stats.recentForm"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue'
+	import { computed, onMounted, ref } from 'vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
+	import { SPOT_TIER_LABELS } from '../../utils/spotTiers'
+	import { readSavedObject } from '../../utils/storage'
+	import SeasonFormDashboard from './SeasonFormDashboard.vue'
 
-	// Matchday streak plus a summary row per mode: the Stats tab and the Stats sheet
-	const statsStore = useModeStatsStore('daily')
-	const scoutStatsStore = useModeStatsStore('scout')
-	const spotballStatsStore = useModeStatsStore('spotball')
+	// The one Stats view (tab and sheet): Matchday streak, then the same breakdown for
+	// whichever mode is picked. Opened from inside a game, that game is picked first.
+	type ModeId = 'daily' | 'scout' | 'spotball' | 'challenge'
+	const stores = {
+		daily: useModeStatsStore('daily'),
+		scout: useModeStatsStore('scout'),
+		spotball: useModeStatsStore('spotball'),
+		challenge: useModeStatsStore('challenge'),
+	}
 	const playStreak = usePlayStreakStore()
+	const route = useRoute()
 
-	const modeSummaries = computed(() => [
-		{ label: 'Daily', gamesPlayed: statsStore.stats.gamesPlayed, currentStreak: statsStore.stats.currentStreak, winRate: statsStore.winPercentage },
-		{ label: 'Scout Report', gamesPlayed: scoutStatsStore.stats.gamesPlayed, currentStreak: scoutStatsStore.stats.currentStreak, winRate: scoutStatsStore.winPercentage },
-		{ label: 'Spot the Baller', gamesPlayed: spotballStatsStore.stats.gamesPlayed, currentStreak: spotballStatsStore.stats.currentStreak, winRate: spotballStatsStore.winPercentage },
-	])
+	const basics = (id: ModeId) => [
+		{ label: 'Games', value: stores[id].stats.gamesPlayed },
+		{ label: 'Wins', value: stores[id].stats.wins },
+		{ label: 'Streak', value: stores[id].stats.currentStreak },
+		{ label: 'Max Streak', value: stores[id].stats.maxStreak },
+	]
+
+	const modes = computed(() =>
+		[
+			{ id: 'daily' as const, label: 'Daily', primary: basics('daily') },
+			{ id: 'scout' as const, label: 'Scout', primary: basics('scout') },
+			{ id: 'spotball' as const, label: 'Spot', primary: basics('spotball') },
+			{
+				id: 'challenge' as const,
+				label: 'Challenge',
+				primary: [
+					{ label: 'Challenges', value: stores.challenge.stats.gamesPlayed },
+					{ label: 'Wins', value: stores.challenge.stats.wins },
+					{ label: 'Best Streak', value: stores.challenge.stats.maxStreak },
+					{ label: 'Best Time', value: `${stores.challenge.stats.bestTime || 0}s` },
+				],
+			},
+		].map(m => ({ ...m, store: stores[m.id] })),
+	)
+
+	function modeForRoute(path: string): ModeId {
+		if (path.startsWith('/play/scout-report')) return 'scout'
+		if (path.startsWith('/play/spot-the-baller')) return 'spotball'
+		return 'daily'
+	}
+	const selected = ref<ModeId>(modeForRoute(route.path))
+	const current = computed(() => modes.value.find(m => m.id === selected.value)!)
+
+	const spotTiers = ref<Record<string, number>>({})
+	const spotHistogram = computed(() =>
+		SPOT_TIER_LABELS.map((label, i) => ({ label, count: Number(spotTiers.value[String(i + 1)]) || 0 })),
+	)
 
 	onMounted(() => {
-		statsStore.loadStats()
-		scoutStatsStore.loadStats()
-		spotballStatsStore.loadStats()
+		for (const store of Object.values(stores)) store.loadStats()
 		playStreak.load()
+		spotTiers.value = readSavedObject<Record<string, number>>('footballdle-spot-tiers') ?? {}
 	})
 </script>
 
@@ -119,49 +174,43 @@
 				}
 			}
 		}
+	}
 
-		.mode-row {
-			background: var(--bg-secondary);
-			border: 1px solid var(--border);
-			border-radius: var(--global-border-radius);
-			padding: 0.9rem 1rem;
-		}
+	.mode-tabs {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 0.9rem;
+		display: grid;
+		gap: 0.2rem;
+		grid-template-columns: repeat(4, 1fr);
+		padding: 0.2rem;
 
-		.mode-row-top {
-			align-items: center;
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: 0.4rem;
-
-			h4 {
-				color: var(--text-primary);
-				font-family: var(--font-display);
-				font-size: 0.95rem;
-				font-weight: 700;
-				margin: 0;
-			}
-		}
-
-		.streak-tag {
-			align-items: center;
-			color: var(--tertiary-color);
-			display: inline-flex;
-			font-family: var(--font-mono);
-			font-size: 0.8rem;
-			font-weight: 700;
-			gap: 0.25rem;
-		}
-
-		.mode-row-stats {
+		button {
+			background: none;
+			border: 0;
+			border-radius: 0.7rem;
 			color: var(--text-secondary);
-			display: flex;
-			font-size: 0.82rem;
-			gap: 1.25rem;
+			cursor: pointer;
+			font: inherit;
+			font-size: 0.85rem;
+			font-weight: 700;
+			min-height: 40px;
 
-			strong {
-				color: var(--text-primary);
-				font-family: var(--font-mono);
+			&.active {
+				background: var(--primary-color);
+				color: var(--on-success);
 			}
 		}
+	}
+
+	.empty-mode {
+		align-items: center;
+		color: var(--text-secondary);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin: 0;
+		padding: 1.5rem 1rem;
+		text-align: center;
 	}
 </style>

@@ -130,7 +130,7 @@
 
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings"
+			v-if="modalsStore.showSettings && !$config.public.isApp"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -143,7 +143,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats"
+			v-if="modalsStore.showStats && !$config.public.isApp"
 			heading="Statistics"
 			accent="info"
 			variant="small"

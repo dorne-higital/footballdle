@@ -35,8 +35,8 @@
 	import ThemePickerSettings from './ThemePickerSettings.vue'
 	import MatchdayStats from './MatchdayStats.vue'
 
-	// The Matchday Settings and Stats sheets. Mounted on the hub and on every
-	// default-layout page, so the top bar's buttons work wherever they're shown.
+	// The Settings and Stats sheets. In the app they're mounted by both layouts, so the
+	// top bar's buttons open the same sheets on every screen.
 	const PitchCardModal = defineAsyncComponent(() => import('./PitchCardModal.vue'))
 
 	const modalsStore = useModalsStore()
