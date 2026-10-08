@@ -16,6 +16,11 @@ const WELCOME_HINTS_KEY = 'footballdle-welcome-hints'
 // exactly once, however it arrives (straight away, after Ask to Buy, or on a relaunch
 // after the app died mid-purchase)
 const HINT_TRANSACTIONS_KEY = 'footballdle-hint-transactions'
+// Packs credited straight from a purchase because RevenueCat's customer info hadn't caught
+// up yet (by product id). That customer info names transactions by RevenueCat's own id,
+// not Apple's, so when the transaction turns up later it settles one of these instead
+// of being credited a second time.
+const HINT_PREPAID_KEY = 'footballdle-hint-prepaid'
 
 function readHintBank(): number {
 	if (!import.meta.client) return 0
@@ -94,6 +99,21 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		}
 	}
 
+	function readPrepaid(): string[] {
+		try {
+			const saved = JSON.parse(localStorage.getItem(HINT_PREPAID_KEY) || '[]')
+			return Array.isArray(saved) ? saved.map(String) : []
+		} catch {
+			return []
+		}
+	}
+
+	function savePrepaid(ids: string[]) {
+		try {
+			localStorage.setItem(HINT_PREPAID_KEY, JSON.stringify(ids))
+		} catch {}
+	}
+
 	function saveCreditedTransactions(ids: Set<string>) {
 		try {
 			localStorage.setItem(HINT_TRANSACTIONS_KEY, JSON.stringify([...ids]))
@@ -113,13 +133,21 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			return 0
 		}
 		let added = 0
+		let changed = false
+		const prepaid = readPrepaid()
 		for (const t of hintTransactions) {
 			if (credited.has(t.transactionIdentifier)) continue
 			credited.add(t.transactionIdentifier)
-			added += counts.get(t.productIdentifier) ?? 0
+			changed = true
+			const early = prepaid.indexOf(t.productIdentifier)
+			if (early !== -1) prepaid.splice(early, 1)
+			else added += counts.get(t.productIdentifier) ?? 0
+		}
+		if (changed) {
+			saveCreditedTransactions(credited)
+			savePrepaid(prepaid)
 		}
 		if (added) {
-			saveCreditedTransactions(credited)
 			hintBank.value += added
 			saveHintBank()
 			message.value = added === 1 ? 'Hint added.' : `${added} hints added.`
@@ -128,17 +156,17 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	}
 
 	async function buyHints(pack: { product: PurchasesStoreProduct; count: number }) {
+		const before = hintBank.value
+		// Without a record yet, the customer info from this purchase only sets one up (with
+		// this transaction in it), so there's nothing still to settle later
+		const hadRecord = readCreditedTransactions() !== null
 		const result = await purchase(pack.product)
 		if (!result) return false
-		// Normally credited from the customer info that came back with the purchase; if
-		// that hasn't caught up yet, credit this transaction directly (once)
-		const id = result.transaction?.transactionIdentifier
-		const credited = readCreditedTransactions() ?? new Set<string>()
-		if (!id || !credited.has(id)) {
-			if (id) {
-				credited.add(id)
-				saveCreditedTransactions(credited)
-			}
+		// Normally credited from the customer info that came back with the purchase (inside
+		// purchase()). If that hadn't caught up yet, credit it now and remember it was paid
+		// ahead, so the transaction showing up later doesn't credit it again.
+		if (hintBank.value === before) {
+			if (hadRecord) savePrepaid([...readPrepaid(), pack.product.identifier])
 			hintBank.value += pack.count
 			saveHintBank()
 			message.value = pack.count === 1 ? 'Hint added.' : `${pack.count} hints added.`
