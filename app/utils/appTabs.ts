@@ -2,6 +2,7 @@
 export const APP_TABS = [
 	{ to: '/', label: 'Play', icon: 'solar:play-circle-linear', iconActive: 'solar:play-circle-bold' },
 	{ to: '/stats', label: 'Stats', icon: 'solar:chart-2-linear', iconActive: 'solar:chart-2-bold' },
+	{ to: '/cards', label: 'Cards', icon: 'solar:card-2-linear', iconActive: 'solar:card-2-bold' },
 	{ to: '/trophies', label: 'Trophies', icon: 'solar:cup-star-linear', iconActive: 'solar:cup-star-bold' },
 	{ to: '/settings', label: 'Settings', icon: 'solar:settings-linear', iconActive: 'solar:settings-bold' },
 ] as const

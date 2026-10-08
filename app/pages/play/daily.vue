@@ -192,6 +192,7 @@
 					>
 						{{ answerPlayer.club }} · {{ answerPlayer.position }} · {{ answerPlayer.nationality }}
 					</p>
+					<CardAward v-if="$config.public.isApp" />
 					<div class="share-preview">
 						<p class="share-header">
 							Footballdle ⚽ {{ gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr }} &nbsp;·&nbsp;
@@ -479,6 +480,7 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
+	import CardAward from '../../components/cards/CardAward.vue'
 	import { fullNameFor, getAnswerPlayerForDay } from '../../composables/useFootballers'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'

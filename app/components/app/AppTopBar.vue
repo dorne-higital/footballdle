@@ -6,9 +6,9 @@
 		></span>
 		<NuxtLink
 			v-else
-			to="/"
+			:to="backTo"
 			class="bar-btn"
-			aria-label="Back to Matchday"
+			:aria-label="backTo === '/cards' ? 'Back to Cards' : 'Back to Matchday'"
 			@click="haptics.select()"
 		>
 			<Icon
@@ -64,6 +64,7 @@
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
 		'/feedback': 'Feedback',
+		'/cards': 'Cards',
 		'/trophies': 'Trophies',
 		'/stats': 'Stats',
 		'/settings': 'Settings',
@@ -76,6 +77,8 @@
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
 		if (inChallenge.value) return 'Challenge'
+		if (path.startsWith('/cards/replay')) return 'Replay'
+		if (path.startsWith('/cards/')) return 'Cards'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
 
@@ -88,6 +91,9 @@
 	)
 	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
 	const isTab = computed(() => tabFor(route.path) !== null)
+
+	// Card screens go back to the Cards tab; everything else to Matchday
+	const backTo = computed(() => (route.path.startsWith('/cards/') ? '/cards' : '/'))
 
 	function open(action: () => unknown) {
 		haptics.select()

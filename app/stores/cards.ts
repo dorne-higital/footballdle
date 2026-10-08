@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import cardsData from '../data/cards.json'
-import { getPuzzleNumber } from '../composables/useFootballers'
+import { getDisplayNumber, getPuzzleNumber } from '../composables/useFootballers'
+import { getUKDateString } from '../utils/dateStreak'
 import { readSavedObject } from '../utils/storage'
 import { usePurchasesStore } from './purchases'
 
@@ -28,6 +29,8 @@ export interface OwnedCard {
 	id: string
 	season: string
 	puzzle: number
+	/** The public puzzle number (#…) shown on the card; none for a replay */
+	number?: number | null
 	guesses: number
 	/** Won in 2 guesses or fewer */
 	foil: boolean
@@ -59,11 +62,34 @@ export function cardForDay(dateStr: string): { season: string; id: string; card:
 	return null
 }
 
+/** The season to show: the one running today, else the next, else the latest */
+export function currentSeason(todayStr = getUKDateString()): { label: string; season: Season; state: 'upcoming' | 'live' | 'over' } | null {
+	const today = getPuzzleNumber(todayStr)
+	const all = Object.entries(seasons).sort((a, b) => a[1].startPuzzle - b[1].startPuzzle)
+	const live = all.find(([, s]) => today >= s.startPuzzle && today <= s.endPuzzle)
+	if (live) return { label: live[0], season: live[1], state: 'live' }
+	const next = all.find(([, s]) => today < s.startPuzzle)
+	if (next) return { label: next[0], season: next[1], state: 'upcoming' }
+	const last = all[all.length - 1]
+	return last ? { label: last[0], season: last[1], state: 'over' } : null
+}
+
+/** Cards whose every scheduled day has passed without being won: these can be replayed */
+export function lastDayOf(season: Season, id: string): number {
+	let last = -1
+	season.days.forEach((d, i) => {
+		if (d === id) last = season.startPuzzle + i
+	})
+	return last
+}
+
 export const useCardsStore = defineStore('cards', () => {
 	const { isApp } = useRuntimeConfig().public
 	const saved = ref<SavedCards>({ v: 1, cards: {}, sets: {}, played: {} })
 	/** What the latest win gave, for the result sheet */
 	const lastAward = ref<{ card: CardInfo; owned: OwnedCard; isNew: boolean; club: string; have: number; size: number; setHints: number } | null>(null)
+	/** The card today's loss missed, for the result sheet */
+	const lastMiss = ref<{ club: string } | null>(null)
 	let loaded = false
 
 	function load() {
@@ -106,6 +132,7 @@ export const useCardsStore = defineStore('cards', () => {
 		const existing = saved.value.cards[dateStr]
 		saved.value.played[dateStr] = true
 		if (!today || !won || existing || (alreadyPlayed && !existing)) {
+			if (today && !existing) lastMiss.value = { club: today.card.club }
 			persist()
 			if (today && existing) showAward(today, existing, false)
 			return
@@ -115,6 +142,7 @@ export const useCardsStore = defineStore('cards', () => {
 			id: today.id,
 			season: today.season,
 			puzzle: getPuzzleNumber(dateStr),
+			number: getDisplayNumber(dateStr),
 			guesses,
 			foil: guesses <= FOIL_MAX_GUESSES,
 		}
@@ -122,6 +150,22 @@ export const useCardsStore = defineStore('cards', () => {
 		const paid = payCompletedSet(today.season, today.card.club, dateStr)
 		persist()
 		showAward(today, owned, !before, paid)
+	}
+
+	/** A replay win: the missed card joins the album (never shiny) and may finish a set */
+	function collectReplay(id: string, guesses: number) {
+		if (!isApp) return
+		load()
+		const season = currentSeason()
+		const card = season?.season.cards[id]
+		if (!season || !card || ownedIds(season.label).has(id)) return
+		const today = getUKDateString()
+		const owned: OwnedCard = { id, season: season.label, puzzle: lastDayOf(season.season, id), guesses, foil: false, replay: true }
+		saved.value.cards[`replay:${today}`] = owned
+		const paid = payCompletedSet(season.label, card.club, today)
+		persist()
+		const { have, size } = clubProgress(season.label, card.club)
+		lastAward.value = { card, owned, isNew: true, club: card.club, have, size, setHints: paid }
 	}
 
 	function payCompletedSet(season: string, club: string, dateStr: string): number {
@@ -140,5 +184,13 @@ export const useCardsStore = defineStore('cards', () => {
 
 	const totalOwned = computed(() => new Set(Object.values(saved.value.cards).map(c => `${c.season}|${c.id}`)).size)
 
-	return { saved, lastAward, totalOwned, load, finishDaily, clubProgress, ownedIds, seasons }
+	function missedIds(label: string): Set<string> {
+		const season = seasons[label]
+		if (!season) return new Set()
+		const today = getPuzzleNumber(getUKDateString())
+		const owned = ownedIds(label)
+		return new Set(Object.keys(season.cards).filter(id => !owned.has(id) && lastDayOf(season, id) < today))
+	}
+
+	return { saved, lastAward, lastMiss, totalOwned, missedIds, collectReplay, load, finishDaily, clubProgress, ownedIds, seasons }
 })
