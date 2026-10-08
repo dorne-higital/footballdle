@@ -372,6 +372,11 @@ function similarity(a: Player, b: Player) {
 	return score
 }
 
+// Spot shows the answer's club, nation and position; a wrong option matching all three
+// can't be told apart, so it's never offered
+const looksIdentical = (a: Player, b: Player) =>
+	a.club === b.club && a.nationality === b.nationality && a.position === b.position
+
 function extendSpot(spot: Schedule['spot'], pool: Player[], roster: Player[], lastPuzzle: number) {
 	let added = 0
 	while (spot.start + spot.days.length - 1 < lastPuzzle) {
@@ -386,7 +391,7 @@ function extendSpot(spot: Schedule['spot'], pool: Player[], roster: Player[], la
 			targets.map((target, i) => {
 				const roundSeed = puzzle * 1000 + i
 				const shortlist = roster
-					.filter(p => p.known && p.name !== target.name)
+					.filter(p => p.known && p.name !== target.name && !looksIdentical(p, target))
 					.map(p => ({ p, score: similarity(target, p) }))
 					.sort((a, b) => b.score - a.score || b.p.pop - a.p.pop)
 					.slice(0, (SPOT_OPTIONS - 1) * 3)
@@ -461,6 +466,24 @@ async function main() {
 	const stillBad = schedule.daily.answers.filter(a => !DAILY_ANSWER.test(a[0]))
 	if (stillBad.length) throw new Error(`Daily answers must be 6-letter surnames: ${stillBad.map(a => a[0]).join(', ')}`)
 	const addedScout = extendAnswers(schedule.scout, known, lastPuzzle, NO_REPEAT_DAYS.scout, 20260102)
+	// Upcoming Spot days with a round that can't be told apart are planned again
+	const byName = new Map(roster.map(p => [p.name, p]))
+	const ambiguousDay = schedule.spot.days.findIndex(
+		(day, i) =>
+			schedule.spot.start + i > today &&
+			day.some(round => {
+				// The clues shown are the round's own snapshot of the answer
+				const [targetName, club, nationality, position] = round.target
+				return round.options.some(name => {
+					const option = byName.get(name)
+					return name !== targetName && !!option && looksIdentical(option, { club, nationality, position } as Player)
+				})
+			}),
+	)
+	if (ambiguousDay !== -1) {
+		const dropped = schedule.spot.days.splice(ambiguousDay).length
+		console.log(`Re-planning ${dropped} Spot days from #${schedule.spot.start + ambiguousDay} (a round had two identical-looking options)`)
+	}
 	const addedSpot = extendSpot(schedule.spot, known, roster, lastPuzzle)
 	console.log(`\nSchedule extended to puzzle #${lastPuzzle}: +${addedDaily} Daily, +${addedScout} Scout, +${addedSpot} Spot days`)
 
