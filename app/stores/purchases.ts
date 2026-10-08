@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, toRaw } from 'vue'
 import { Capacitor } from '@capacitor/core'
-import type { CustomerInfo, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
+import type { CustomerInfo, MakePurchaseResult, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
 import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
 
 // Cached so Pro perks still work offline / before RevenueCat answers
@@ -12,6 +12,10 @@ const HINT_BANK_KEY = 'footballdle-hint-bank'
 // Everyone starts the app with a few free hints, given once per install
 const WELCOME_HINTS = 3
 const WELCOME_HINTS_KEY = 'footballdle-welcome-hints'
+// App Store transactions already turned into banked hints, so each pack is credited
+// exactly once, however it arrives (straight away, after Ask to Buy, or on a relaunch
+// after the app died mid-purchase)
+const HINT_TRANSACTIONS_KEY = 'footballdle-hint-transactions'
 
 function readHintBank(): number {
 	if (!import.meta.client) return 0
@@ -81,14 +85,65 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		} catch {}
 	}
 
+	function readCreditedTransactions(): Set<string> | null {
+		try {
+			const saved = JSON.parse(localStorage.getItem(HINT_TRANSACTIONS_KEY) || 'null')
+			return Array.isArray(saved) ? new Set(saved.map(String)) : null
+		} catch {
+			return null
+		}
+	}
+
+	function saveCreditedTransactions(ids: Set<string>) {
+		try {
+			localStorage.setItem(HINT_TRANSACTIONS_KEY, JSON.stringify([...ids]))
+		} catch {}
+	}
+
+	/** Banks any hint pack Apple has charged for that hasn't been credited yet. Returns how
+	 *  many hints were added. */
+	function creditHintPurchases(info: CustomerInfo): number {
+		const counts = new Map<string, number>(HINT_PACKS.map(pack => [pack.id, pack.count]))
+		const hintTransactions = (info.nonSubscriptionTransactions ?? []).filter(t => counts.has(t.productIdentifier))
+		const credited = readCreditedTransactions()
+		if (!credited) {
+			// First run of this check: packs bought before it existed were already
+			// credited on purchase, so only record them
+			saveCreditedTransactions(new Set(hintTransactions.map(t => t.transactionIdentifier)))
+			return 0
+		}
+		let added = 0
+		for (const t of hintTransactions) {
+			if (credited.has(t.transactionIdentifier)) continue
+			credited.add(t.transactionIdentifier)
+			added += counts.get(t.productIdentifier) ?? 0
+		}
+		if (added) {
+			saveCreditedTransactions(credited)
+			hintBank.value += added
+			saveHintBank()
+			message.value = added === 1 ? 'Hint added.' : `${added} hints added.`
+		}
+		return added
+	}
+
 	async function buyHints(pack: { product: PurchasesStoreProduct; count: number }) {
-		const ok = await purchase(pack.product)
-		if (ok) {
+		const result = await purchase(pack.product)
+		if (!result) return false
+		// Normally credited from the customer info that came back with the purchase; if
+		// that hasn't caught up yet, credit this transaction directly (once)
+		const id = result.transaction?.transactionIdentifier
+		const credited = readCreditedTransactions() ?? new Set<string>()
+		if (!id || !credited.has(id)) {
+			if (id) {
+				credited.add(id)
+				saveCreditedTransactions(credited)
+			}
 			hintBank.value += pack.count
 			saveHintBank()
 			message.value = pack.count === 1 ? 'Hint added.' : `${pack.count} hints added.`
 		}
-		return ok
+		return true
 	}
 
 	/** Free hints, e.g. streak rewards, go into the same bank as bought ones */
@@ -118,6 +173,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		try {
 			localStorage.setItem(PRO_CACHE_KEY, isPro.value ? '1' : '0')
 		} catch {}
+		creditHintPurchases(info)
 	}
 
 	const STORE_UNREACHABLE = 'Couldn\'t reach the App Store.'
@@ -197,8 +253,8 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		}
 	}
 
-	async function purchase(product: PurchasesStoreProduct): Promise<boolean> {
-		if (busy.value) return false
+	async function purchase(product: PurchasesStoreProduct): Promise<MakePurchaseResult | null> {
+		if (busy.value) return null
 		busy.value = true
 		message.value = ''
 		try {
@@ -206,17 +262,22 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			// A plain copy: Vue's reactive Proxy doesn't survive the trip to native code,
 			// which then can't recognise the product
 			const plainProduct = JSON.parse(JSON.stringify(toRaw(product))) as PurchasesStoreProduct
-			const { customerInfo } = await Purchases.purchaseStoreProduct({ product: plainProduct })
-			applyCustomerInfo(customerInfo)
-			return true
+			const result = await Purchases.purchaseStoreProduct({ product: plainProduct })
+			applyCustomerInfo(result.customerInfo)
+			return result
 		} catch (error: any) {
 			const cancelled = error?.code === '1' || error?.userCancelled
-			if (!cancelled) {
+			// Ask to Buy (or a bank check): Apple charges later, once it's approved, and the
+			// customer info listener credits it then
+			const pending = error?.code === '20'
+			if (pending) {
+				message.value = "Waiting for approval. It'll be added as soon as it's approved."
+			} else if (!cancelled) {
 				const reason = error?.message || error?.errorMessage || ''
 				message.value = `Purchase failed${reason ? ` (${reason})` : ''}. Please try again.`
 				console.warn('Purchase failed:', error)
 			}
-			return false
+			return null
 		} finally {
 			busy.value = false
 		}
@@ -227,13 +288,13 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			message.value = 'Pro is unavailable right now. Please try again later.'
 			return false
 		}
-		const ok = await purchase(proProduct.value)
+		const ok = !!(await purchase(proProduct.value))
 		if (ok) message.value = 'Pro unlocked. Unlimited hints, cheers!'
 		return ok
 	}
 
 	async function tip(product: PurchasesStoreProduct) {
-		const ok = await purchase(product)
+		const ok = !!(await purchase(product))
 		if (ok) message.value = 'Thanks for the support! 🍻'
 		return ok
 	}
@@ -274,6 +335,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 
 		// Functions
 		init,
+		creditHintPurchases,
 		buyPro,
 		buyHints,
 		spendHint,
