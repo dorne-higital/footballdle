@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { useHaptics } from '../composables/useHaptics'
-import { getDisplayNumber, getPositionGroup, getPuzzleNumber } from '../composables/useFootballers'
+import { getDisplayNumber, getPositionGroup, getPuzzleNumber, type Footballer } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
 	getScoutAnswerPlayerForDay,
@@ -142,9 +142,10 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 				getConfederation(player.nationality) !== null &&
 				getConfederation(player.nationality) === getConfederation(answerPlayer.nationality)
 
-			const samePositionGroup =
-				player.position !== answerPlayer.position &&
-				getPositionGroup(player.position) === getPositionGroup(answerPlayer.position)
+			// The roster only has broad positions now (FPL's four), so a stray detailed one
+			// like 'Central Midfield' is shown and compared as its group
+			const guessPosition = getPositionGroup(player.position) ?? player.position
+			const answerPosition = getPositionGroup(answerPlayer.position) ?? answerPlayer.position
 
 			return {
 				name: player.name,
@@ -157,8 +158,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 					state: compareAttribute(player.nationality, answerPlayer.nationality, sameConfederation),
 				},
 				position: {
-					value: player.position,
-					state: compareAttribute(player.position, answerPlayer.position, samePositionGroup),
+					value: guessPosition,
+					state: compareAttribute(guessPosition, answerPosition, false),
 				},
 			}
 		})
@@ -290,7 +291,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// ============================================================================
 	const order = clueOrder(getPuzzleNumber(todayStr))
 
-	function clueFor(kind: ScoutClue, player: { name: string; nationality: string; position: string }): ScoutHint {
+	function clueFor(kind: ScoutClue, player: Footballer): ScoutHint {
 		const parts = player.name.trim().split(/\s+/)
 		const initial = (word = '') => `${word.charAt(0).toUpperCase()}…`
 		switch (kind) {
@@ -301,7 +302,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 			case 'nation':
 				return { label: 'Nation starts with', value: initial(player.nationality), icon: 'solar:flag-linear' }
 			case 'position':
-				return { label: 'Position', value: player.position, icon: 'solar:football-linear' }
+				return { label: 'Position', value: getPositionGroup(player.position) ?? player.position, icon: 'solar:football-linear' }
 			case 'first':
 				// One-name players (e.g. a Brazilian known by a single name) get the length instead
 				return parts.length > 1

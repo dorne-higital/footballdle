@@ -60,7 +60,7 @@
 					:class="{ used: n <= results.length }"
 				></span>
 			</div>
-			<p class="legend"><i class="amber"></i> Same continent or similar position</p>
+			<p class="legend"><i class="amber"></i> Same continent</p>
 		</div>
 		<p
 			v-else
