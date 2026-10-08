@@ -12,7 +12,7 @@ import {
 	normaliseKey,
 } from '../composables/useAllFootballers'
 import { getConfederation, type Confederation } from '../composables/useConfederations'
-import { getUKDateString } from '../utils/dateStreak'
+import { getUKDateString, nextUKMidnight } from '../utils/dateStreak'
 
 export type AttributeState = 'correct' | 'present' | 'absent'
 
@@ -99,13 +99,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	const countdown = ref('')
 	let countdownInterval: any
 
-	function getNextGameTime() {
-		const now = new Date()
-		const ukNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		ukNow.setHours(0, 0, 0, 0)
-		ukNow.setDate(ukNow.getDate() + 1)
-		return ukNow
-	}
+	// Was UK wall-clock time read as device time: wrong by the offset outside the UK
+	const getNextGameTime = () => nextUKMidnight()
 	const nextGameTime = getNextGameTime()
 
 	// ============================================================================

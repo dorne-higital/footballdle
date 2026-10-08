@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { nextUKMidnight } from '../utils/dateStreak'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getDisplayNumber } from '../composables/useFootballers'
@@ -13,15 +14,8 @@ export const useGameStore = defineStore('game', () => {
 		return now.toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
 	}
 
-	function getNextGameTime() {
-		// Get current time in UK
-		const now = new Date()
-		const ukNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		// Set to next midnight UK time
-		ukNow.setHours(0, 0, 0, 0)
-		ukNow.setDate(ukNow.getDate() + 1)
-		return ukNow
-	}
+	// Was UK wall-clock time read as device time: wrong by the offset outside the UK
+	const getNextGameTime = () => nextUKMidnight()
 
 	// ============================================================================
 	// REACTIVE STATE

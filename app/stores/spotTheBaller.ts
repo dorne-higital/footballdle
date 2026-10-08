@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 import { getSpotRoundsForDay, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
 import { getDisplayNumber } from '../composables/useFootballers'
 import { useModeStatsStore } from './modeStats'
-import { getUKDateString } from '../utils/dateStreak'
+import { getUKDateString, nextUKMidnight } from '../utils/dateStreak'
 import { useHaptics } from '../composables/useHaptics'
 
 export interface SpotRoundResult {
@@ -88,13 +88,8 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	const countdown = ref('')
 	let countdownInterval: ReturnType<typeof setInterval> | null = null
 
-	function getNextGameTime() {
-		const now = new Date()
-		const ukNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		ukNow.setHours(0, 0, 0, 0)
-		ukNow.setDate(ukNow.getDate() + 1)
-		return ukNow
-	}
+	// Was UK wall-clock time read as device time: wrong by the offset outside the UK
+	const getNextGameTime = () => nextUKMidnight()
 	const nextGameTime = getNextGameTime()
 
 	// ============================================================================

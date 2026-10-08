@@ -25,3 +25,12 @@ export function nextPuzzleTimeLabel(now = new Date()): string {
 	const ukLocal = at.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/London' })
 	return local === ukLocal ? 'midnight' : local
 }
+
+/** The real instant of the next UK midnight (new puzzles), on any device timezone.
+ *  Measured UK wall clock to UK wall clock, then added to the real now. */
+export function nextUKMidnight(now = new Date()): Date {
+	const uk = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
+	const next = new Date(uk)
+	next.setHours(24, 0, 0, 0)
+	return new Date(now.getTime() + (next.getTime() - uk.getTime()))
+}
