@@ -479,16 +479,19 @@ function planCardSeason(pool: Player[], startDate: string, epoch: string, seed: 
 	const members = chooseMembers(pool, days)
 	const id = (p: Player) => slug(`${p.club} ${p.name}`)
 
-	// Each member once; spare days are second chances for the best known, spread evenly
+	// Each member once; spare days are second chances, spread evenly from CARD_REPEAT_GAP
+	// days in (none can come sooner) and given to the best known card that fits that day
 	const spare = days - members.length
 	const fame = (p: Player) => (p.cost ?? 0) * 100000 + (p.minutes ?? 0)
-	const repeatPool = [...members].sort((a, b) => fame(b) - fame(a)).slice(0, spare)
-	const repeatSlots = new Set(Array.from({ length: spare }, (_, i) => Math.floor(((i + 1) * days) / (spare + 1))))
+	const byFame = [...members].sort((a, b) => fame(b) - fame(a))
+	const repeatFrom = Math.min(CARD_REPEAT_GAP, Math.floor(days / 2))
+	const repeatSlots = Array.from({ length: spare }, (_, i) => repeatFrom + Math.floor(((i + 1) * (days - repeatFrom)) / (spare + 1)))
 
 	// A day-by-day greedy fill with restarts on a new shuffle if it gets stuck
 	for (let attempt = 0; attempt < 400; attempt++) {
 		const firsts = seededShuffle(members, seed + attempt * 7919)
-		const repeats = [...repeatPool]
+		let repeatsLeft = spare
+		const repeated = new Set<string>()
 		const firstDay = new Map<string, number>()
 		const lastSurnameDay = new Map<string, number>()
 		const plan: Player[] = []
@@ -504,24 +507,31 @@ function planCardSeason(pool: Player[], startDate: string, epoch: string, seed: 
 				(!prev || prev.club !== p.club) &&
 				day - (lastSurnameDay.get(p.lastName) ?? -Infinity) >= CARD_SURNAME_GAP &&
 				run(p.lastName.length) < MAX_LENGTH_RUN
-			// Keep first appearances on pace: never let the remaining ones outnumber the
-			// days left for them
-			const firstsLeft = firsts.length
+			const canRepeat = (p: Player) =>
+				!repeated.has(id(p)) && day - (firstDay.get(id(p)) ?? Infinity) >= CARD_REPEAT_GAP && fits(p)
+			// Keep both on pace: never let the remaining firsts (or second chances) outnumber
+			// the days left for them; second chances due by today go first
 			const daysLeft = days - day
-			const mustFirst = firstsLeft >= daysLeft
-			let pick: Player | undefined
-			if (!mustFirst && repeatSlots.has(day)) {
-				const i = repeats.findIndex(p => day - (firstDay.get(id(p)) ?? Infinity) >= CARD_REPEAT_GAP && fits(p))
-				if (i !== -1) pick = repeats.splice(i, 1)[0]
+			const mustFirst = firsts.length >= daysLeft
+			const mustRepeat = repeatsLeft >= daysLeft
+			const repeatDue = repeatsLeft > repeatSlots.filter(d => d > day).length
+			const takeRepeat = () => {
+				const p = repeatsLeft > 0 ? byFame.find(canRepeat) : undefined
+				if (p) {
+					repeated.add(id(p))
+					repeatsLeft--
+				}
+				return p
 			}
-			if (!pick) {
+			const takeFirst = () => {
 				const i = firsts.findIndex(fits)
-				if (i !== -1) pick = firsts.splice(i, 1)[0]
+				return i === -1 ? undefined : firsts.splice(i, 1)[0]
 			}
-			if (!pick && !mustFirst) {
-				const i = repeats.findIndex(p => firstDay.has(id(p)) && fits(p))
-				if (i !== -1) pick = repeats.splice(i, 1)[0]
-			}
+			let pick: Player | undefined
+			if (mustRepeat) pick = takeRepeat()
+			else if (mustFirst) pick = takeFirst()
+			else if (repeatDue) pick = takeRepeat() ?? takeFirst()
+			else pick = takeFirst() ?? takeRepeat()
 			if (!pick) {
 				ok = false
 				break
