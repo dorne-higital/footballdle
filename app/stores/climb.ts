@@ -327,6 +327,28 @@ export const useClimbStore = defineStore('climb', () => {
 		saved.value.last = null
 	}
 
+	/** How far a save has got, to pick the newer of two copies */
+	function progressOf(x: Saved): number {
+		const played = x.season ? table(x.season).find(r => r.id === YOU)?.played ?? 0 : 0
+		return x.seasons * 1000 + played + (x.end ? 500 : 0)
+	}
+
+	/** A backup (iCloud): a season can't be merged, so whichever copy has got further wins */
+	function mergeBackup(raw: string | null | undefined): boolean {
+		if (!raw) return false
+		load()
+		let other: Saved
+		try {
+			other = JSON.parse(raw)
+		} catch {
+			return false
+		}
+		if (other?.v !== 1 || !other.club) return false
+		if (saved.value.club && progressOf(other) <= progressOf(saved.value)) return false
+		saved.value = { ...empty(), ...other }
+		return true
+	}
+
 	function clubOf(id: string): YourClub | Club | undefined {
 		if (id === YOU) return saved.value.club ?? undefined
 		return season.value ? clubById(season.value, id) : undefined
@@ -350,6 +372,7 @@ export const useClimbStore = defineStore('climb', () => {
 		finishMatch,
 		startNextSeason,
 		clubOf,
+		mergeBackup,
 		CL_TIER,
 	}
 })

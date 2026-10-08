@@ -1,9 +1,10 @@
 import { Capacitor, registerPlugin } from '@capacitor/core'
 import { watch } from 'vue'
 import { useCardsStore } from '../stores/cards'
+import { useClimbStore } from '../stores/climb'
 import { usePurchasesStore } from '../stores/purchases'
 
-// Backs up Player Cards and the hint bank to iCloud (ios/App/App/ICloudBackupPlugin.swift),
+// Backs up Player Cards, The Climb and the hint bank to iCloud (ios/App/App/ICloudBackupPlugin.swift),
 // so a deleted app or a new iPhone gets them back. Until the app has the iCloud key-value
 // capability the native store never syncs, so all of this quietly does nothing.
 interface ICloudBackupPlugin {
@@ -14,6 +15,7 @@ interface ICloudBackupPlugin {
 const ICloudBackup = registerPlugin<ICloudBackupPlugin>('ICloudBackup')
 
 const CARDS = 'cards'
+const CLIMB = 'climb'
 const HINTS = 'hints'
 const PUSH_DELAY_MS = 1500
 
@@ -21,7 +23,9 @@ export default defineNuxtPlugin(() => {
 	if (!Capacitor.isNativePlatform()) return
 	const cards = useCardsStore()
 	const purchases = usePurchasesStore()
+	const climb = useClimbStore()
 	cards.load()
+	climb.load()
 
 	async function read(key: string): Promise<string | undefined> {
 		try {
@@ -37,6 +41,7 @@ export default defineNuxtPlugin(() => {
 	// fresh install's welcome hints can't overwrite a bigger bank still downloading.
 	async function pull() {
 		cards.mergeBackup(await read(CARDS))
+		climb.mergeBackup(await read(CLIMB))
 		const hints = Number.parseInt((await read(HINTS)) ?? '', 10)
 		if (Number.isFinite(hints)) purchases.restoreHintBank(hints)
 	}
@@ -48,7 +53,7 @@ export default defineNuxtPlugin(() => {
 		clearTimeout(timer)
 		timer = setTimeout(() => {
 			for (const k of pending) {
-				const value = k === CARDS ? JSON.stringify(cards.saved) : String(purchases.hintBank)
+				const value = k === CARDS ? JSON.stringify(cards.saved) : k === CLIMB ? JSON.stringify(climb.saved) : String(purchases.hintBank)
 				ICloudBackup.set({ key: k, value }).catch(() => {})
 			}
 			pending.clear()
@@ -58,6 +63,7 @@ export default defineNuxtPlugin(() => {
 	pull().finally(() => {
 		push(CARDS)
 		watch(() => cards.saved, () => push(CARDS), { deep: true })
+		watch(() => climb.saved, () => push(CLIMB), { deep: true })
 		watch(() => purchases.hintBank, () => push(HINTS))
 	})
 	ICloudBackup.addListener('changed', () => {
