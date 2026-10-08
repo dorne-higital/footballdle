@@ -1,4 +1,5 @@
-import { roster } from './useFootballers'
+import { roster, getAnswerForDay } from './useFootballers'
+import { getUKDateString } from '../utils/dateStreak'
 
 const CHALLENGE_SHUFFLE_SEED = 20260102
 
@@ -27,10 +28,34 @@ const challengeFootballerSet = new Set(challengeFootballers)
 // Shuffled once at module load; games run through it in order
 const shuffledChallengeFootballers = seededShuffle(challengeAnswers, CHALLENGE_SHUFFLE_SEED)
 
+// On 5-letter Daily days the two modes share surnames, so Challenge never serves a
+// Daily answer from the last week or the next three (no free win, no spoilers)
+const DAILY_SKIP_BACK = 7
+const DAILY_SKIP_AHEAD = 21
+
+function nearbyDailyAnswers(): Set<string> {
+	const [d, m, y] = getUKDateString().split('/').map(Number)
+	const names = new Set<string>()
+	for (let offset = -DAILY_SKIP_BACK; offset <= DAILY_SKIP_AHEAD; offset++) {
+		const day = new Date(Date.UTC(y!, m! - 1, d! + offset))
+		const dateStr = `${String(day.getUTCDate()).padStart(2, '0')}/${String(day.getUTCMonth() + 1).padStart(2, '0')}/${day.getUTCFullYear()}`
+		names.add(getAnswerForDay(dateStr).toUpperCase())
+	}
+	return names
+}
+
+let skip: { date: string; names: Set<string> } | null = null
+
 export function getChallengeFootballerByIndex(idx: number): string {
+	const today = getUKDateString()
+	if (skip?.date !== today) skip = { date: today, names: nearbyDailyAnswers() }
 	const len = shuffledChallengeFootballers.length
-	const safeIdx = ((idx % len) + len) % len
-	return shuffledChallengeFootballers[safeIdx] || ''
+	// Step past excluded names at pick time, so everyone's order stays the same
+	for (let step = 0; step < len; step++) {
+		const name = shuffledChallengeFootballers[((((idx + step) % len) + len) % len)] || ''
+		if (!skip.names.has(name)) return name
+	}
+	return shuffledChallengeFootballers[((idx % len) + len) % len] || ''
 }
 
 export function useChallengeFootballers() {
