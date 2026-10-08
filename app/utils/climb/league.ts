@@ -234,10 +234,11 @@ export function table(s: Season): Row[] {
 }
 
 /** Where an opponent sits, which moves your target: top two, bottom, or in between. Before a
- *  ball is kicked the strongest clubs count as the top. */
+ *  ball is kicked everyone is level, so nobody counts as top or bottom. */
 export function standing(s: Season, id: string): 'top' | 'mid' | 'bottom' {
-	const played = table(s).some(r => r.played > 0)
-	const order = played ? table(s).map(r => r.id) : [...s.clubs].sort((a, b) => b.rating - a.rating).map(c => c.id)
+	const rows = table(s)
+	if (!rows.some(r => r.played > 0)) return 'mid'
+	const order = rows.map(r => r.id)
 	const i = order.indexOf(id)
 	if (s.tier === CL_TIER || i < 0) return 'mid'
 	if (i <= 1) return 'top'

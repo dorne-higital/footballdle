@@ -90,13 +90,21 @@
 
 <script setup lang="ts">
 	import { computed, useId } from 'vue'
-	import { clubStyle } from '../../utils/clubs'
+	import { clubStyle, type ClubStyle, type CrestPattern, type CrestShape } from '../../utils/clubs'
 
 	// A club's badge for Player Cards: our own design from its shape and colours (see
 	// utils/clubs.ts), never the real crest
-	const props = defineProps<{ club: string }>()
+	// `custom` draws a club that isn't in utils/clubs.ts (The Climb's made-up clubs and Your FC)
+	const props = defineProps<{
+		club: string
+		custom?: { code: string; bg: string; fg: string; alt: string; shape: CrestShape; pattern: CrestPattern }
+	}>()
 	const clipId = `crest-${useId()}`
-	const style = computed(() => clubStyle(props.club))
+	const style = computed<ClubStyle>(() =>
+		props.custom
+			? { code: props.custom.code, bg: props.custom.bg, fg: props.custom.fg, crest: { shape: props.custom.shape, pattern: props.custom.pattern, alt: props.custom.alt, trim: props.custom.alt } }
+			: clubStyle(props.club),
+	)
 	const crest = computed(() => style.value.crest!)
 	const busy = computed(() => crest.value.pattern === 'stripes' || crest.value.pattern === 'halves')
 

@@ -187,6 +187,26 @@
 		</div>
 
 		<NuxtLink
+			v-if="climbEnabled"
+			to="/climb"
+			class="challenge-row climb-row"
+		>
+			<Icon
+				name="solar:ranking-linear"
+				class="bg-icon challenge"
+				aria-hidden="true"
+			/>
+			<span class="mode-text">
+				<strong>The Climb</strong>
+				<span>{{ climbLine }}</span>
+			</span>
+			<Icon
+				name="solar:alt-arrow-right-linear"
+				size="1.2rem"
+			/>
+		</NuxtLink>
+		<NuxtLink
+			v-else
 			:to="challengeUnlocked ? { path: '/play/daily', query: { start: 'challenge' } } : '/play/daily'"
 			:class="['challenge-row', { locked: !challengeUnlocked }]"
 		>
@@ -245,6 +265,7 @@
 	import { getUKDateString } from '../../utils/dateStreak'
 	import { useShare } from '../../composables/useShare'
 	import { useHaptics } from '../../composables/useHaptics'
+	import { useClimbStore } from '../../stores/climb'
 
 	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
 
@@ -266,6 +287,17 @@
 
 	// Challenge opens once today's Daily is finished, win or lose
 	const challengeUnlocked = computed(() => ['won', 'lost'].includes(daily.value.status))
+
+	// The Climb (1.2) takes Challenge's place when switched on
+	const { climbEnabled } = useRuntimeConfig().public
+	const climb = useClimbStore()
+	onMounted(() => climbEnabled && climb.load())
+	const climbLine = computed(() => {
+		if (!climb.saved.club || !climb.season) return 'Start in the National League, climb to Europe'
+		const pos = climb.position
+		const ord = pos + (['th', 'st', 'nd', 'rd'][((pos % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][pos % 100] || 'th')
+		return `${climb.saved.club.name} · ${climb.tierName}, ${ord}`
+	})
 
 	const rings = computed(() => [
 		{ progress: daily.value.progress, color: RING_COLORS.daily },

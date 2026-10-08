@@ -111,6 +111,10 @@ describe('outcomes', () => {
 })
 
 describe('standing', () => {
+	it('is level for everyone before a ball is kicked', () => {
+		const s = newSeason(2, 1, 8)
+		for (const c of s.clubs) expect(standing(s, c.id)).toBe('mid')
+	})
 	it('top two are "top", last is "bottom"', () => {
 		const s = playSeason(2, 4, 0.5, 0.3)
 		const order = table(s).map(r => r.id)

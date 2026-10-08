@@ -8,7 +8,7 @@
 			v-else
 			:to="backTo"
 			class="bar-btn"
-			:aria-label="backTo === '/cards' ? 'Back to Cards' : 'Back to Matchday'"
+			:aria-label="backTo === '/cards' ? 'Back to Cards' : backTo === '/climb' ? 'Back to The Climb' : 'Back to Matchday'"
 			@click="haptics.select()"
 		>
 			<Icon
@@ -65,6 +65,8 @@
 		'/about': 'About',
 		'/feedback': 'Feedback',
 		'/cards': 'Cards',
+		'/climb': 'The Climb',
+		'/climb/match': 'The Climb',
 		'/trophies': 'Trophies',
 		'/stats': 'Stats',
 		'/settings': 'Settings',
@@ -87,13 +89,16 @@
 	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
 	// Games that use the shared hint bank
 	const takesHints = computed(
-		() => (route.path.startsWith('/play/daily') && !challengeStore.isActive) || route.path.startsWith('/play/scout-report'),
+		() =>
+			(route.path.startsWith('/play/daily') && !challengeStore.isActive) ||
+			route.path.startsWith('/play/scout-report') ||
+			route.path.startsWith('/climb/match'),
 	)
 	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
 	const isTab = computed(() => tabFor(route.path) !== null)
 
-	// Card screens go back to the Cards tab; everything else to Matchday
-	const backTo = computed(() => (route.path.startsWith('/cards/') ? '/cards' : '/'))
+	// Card screens go back to the Cards tab, a Climb match to the table; everything else to Matchday
+	const backTo = computed(() => (route.path.startsWith('/cards/') ? '/cards' : route.path.startsWith('/climb/') ? '/climb' : '/'))
 
 	function open(action: () => unknown) {
 		haptics.select()
