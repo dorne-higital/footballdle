@@ -187,7 +187,7 @@
 				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
 				<template v-else>
 					<p>
-						Unlimited hints on the daily game. One-off purchase, no subscription.
+						Unlimited hints in the Daily and Scout Report. One-off purchase, no subscription.
 						<template v-if="purchases.hintBank > 0">
 							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
 						</template>
@@ -245,6 +245,13 @@
 				>
 					Restore purchases
 				</button>
+				<!-- Right under the buttons that cause it (Pro, Restore, and the Tip Jar just below) -->
+				<p
+					v-if="purchases.message"
+					class="store-message"
+				>
+					{{ purchases.message }}
+				</p>
 			</div>
 
 			<div
@@ -269,13 +276,6 @@
 					</button>
 				</div>
 			</div>
-
-			<p
-				v-if="purchases.message"
-				class="store-message"
-			>
-				{{ purchases.message }}
-			</p>
 
 			<div class="setting-group support-group">
 				<label>Help</label>
