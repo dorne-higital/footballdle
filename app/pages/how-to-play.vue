@@ -62,9 +62,9 @@
 			<h2>An example</h2>
 			<p>
 				Say the answer is <strong>PALMER</strong>. If your first guess is <strong>ARCHER</strong>, you would
-				see: A grey, R yellow (it's in PALMER but not in position 2), C grey, H grey, E yellow (in PALMER but
-				not in position 5), R grey. Your second guess should place R and E in new positions while keeping any
-				green letters exactly where they are.
+				see: A yellow (it's in PALMER, but not first), R grey (PALMER has only one R, and it's already matched
+				at the end), C grey, H grey, E green and R green (both in exactly the right place). Your second guess
+				should keep E and R where they are and move the A somewhere new.
 			</p>
 
 			<h2>Rules</h2>
