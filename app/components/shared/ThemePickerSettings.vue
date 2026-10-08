@@ -461,7 +461,9 @@
 				color: var(--text-secondary);
 				cursor: pointer;
 				font-size: 0.85rem;
-				margin-top: 0.75rem;
+				margin-top: 0.25rem;
+				// A 44pt tap area around a small text link
+				min-height: 44px;
 				padding: 0;
 				text-decoration: underline;
 			}
@@ -724,6 +726,7 @@
 		font: inherit;
 		font-size: 0.8rem;
 		font-weight: 700;
+		min-height: 44px;
 		padding: 0.5rem 0;
 
 		&.active {

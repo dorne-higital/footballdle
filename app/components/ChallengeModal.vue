@@ -377,8 +377,8 @@
 				font-size: 0.8rem;
 				font-weight: 700;
 				gap: 0.3rem;
-				min-height: 40px;
-				padding: 0 0.7rem;
+				min-height: 44px;
+				padding: 0 0.8rem;
 			}
 		}
 

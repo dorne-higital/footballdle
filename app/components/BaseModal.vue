@@ -145,11 +145,11 @@
 					cursor: pointer;
 					display: inline-flex;
 					flex: none;
-					height: 32px;
+					height: 44px;
 					justify-content: center;
 					padding: 0;
 					transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-					width: 32px;
+					width: 44px;
 
 					&:hover {
 						background: color-mix(in srgb, var(--primary-color) 14%, var(--bg-secondary));
