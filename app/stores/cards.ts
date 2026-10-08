@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import cardsData from '../data/cards.json'
 import { getDisplayNumber, getPuzzleNumber } from '../composables/useFootballers'
 import { getUKDateString } from '../utils/dateStreak'
 import { readSavedObject } from '../utils/storage'
+import { isTrusted, serverChecks, trustedDate } from '../utils/trustedClock'
 import { usePurchasesStore } from './purchases'
 
 // Player Cards (iOS app): win a Daily in a card season to collect that player's card;
@@ -35,6 +36,9 @@ export interface OwnedCard {
 	/** Won in 2 guesses or fewer */
 	foil: boolean
 	replay?: boolean
+	/** Won on a day no server had vouched for yet (see utils/trustedClock); doesn't count
+	 *  towards a set until confirmed */
+	pending?: boolean
 }
 interface SavedCards {
 	v: 1
@@ -102,6 +106,8 @@ export const useCardsStore = defineStore('cards', () => {
 			sets: s?.sets && typeof s.sets === 'object' ? s.sets : {},
 			played: s?.played && typeof s.played === 'object' ? s.played : {},
 		}
+		// The saved trusted date may be old (offline since), so this only confirms
+		reconcile(false)
 	}
 
 	function persist() {
@@ -117,9 +123,17 @@ export const useCardsStore = defineStore('cards', () => {
 
 	function clubProgress(season: string, club: string) {
 		const set = seasons[season]?.clubs[club]
-		if (!set) return { have: 0, size: 0, hints: 0 }
+		if (!set) return { have: 0, size: 0, hints: 0, confirmed: 0 }
 		const owned = ownedIds(season)
-		return { have: set.members.filter(m => owned.has(m)).length, size: set.size, hints: set.hints }
+		const confirmed = new Set(
+			Object.values(saved.value.cards).filter(c => c.season === season && !c.pending).map(c => c.id),
+		)
+		return {
+			have: set.members.filter(m => owned.has(m)).length,
+			confirmed: set.members.filter(m => confirmed.has(m)).length,
+			size: set.size,
+			hints: set.hints,
+		}
 	}
 
 	/** A finished Daily: records it as played and, if won in a card season, gives the card
@@ -145,6 +159,7 @@ export const useCardsStore = defineStore('cards', () => {
 			number: getDisplayNumber(dateStr),
 			guesses,
 			foil: guesses <= FOIL_MAX_GUESSES,
+			...(isTrusted(dateStr) ? {} : { pending: true }),
 		}
 		saved.value.cards[dateStr] = owned
 		const paid = payCompletedSet(today.season, today.card.club, dateStr)
@@ -160,7 +175,15 @@ export const useCardsStore = defineStore('cards', () => {
 		const card = season?.season.cards[id]
 		if (!season || !card || ownedIds(season.label).has(id)) return
 		const today = getUKDateString()
-		const owned: OwnedCard = { id, season: season.label, puzzle: lastDayOf(season.season, id), guesses, foil: false, replay: true }
+		const owned: OwnedCard = {
+			id,
+			season: season.label,
+			puzzle: lastDayOf(season.season, id),
+			guesses,
+			foil: false,
+			replay: true,
+			...(isTrusted(today) ? {} : { pending: true }),
+		}
 		saved.value.cards[`replay:${today}`] = owned
 		const paid = payCompletedSet(season.label, card.club, today)
 		persist()
@@ -170,8 +193,8 @@ export const useCardsStore = defineStore('cards', () => {
 
 	function payCompletedSet(season: string, club: string, dateStr: string): number {
 		const key = `${season}|${club}`
-		const { have, size, hints } = clubProgress(season, club)
-		if (!size || have < size || saved.value.sets[key]) return 0
+		const { confirmed, size, hints } = clubProgress(season, club)
+		if (!size || confirmed < size || saved.value.sets[key]) return 0
 		saved.value.sets[key] = { completedOn: dateStr, hints }
 		usePurchasesStore().grantHints(hints)
 		return hints
@@ -181,6 +204,34 @@ export const useCardsStore = defineStore('cards', () => {
 		const { have, size } = clubProgress(today.season, today.card.club)
 		lastAward.value = { card: today.card, owned, isNew, club: today.card.club, have, size, setHints: paid }
 	}
+
+	// When a server vouches for a newer date: cards from days up to it are confirmed (and
+	// may finish a set); pending cards dated beyond a FRESH server date were won with the
+	// clock moved forward, so they go. A stale saved date never discards anything.
+	function reconcile(fresh = true) {
+		if (!trustedDate.value) return
+		load()
+		let changed = false
+		const touched = new Set<string>()
+		for (const [key, card] of Object.entries(saved.value.cards)) {
+			if (!card.pending) continue
+			const date = key.startsWith('replay:') ? key.slice(7) : key
+			if (isTrusted(date)) {
+				delete card.pending
+				touched.add(`${card.season}|${seasons[card.season]?.cards[card.id]?.club}`)
+				changed = true
+			} else if (fresh) {
+				delete saved.value.cards[key]
+				changed = true
+			}
+		}
+		for (const key of touched) {
+			const [season, club] = key.split('|')
+			if (season && club) payCompletedSet(season, club, trustedDate.value)
+		}
+		if (changed) persist()
+	}
+	if (import.meta.client) watch(serverChecks, () => reconcile(true))
 
 	const totalOwned = computed(() => new Set(Object.values(saved.value.cards).map(c => `${c.season}|${c.id}`)).size)
 

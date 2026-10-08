@@ -93,6 +93,7 @@
 		'footballdle-achievements-sent',
 		'footballdle-achievement-best',
 		'footballdle-cards',
+		'footballdle-replay',
 	]
 
 	const confirmReset = ref(false)
