@@ -41,11 +41,10 @@
 						:to="`/cards/${club.code.toLowerCase()}`"
 						:class="['club-row', { done: club.done }]"
 					>
-						<span
+						<ClubCrest
+							:club="club.name"
 							class="crest"
-							:style="{ background: club.bg, color: club.fg }"
-							>{{ club.code }}</span
-						>
+						/>
 						<span class="club-text">
 							<strong>{{ club.name }}</strong>
 							<span
@@ -72,6 +71,7 @@
 	import PlayerCard from '../../components/cards/PlayerCard.vue'
 	import { currentSeason, useCardsStore } from '../../stores/cards'
 	import { clubStyle } from '../../utils/clubs'
+	import ClubCrest from '../../components/cards/ClubCrest.vue'
 
 	// iOS app only: the website has no hint bank, so no cards
 	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
@@ -206,14 +206,7 @@
 	}
 
 	.crest {
-		align-items: center;
-		border-radius: 50%;
-		display: flex;
-		flex-shrink: 0;
-		font-size: 0.7rem;
-		font-weight: 800;
-		height: 40px;
-		justify-content: center;
+		height: 44px;
 		width: 40px;
 	}
 

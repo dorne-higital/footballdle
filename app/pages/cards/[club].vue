@@ -5,7 +5,10 @@
 				class="club-head"
 				:style="{ '--club-bg': style.bg, '--club-fg': style.fg }"
 			>
-				<span class="crest">{{ style.code }}</span>
+				<ClubCrest
+					:club="clubName"
+					class="crest"
+				/>
 				<div>
 					<h1>{{ clubName }}</h1>
 					<p>{{ have }} of {{ set.size }} cards · set worth {{ set.hints }} {{ set.hints === 1 ? 'hint' : 'hints' }}</p>
@@ -66,6 +69,7 @@
 	import { currentSeason, useCardsStore } from '../../stores/cards'
 	import { useReplayStore } from '../../stores/replay'
 	import { clubStyle } from '../../utils/clubs'
+	import ClubCrest from '../../components/cards/ClubCrest.vue'
 
 	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
 
@@ -137,17 +141,7 @@
 	}
 
 	.crest {
-		align-items: center;
-		background: var(--club-bg);
-		border-radius: 50%;
-		color: var(--club-fg);
-		display: flex;
-		flex-shrink: 0;
-		font-size: 0.8rem;
-		font-weight: 800;
-		height: 52px;
-		justify-content: center;
-		width: 52px;
+		height: 58px;
 	}
 
 	.done-note {

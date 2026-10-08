@@ -6,7 +6,13 @@
 		role="img"
 	>
 		<div class="band">
-			<span class="code">{{ style.code }}</span>
+			<span class="club-id">
+				<ClubCrest
+					:club="club"
+					class="band-crest"
+				/>
+				<span class="code">{{ card?.club ?? style.code }}</span>
+			</span>
 			<span
 				v-if="number"
 				class="number"
@@ -43,6 +49,7 @@
 	import { computed } from 'vue'
 	import type { CardInfo } from '../../stores/cards'
 	import { clubStyle } from '../../utils/clubs'
+	import ClubCrest from './ClubCrest.vue'
 
 	// One Player Card: club band, the surname as tiles, name and details. Without a card
 	// it's the face-down silhouette of one not collected yet (never named).
@@ -106,6 +113,35 @@
 
 		.hidden & {
 			opacity: 0.35;
+		}
+	}
+
+	.club-id {
+		align-items: center;
+		display: flex;
+		gap: 0.4rem;
+		min-width: 0;
+
+		.code {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.sm & {
+			gap: 0.25rem;
+
+			.code {
+				display: none;
+			}
+		}
+	}
+
+	.band-crest {
+		height: 1.7rem;
+
+		.sm & {
+			height: 1.15rem;
 		}
 	}
 
