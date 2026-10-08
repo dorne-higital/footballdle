@@ -270,10 +270,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	}
 
 	function loadChallengeState() {
+		// Unlocked by finishing today's Daily, so it locks again each new day
+		const daily = readSavedObject('footballdle-game')
+		isUnlocked.value = daily?.date === getUKDateString() && !!daily.gameOver
 		const state = readSavedObject('footballdle-challenge')
 		if (state) {
-			isUnlocked.value = state.isUnlocked || false
-			isActive.value = state.isActive || false
+			isActive.value = isUnlocked.value && !!state.isActive
 			currentAnswer.value = state.currentAnswer || ''
 			guesses.value = Array.isArray(state.guesses) ? state.guesses : []
 			currentGuess.value = state.currentGuess || ''

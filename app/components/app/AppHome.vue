@@ -245,7 +245,8 @@
 		timeZone: 'Europe/London',
 	})
 
-	const challengeUnlocked = ref(false)
+	// Challenge opens once today's Daily is finished, win or lose
+	const challengeUnlocked = computed(() => ['won', 'lost'].includes(daily.value.status))
 
 	const rings = computed(() => [
 		{ progress: daily.value.progress, color: RING_COLORS.daily },
@@ -339,11 +340,6 @@
 	onMounted(() => {
 		dailyStats.loadStats()
 		refresh()
-		try {
-			challengeUnlocked.value = !!JSON.parse(localStorage.getItem('footballdle-challenge') || '{}').isUnlocked
-		} catch {
-			challengeUnlocked.value = false
-		}
 		tick()
 		timer = setInterval(tick, 1000)
 	})
