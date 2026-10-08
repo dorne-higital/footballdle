@@ -60,7 +60,8 @@ export const fromSnapshot = ([name, club, nationality, position]: Snapshot): Foo
 // which read the frozen snapshot directly
 export const recentFrom = getPuzzleNumber(getUKDateString()) - 1
 
-// Daily: every current player whose surname is six letters is a valid guess, plus
+// Daily: every current player whose surname is five or six letters is a valid guess
+// (the game also checks it matches the day's answer length), plus
 // recent answers. Most famous first, so a shared surname maps to the better-known player.
 const dailyHistory = answerSchedule.daily.answers
 	.slice(Math.max(0, recentFrom - answerSchedule.daily.start))
@@ -76,7 +77,7 @@ export const footballers: Footballer[] = (() => {
 		}
 	}
 	for (const p of roster) {
-		if (p.lastName.length === 6) add({ name: p.lastName, club: p.club, nationality: p.nationality, position: p.position })
+		if (p.lastName.length === 5 || p.lastName.length === 6) add({ name: p.lastName, club: p.club, nationality: p.nationality, position: p.position })
 	}
 	for (const f of [...dailyHistory].reverse()) add(f)
 	return list
@@ -157,11 +158,12 @@ export function getDisplayNumber(dateStr: string): number | null {
 	return n >= 1 ? n : null
 }
 
-// A scheduled Daily answer must fit the six-letter board; anything else (a bad data
-// update) is ignored in favour of the fallback rather than making the day unwinnable
+// A scheduled Daily answer must be a 5 or 6 letter surname (the board sizes itself to
+// it); anything else (a bad data update) is ignored in favour of the fallback rather
+// than making the day unwinnable
 function dailyEntry(puzzle: number) {
 	const entry = answerSchedule.daily.answers[puzzle - answerSchedule.daily.start]
-	return entry && /^[a-z]{6}$/i.test(entry[0]) ? entry : undefined
+	return entry && /^[a-z]{5,6}$/i.test(entry[0]) ? entry : undefined
 }
 
 export function getAnswerForDay(dateStr: string): string {

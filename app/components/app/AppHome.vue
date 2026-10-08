@@ -225,7 +225,7 @@
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
-	import { getDisplayNumber } from '../../composables/useFootballers'
+	import { getDisplayNumber, getAnswerForDay } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
 	import { useShare } from '../../composables/useShare'
 	import { useHaptics } from '../../composables/useHaptics'
@@ -270,9 +270,11 @@
 		() => [daily.value, scout.value, spot.value].filter(m => m.status === 'won' || m.status === 'lost').length,
 	)
 
-	// Six preview tiles: the latest daily guess's colours, or empty tiles before the first guess
+	// Today's answer is 5 or 6 letters; the preview and copy say which
+	const wordLength = getAnswerForDay(getUKDateString()).length || 6
+	// Preview tiles: the latest daily guess's colours, or empty tiles before the first guess
 	const previewTiles = computed(() =>
-		dailyLastGuess.value.length ? dailyLastGuess.value : Array(6).fill('empty'),
+		dailyLastGuess.value.length ? dailyLastGuess.value : Array(wordLength).fill('empty'),
 	)
 
 	const dailyFinished = computed(() => daily.value.status === 'won' || daily.value.status === 'lost')
@@ -297,7 +299,7 @@
 	const heroSubtitle = computed(
 		() =>
 			({
-				new: 'Six letters. Six tries. One player a day.',
+				new: `${wordLength === 5 ? 'Five' : 'Six'} letters. Six tries. One player a day.`,
 				playing: `You're on ${daily.value.label.toLowerCase()}.`,
 				won: playerSummary.value,
 				lost: playerSummary.value,

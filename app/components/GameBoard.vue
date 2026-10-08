@@ -1,5 +1,8 @@
 <template>
-	<section :class="componentName">
+	<section
+		:class="componentName"
+		:style="{ '--cols': wordLength }"
+	>
 		<div
 			class="toast"
 			:class="{ visible: errorMessage }"
@@ -17,7 +20,7 @@
 			]"
 		>
 			<span
-				v-for="j in 6"
+				v-for="j in wordLength"
 				:key="j"
 				:class="[
 					'letter',
@@ -34,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch } from 'vue'
+	import { computed, ref, watch } from 'vue'
 
 	const props = withDefaults(
 		defineProps<{
@@ -53,6 +56,8 @@
 		},
 	)
 
+	// 5 or 6 tiles a row, from the day's answer
+	const wordLength = computed(() => props.answer.length || 6)
 	const shaking = ref(false)
 
 	watch(
@@ -116,9 +121,9 @@
 	}
 
 	function getRowGuess(i: number) {
-		if (i < props.guesses.length) return props.guesses[i] || ''.padEnd(6, ' ')
-		if (i === props.guesses.length && props.currentGuess) return props.currentGuess.padEnd(6, ' ')
-		return ''.padEnd(6, ' ')
+		if (i < props.guesses.length) return props.guesses[i] || ''.padEnd(wordLength.value, ' ')
+		if (i === props.guesses.length && props.currentGuess) return props.currentGuess.padEnd(wordLength.value, ' ')
+		return ''.padEnd(wordLength.value, ' ')
 	}
 
 	function shouldAnimate(guessIdx: number, charIdx: number) {

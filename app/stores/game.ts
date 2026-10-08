@@ -22,6 +22,8 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	const todayStr = getUKDateString() || ''
 	const answer = getAnswerForDay(todayStr) || ''
+	// Some days are 5-letter surnames, some 6; the board and input follow the answer
+	const wordLength = answer.length || 6
 	// The public number (#1 from the restart), for display and sharing only
 	const puzzleNumber = getDisplayNumber(todayStr)
 	const nextGameTime = getNextGameTime()
@@ -109,8 +111,8 @@ export const useGameStore = defineStore('game', () => {
 	function submitGuess(guess: string) {
 		if (gameOver.value) return // Prevent guess if game is over
 		guess = guess.trim().toUpperCase()
-		if (guess.length !== 6) {
-			setError('Must be 6 letters')
+		if (guess.length !== wordLength) {
+			setError(`Must be ${wordLength} letters`)
 			return
 		}
 		if (!isValidFootballer(guess)) {
@@ -142,7 +144,7 @@ export const useGameStore = defineStore('game', () => {
 			submitGuess(currentGuess.value)
 		} else if (key === 'BACKSPACE') {
 			currentGuess.value = currentGuess.value.slice(0, -1)
-		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < 6) {
+		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < wordLength) {
 			currentGuess.value += key
 		}
 	}
@@ -255,6 +257,7 @@ export const useGameStore = defineStore('game', () => {
 		// Computed
 		hints,
 		purchasedHints,
+		wordLength,
 		canPlay,
 		canPurchaseHint,
 

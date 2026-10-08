@@ -106,7 +106,7 @@ html.app-shell {
 		--tile: clamp(
 			36px,
 			min(
-				calc((100vw - 4.5rem) / 6),
+				calc((100vw - 4.5rem) / var(--cols, 6)),
 				calc((100dvh - 500px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6.6)
 			),
 			60px
