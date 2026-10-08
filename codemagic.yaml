@@ -22,6 +22,8 @@ workflows:
         # RevenueCat → Project settings → API keys → Apple public key (starts appl_).
         # Public by design, so fine to commit. Left unset = purchases switched off.
         REVENUECAT_APPLE_KEY: appl_kIyXcoPRcOBMxGjRbTWUoaLyLnT
+        # The Climb is switched on for builds of this branch (release/1.2) only
+        CLIMB: "1"
       node: 22
       # Pinned: the "latest" (26.6) machine pool was queueing for ages
       xcode: 26.5

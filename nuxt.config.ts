@@ -89,6 +89,8 @@ export default defineNuxtConfig({
 			adsenseSlotId: isApp ? '' : process.env.ADSENSE_SLOT_ID || '',
 			// RevenueCat *public* Apple key (appl_...), safe to ship in the app
 			revenuecatAppleKey: isApp ? process.env.REVENUECAT_APPLE_KEY || '' : '',
+			// The Climb (1.2, replacing Challenge in the app): hidden unless CLIMB=1 at build time
+			climbEnabled: isApp && process.env.CLIMB === '1',
 		},
 	},
 

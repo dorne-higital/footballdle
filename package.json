@@ -14,6 +14,7 @@
     "postinstall": "nuxt prepare",
     "clean": "rm -rf .nuxt .output node_modules/.cache",
     "type-check": "nuxt typecheck",
+    "test": "vitest run",
     "update-players": "node --experimental-strip-types --no-warnings scripts/update-players.ts",
     "build:app": "APP_TARGET=ios nuxt generate",
     "cap:sync": "yarn build:app && cap sync ios"
@@ -49,6 +50,7 @@
     "stylelint-config-standard-scss": "^15.0.1",
     "stylelint-config-standard-vue": "^1.0.0",
     "stylelint-order": "^6.0.4",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^3"
   }
 }
