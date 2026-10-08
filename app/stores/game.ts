@@ -4,6 +4,7 @@ import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getDisplayNumber } from '../composables/useFootballers'
 import { useHaptics } from '../composables/useHaptics'
+import { useCardsStore } from './cards'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -134,6 +135,8 @@ export const useGameStore = defineStore('game', () => {
 			gameOver.value = true
 			showGameOverModal.value = true
 		}
+		// Player Cards: before the save, so a card is never missed (loadState backfills too)
+		if (gameOver.value) useCardsStore().finishDaily(todayStr, isWin.value, guesses.value.length)
 		currentGuess.value = ''
 		saveState()
 	}
@@ -225,6 +228,8 @@ export const useGameStore = defineStore('game', () => {
 				purchasedHints.value = Number(savedPurchasedHints) || 0
 				showGameOverModal.value = false
 				showIntro.value = savedOver
+				// A finished game always has its card (no-op if it's already recorded)
+				if (gameOver.value) useCardsStore().finishDaily(todayStr, isWin.value, guesses.value.length)
 			}
 		}
 	}

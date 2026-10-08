@@ -92,6 +92,7 @@
 		'footballdle-hint-used',
 		'footballdle-achievements-sent',
 		'footballdle-achievement-best',
+		'footballdle-cards',
 	]
 
 	const confirmReset = ref(false)

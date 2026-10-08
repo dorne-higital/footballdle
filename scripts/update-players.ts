@@ -428,6 +428,8 @@ interface CardSeason {
 	endPuzzle: number
 	clubs: Record<string, { size: number; hints: number; members: string[] }>
 	cards: Record<string, CardInfo>
+	/** The card each day of the season gives, from startPuzzle on */
+	days: string[]
 }
 interface CardsFile {
 	v: 1
@@ -542,7 +544,7 @@ function planCardSeason(pool: Player[], startDate: string, epoch: string, seed: 
 			c.hints = setHints(c.size)
 		}
 		const label = `${start.getUTCFullYear() - (start.getUTCMonth() >= 5 ? 0 : 1)}-${String((start.getUTCMonth() >= 5 ? start.getUTCFullYear() + 1 : start.getUTCFullYear()) % 100).padStart(2, '0')}`
-		const season: CardSeason = { start: isoDate(start), end: isoDate(end), startPuzzle, endPuzzle, clubs, cards }
+		const season: CardSeason = { start: isoDate(start), end: isoDate(end), startPuzzle, endPuzzle, clubs, cards, days: plan.map(id) }
 		const answers: Snapshot[] = plan.map(p => [p.lastName, p.club, p.nationality, p.position, p.name])
 		console.log(`Card season ${label}: ${days} days from #${startPuzzle}, ${members.length} cards in ${Object.keys(clubs).length} sets, ${spare} second chances, ${Object.values(clubs).reduce((n, c) => n + c.hints, 0)} hints for every set (attempt ${attempt + 1})`)
 		return { label, season, answers }
