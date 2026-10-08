@@ -20,6 +20,8 @@ export interface ScoutHint {
 	label: string
 	value: string
 	icon: string
+	/** A word or two before the value in the compact hint row (e.g. "Nation A…") */
+	short?: string
 }
 
 type ScoutClue = 'continent' | 'nation' | 'position' | 'first' | 'surname'
@@ -300,16 +302,16 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 				return { label: 'Continent', value: confederation ? CONTINENTS[confederation] : 'Unknown', icon: 'solar:earth-linear' }
 			}
 			case 'nation':
-				return { label: 'Nation starts with', value: initial(player.nationality), icon: 'solar:flag-linear' }
+				return { label: 'Nation starts with', short: 'Nation', value: initial(player.nationality), icon: 'solar:flag-linear' }
 			case 'position':
 				return { label: 'Position', value: getPositionGroup(player.position) ?? player.position, icon: 'solar:football-linear' }
 			case 'first':
 				// One-name players (e.g. a Brazilian known by a single name) get the length instead
 				return parts.length > 1
-					? { label: 'First name starts with', value: initial(parts[0]), icon: 'solar:user-linear' }
-					: { label: 'Name length', value: `${parts[0]!.length} letters`, icon: 'solar:user-linear' }
+					? { label: 'First name starts with', short: 'First name', value: initial(parts[0]), icon: 'solar:user-linear' }
+					: { label: 'Name length', short: 'Name', value: `${parts[0]!.length} letters`, icon: 'solar:user-linear' }
 			case 'surname':
-				return { label: 'Surname starts with', value: initial(parts[parts.length - 1]), icon: 'solar:text-square-linear' }
+				return { label: 'Surname starts with', short: 'Surname', value: initial(parts[parts.length - 1]), icon: 'solar:text-square-linear' }
 		}
 	}
 
