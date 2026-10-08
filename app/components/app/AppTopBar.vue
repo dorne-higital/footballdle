@@ -21,7 +21,7 @@
 			v-if="!isTab"
 			class="bar-actions"
 		>
-			<HintPill v-if="isDaily" />
+			<HintPill v-if="takesHints" />
 			<button
 				type="button"
 				class="bar-btn"
@@ -82,7 +82,10 @@
 	const challengeStore = useChallengeStore()
 	// Challenge runs on the Daily route but has no hints, so it gets its own title
 	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
-	const isDaily = computed(() => route.path.startsWith('/play/daily') && !challengeStore.isActive)
+	// Games that use the shared hint bank
+	const takesHints = computed(
+		() => (route.path.startsWith('/play/daily') && !challengeStore.isActive) || route.path.startsWith('/play/scout-report'),
+	)
 	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
 	const isTab = computed(() => tabFor(route.path) !== null)
 

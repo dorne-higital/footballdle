@@ -113,8 +113,10 @@
 
 				<h2>Hints</h2>
 				<p>
-					Stuck on the Daily? A hint reveals a clue about the answer: club, nationality, position, then the
-					first and second letters. You start with 3 free hints and earn another for every 5 days of Daily
+					Stuck? A hint reveals a clue about the answer. In the Daily that's club, nationality, position, then
+					the first and second letters. In Scout Report it's the continent, the nation's first letter, the
+					position and the name's initials, in a different order each day. Up to five per game. You start
+					with 3 free hints and earn another for every 5 days of Daily
 					streak. Banked hints never expire. You can buy more hints, or get Pro once for unlimited hints. Both
 					are optional, and every game is free to play without them.
 				</p>

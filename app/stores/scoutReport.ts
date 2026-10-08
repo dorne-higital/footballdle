@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { useHaptics } from '../composables/useHaptics'
-import { getDisplayNumber, getPositionGroup } from '../composables/useFootballers'
+import { getDisplayNumber, getPositionGroup, getPuzzleNumber } from '../composables/useFootballers'
 import {
 	getScoutAnswerForDay,
 	getScoutAnswerPlayerForDay,
@@ -10,10 +10,48 @@ import {
 	getFullPlayerData,
 	searchFullFootballers,
 } from '../composables/useAllFootballers'
-import { getConfederation } from '../composables/useConfederations'
+import { getConfederation, type Confederation } from '../composables/useConfederations'
 import { getUKDateString } from '../utils/dateStreak'
 
 export type AttributeState = 'correct' | 'present' | 'absent'
+
+export interface ScoutHint {
+	label: string
+	value: string
+	icon: string
+}
+
+type ScoutClue = 'continent' | 'nation' | 'position' | 'first' | 'surname'
+const SCOUT_CLUES: ScoutClue[] = ['continent', 'nation', 'position', 'first', 'surname']
+// Named for the "Revealing the …" line while a hint can still be undone
+const CLUE_NAMES: Record<ScoutClue, string> = {
+	continent: 'continent',
+	nation: "nation's first letter",
+	position: 'position',
+	first: "first name's first letter",
+	surname: "surname's first letter",
+}
+const CONTINENTS: Record<Confederation, string> = {
+	UEFA: 'Europe',
+	CONMEBOL: 'South America',
+	CONCACAF: 'North America',
+	CAF: 'Africa',
+	AFC: 'Asia',
+	OFC: 'Oceania',
+}
+const MAX_HINTS = 5
+
+// Same order for everyone on a given day, but a different order each day
+function clueOrder(puzzle: number): ScoutClue[] {
+	const result = [...SCOUT_CLUES]
+	let s = (puzzle * 2654435761) >>> 0
+	for (let i = result.length - 1; i > 0; i--) {
+		s = (Math.imul(s, 1664525) + 1013904223) >>> 0
+		const j = s % (i + 1)
+		;[result[i], result[j]] = [result[j]!, result[i]!]
+	}
+	return result
+}
 
 export interface AttributeChip {
 	value: string
@@ -43,6 +81,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	const showGameOverModal = ref(false)
 	const showIntro = ref(true)
 	const errorMessage = ref('')
+	const purchasedHints = ref(0)
 	const haptics = useHaptics()
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -216,6 +255,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 			guesses: guesses.value,
 			gameOver: gameOver.value,
 			isWin: isWin.value,
+			purchasedHints: purchasedHints.value,
 		}
 		localStorage.setItem('footballdle-scout', JSON.stringify(state))
 	}
@@ -223,11 +263,12 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	function loadState() {
 		const saved = readSavedObject('footballdle-scout')
 		if (saved) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin } = saved
+			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedHints } = saved
 			if (date === todayStr) {
 				guesses.value = Array.isArray(savedGuesses) ? savedGuesses : []
 				gameOver.value = !!savedOver
 				isWin.value = !!savedWin
+				purchasedHints.value = Math.min(MAX_HINTS, Number(savedHints) || 0)
 				showGameOverModal.value = false
 				showIntro.value = savedOver
 			}
@@ -238,9 +279,55 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		guesses.value = []
 		gameOver.value = false
 		isWin.value = false
+		purchasedHints.value = 0
 		showGameOverModal.value = false
 		showIntro.value = true
 		saveState()
+	}
+
+	// ============================================================================
+	// HINTS (iOS app; same bank as the Daily)
+	// ============================================================================
+	const order = clueOrder(getPuzzleNumber(todayStr))
+
+	function clueFor(kind: ScoutClue, player: { name: string; nationality: string; position: string }): ScoutHint {
+		const parts = player.name.trim().split(/\s+/)
+		const initial = (word = '') => `${word.charAt(0).toUpperCase()}…`
+		switch (kind) {
+			case 'continent': {
+				const confederation = getConfederation(player.nationality)
+				return { label: 'Continent', value: confederation ? CONTINENTS[confederation] : 'Unknown', icon: 'solar:earth-linear' }
+			}
+			case 'nation':
+				return { label: 'Nation starts with', value: initial(player.nationality), icon: 'solar:flag-linear' }
+			case 'position':
+				return { label: 'Position', value: player.position, icon: 'solar:football-linear' }
+			case 'first':
+				// One-name players (e.g. a Brazilian known by a single name) get the length instead
+				return parts.length > 1
+					? { label: 'First name starts with', value: initial(parts[0]), icon: 'solar:user-linear' }
+					: { label: 'Name length', value: `${parts[0]!.length} letters`, icon: 'solar:user-linear' }
+			case 'surname':
+				return { label: 'Surname starts with', value: initial(parts[parts.length - 1]), icon: 'solar:text-square-linear' }
+		}
+	}
+
+	const hints = computed<ScoutHint[]>(() => {
+		const player = getScoutAnswerPlayerForDay(todayStr)
+		if (!player) return []
+		return order.slice(0, purchasedHints.value).map(kind => clueFor(kind, player))
+	})
+
+	const canPurchaseHint = computed(() => !gameOver.value && purchasedHints.value < MAX_HINTS)
+	const nextClueName = computed(() => CLUE_NAMES[order[purchasedHints.value]!] ?? 'next clue')
+
+	function unlockHint() {
+		if (!canPurchaseHint.value) return
+		purchasedHints.value++
+		haptics.tap()
+		saveState()
+		// Remembered for the "Tactical Review" Game Center achievement
+		localStorage.setItem('footballdle-hint-used', '1')
 	}
 
 	// Player-name suggestions for the autocomplete input, filtered by query,
@@ -262,6 +349,11 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		todayStr,
 		puzzleNumber,
 		errorMessage,
+		purchasedHints,
+		hints,
+		canPurchaseHint,
+		nextClueName,
+		unlockHint,
 
 		// Computed
 		canPlay,

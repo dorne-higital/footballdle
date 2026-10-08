@@ -36,6 +36,13 @@
 					@guess="handleGuess"
 				/>
 			</PlaySurfaceFrame>
+			<AppHintBar
+				v-if="$config.public.isApp && !scoutStore.gameOver"
+				:hints="scoutStore.hints"
+				:can-purchase="scoutStore.canPurchaseHint"
+				:next-clue-name="scoutStore.nextClueName"
+				@unlock="scoutStore.unlockHint()"
+			/>
 			<FullTimePanel
 				v-if="$config.public.isApp && scoutStore.gameOver"
 				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
@@ -184,6 +191,7 @@
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
+	import AppHintBar from '../../components/app/AppHintBar.vue'
 	import { useShare } from '../../composables/useShare'
 
 	definePageMeta({ layout: 'play' })

@@ -9,8 +9,9 @@
 		<template #body>
 			<div class="hint-shop">
 				<p class="hint-shop-intro">
-					Each hint reveals the next clue in the Daily: club, nationality, position, then the first and second
-					letters of the surname. Up to five per game; hints you don't use stay in the bank.
+					Each hint reveals a clue in the Daily (club, nationality, position, then the surname's first letters)
+					or Scout Report (continent, nation, position and name initials, in a different order each day). Up
+					to five per game; hints you don't use stay in the bank.
 				</p>
 				<p
 					v-if="purchases.isPro || purchases.hintBank > 0"
@@ -29,7 +30,7 @@
 
 				<!-- Where hints can be used right now -->
 				<button
-					v-if="onDailyGame && (purchases.isPro || purchases.hintBank > 0)"
+					v-if="onHintGame && (purchases.isPro || purchases.hintBank > 0)"
 					type="button"
 					class="hint-use"
 					@click="useHint"
@@ -41,22 +42,22 @@
 					Use a hint now
 				</button>
 				<p
-					v-else-if="!onDailyGame && dailyDone"
+					v-else-if="!onHintGame && !nextGame"
 					class="hint-shop-context"
 				>
-					Today's Daily is done. Hints stay in your bank for tomorrow's.
+					Today's Daily and Scout Report are done. Hints stay in your bank for tomorrow.
 				</p>
 				<div
-					v-else-if="!onDailyGame"
+					v-else-if="!onHintGame && nextGame"
 					class="hint-shop-context"
 				>
-					<span>Hints are used in the Daily.</span>
+					<span>Hints are used in the Daily and Scout Report.</span>
 					<button
 						type="button"
 						class="hint-link"
-						@click="playDaily"
+						@click="playNext"
 					>
-						Play the Daily
+						Play {{ nextGame.label }}
 						<Icon
 							name="solar:alt-arrow-right-linear"
 							size="0.95rem"
@@ -125,6 +126,7 @@
 	import { computed, defineAsyncComponent, watch } from 'vue'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameStore } from '../../stores/game'
+	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useChallengeStore } from '../../stores/challenge'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 
@@ -140,6 +142,8 @@
 	const progress = useTodayProgress()
 	const route = useRoute()
 
+	const scoutStore = useScoutReportStore()
+
 	const onDailyGame = computed(
 		() =>
 			route.path.startsWith('/play/daily') &&
@@ -148,7 +152,18 @@
 			!challengeStore.isActive &&
 			gameStore.canPurchaseHint,
 	)
-	const dailyDone = computed(() => ['won', 'lost'].includes(progress.daily.value.status))
+	const onScoutGame = computed(
+		() => route.path.startsWith('/play/scout-report') && !scoutStore.showIntro && scoutStore.canPurchaseHint,
+	)
+	// Mid-game somewhere a hint can be used right now
+	const onHintGame = computed(() => onDailyGame.value || onScoutGame.value)
+	// Where to send someone who isn't in a game: the first hint game they haven't finished
+	const nextGame = computed(() => {
+		const done = (status: string) => ['won', 'lost'].includes(status)
+		if (!done(progress.daily.value.status)) return { label: 'the Daily', path: '/play/daily' }
+		if (!done(progress.scout.value.status)) return { label: 'Scout Report', path: '/play/scout-report' }
+		return null
+	})
 
 	watch(open, (isOpen) => {
 		if (isOpen) {
@@ -161,23 +176,27 @@
 	})
 
 	function useHint() {
-		if (purchases.spendHint()) gameStore.unlockHint()
+		if (purchases.spendHint()) {
+			if (onScoutGame.value) scoutStore.unlockHint()
+			else gameStore.unlockHint()
+		}
 		open.value = false
 	}
 
 	async function buyHints(pack: (typeof purchases.hintPacks)[number]) {
 		if (!(await purchases.buyHints(pack))) return
-		// Mid-Daily: reveal one straight away. Anywhere else the hints just bank.
-		if (onDailyGame.value) useHint()
+		// Mid-game: reveal one straight away. Anywhere else the hints just bank.
+		if (onHintGame.value) useHint()
 	}
 
 	async function buyPro() {
-		if ((await purchases.buyPro()) && onDailyGame.value) useHint()
+		if ((await purchases.buyPro()) && onHintGame.value) useHint()
 	}
 
-	function playDaily() {
+	function playNext() {
+		if (!nextGame.value) return
 		open.value = false
-		navigateTo({ path: '/play/daily', query: { start: 'play' } })
+		navigateTo({ path: nextGame.value.path, query: { start: 'play' } })
 	}
 </script>
 
