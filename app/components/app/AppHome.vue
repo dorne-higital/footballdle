@@ -211,12 +211,15 @@
 			<span>New puzzles in</span>
 			<strong>{{ countdown }}</strong>
 		</div>
+
+		<WelcomeSheet />
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { computed, onMounted, onUnmounted, ref } from 'vue'
 	import ActivityRings from './ActivityRings.vue'
+	import WelcomeSheet from './WelcomeSheet.vue'
 	import HintPill from './HintPill.vue'
 	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
