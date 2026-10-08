@@ -56,3 +56,17 @@ Generated from `app/utils/achievements.ts`. Every Achievement ID must exist in A
 | `fd_matchday_streak_30` | Ever-Present | 25 | no | Finish a game 30 days in a row. | You kept a 30-day Matchday streak. | NEW - create |
 | `fd_matchday_streak_100` | Testimonial Year | 35 | no | Finish a game 100 days in a row. | You kept a 100-day Matchday streak. | NEW - create |
 | `fd_all_games_500` | Season Ticket Renewed | 25 | no | Play 500 games across every mode. | You played 500 games across every mode. | NEW - create |
+
+## Player Cards (1.1)
+
+| ID | Title | Points | Before earned | After earned |
+|---|---|---|---|---|
+| `fd_cards_first` | Debut Card | 5 | Win a Daily to collect your first Player Card. | You collected your first Player Card. |
+| `fd_cards_25` | Swapsies | 5 | Collect 25 Player Cards. | You collected 25 Player Cards. |
+| `fd_cards_60` | Sticker Book | 5 | Collect 60 Player Cards. | You collected 60 Player Cards. |
+| `fd_cards_foil_10` | Shiny Collection | 5 | Collect 10 shiny cards (won in two guesses or fewer). | You collected 10 shiny cards. |
+| `fd_cards_set_1` | Full Squad | 5 | Complete a club's set of cards. | You completed a club's set. |
+| `fd_cards_set_5` | Five Clubs Deep | 5 | Complete 5 club sets. | You completed 5 club sets. |
+| `fd_cards_all_season` | Got, Got, Need… Got! | 5 | Complete all 20 club sets in a season. | You completed every club set in a season. |
+
+Total with these: 57 achievements, 995 of the 1,000-point limit.

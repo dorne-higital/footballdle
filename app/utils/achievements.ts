@@ -15,6 +15,12 @@ export interface AchievementContext {
 	hintUsed: boolean
 	/** Best Matchday streak (days in a row with any game finished) */
 	matchdayBest: number
+	/** Player Cards (confirmed ones only): distinct cards, shiny ones, finished club sets,
+	 *  and whether any season's 20 sets were all finished */
+	cardsCollected: number
+	foilCards: number
+	setsCompleted: number
+	seasonComplete: boolean
 }
 
 export interface Achievement {
@@ -91,6 +97,15 @@ export const ACHIEVEMENTS: Achievement[] = [
 	{ id: 'fd_all_treble', title: 'The Treble', goal: 'Win the Daily, Scout Report and Spot the Baller on the same day.', earned: 'You won all three daily modes on the same day.', points: 25, progress: c => ([c.daily, c.scout, c.spot].every(s => wonToday(s, c.today)) ? 100 : 0) },
 	{ id: 'fd_all_games_100', title: 'Season Ticket Holder', goal: 'Play 100 games across every mode.', earned: 'You played 100 games across every mode.', points: 15, progress: c => towards(allModes(c).reduce((n, s) => n + s.gamesPlayed, 0), 100) },
 	{ id: 'fd_all_wins_250', title: 'Hall of Famer', goal: 'Win 250 games across every mode.', earned: 'You won 250 games across every mode.', points: 35, progress: c => towards(allModes(c).reduce((n, s) => n + s.wins, 0), 250) },
+	// Player Cards
+	{ id: 'fd_cards_first', title: 'Debut Card', goal: 'Win a Daily to collect your first Player Card.', earned: 'You collected your first Player Card.', points: 5, progress: c => towards(c.cardsCollected, 1) },
+	{ id: 'fd_cards_25', title: 'Swapsies', goal: 'Collect 25 Player Cards.', earned: 'You collected 25 Player Cards.', points: 5, progress: c => towards(c.cardsCollected, 25) },
+	{ id: 'fd_cards_60', title: 'Sticker Book', goal: 'Collect 60 Player Cards.', earned: 'You collected 60 Player Cards.', points: 5, progress: c => towards(c.cardsCollected, 60) },
+	{ id: 'fd_cards_foil_10', title: 'Shiny Collection', goal: 'Collect 10 shiny cards (won in two guesses or fewer).', earned: 'You collected 10 shiny cards.', points: 5, progress: c => towards(c.foilCards, 10) },
+	{ id: 'fd_cards_set_1', title: 'Full Squad', goal: "Complete a club's set of cards.", earned: "You completed a club's set.", points: 5, progress: c => towards(c.setsCompleted, 1) },
+	{ id: 'fd_cards_set_5', title: 'Five Clubs Deep', goal: 'Complete 5 club sets.', earned: 'You completed 5 club sets.', points: 5, progress: c => towards(c.setsCompleted, 5) },
+	{ id: 'fd_cards_all_season', title: 'Got, Got, Need… Got!', goal: "Complete all 20 club sets in a season.", earned: 'You completed every club set in a season.', points: 5, progress: c => (c.seasonComplete ? 100 : towards(c.setsCompleted, 20)) },
+
 	{ id: 'fd_hint_first', title: 'Tactical Review', goal: 'Use a hint in the Daily.', earned: 'You used a hint in the Daily.', points: 5, progress: c => (c.hintUsed ? 100 : 0) },
 	{ id: 'fd_matchday_streak_7', title: 'Turned Up', goal: 'Finish a game 7 days in a row (your Matchday streak).', earned: 'You kept a 7-day Matchday streak.', points: 15, progress: c => towards(c.matchdayBest, 7) },
 	{ id: 'fd_matchday_streak_30', title: 'Ever-Present', goal: 'Finish a game 30 days in a row.', earned: 'You kept a 30-day Matchday streak.', points: 25, progress: c => towards(c.matchdayBest, 30) },
@@ -105,6 +120,7 @@ export const ACHIEVEMENT_GROUPS = [
 	{ title: 'Spot the Baller', prefix: 'fd_spot_' },
 	{ title: 'Challenge', prefix: 'fd_challenge_' },
 	{ title: 'Matchday streak', prefix: 'fd_matchday_' },
+	{ title: 'Player Cards', prefix: 'fd_cards_' },
 	{ title: 'Across every mode', prefix: 'fd_all_', extra: ['fd_hint_first'] },
 ].map(group => ({
 	title: group.title,
@@ -118,12 +134,28 @@ export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' 
 	let spotPerfectGames = 0
 	let hintUsed = false
 	let matchdayBest = 0
+	let cardsCollected = 0
+	let foilCards = 0
+	let setsCompleted = 0
+	let seasonComplete = false
+	try {
+		// Read straight from storage (like the others) so this stays light enough for startup
+		const cards = JSON.parse(localStorage.getItem('footballdle-cards') || 'null')
+		const confirmed = Object.values<any>(cards?.cards ?? {}).filter(c => !c?.pending)
+		cardsCollected = new Set(confirmed.map(c => `${c.season}|${c.id}`)).size
+		foilCards = new Set(confirmed.filter(c => c.foil).map(c => `${c.season}|${c.id}`)).size
+		const sets = Object.keys(cards?.sets ?? {})
+		setsCompleted = sets.length
+		const perSeason = new Map<string, number>()
+		for (const key of sets) perSeason.set(key.split('|')[0]!, (perSeason.get(key.split('|')[0]!) ?? 0) + 1)
+		seasonComplete = [...perSeason.values()].some(n => n >= 20)
+	} catch {}
 	try {
 		spotPerfectGames = JSON.parse(localStorage.getItem('footballdle-spot-tiers') || 'null')?.['6'] ?? 0
 		hintUsed = localStorage.getItem('footballdle-hint-used') === '1'
 		matchdayBest = JSON.parse(localStorage.getItem('footballdle-play-streak') || 'null')?.best ?? 0
 	} catch {}
-	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed, matchdayBest }
+	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed, matchdayBest, cardsCollected, foilCards, setsCompleted, seasonComplete }
 }
 
 const BEST_KEY = 'footballdle-achievement-best'
