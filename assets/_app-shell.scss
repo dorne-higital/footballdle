@@ -99,9 +99,28 @@ html.app-shell {
 	// ---------------------------------------------------------------------------
 	// Board and keyboard
 	// ---------------------------------------------------------------------------
+	// Square tiles sized from whichever runs out first, width or height, so big phones
+	// get a bigger board instead of a dead band above the keyboard (about 500pt is
+	// the top bar, hint button, clue chips and keyboard)
+	.game-board {
+		--tile: clamp(
+			36px,
+			min(
+				calc((100vw - 4.5rem) / 6),
+				calc((100dvh - 500px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6.6)
+			),
+			60px
+		);
+	}
+
 	.game-board .guess-row .letter {
 		border-width: 1.5px;
+		font-size: calc(var(--tile) * 0.5);
 		font-weight: 400;
+		height: var(--tile);
+		line-height: var(--tile);
+		margin: 0 3px;
+		width: var(--tile);
 
 		&.correct {
 			box-shadow: 0 0 20px rgb(47 224 138 / 45%);
