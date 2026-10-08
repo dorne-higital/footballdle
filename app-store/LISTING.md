@@ -38,10 +38,10 @@ football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,scout,club,leag
 ```
 Think you know your footballers? Prove it, every single day.
 
-Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their six-letter surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
+Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
 
 THREE MODES, ONE MATCHDAY
-• Daily: guess the hidden six-letter surname in six tries. Stuck? Use a hint to reveal the player's club, nationality and position, then the first letters of their surname.
+• Daily: guess the hidden five- or six-letter surname in six tries. Win it to collect that player's card, and finish a club's set for free hints. Stuck? Use a hint to reveal the player's club, nationality and position, then the first letters of their surname.
 • Scout Report: name any player from the top flight and get scouting clues on club, nation and position after every guess.
 • Spot the Baller: ten rapid-fire rounds against the clock. Pick the right name before time runs out.
 • Challenge mode: finish the Daily to unlock unlimited games against a 45-second clock.
@@ -109,3 +109,13 @@ The files in each `raw/` folder work as alternates.
 "Premier League" and "Wordle" are registered trademarks, and Apple rejects listings that use
 someone else's trademark in the name, subtitle or keywords (guideline 5.2). The copy above
 describes the game without them. Keep it that way in the metadata.
+
+## What's New in 1.1 (draft)
+
+Player Cards are here! Win the Daily to collect that day's player, fill every club's set, and earn free hints for each one you finish. Missed one? Replay it from the new Cards tab.
+
+Also new:
+• Daily surnames can now be five or six letters
+• Hints in Scout Report
+• A light theme, plus a single Stats screen for every mode
+• Bigger Daily tiles, a welcome tour for new players, and lots of fixes

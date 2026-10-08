@@ -250,7 +250,7 @@
 							name: 'What is Footballdle?',
 							acceptedAnswer: {
 								'@type': 'Answer',
-								text: 'Footballdle is a free daily Premier League footballer guessing game. Each day, guess a hidden 6-letter footballer surname in up to 6 tries. A new player is revealed every day at midnight UK time.',
+								text: 'Footballdle is a free daily Premier League footballer guessing game. Each day, guess a hidden footballer surname in up to 6 tries. A new player is revealed every day at midnight UK time.',
 							},
 						},
 					],

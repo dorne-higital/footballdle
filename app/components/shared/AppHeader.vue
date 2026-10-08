@@ -36,7 +36,7 @@
 
 			<div class="wordmark-text">
 				<h1 class="heading">FOOT<span>BALL</span>DLE</h1>
-				<p class="tagline">Six letters. Six tries. One kick-off a day.</p>
+				<p class="tagline">Five or six letters. Six tries. One kick-off a day.</p>
 			</div>
 		</NuxtLink>
 

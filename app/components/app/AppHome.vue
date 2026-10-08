@@ -59,7 +59,22 @@
 			/>
 			<div class="hero-top">
 				<span class="eyebrow">Daily{{ puzzleNumber ? ` · #${puzzleNumber}` : '' }}</span>
-				<span class="league">Premier League</span>
+				<!-- In a Player Cards season the Daily is also a card (its club stays a secret) -->
+				<span
+					v-if="cardDay"
+					:class="['card-chip', { got: cardWon }]"
+				>
+					<Icon
+						name="solar:card-2-bold"
+						size="0.85rem"
+					/>
+					{{ cardWon ? 'Card collected' : dailyFinished ? 'Card missed' : 'Win today\'s card' }}
+				</span>
+				<span
+					v-else
+					class="league"
+					>Premier League</span
+				>
 			</div>
 			<!-- Full time: the answer spelled out, green if you got it, red if not -->
 			<div
@@ -220,6 +235,7 @@
 	import { computed, onMounted, onUnmounted, ref } from 'vue'
 	import ActivityRings from './ActivityRings.vue'
 	import WelcomeSheet from './WelcomeSheet.vue'
+	import { cardForDay } from '../../stores/cards'
 	import HintPill from './HintPill.vue'
 	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
@@ -269,6 +285,10 @@
 	const completedCount = computed(
 		() => [daily.value, scout.value, spot.value].filter(m => m.status === 'won' || m.status === 'lost').length,
 	)
+
+	// Player Cards: is today a card day, and has its card been won?
+	const cardDay = !!cardForDay(getUKDateString())
+	const cardWon = computed(() => cardDay && daily.value.status === 'won')
 
 	// Today's answer is 5 or 6 letters; the preview and copy say which
 	const wordLength = getAnswerForDay(getUKDateString()).length || 6
@@ -839,6 +859,23 @@
 
 		.mode-card {
 			min-height: 5.5rem;
+		}
+	}
+
+	.card-chip {
+		align-items: center;
+		background: color-mix(in srgb, var(--tertiary-color) 16%, transparent);
+		border-radius: 999px;
+		color: var(--tertiary-color);
+		display: inline-flex;
+		font-size: 0.72rem;
+		font-weight: 800;
+		gap: 0.3rem;
+		padding: 0.25rem 0.6rem;
+
+		&.got {
+			background: color-mix(in srgb, var(--color-success) 16%, transparent);
+			color: var(--color-success);
 		}
 	}
 </style>

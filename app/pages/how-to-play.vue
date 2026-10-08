@@ -27,7 +27,7 @@
 
 			<h2>The basics</h2>
 			<p>
-				Every answer is a six-letter surname belonging to a player in the current {{ season }} Premier League
+				Every answer is a five- or six-letter surname belonging to a player in the current {{ season }} Premier League
 				season. Type any valid Premier League surname and press Enter to submit your guess. After each guess
 				the tiles change colour to show how close you are — use the clues to narrow down the answer.
 			</p>
@@ -69,7 +69,7 @@
 
 			<h2>Rules</h2>
 			<ul>
-				<li>Each guess must be a real Premier League player from the {{ season }} season with a six-letter surname.</li>
+				<li>Each guess must be a real Premier League player from the {{ season }} season whose surname is as long as that day's board (five or six letters).</li>
 				<li>You have a maximum of six guesses per day.</li>
 				<li>Letters can appear more than once in an answer — yellow/green hints reflect each instance separately.</li>
 				<li>The on-screen keyboard tracks which letters you have used: green, yellow, and grey keys update after every guess.</li>
@@ -121,6 +121,14 @@
 					are optional, and every game is free to play without them.
 				</p>
 
+				<h2>Player Cards</h2>
+				<p>
+					Win the Daily to collect that player's card. Win it in two guesses or fewer and it's a shiny one.
+					Cards are grouped by club: finish a club's set and you win free hints, up to 4 for the biggest
+					squads. Missed a card? Once its day has passed you can replay it from the Cards tab for a hint, one a
+					day after you've finished the Daily.
+				</p>
+
 				<h2>Streaks</h2>
 				<p>
 					Each mode keeps its own winning streak. Your Matchday streak on the home screen counts the days in a
@@ -140,7 +148,7 @@
 			<h2>The player I'm thinking of isn't in the game</h2>
 			<p>
 				The player list covers active {{ season }} Premier League squads and is updated regularly. Players must
-				have exactly six letters in their surname to qualify for the daily puzzle. If you think someone is
+				have a five- or six-letter surname to qualify for the daily puzzle. If you think someone is
 				missing,
 				<NuxtLink to="/feedback?topic=missing-player" title="Report a missing player">let us know</NuxtLink> and we'll add them.
 			</p>

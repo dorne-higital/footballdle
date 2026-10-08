@@ -524,7 +524,7 @@
 			{
 				name: 'description',
 				content:
-					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
+					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
 			},
 			{
 				name: 'keywords',
@@ -538,7 +538,7 @@
 			{
 				property: 'og:description',
 				content:
-					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new challenge every day.',
+					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new challenge every day.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
 			{ property: 'og:url', content: 'https://footballdle.co.uk/play/daily' },
@@ -560,7 +560,7 @@
 					name: 'Footballdle',
 					url: 'https://footballdle.co.uk/play/daily',
 					description:
-						'Daily Premier League football wordle. Guess the 6-letter footballer surname in 6 tries.',
+						'Daily Premier League football wordle. Guess the footballer surname in 6 tries.',
 					applicationCategory: 'Game',
 					genre: 'Puzzle',
 					gamePlatform: 'Web Browser',

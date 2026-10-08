@@ -1,7 +1,7 @@
 {
 	"name": "Footballdle",
 	"short_name": "Footballdle",
-	"description": "Daily Premier League footballer guessing game. Guess the 6-letter surname in 6 tries.",
+	"description": "Daily Premier League footballer guessing game. Guess the surname in 6 tries.",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#f8fafc",

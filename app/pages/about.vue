@@ -21,7 +21,7 @@
 			<h1>About Footballdle</h1>
 			<p>
 				Footballdle is a free daily word game for Premier League football fans. Each day a hidden
-				six-letter player surname is chosen from the current {{ season }} Premier League season — your job is
+				five- or six-letter player surname is chosen from the current {{ season }} Premier League season — your job is
 				to guess it in up to six tries. After every guess the tiles change colour to reveal how close you
 				are, Wordle-style.
 				<template v-if="$config.public.isApp">
@@ -50,7 +50,7 @@
 
 			<h2>How it works</h2>
 			<p>
-				Every puzzle uses a six-letter Premier League surname drawn from the active {{ season }} season squad
+				Every puzzle uses a five- or six-letter Premier League surname drawn from the active {{ season }} season squad
 				list. Answers are selected in a shuffled order so the same name doesn't come up twice until the
 				full list has been exhausted. The puzzle resets at midnight UK time — everyone around the world
 				gets the same answer on the same day, which is part of what makes it fun to compare scores.
@@ -82,7 +82,7 @@
 			</p>
 			<p>
 				Player data isn't perfect. Surnames get transliterated differently across sources, some squad
-				lists lag behind transfer deadlines, and occasionally a six-letter name slips through that most
+				lists lag behind transfer deadlines, and occasionally a name slips through that most
 				fans wouldn't recognise. If you spot an error or a missing player, please get in touch — the list
 				genuinely gets better every time someone flags something.
 			</p>

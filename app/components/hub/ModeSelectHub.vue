@@ -19,7 +19,7 @@
 					<ModeStreakBadge :streak="dailyStreak" />
 				</div>
 				<h3>Daily</h3>
-				<p class="caption">Guess the hidden 6-letter Premier League surname. One puzzle a day.</p>
+				<p class="caption">Guess the hidden Premier League surname in six tries. One puzzle a day.</p>
 				<span class="mode-cta">
 					Play now
 					<Icon
