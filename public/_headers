@@ -1,0 +1,6 @@
+# The iOS app (capacitor://localhost) reads this for its update prompt, and reads the
+# response's Date header as a trusted clock for Player Cards
+/app-config.json
+  Access-Control-Allow-Origin: *
+  Access-Control-Expose-Headers: Date
+  Cache-Control: no-cache
