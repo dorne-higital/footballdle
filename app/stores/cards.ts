@@ -233,6 +233,46 @@ export const useCardsStore = defineStore('cards', () => {
 	}
 	if (import.meta.client) watch(serverChecks, () => reconcile(true))
 
+	/** Folds in a backup (iCloud): cards, finished sets and played days are only ever added,
+	 *  so merging from any device in any order ends up the same. Returns true if anything new. */
+	function mergeBackup(raw: string | null | undefined): boolean {
+		if (!raw) return false
+		load()
+		let other: Partial<SavedCards>
+		try {
+			other = JSON.parse(raw)
+		} catch {
+			return false
+		}
+		let changed = false
+		for (const [key, card] of Object.entries(other.cards ?? {})) {
+			const mine = saved.value.cards[key]
+			if (!card?.id || !seasons[card.season]) continue
+			if (!mine) {
+				saved.value.cards[key] = { ...card }
+				changed = true
+			} else if (mine.pending && !card.pending) {
+				delete mine.pending
+				changed = true
+			}
+		}
+		for (const [key, set] of Object.entries(other.sets ?? {})) {
+			// Already paid on the device that finished it, and the hint bank comes back separately
+			if (!saved.value.sets[key] && set) {
+				saved.value.sets[key] = { ...set }
+				changed = true
+			}
+		}
+		for (const date of Object.keys(other.played ?? {})) {
+			if (!saved.value.played[date]) {
+				saved.value.played[date] = true
+				changed = true
+			}
+		}
+		if (changed) persist()
+		return changed
+	}
+
 	const totalOwned = computed(() => new Set(Object.values(saved.value.cards).map(c => `${c.season}|${c.id}`)).size)
 
 	function missedIds(label: string): Set<string> {
@@ -243,5 +283,5 @@ export const useCardsStore = defineStore('cards', () => {
 		return new Set(Object.keys(season.cards).filter(id => !owned.has(id) && lastDayOf(season, id) < today))
 	}
 
-	return { saved, lastAward, lastMiss, totalOwned, missedIds, collectReplay, load, finishDaily, clubProgress, ownedIds, seasons }
+	return { saved, lastAward, lastMiss, totalOwned, missedIds, collectReplay, load, finishDaily, mergeBackup, clubProgress, ownedIds, seasons }
 })

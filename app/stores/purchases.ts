@@ -147,6 +147,13 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	}
 
 	/** Free hints, e.g. streak rewards, go into the same bank as bought ones */
+	/** A backed-up bank (iCloud) on a fresh install or new phone: never lower what's here */
+	function restoreHintBank(count: number) {
+		if (!Number.isFinite(count) || count <= hintBank.value) return
+		hintBank.value = Math.floor(count)
+		saveHintBank()
+	}
+
 	function grantHints(count: number) {
 		hintBank.value += count
 		saveHintBank()
@@ -325,6 +332,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		message,
 		rewardNote,
 		hintBank,
+		restoreHintBank,
 		loadError,
 		loadingProducts,
 
