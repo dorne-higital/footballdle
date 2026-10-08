@@ -1,4 +1,1781 @@
 {
 	"v": 1,
-	"seasons": {}
+	"seasons": {
+		"2026-27": {
+			"start": "2026-10-08",
+			"end": "2027-05-31",
+			"startPuzzle": 281,
+			"endPuzzle": 516,
+			"clubs": {
+				"Chelsea": {
+					"size": 10,
+					"hints": 4,
+					"members": [
+						"chelsea-joao-pedro",
+						"chelsea-morgan-rogers",
+						"chelsea-cole-palmer",
+						"chelsea-reece-james",
+						"chelsea-malo-gusto",
+						"chelsea-wesley-fofana",
+						"chelsea-romeo-lavia",
+						"chelsea-valentin-barco",
+						"chelsea-shumaira-mheuka",
+						"chelsea-geovany-quenda"
+					]
+				},
+				"Brighton & Hove Albion": {
+					"size": 8,
+					"hints": 3,
+					"members": [
+						"brighton-hove-albion-pascal-gross",
+						"brighton-hove-albion-diego-gomez",
+						"brighton-hove-albion-yasin-ayari",
+						"brighton-hove-albion-chema-andres",
+						"brighton-hove-albion-promise-david",
+						"brighton-hove-albion-ibrahim-osman",
+						"brighton-hove-albion-matt-o-riley",
+						"brighton-hove-albion-nehemiah-oriola"
+					]
+				},
+				"Manchester City": {
+					"size": 5,
+					"hints": 2,
+					"members": [
+						"manchester-city-rayan-cherki",
+						"manchester-city-marc-guehi",
+						"manchester-city-iliman-ndiaye",
+						"manchester-city-phil-foden",
+						"manchester-city-rico-lewis"
+					]
+				},
+				"Manchester United": {
+					"size": 11,
+					"hints": 4,
+					"members": [
+						"manchester-united-bryan-mbeumo",
+						"manchester-united-matheus-cunha",
+						"manchester-united-diogo-dalot",
+						"manchester-united-kobbie-mainoo",
+						"manchester-united-benjamin-sesko",
+						"manchester-united-patrick-dorgu",
+						"manchester-united-andrey-santos",
+						"manchester-united-ayden-heaven",
+						"manchester-united-harry-amass",
+						"manchester-united-shea-lacey",
+						"manchester-united-mason-mount"
+					]
+				},
+				"Newcastle": {
+					"size": 14,
+					"hints": 4,
+					"members": [
+						"newcastle-yoane-wissa",
+						"newcastle-harvey-barnes",
+						"newcastle-anthony-elanga",
+						"newcastle-malick-thiaw",
+						"newcastle-sven-botman",
+						"newcastle-amar-dedic",
+						"newcastle-lewis-miley",
+						"newcastle-sean-steur",
+						"newcastle-jacob-murphy",
+						"newcastle-jacob-ramsey",
+						"newcastle-william-osula",
+						"newcastle-bazoumana-toure",
+						"newcastle-fabian-schar",
+						"newcastle-aladji-bamba"
+					]
+				},
+				"Arsenal": {
+					"size": 7,
+					"hints": 3,
+					"members": [
+						"arsenal-ezri-konsa",
+						"arsenal-christos-tzolis",
+						"arsenal-ben-white",
+						"arsenal-jurrien-timber",
+						"arsenal-mikel-merino",
+						"arsenal-william-saliba",
+						"arsenal-max-dowman"
+					]
+				},
+				"Tottenham": {
+					"size": 8,
+					"hints": 3,
+					"members": [
+						"tottenham-antonin-kinsky",
+						"tottenham-pedro-porro",
+						"tottenham-sandro-tonali",
+						"tottenham-marcos-senesi",
+						"tottenham-mohammed-kudus",
+						"tottenham-destiny-udogie",
+						"tottenham-ben-davies",
+						"tottenham-mykhailo-mudryk"
+					]
+				},
+				"Hull City": {
+					"size": 11,
+					"hints": 4,
+					"members": [
+						"hull-city-semi-ajayi",
+						"hull-city-regan-slater",
+						"hull-city-nobel-mendy",
+						"hull-city-lewie-coyle",
+						"hull-city-elliot-stroud",
+						"hull-city-matty-crooks",
+						"hull-city-sorba-thomas",
+						"hull-city-hidemasa-morita",
+						"hull-city-paddy-mcnair",
+						"hull-city-kieran-dowell",
+						"hull-city-charlie-hughes"
+					]
+				},
+				"Brentford": {
+					"size": 7,
+					"hints": 3,
+					"members": [
+						"brentford-kevin-schade",
+						"brentford-michael-kayode",
+						"brentford-vitaly-janelt",
+						"brentford-aaron-hickey",
+						"brentford-mathias-jensen",
+						"brentford-callum-wilson",
+						"brentford-rico-henry"
+					]
+				},
+				"Liverpool": {
+					"size": 8,
+					"hints": 3,
+					"members": [
+						"liverpool-cody-gakpo",
+						"liverpool-florian-wirtz",
+						"liverpool-milos-kerkez",
+						"liverpool-ronald-araujo",
+						"liverpool-victor-munoz",
+						"liverpool-trey-nyoni",
+						"liverpool-lewis-koumas",
+						"liverpool-jayden-danns"
+					]
+				},
+				"Coventry City": {
+					"size": 9,
+					"hints": 4,
+					"members": [
+						"coventry-city-bobby-thomas",
+						"coventry-city-matt-grimes",
+						"coventry-city-aurele-amenda",
+						"coventry-city-frank-onyeka",
+						"coventry-city-jack-rudoni",
+						"coventry-city-ellis-simms",
+						"coventry-city-stephen-mfuni",
+						"coventry-city-gustavo-hamer",
+						"coventry-city-sidiki-cherif"
+					]
+				},
+				"Everton": {
+					"size": 5,
+					"hints": 2,
+					"members": [
+						"everton-thierno-barry",
+						"everton-tyrique-george",
+						"everton-james-garner",
+						"everton-michael-keane",
+						"everton-jake-o-brien"
+					]
+				},
+				"Ipswich Town": {
+					"size": 11,
+					"hints": 4,
+					"members": [
+						"ipswich-town-leif-davis",
+						"ipswich-town-dara-o-shea",
+						"ipswich-town-julio-enciso",
+						"ipswich-town-sasa-lukic",
+						"ipswich-town-abdul-fatawu",
+						"ipswich-town-sindre-egeli",
+						"ipswich-town-daizen-maeda",
+						"ipswich-town-chuba-akpom",
+						"ipswich-town-jack-clarke",
+						"ipswich-town-marcelino-nunez",
+						"ipswich-town-cedric-kipre"
+					]
+				},
+				"Leeds United": {
+					"size": 13,
+					"hints": 4,
+					"members": [
+						"leeds-united-jayden-bogle",
+						"leeds-united-anton-stach",
+						"leeds-united-james-justin",
+						"leeds-united-ethan-ampadu",
+						"leeds-united-noah-okafor",
+						"leeds-united-nico-elvedi",
+						"leeds-united-harry-wilson",
+						"leeds-united-ao-tanaka",
+						"leeds-united-jaka-bijol",
+						"leeds-united-joe-rodon",
+						"leeds-united-lukas-nmecha",
+						"leeds-united-daniel-james",
+						"leeds-united-jean-bahoya"
+					]
+				},
+				"Bournemouth": {
+					"size": 6,
+					"hints": 2,
+					"members": [
+						"bournemouth-alex-scott",
+						"bournemouth-antonio-silva",
+						"bournemouth-adam-smith",
+						"bournemouth-tyler-adams",
+						"bournemouth-david-brooks",
+						"bournemouth-julio-soler"
+					]
+				},
+				"Nottingham Forest": {
+					"size": 6,
+					"hints": 2,
+					"members": [
+						"nottingham-forest-daniel-munoz",
+						"nottingham-forest-liam-delap",
+						"nottingham-forest-igor-jesus",
+						"nottingham-forest-james-mcatee",
+						"nottingham-forest-dan-ndoye",
+						"nottingham-forest-ryan-yates"
+					]
+				},
+				"Sunderland": {
+					"size": 13,
+					"hints": 4,
+					"members": [
+						"sunderland-granit-xhaka",
+						"sunderland-robin-roefs",
+						"sunderland-noah-sadiki",
+						"sunderland-nilson-angulo",
+						"sunderland-luke-o-nien",
+						"sunderland-kevin-danso",
+						"sunderland-wilson-isidor",
+						"sunderland-juan-angulo",
+						"sunderland-malick-fofana",
+						"sunderland-chemsdine-talbi",
+						"sunderland-habib-diarra",
+						"sunderland-jules-ahoka",
+						"sunderland-romaine-mundle"
+					]
+				},
+				"Crystal Palace": {
+					"size": 10,
+					"hints": 4,
+					"members": [
+						"crystal-palace-will-hughes",
+						"crystal-palace-daichi-kamada",
+						"crystal-palace-jaydee-canvot",
+						"crystal-palace-quinten-timber",
+						"crystal-palace-jean-philippe-mateta",
+						"crystal-palace-axel-disasi",
+						"crystal-palace-dwight-mcneil",
+						"crystal-palace-honest-ahanor",
+						"crystal-palace-jefferson-lerma",
+						"crystal-palace-dario-osorio"
+					]
+				},
+				"Aston Villa": {
+					"size": 9,
+					"hints": 4,
+					"members": [
+						"aston-villa-john-mcginn",
+						"aston-villa-zion-suzuki",
+						"aston-villa-boubacar-kamara",
+						"aston-villa-tyrone-mings",
+						"aston-villa-andres-garcia",
+						"aston-villa-joao-gomes",
+						"aston-villa-marco-bizot",
+						"aston-villa-ibrahim-mbaye",
+						"aston-villa-brian-madjo"
+					]
+				},
+				"Fulham": {
+					"size": 5,
+					"hints": 2,
+					"members": [
+						"fulham-calvin-bassey",
+						"fulham-alex-iwobi",
+						"fulham-sander-berge",
+						"fulham-jorge-cuenca",
+						"fulham-rodrigo-muniz"
+					]
+				}
+			},
+			"cards": {
+				"chelsea-joao-pedro": {
+					"name": "joão pedro",
+					"surname": "pedro",
+					"club": "Chelsea",
+					"nationality": "Brazil",
+					"position": "Forward"
+				},
+				"chelsea-morgan-rogers": {
+					"name": "morgan rogers",
+					"surname": "rogers",
+					"club": "Chelsea",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-pascal-gross": {
+					"name": "pascal groß",
+					"surname": "gross",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Germany",
+					"position": "Midfielder"
+				},
+				"manchester-city-rayan-cherki": {
+					"name": "rayan cherki",
+					"surname": "cherki",
+					"club": "Manchester City",
+					"nationality": "France",
+					"position": "Midfielder"
+				},
+				"chelsea-cole-palmer": {
+					"name": "cole palmer",
+					"surname": "palmer",
+					"club": "Chelsea",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"manchester-united-bryan-mbeumo": {
+					"name": "bryan mbeumo",
+					"surname": "mbeumo",
+					"club": "Manchester United",
+					"nationality": "Cameroon",
+					"position": "Midfielder"
+				},
+				"newcastle-yoane-wissa": {
+					"name": "yoane wissa",
+					"surname": "wissa",
+					"club": "Newcastle",
+					"nationality": "Congo DR",
+					"position": "Forward"
+				},
+				"manchester-city-marc-guehi": {
+					"name": "marc guéhi",
+					"surname": "guehi",
+					"club": "Manchester City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"arsenal-ezri-konsa": {
+					"name": "ezri konsa",
+					"surname": "konsa",
+					"club": "Arsenal",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"tottenham-antonin-kinsky": {
+					"name": "antonín kinský",
+					"surname": "kinsky",
+					"club": "Tottenham",
+					"nationality": "Czech Republic",
+					"position": "Goalkeeper"
+				},
+				"hull-city-semi-ajayi": {
+					"name": "semi ajayi",
+					"surname": "ajayi",
+					"club": "Hull City",
+					"nationality": "Nigeria",
+					"position": "Defender"
+				},
+				"brentford-kevin-schade": {
+					"name": "kevin schade",
+					"surname": "schade",
+					"club": "Brentford",
+					"nationality": "Germany",
+					"position": "Midfielder"
+				},
+				"liverpool-cody-gakpo": {
+					"name": "cody gakpo",
+					"surname": "gakpo",
+					"club": "Liverpool",
+					"nationality": "Netherlands",
+					"position": "Midfielder"
+				},
+				"arsenal-christos-tzolis": {
+					"name": "christos tzolis",
+					"surname": "tzolis",
+					"club": "Arsenal",
+					"nationality": "Greece",
+					"position": "Midfielder"
+				},
+				"coventry-city-bobby-thomas": {
+					"name": "bobby thomas",
+					"surname": "thomas",
+					"club": "Coventry City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"everton-thierno-barry": {
+					"name": "thierno barry",
+					"surname": "barry",
+					"club": "Everton",
+					"nationality": "France",
+					"position": "Forward"
+				},
+				"ipswich-town-leif-davis": {
+					"name": "leif davis",
+					"surname": "davis",
+					"club": "Ipswich Town",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"leeds-united-jayden-bogle": {
+					"name": "jayden bogle",
+					"surname": "bogle",
+					"club": "Leeds United",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"brentford-michael-kayode": {
+					"name": "michael kayode",
+					"surname": "kayode",
+					"club": "Brentford",
+					"nationality": "Italy",
+					"position": "Defender"
+				},
+				"newcastle-harvey-barnes": {
+					"name": "harvey barnes",
+					"surname": "barnes",
+					"club": "Newcastle",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"manchester-city-iliman-ndiaye": {
+					"name": "iliman ndiaye",
+					"surname": "ndiaye",
+					"club": "Manchester City",
+					"nationality": "Senegal",
+					"position": "Midfielder"
+				},
+				"bournemouth-alex-scott": {
+					"name": "alex scott",
+					"surname": "scott",
+					"club": "Bournemouth",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"manchester-united-matheus-cunha": {
+					"name": "matheus cunha",
+					"surname": "cunha",
+					"club": "Manchester United",
+					"nationality": "Brazil",
+					"position": "Midfielder"
+				},
+				"liverpool-florian-wirtz": {
+					"name": "florian wirtz",
+					"surname": "wirtz",
+					"club": "Liverpool",
+					"nationality": "Germany",
+					"position": "Midfielder"
+				},
+				"hull-city-regan-slater": {
+					"name": "regan slater",
+					"surname": "slater",
+					"club": "Hull City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"tottenham-pedro-porro": {
+					"name": "pedro porro",
+					"surname": "porro",
+					"club": "Tottenham",
+					"nationality": "Spain",
+					"position": "Defender"
+				},
+				"hull-city-nobel-mendy": {
+					"name": "nobel mendy",
+					"surname": "mendy",
+					"club": "Hull City",
+					"nationality": "Senegal",
+					"position": "Defender"
+				},
+				"chelsea-reece-james": {
+					"name": "reece james",
+					"surname": "james",
+					"club": "Chelsea",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"nottingham-forest-daniel-munoz": {
+					"name": "daniel muñoz",
+					"surname": "munoz",
+					"club": "Nottingham Forest",
+					"nationality": "Colombia",
+					"position": "Defender"
+				},
+				"brighton-hove-albion-diego-gomez": {
+					"name": "diego gómez",
+					"surname": "gomez",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Paraguay",
+					"position": "Midfielder"
+				},
+				"sunderland-granit-xhaka": {
+					"name": "granit xhaka",
+					"surname": "xhaka",
+					"club": "Sunderland",
+					"nationality": "Switzerland",
+					"position": "Midfielder"
+				},
+				"arsenal-ben-white": {
+					"name": "ben white",
+					"surname": "white",
+					"club": "Arsenal",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"crystal-palace-will-hughes": {
+					"name": "will hughes",
+					"surname": "hughes",
+					"club": "Crystal Palace",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"ipswich-town-dara-o-shea": {
+					"name": "dara o'shea",
+					"surname": "oshea",
+					"club": "Ipswich Town",
+					"nationality": "Ireland",
+					"position": "Defender"
+				},
+				"brentford-vitaly-janelt": {
+					"name": "vitaly janelt",
+					"surname": "janelt",
+					"club": "Brentford",
+					"nationality": "Germany",
+					"position": "Midfielder"
+				},
+				"leeds-united-anton-stach": {
+					"name": "anton stach",
+					"surname": "stach",
+					"club": "Leeds United",
+					"nationality": "Germany",
+					"position": "Midfielder"
+				},
+				"sunderland-robin-roefs": {
+					"name": "robin roefs",
+					"surname": "roefs",
+					"club": "Sunderland",
+					"nationality": "Netherlands",
+					"position": "Goalkeeper"
+				},
+				"newcastle-anthony-elanga": {
+					"name": "anthony elanga",
+					"surname": "elanga",
+					"club": "Newcastle",
+					"nationality": "Sweden",
+					"position": "Midfielder"
+				},
+				"newcastle-malick-thiaw": {
+					"name": "malick thiaw",
+					"surname": "thiaw",
+					"club": "Newcastle",
+					"nationality": "Germany",
+					"position": "Defender"
+				},
+				"aston-villa-john-mcginn": {
+					"name": "john mcginn",
+					"surname": "mcginn",
+					"club": "Aston Villa",
+					"nationality": "Scotland",
+					"position": "Midfielder"
+				},
+				"tottenham-sandro-tonali": {
+					"name": "sandro tonali",
+					"surname": "tonali",
+					"club": "Tottenham",
+					"nationality": "Italy",
+					"position": "Midfielder"
+				},
+				"liverpool-milos-kerkez": {
+					"name": "milos kerkez",
+					"surname": "kerkez",
+					"club": "Liverpool",
+					"nationality": "Hungary",
+					"position": "Defender"
+				},
+				"liverpool-ronald-araujo": {
+					"name": "ronald araújo",
+					"surname": "araujo",
+					"club": "Liverpool",
+					"nationality": "Uruguay",
+					"position": "Defender"
+				},
+				"leeds-united-james-justin": {
+					"name": "james justin",
+					"surname": "justin",
+					"club": "Leeds United",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"aston-villa-zion-suzuki": {
+					"name": "zion suzuki",
+					"surname": "suzuki",
+					"club": "Aston Villa",
+					"nationality": "Japan",
+					"position": "Goalkeeper"
+				},
+				"nottingham-forest-liam-delap": {
+					"name": "liam delap",
+					"surname": "delap",
+					"club": "Nottingham Forest",
+					"nationality": "England",
+					"position": "Forward"
+				},
+				"leeds-united-ethan-ampadu": {
+					"name": "ethan ampadu",
+					"surname": "ampadu",
+					"club": "Leeds United",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"fulham-calvin-bassey": {
+					"name": "calvin bassey",
+					"surname": "bassey",
+					"club": "Fulham",
+					"nationality": "Nigeria",
+					"position": "Defender"
+				},
+				"newcastle-sven-botman": {
+					"name": "sven botman",
+					"surname": "botman",
+					"club": "Newcastle",
+					"nationality": "Netherlands",
+					"position": "Defender"
+				},
+				"nottingham-forest-igor-jesus": {
+					"name": "igor jesus",
+					"surname": "jesus",
+					"club": "Nottingham Forest",
+					"nationality": "Brazil",
+					"position": "Forward"
+				},
+				"newcastle-amar-dedic": {
+					"name": "amar dedić",
+					"surname": "dedic",
+					"club": "Newcastle",
+					"nationality": "Austria",
+					"position": "Defender"
+				},
+				"manchester-united-diogo-dalot": {
+					"name": "diogo dalot",
+					"surname": "dalot",
+					"club": "Manchester United",
+					"nationality": "Portugal",
+					"position": "Defender"
+				},
+				"manchester-united-kobbie-mainoo": {
+					"name": "kobbie mainoo",
+					"surname": "mainoo",
+					"club": "Manchester United",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"ipswich-town-julio-enciso": {
+					"name": "julio enciso",
+					"surname": "enciso",
+					"club": "Ipswich Town",
+					"nationality": "Paraguay",
+					"position": "Midfielder"
+				},
+				"crystal-palace-daichi-kamada": {
+					"name": "daichi kamada",
+					"surname": "kamada",
+					"club": "Crystal Palace",
+					"nationality": "Japan",
+					"position": "Midfielder"
+				},
+				"bournemouth-antonio-silva": {
+					"name": "antonio silva",
+					"surname": "silva",
+					"club": "Bournemouth",
+					"nationality": "Portugal",
+					"position": "Defender"
+				},
+				"fulham-alex-iwobi": {
+					"name": "alex iwobi",
+					"surname": "iwobi",
+					"club": "Fulham",
+					"nationality": "Nigeria",
+					"position": "Midfielder"
+				},
+				"aston-villa-boubacar-kamara": {
+					"name": "boubacar kamara",
+					"surname": "kamara",
+					"club": "Aston Villa",
+					"nationality": "France",
+					"position": "Midfielder"
+				},
+				"coventry-city-matt-grimes": {
+					"name": "matt grimes",
+					"surname": "grimes",
+					"club": "Coventry City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"bournemouth-adam-smith": {
+					"name": "adam smith",
+					"surname": "smith",
+					"club": "Bournemouth",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"tottenham-marcos-senesi": {
+					"name": "marcos senesi",
+					"surname": "senesi",
+					"club": "Tottenham",
+					"nationality": "Argentina",
+					"position": "Defender"
+				},
+				"sunderland-noah-sadiki": {
+					"name": "noah sadiki",
+					"surname": "sadiki",
+					"club": "Sunderland",
+					"nationality": "Congo DR",
+					"position": "Midfielder"
+				},
+				"nottingham-forest-james-mcatee": {
+					"name": "james mcatee",
+					"surname": "mcatee",
+					"club": "Nottingham Forest",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"coventry-city-aurele-amenda": {
+					"name": "aurele amenda",
+					"surname": "amenda",
+					"club": "Coventry City",
+					"nationality": "Switzerland",
+					"position": "Defender"
+				},
+				"hull-city-lewie-coyle": {
+					"name": "lewie coyle",
+					"surname": "coyle",
+					"club": "Hull City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"ipswich-town-sasa-lukic": {
+					"name": "saša lukić",
+					"surname": "lukic",
+					"club": "Ipswich Town",
+					"nationality": "Serbia",
+					"position": "Midfielder"
+				},
+				"newcastle-lewis-miley": {
+					"name": "lewis miley",
+					"surname": "miley",
+					"club": "Newcastle",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"everton-tyrique-george": {
+					"name": "tyrique george",
+					"surname": "george",
+					"club": "Everton",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"manchester-city-phil-foden": {
+					"name": "phil foden",
+					"surname": "foden",
+					"club": "Manchester City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"nottingham-forest-dan-ndoye": {
+					"name": "dan ndoye",
+					"surname": "ndoye",
+					"club": "Nottingham Forest",
+					"nationality": "Switzerland",
+					"position": "Midfielder"
+				},
+				"crystal-palace-jaydee-canvot": {
+					"name": "jaydee canvot",
+					"surname": "canvot",
+					"club": "Crystal Palace",
+					"nationality": "France",
+					"position": "Defender"
+				},
+				"fulham-sander-berge": {
+					"name": "sander berge",
+					"surname": "berge",
+					"club": "Fulham",
+					"nationality": "Norway",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-yasin-ayari": {
+					"name": "yasin ayari",
+					"surname": "ayari",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Sweden",
+					"position": "Midfielder"
+				},
+				"ipswich-town-abdul-fatawu": {
+					"name": "abdul fatawu",
+					"surname": "fatawu",
+					"club": "Ipswich Town",
+					"nationality": "Ghana",
+					"position": "Midfielder"
+				},
+				"chelsea-malo-gusto": {
+					"name": "malo gusto",
+					"surname": "gusto",
+					"club": "Chelsea",
+					"nationality": "France",
+					"position": "Defender"
+				},
+				"ipswich-town-sindre-egeli": {
+					"name": "sindre egeli",
+					"surname": "egeli",
+					"club": "Ipswich Town",
+					"nationality": "Norway",
+					"position": "Forward"
+				},
+				"everton-james-garner": {
+					"name": "james garner",
+					"surname": "garner",
+					"club": "Everton",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"liverpool-victor-munoz": {
+					"name": "víctor muñoz",
+					"surname": "munoz",
+					"club": "Liverpool",
+					"nationality": "Spain",
+					"position": "Midfielder"
+				},
+				"leeds-united-noah-okafor": {
+					"name": "noah okafor",
+					"surname": "okafor",
+					"club": "Leeds United",
+					"nationality": "Switzerland",
+					"position": "Midfielder"
+				},
+				"leeds-united-nico-elvedi": {
+					"name": "nico elvedi",
+					"surname": "elvedi",
+					"club": "Leeds United",
+					"nationality": "Switzerland",
+					"position": "Defender"
+				},
+				"chelsea-wesley-fofana": {
+					"name": "wesley fofana",
+					"surname": "fofana",
+					"club": "Chelsea",
+					"nationality": "France",
+					"position": "Defender"
+				},
+				"coventry-city-frank-onyeka": {
+					"name": "frank onyeka",
+					"surname": "onyeka",
+					"club": "Coventry City",
+					"nationality": "Nigeria",
+					"position": "Midfielder"
+				},
+				"sunderland-nilson-angulo": {
+					"name": "nilson angulo",
+					"surname": "angulo",
+					"club": "Sunderland",
+					"nationality": "Ecuador",
+					"position": "Midfielder"
+				},
+				"sunderland-luke-o-nien": {
+					"name": "luke o'nien",
+					"surname": "onien",
+					"club": "Sunderland",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"bournemouth-tyler-adams": {
+					"name": "tyler adams",
+					"surname": "adams",
+					"club": "Bournemouth",
+					"nationality": "USA",
+					"position": "Midfielder"
+				},
+				"coventry-city-jack-rudoni": {
+					"name": "jack rudoni",
+					"surname": "rudoni",
+					"club": "Coventry City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"leeds-united-harry-wilson": {
+					"name": "harry wilson",
+					"surname": "wilson",
+					"club": "Leeds United",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"aston-villa-tyrone-mings": {
+					"name": "tyrone mings",
+					"surname": "mings",
+					"club": "Aston Villa",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"sunderland-kevin-danso": {
+					"name": "kevin danso",
+					"surname": "danso",
+					"club": "Sunderland",
+					"nationality": "Austria",
+					"position": "Defender"
+				},
+				"leeds-united-ao-tanaka": {
+					"name": "ao tanaka",
+					"surname": "tanaka",
+					"club": "Leeds United",
+					"nationality": "Japan",
+					"position": "Midfielder"
+				},
+				"ipswich-town-daizen-maeda": {
+					"name": "daizen maeda",
+					"surname": "maeda",
+					"club": "Ipswich Town",
+					"nationality": "Japan",
+					"position": "Midfielder"
+				},
+				"chelsea-romeo-lavia": {
+					"name": "romeo lavia",
+					"surname": "lavia",
+					"club": "Chelsea",
+					"nationality": "Belgium",
+					"position": "Midfielder"
+				},
+				"hull-city-elliot-stroud": {
+					"name": "elliot stroud",
+					"surname": "stroud",
+					"club": "Hull City",
+					"nationality": "Sweden",
+					"position": "Midfielder"
+				},
+				"hull-city-matty-crooks": {
+					"name": "matty crooks",
+					"surname": "crooks",
+					"club": "Hull City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"crystal-palace-quinten-timber": {
+					"name": "quinten timber",
+					"surname": "timber",
+					"club": "Crystal Palace",
+					"nationality": "Netherlands",
+					"position": "Midfielder"
+				},
+				"sunderland-wilson-isidor": {
+					"name": "wilson isidor",
+					"surname": "isidor",
+					"club": "Sunderland",
+					"nationality": "Haiti",
+					"position": "Forward"
+				},
+				"manchester-united-benjamin-sesko": {
+					"name": "benjamin šeško",
+					"surname": "sesko",
+					"club": "Manchester United",
+					"nationality": "Slovenia",
+					"position": "Forward"
+				},
+				"leeds-united-jaka-bijol": {
+					"name": "jaka bijol",
+					"surname": "bijol",
+					"club": "Leeds United",
+					"nationality": "Slovenia",
+					"position": "Defender"
+				},
+				"newcastle-sean-steur": {
+					"name": "sean steur",
+					"surname": "steur",
+					"club": "Newcastle",
+					"nationality": "Netherlands",
+					"position": "Midfielder"
+				},
+				"manchester-united-patrick-dorgu": {
+					"name": "patrick dorgu",
+					"surname": "dorgu",
+					"club": "Manchester United",
+					"nationality": "Denmark",
+					"position": "Midfielder"
+				},
+				"ipswich-town-chuba-akpom": {
+					"name": "chuba akpom",
+					"surname": "akpom",
+					"club": "Ipswich Town",
+					"nationality": "England",
+					"position": "Forward"
+				},
+				"leeds-united-joe-rodon": {
+					"name": "joe rodon",
+					"surname": "rodon",
+					"club": "Leeds United",
+					"nationality": "Wales",
+					"position": "Defender"
+				},
+				"crystal-palace-jean-philippe-mateta": {
+					"name": "jean-philippe mateta",
+					"surname": "mateta",
+					"club": "Crystal Palace",
+					"nationality": "France",
+					"position": "Forward"
+				},
+				"newcastle-jacob-murphy": {
+					"name": "jacob murphy",
+					"surname": "murphy",
+					"club": "Newcastle",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"ipswich-town-jack-clarke": {
+					"name": "jack clarke",
+					"surname": "clarke",
+					"club": "Ipswich Town",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"coventry-city-ellis-simms": {
+					"name": "ellis simms",
+					"surname": "simms",
+					"club": "Coventry City",
+					"nationality": "England",
+					"position": "Forward"
+				},
+				"brentford-aaron-hickey": {
+					"name": "aaron hickey",
+					"surname": "hickey",
+					"club": "Brentford",
+					"nationality": "Scotland",
+					"position": "Defender"
+				},
+				"arsenal-jurrien-timber": {
+					"name": "jurrien timber",
+					"surname": "timber",
+					"club": "Arsenal",
+					"nationality": "Netherlands",
+					"position": "Defender"
+				},
+				"aston-villa-andres-garcia": {
+					"name": "andrés garcía",
+					"surname": "garcia",
+					"club": "Aston Villa",
+					"nationality": "Spain",
+					"position": "Defender"
+				},
+				"ipswich-town-marcelino-nunez": {
+					"name": "marcelino núñez",
+					"surname": "nunez",
+					"club": "Ipswich Town",
+					"nationality": "Chile",
+					"position": "Midfielder"
+				},
+				"crystal-palace-axel-disasi": {
+					"name": "axel disasi",
+					"surname": "disasi",
+					"club": "Crystal Palace",
+					"nationality": "France",
+					"position": "Defender"
+				},
+				"tottenham-mohammed-kudus": {
+					"name": "mohammed kudus",
+					"surname": "kudus",
+					"club": "Tottenham",
+					"nationality": "Ghana",
+					"position": "Midfielder"
+				},
+				"manchester-united-andrey-santos": {
+					"name": "andrey santos",
+					"surname": "santos",
+					"club": "Manchester United",
+					"nationality": "Brazil",
+					"position": "Midfielder"
+				},
+				"aston-villa-joao-gomes": {
+					"name": "joão gomes",
+					"surname": "gomes",
+					"club": "Aston Villa",
+					"nationality": "Brazil",
+					"position": "Midfielder"
+				},
+				"chelsea-valentin-barco": {
+					"name": "valentin barco",
+					"surname": "barco",
+					"club": "Chelsea",
+					"nationality": "Argentina",
+					"position": "Midfielder"
+				},
+				"arsenal-mikel-merino": {
+					"name": "mikel merino",
+					"surname": "merino",
+					"club": "Arsenal",
+					"nationality": "Spain",
+					"position": "Midfielder"
+				},
+				"manchester-united-ayden-heaven": {
+					"name": "ayden heaven",
+					"surname": "heaven",
+					"club": "Manchester United",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"hull-city-sorba-thomas": {
+					"name": "sorba thomas",
+					"surname": "thomas",
+					"club": "Hull City",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"tottenham-destiny-udogie": {
+					"name": "destiny udogie",
+					"surname": "udogie",
+					"club": "Tottenham",
+					"nationality": "Italy",
+					"position": "Defender"
+				},
+				"leeds-united-lukas-nmecha": {
+					"name": "lukas nmecha",
+					"surname": "nmecha",
+					"club": "Leeds United",
+					"nationality": "Germany",
+					"position": "Forward"
+				},
+				"nottingham-forest-ryan-yates": {
+					"name": "ryan yates",
+					"surname": "yates",
+					"club": "Nottingham Forest",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-chema-andres": {
+					"name": "chema andrés",
+					"surname": "andres",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Spain",
+					"position": "Midfielder"
+				},
+				"aston-villa-marco-bizot": {
+					"name": "marco bizot",
+					"surname": "bizot",
+					"club": "Aston Villa",
+					"nationality": "Netherlands",
+					"position": "Goalkeeper"
+				},
+				"coventry-city-stephen-mfuni": {
+					"name": "stephen mfuni",
+					"surname": "mfuni",
+					"club": "Coventry City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"crystal-palace-dwight-mcneil": {
+					"name": "dwight mcneil",
+					"surname": "mcneil",
+					"club": "Crystal Palace",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"tottenham-ben-davies": {
+					"name": "ben davies",
+					"surname": "davies",
+					"club": "Tottenham",
+					"nationality": "Wales",
+					"position": "Defender"
+				},
+				"ipswich-town-cedric-kipre": {
+					"name": "cédric kipré",
+					"surname": "kipre",
+					"club": "Ipswich Town",
+					"nationality": "Ivory Coast",
+					"position": "Defender"
+				},
+				"crystal-palace-honest-ahanor": {
+					"name": "honest ahanor",
+					"surname": "ahanor",
+					"club": "Crystal Palace",
+					"nationality": "Italy",
+					"position": "Defender"
+				},
+				"fulham-jorge-cuenca": {
+					"name": "jorge cuenca",
+					"surname": "cuenca",
+					"club": "Fulham",
+					"nationality": "Spain",
+					"position": "Defender"
+				},
+				"newcastle-jacob-ramsey": {
+					"name": "jacob ramsey",
+					"surname": "ramsey",
+					"club": "Newcastle",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"newcastle-william-osula": {
+					"name": "william osula",
+					"surname": "osula",
+					"club": "Newcastle",
+					"nationality": "Denmark",
+					"position": "Forward"
+				},
+				"fulham-rodrigo-muniz": {
+					"name": "rodrigo muniz",
+					"surname": "muniz",
+					"club": "Fulham",
+					"nationality": "Brazil",
+					"position": "Forward"
+				},
+				"brentford-mathias-jensen": {
+					"name": "mathias jensen",
+					"surname": "jensen",
+					"club": "Brentford",
+					"nationality": "Denmark",
+					"position": "Midfielder"
+				},
+				"manchester-city-rico-lewis": {
+					"name": "rico lewis",
+					"surname": "lewis",
+					"club": "Manchester City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"sunderland-juan-angulo": {
+					"name": "juan angulo",
+					"surname": "angulo",
+					"club": "Sunderland",
+					"nationality": "Ecuador",
+					"position": "Forward"
+				},
+				"everton-michael-keane": {
+					"name": "michael keane",
+					"surname": "keane",
+					"club": "Everton",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"leeds-united-daniel-james": {
+					"name": "daniel james",
+					"surname": "james",
+					"club": "Leeds United",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"crystal-palace-jefferson-lerma": {
+					"name": "jefferson lerma",
+					"surname": "lerma",
+					"club": "Crystal Palace",
+					"nationality": "Colombia",
+					"position": "Midfielder"
+				},
+				"newcastle-bazoumana-toure": {
+					"name": "bazoumana touré",
+					"surname": "toure",
+					"club": "Newcastle",
+					"nationality": "Ivory Coast",
+					"position": "Midfielder"
+				},
+				"sunderland-malick-fofana": {
+					"name": "malick fofana",
+					"surname": "fofana",
+					"club": "Sunderland",
+					"nationality": "Belgium",
+					"position": "Midfielder"
+				},
+				"bournemouth-david-brooks": {
+					"name": "david brooks",
+					"surname": "brooks",
+					"club": "Bournemouth",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"chelsea-shumaira-mheuka": {
+					"name": "shumaira mheuka",
+					"surname": "mheuka",
+					"club": "Chelsea",
+					"nationality": "England",
+					"position": "Forward"
+				},
+				"everton-jake-o-brien": {
+					"name": "jake o'brien",
+					"surname": "obrien",
+					"club": "Everton",
+					"nationality": "Ireland",
+					"position": "Defender"
+				},
+				"newcastle-fabian-schar": {
+					"name": "fabian schär",
+					"surname": "schar",
+					"club": "Newcastle",
+					"nationality": "Switzerland",
+					"position": "Defender"
+				},
+				"hull-city-hidemasa-morita": {
+					"name": "hidemasa morita",
+					"surname": "morita",
+					"club": "Hull City",
+					"nationality": "Japan",
+					"position": "Midfielder"
+				},
+				"brentford-callum-wilson": {
+					"name": "callum wilson",
+					"surname": "wilson",
+					"club": "Brentford",
+					"nationality": "England",
+					"position": "Forward"
+				},
+				"aston-villa-ibrahim-mbaye": {
+					"name": "ibrahim mbaye",
+					"surname": "mbaye",
+					"club": "Aston Villa",
+					"nationality": "Senegal",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-promise-david": {
+					"name": "promise david",
+					"surname": "david",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Canada",
+					"position": "Forward"
+				},
+				"coventry-city-gustavo-hamer": {
+					"name": "gustavo hamer",
+					"surname": "hamer",
+					"club": "Coventry City",
+					"nationality": "Netherlands",
+					"position": "Midfielder"
+				},
+				"sunderland-chemsdine-talbi": {
+					"name": "chemsdine talbi",
+					"surname": "talbi",
+					"club": "Sunderland",
+					"nationality": "Morocco",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-ibrahim-osman": {
+					"name": "ibrahim osman",
+					"surname": "osman",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Ghana",
+					"position": "Midfielder"
+				},
+				"coventry-city-sidiki-cherif": {
+					"name": "sidiki cherif",
+					"surname": "cherif",
+					"club": "Coventry City",
+					"nationality": "Guinea",
+					"position": "Forward"
+				},
+				"liverpool-trey-nyoni": {
+					"name": "trey nyoni",
+					"surname": "nyoni",
+					"club": "Liverpool",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"newcastle-aladji-bamba": {
+					"name": "aladji bamba",
+					"surname": "bamba",
+					"club": "Newcastle",
+					"nationality": "France",
+					"position": "Midfielder"
+				},
+				"hull-city-paddy-mcnair": {
+					"name": "paddy mcnair",
+					"surname": "mcnair",
+					"club": "Hull City",
+					"nationality": "Northern Ireland",
+					"position": "Defender"
+				},
+				"bournemouth-julio-soler": {
+					"name": "julio soler",
+					"surname": "soler",
+					"club": "Bournemouth",
+					"nationality": "Argentina",
+					"position": "Defender"
+				},
+				"hull-city-kieran-dowell": {
+					"name": "kieran dowell",
+					"surname": "dowell",
+					"club": "Hull City",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"sunderland-habib-diarra": {
+					"name": "habib diarra",
+					"surname": "diarra",
+					"club": "Sunderland",
+					"nationality": "Senegal",
+					"position": "Midfielder"
+				},
+				"chelsea-geovany-quenda": {
+					"name": "geovany quenda",
+					"surname": "quenda",
+					"club": "Chelsea",
+					"nationality": "Guinea-Bissau",
+					"position": "Midfielder"
+				},
+				"liverpool-lewis-koumas": {
+					"name": "lewis koumas",
+					"surname": "koumas",
+					"club": "Liverpool",
+					"nationality": "Wales",
+					"position": "Midfielder"
+				},
+				"brentford-rico-henry": {
+					"name": "rico henry",
+					"surname": "henry",
+					"club": "Brentford",
+					"nationality": "Jamaica",
+					"position": "Defender"
+				},
+				"aston-villa-brian-madjo": {
+					"name": "brian madjo",
+					"surname": "madjo",
+					"club": "Aston Villa",
+					"nationality": "Luxembourg",
+					"position": "Forward"
+				},
+				"hull-city-charlie-hughes": {
+					"name": "charlie hughes",
+					"surname": "hughes",
+					"club": "Hull City",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"manchester-united-harry-amass": {
+					"name": "harry amass",
+					"surname": "amass",
+					"club": "Manchester United",
+					"nationality": "England",
+					"position": "Defender"
+				},
+				"liverpool-jayden-danns": {
+					"name": "jayden danns",
+					"surname": "danns",
+					"club": "Liverpool",
+					"nationality": "England",
+					"position": "Centre-Forward"
+				},
+				"sunderland-jules-ahoka": {
+					"name": "jules ahoka",
+					"surname": "ahoka",
+					"club": "Sunderland",
+					"nationality": "Congo DR",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-matt-o-riley": {
+					"name": "matt o'riley",
+					"surname": "oriley",
+					"club": "Brighton & Hove Albion",
+					"nationality": "Denmark",
+					"position": "Midfielder"
+				},
+				"brighton-hove-albion-nehemiah-oriola": {
+					"name": "nehemiah oriola",
+					"surname": "oriola",
+					"club": "Brighton & Hove Albion",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"manchester-united-shea-lacey": {
+					"name": "shea lacey",
+					"surname": "lacey",
+					"club": "Manchester United",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"arsenal-william-saliba": {
+					"name": "william saliba",
+					"surname": "saliba",
+					"club": "Arsenal",
+					"nationality": "France",
+					"position": "Defender"
+				},
+				"arsenal-max-dowman": {
+					"name": "max dowman",
+					"surname": "dowman",
+					"club": "Arsenal",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"tottenham-mykhailo-mudryk": {
+					"name": "mykhailo mudryk",
+					"surname": "mudryk",
+					"club": "Tottenham",
+					"nationality": "Ukraine",
+					"position": "Midfielder"
+				},
+				"manchester-united-mason-mount": {
+					"name": "mason mount",
+					"surname": "mount",
+					"club": "Manchester United",
+					"nationality": "England",
+					"position": "Midfielder"
+				},
+				"crystal-palace-dario-osorio": {
+					"name": "darío osorio",
+					"surname": "osorio",
+					"club": "Crystal Palace",
+					"nationality": "Chile",
+					"position": "Midfielder"
+				},
+				"leeds-united-jean-bahoya": {
+					"name": "jean bahoya",
+					"surname": "bahoya",
+					"club": "Leeds United",
+					"nationality": "France",
+					"position": "Midfielder"
+				},
+				"sunderland-romaine-mundle": {
+					"name": "romaine mundle",
+					"surname": "mundle",
+					"club": "Sunderland",
+					"nationality": "England",
+					"position": "Midfielder"
+				}
+			},
+			"days": [
+				"everton-tyrique-george",
+				"tottenham-sandro-tonali",
+				"chelsea-cole-palmer",
+				"liverpool-cody-gakpo",
+				"arsenal-ezri-konsa",
+				"aston-villa-andres-garcia",
+				"crystal-palace-dwight-mcneil",
+				"chelsea-joao-pedro",
+				"coventry-city-matt-grimes",
+				"chelsea-wesley-fofana",
+				"nottingham-forest-dan-ndoye",
+				"newcastle-malick-thiaw",
+				"bournemouth-alex-scott",
+				"arsenal-christos-tzolis",
+				"hull-city-nobel-mendy",
+				"coventry-city-gustavo-hamer",
+				"brentford-michael-kayode",
+				"newcastle-yoane-wissa",
+				"manchester-united-matheus-cunha",
+				"chelsea-valentin-barco",
+				"coventry-city-jack-rudoni",
+				"sunderland-robin-roefs",
+				"hull-city-regan-slater",
+				"newcastle-bazoumana-toure",
+				"brentford-vitaly-janelt",
+				"leeds-united-ethan-ampadu",
+				"manchester-united-ayden-heaven",
+				"nottingham-forest-ryan-yates",
+				"crystal-palace-jefferson-lerma",
+				"brentford-rico-henry",
+				"manchester-united-kobbie-mainoo",
+				"fulham-sander-berge",
+				"crystal-palace-daichi-kamada",
+				"aston-villa-boubacar-kamara",
+				"newcastle-william-osula",
+				"sunderland-granit-xhaka",
+				"newcastle-sven-botman",
+				"chelsea-malo-gusto",
+				"leeds-united-noah-okafor",
+				"sunderland-nilson-angulo",
+				"fulham-alex-iwobi",
+				"hull-city-lewie-coyle",
+				"nottingham-forest-james-mcatee",
+				"crystal-palace-will-hughes",
+				"everton-james-garner",
+				"manchester-united-mason-mount",
+				"ipswich-town-dara-o-shea",
+				"newcastle-amar-dedic",
+				"ipswich-town-abdul-fatawu",
+				"bournemouth-julio-soler",
+				"ipswich-town-daizen-maeda",
+				"aston-villa-brian-madjo",
+				"hull-city-paddy-mcnair",
+				"brighton-hove-albion-yasin-ayari",
+				"manchester-united-andrey-santos",
+				"hull-city-hidemasa-morita",
+				"crystal-palace-jaydee-canvot",
+				"everton-thierno-barry",
+				"manchester-city-rayan-cherki",
+				"brighton-hove-albion-matt-o-riley",
+				"crystal-palace-dario-osorio",
+				"leeds-united-jayden-bogle",
+				"brentford-aaron-hickey",
+				"chelsea-cole-palmer",
+				"brighton-hove-albion-diego-gomez",
+				"manchester-city-rico-lewis",
+				"liverpool-cody-gakpo",
+				"leeds-united-jean-bahoya",
+				"ipswich-town-leif-davis",
+				"chelsea-joao-pedro",
+				"manchester-city-iliman-ndiaye",
+				"sunderland-kevin-danso",
+				"bournemouth-alex-scott",
+				"liverpool-milos-kerkez",
+				"bournemouth-tyler-adams",
+				"arsenal-christos-tzolis",
+				"liverpool-victor-munoz",
+				"ipswich-town-cedric-kipre",
+				"manchester-united-matheus-cunha",
+				"leeds-united-harry-wilson",
+				"everton-tyrique-george",
+				"newcastle-yoane-wissa",
+				"crystal-palace-quinten-timber",
+				"aston-villa-john-mcginn",
+				"newcastle-bazoumana-toure",
+				"chelsea-geovany-quenda",
+				"crystal-palace-axel-disasi",
+				"nottingham-forest-dan-ndoye",
+				"manchester-united-benjamin-sesko",
+				"liverpool-lewis-koumas",
+				"manchester-united-kobbie-mainoo",
+				"aston-villa-tyrone-mings",
+				"hull-city-elliot-stroud",
+				"leeds-united-ethan-ampadu",
+				"bournemouth-david-brooks",
+				"leeds-united-anton-stach",
+				"newcastle-william-osula",
+				"tottenham-antonin-kinsky",
+				"leeds-united-noah-okafor",
+				"tottenham-marcos-senesi",
+				"aston-villa-marco-bizot",
+				"sunderland-granit-xhaka",
+				"leeds-united-nico-elvedi",
+				"hull-city-charlie-hughes",
+				"everton-james-garner",
+				"leeds-united-jaka-bijol",
+				"ipswich-town-jack-clarke",
+				"nottingham-forest-james-mcatee",
+				"leeds-united-joe-rodon",
+				"newcastle-lewis-miley",
+				"fulham-alex-iwobi",
+				"newcastle-jacob-murphy",
+				"manchester-united-harry-amass",
+				"ipswich-town-abdul-fatawu",
+				"liverpool-florian-wirtz",
+				"manchester-united-bryan-mbeumo",
+				"brighton-hove-albion-yasin-ayari",
+				"sunderland-noah-sadiki",
+				"bournemouth-adam-smith",
+				"manchester-city-rayan-cherki",
+				"liverpool-ronald-araujo",
+				"hull-city-sorba-thomas",
+				"everton-thierno-barry",
+				"leeds-united-ao-tanaka",
+				"tottenham-mohammed-kudus",
+				"crystal-palace-dario-osorio",
+				"sunderland-habib-diarra",
+				"fulham-jorge-cuenca",
+				"chelsea-valentin-barco",
+				"liverpool-trey-nyoni",
+				"aston-villa-joao-gomes",
+				"manchester-city-iliman-ndiaye",
+				"brighton-hove-albion-ibrahim-osman",
+				"coventry-city-gustavo-hamer",
+				"bournemouth-antonio-silva",
+				"newcastle-anthony-elanga",
+				"liverpool-victor-munoz",
+				"ipswich-town-sindre-egeli",
+				"newcastle-harvey-barnes",
+				"leeds-united-harry-wilson",
+				"aston-villa-ibrahim-mbaye",
+				"tottenham-pedro-porro",
+				"everton-tyrique-george",
+				"arsenal-jurrien-timber",
+				"fulham-calvin-bassey",
+				"manchester-united-mason-mount",
+				"ipswich-town-chuba-akpom",
+				"sunderland-chemsdine-talbi",
+				"aston-villa-john-mcginn",
+				"ipswich-town-marcelino-nunez",
+				"coventry-city-frank-onyeka",
+				"manchester-united-benjamin-sesko",
+				"ipswich-town-sasa-lukic",
+				"manchester-united-diogo-dalot",
+				"brighton-hove-albion-matt-o-riley",
+				"newcastle-fabian-schar",
+				"tottenham-destiny-udogie",
+				"leeds-united-anton-stach",
+				"coventry-city-ellis-simms",
+				"leeds-united-james-justin",
+				"tottenham-marcos-senesi",
+				"fulham-rodrigo-muniz",
+				"sunderland-juan-angulo",
+				"aston-villa-brian-madjo",
+				"brentford-mathias-jensen",
+				"arsenal-mikel-merino",
+				"ipswich-town-jack-clarke",
+				"chelsea-romeo-lavia",
+				"tottenham-sandro-tonali",
+				"newcastle-jacob-ramsey",
+				"chelsea-morgan-rogers",
+				"newcastle-lewis-miley",
+				"chelsea-reece-james",
+				"aston-villa-zion-suzuki",
+				"liverpool-florian-wirtz",
+				"ipswich-town-julio-enciso",
+				"manchester-united-shea-lacey",
+				"newcastle-jacob-murphy",
+				"chelsea-shumaira-mheuka",
+				"hull-city-kieran-dowell",
+				"ipswich-town-daizen-maeda",
+				"coventry-city-bobby-thomas",
+				"brighton-hove-albion-promise-david",
+				"manchester-united-bryan-mbeumo",
+				"hull-city-matty-crooks",
+				"coventry-city-sidiki-cherif",
+				"tottenham-mohammed-kudus",
+				"crystal-palace-jean-philippe-mateta",
+				"sunderland-luke-o-nien",
+				"liverpool-ronald-araujo",
+				"everton-michael-keane",
+				"manchester-city-marc-guehi",
+				"aston-villa-joao-gomes",
+				"sunderland-malick-fofana",
+				"newcastle-sean-steur",
+				"liverpool-milos-kerkez",
+				"manchester-united-patrick-dorgu",
+				"hull-city-semi-ajayi",
+				"newcastle-harvey-barnes",
+				"brentford-callum-wilson",
+				"sunderland-romaine-mundle",
+				"aston-villa-ibrahim-mbaye",
+				"newcastle-aladji-bamba",
+				"arsenal-jurrien-timber",
+				"liverpool-jayden-danns",
+				"leeds-united-lukas-nmecha",
+				"newcastle-anthony-elanga",
+				"everton-jake-o-brien",
+				"nottingham-forest-daniel-munoz",
+				"tottenham-pedro-porro",
+				"coventry-city-aurele-amenda",
+				"brighton-hove-albion-chema-andres",
+				"crystal-palace-dwight-mcneil",
+				"brighton-hove-albion-pascal-gross",
+				"crystal-palace-honest-ahanor",
+				"sunderland-chemsdine-talbi",
+				"brighton-hove-albion-nehemiah-oriola",
+				"tottenham-mykhailo-mudryk",
+				"sunderland-habib-diarra",
+				"nottingham-forest-liam-delap",
+				"arsenal-william-saliba",
+				"fulham-rodrigo-muniz",
+				"manchester-city-phil-foden",
+				"coventry-city-stephen-mfuni",
+				"brentford-mathias-jensen",
+				"tottenham-ben-davies",
+				"arsenal-ben-white",
+				"chelsea-geovany-quenda",
+				"sunderland-wilson-isidor",
+				"arsenal-max-dowman",
+				"newcastle-malick-thiaw",
+				"sunderland-jules-ahoka",
+				"leeds-united-daniel-james",
+				"chelsea-morgan-rogers",
+				"nottingham-forest-igor-jesus",
+				"brentford-kevin-schade"
+			]
+		}
+	}
 }
