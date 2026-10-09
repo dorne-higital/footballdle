@@ -215,9 +215,9 @@
 					</div>
 				</div>
 				<div class="targets">
-					<span class="t w"><b>{{ climb.nextFixture.targets.win }}-10</b>right = win</span>
-					<span class="t d"><b>{{ climb.nextFixture.targets.draw }}-{{ climb.nextFixture.targets.win - 1 }}</b>= draw</span>
-					<span class="t l"><b>0-{{ climb.nextFixture.targets.draw - 1 }}</b>= loss</span>
+					<span class="t w"><span class="t-label">Win</span><b>{{ climb.nextFixture.targets.win }}-10</b></span>
+					<span class="t d"><span class="t-label">Draw</span><b>{{ climb.nextFixture.targets.draw }}-{{ climb.nextFixture.targets.win - 1 }}</b></span>
+					<span class="t l"><span class="t-label">Loss</span><b>0-{{ climb.nextFixture.targets.draw - 1 }}</b></span>
 				</div>
 				<p
 					v-if="climb.nextFixture.standing !== 'mid'"
@@ -444,7 +444,7 @@
 
 	.primary-btn {
 		align-items: center;
-		background: var(--primary-color);
+		background: var(--color-success);
 		border: 0;
 		border-radius: 1rem;
 		color: var(--on-success, #04130b);
@@ -738,31 +738,43 @@
 		grid-template-columns: repeat(3, 1fr);
 	}
 
+	// Right answers needed: a soft tint per result, label on top, the range in the result colour
 	.t {
-		background: var(--bg-primary);
+		--tint: var(--text-secondary);
+
+		background: color-mix(in srgb, var(--tint) 13%, var(--bg-primary));
+		border: 1px solid color-mix(in srgb, var(--tint) 35%, transparent);
 		border-radius: 0.8rem;
-		font-size: 0.72rem;
-		font-weight: 800;
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
 		padding: 0.5rem 0.3rem;
 		text-align: center;
 
 		b {
-			display: block;
+			color: var(--tint);
 			font-family: var(--font-display);
-			font-size: 0.95rem;
+			font-size: 1.1rem;
 		}
 
-		&.w b {
-			color: var(--color-success);
+		&.w {
+			--tint: var(--color-success);
 		}
 
-		&.d b {
-			color: var(--color-present);
+		&.d {
+			--tint: var(--color-present);
 		}
 
-		&.l b {
-			color: var(--color-error, #ef5b5b);
+		&.l {
+			--tint: var(--color-error, #ef5b5b);
 		}
+	}
+
+	.t-label {
+		font-size: 0.68rem;
+		font-weight: 800;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
 	}
 
 	.set-bonus {

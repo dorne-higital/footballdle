@@ -740,7 +740,7 @@
 	.primary-btn {
 		align-items: center;
 		align-self: stretch;
-		background: var(--primary-color);
+		background: var(--color-success);
 		border: 0;
 		border-radius: 1rem;
 		color: var(--on-success, #04130b);
