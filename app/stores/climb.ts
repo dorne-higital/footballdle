@@ -98,6 +98,8 @@ interface Saved {
 	recent?: string[]
 	/** Trophy cards won: id -> times won and the season first won */
 	trophies?: Record<string, { count: number; first: number }>
+	/** The full-set bonus has been paid */
+	setBonusPaid?: boolean
 }
 
 const STORAGE_KEY = 'footballdle-climb'
@@ -114,6 +116,9 @@ export const TROPHY_CARDS = [
 	{ id: 'invincibles', name: 'Invincibles', kind: 'special' as const, tier: -1, how: 'Go a whole season unbeaten' },
 	{ id: 'perfect', name: 'Perfect 10', kind: 'special' as const, tier: -1, how: 'Get all 10 right in a match' },
 ]
+
+/** Hints for collecting every trophy card, paid once */
+export const SET_BONUS_HINTS = 5
 
 const players = playersData as ClimbPlayer[]
 const empty = (): Saved => ({ v: 1, club: null, season: null, seasons: 0, titles: {}, history: [], live: null, last: null, end: null })
@@ -220,6 +225,10 @@ export const useClimbStore = defineStore('climb', () => {
 		const trophies = (saved.value.trophies ??= {})
 		const had = trophies[id]
 		trophies[id] = { count: (had?.count ?? 0) + 1, first: had?.first ?? saved.value.seasons }
+		if (!saved.value.setBonusPaid && TROPHY_CARDS.every(t => trophies[t.id])) {
+			saved.value.setBonusPaid = true
+			usePurchasesStore().grantHints(SET_BONUS_HINTS)
+		}
 	}
 
 	function answer(picked: number[], timeLeft: number) {

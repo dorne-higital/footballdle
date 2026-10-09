@@ -257,6 +257,13 @@
 						<span class="t-meta">{{ t.won ? (t.count > 1 ? `Won ×${t.count}` : `Season ${t.first}`) : t.how }}</span>
 					</li>
 				</ul>
+				<p :class="['set-bonus', { paid: climb.saved.setBonusPaid }]">
+					<Icon
+						name="solar:lightbulb-bolt-bold"
+						size="1rem"
+					/>
+					{{ climb.saved.setBonusPaid ? `Full set! ${SET_BONUS_HINTS} bonus hints added to your bank` : `Collect all ${TROPHY_CARDS.length} for ${SET_BONUS_HINTS} bonus hints` }}
+				</p>
 			</section>
 		</template>
 	</div>
@@ -265,7 +272,7 @@
 <script setup lang="ts">
 	import { computed, onMounted, ref } from 'vue'
 	import ClubCrest from '../../components/cards/ClubCrest.vue'
-	import { TROPHY_CARDS, useClimbStore, type YourClub } from '../../stores/climb'
+	import { SET_BONUS_HINTS, TROPHY_CARDS, useClimbStore, type YourClub } from '../../stores/climb'
 	import { TIER_NAMES } from '../../utils/climb/questions'
 	import { YOU } from '../../utils/climb/league'
 	import { useHaptics } from '../../composables/useHaptics'
@@ -755,6 +762,24 @@
 
 		&.l b {
 			color: var(--color-error, #ef5b5b);
+		}
+	}
+
+	.set-bonus {
+		align-items: center;
+		color: var(--text-secondary);
+		display: flex;
+		font-size: 0.8rem;
+		font-weight: 700;
+		gap: 0.4rem;
+		margin: 0.2rem 0 0;
+
+		.iconify {
+			color: var(--tertiary-color, #f2b84b);
+		}
+
+		&.paid {
+			color: var(--text-primary);
 		}
 	}
 
