@@ -96,13 +96,23 @@ export const useCardsStore = defineStore('cards', () => {
 	const lastMiss = ref<{ club: string } | null>(null)
 	let loaded = false
 
+	/** A saved card still matches the season data: the card that day really gives (or, for a
+	 *  replay, a card that's in the season). Cards from an old or test season plan fail this. */
+	function stillValid(key: string, card: OwnedCard): boolean {
+		if (!card?.id || !seasons[card.season]?.cards[card.id]) return false
+		if (key.startsWith('replay:')) return true
+		const today = cardForDay(key)
+		return !!today && today.season === card.season && today.id === card.id
+	}
+	const validCards = (cards: Record<string, OwnedCard>) => Object.fromEntries(Object.entries(cards).filter(([k, c]) => stillValid(k, c)))
+
 	function load() {
 		if (loaded || !import.meta.client) return
 		loaded = true
 		const s = readSavedObject<SavedCards>(STORAGE_KEY)
 		saved.value = {
 			v: 1,
-			cards: s?.cards && typeof s.cards === 'object' ? s.cards : {},
+			cards: s?.cards && typeof s.cards === 'object' ? validCards(s.cards) : {},
 			sets: s?.sets && typeof s.sets === 'object' ? s.sets : {},
 			played: s?.played && typeof s.played === 'object' ? s.played : {},
 		}
@@ -247,7 +257,7 @@ export const useCardsStore = defineStore('cards', () => {
 		let changed = false
 		for (const [key, card] of Object.entries(other.cards ?? {})) {
 			const mine = saved.value.cards[key]
-			if (!card?.id || !seasons[card.season]) continue
+			if (!stillValid(key, card)) continue
 			if (!mine) {
 				saved.value.cards[key] = { ...card }
 				changed = true
