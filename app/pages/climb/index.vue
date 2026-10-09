@@ -235,24 +235,28 @@
 				</NuxtLink>
 			</section>
 
-			<section
-				v-if="titleCount"
-				class="panel cabinet"
-			>
-				<p class="eyebrow">Trophy cabinet</p>
-				<div class="trophies">
-					<span
-						v-for="t in titles"
-						:key="t.tier"
-						class="trophy"
-					>
-						<Icon
-							name="solar:cup-star-bold"
-							size="1.1rem"
-						/>
-						{{ TIER_NAMES[t.tier] }}<template v-if="t.count > 1"> ×{{ t.count }}</template>
-					</span>
+			<section class="panel trophy-cards">
+				<div class="cards-head">
+					<p class="eyebrow">Trophy cards</p>
+					<p class="count">{{ trophiesWon }} of {{ TROPHY_CARDS.length }}</p>
 				</div>
+				<ul class="trophy-grid">
+					<li
+						v-for="t in trophyCards"
+						:key="t.id"
+						:class="['trophy-card', t.won ? `won ${t.style}` : 'locked']"
+						:aria-label="t.won ? `${t.name}, won ${t.count} ${t.count === 1 ? 'time' : 'times'}` : `${t.name}, locked: ${t.how}`"
+					>
+						<span class="t-icon">
+							<Icon
+								:name="t.won ? t.icon : 'solar:lock-keyhole-minimalistic-bold'"
+								size="1.6rem"
+							/>
+						</span>
+						<span class="t-name">{{ t.name }}</span>
+						<span class="t-meta">{{ t.won ? (t.count > 1 ? `Won ×${t.count}` : `Season ${t.first}`) : t.how }}</span>
+					</li>
+				</ul>
 			</section>
 		</template>
 	</div>
@@ -261,7 +265,7 @@
 <script setup lang="ts">
 	import { computed, onMounted, ref } from 'vue'
 	import ClubCrest from '../../components/cards/ClubCrest.vue'
-	import { useClimbStore, type YourClub } from '../../stores/climb'
+	import { TROPHY_CARDS, useClimbStore, type YourClub } from '../../stores/climb'
 	import { TIER_NAMES } from '../../utils/climb/questions'
 	import { YOU } from '../../utils/climb/league'
 	import { useHaptics } from '../../composables/useHaptics'
@@ -356,13 +360,23 @@
 		return `Next · ${f.home ? 'home' : 'away'}`
 	})
 
-	const titles = computed(() =>
-		Object.entries(climb.saved.titles)
-			.map(([tier, count]) => ({ tier: Number(tier), count }))
-			.filter(t => t.count > 0)
-			.sort((a, b) => b.tier - a.tier),
+	// Bronze to gold up the leagues, a European blue for the Champions League, purple specials
+	const TIER_STYLE = ['bronze', 'bronze', 'silver', 'silver', 'gold', 'europe']
+	const ICONS: Record<string, string> = { playoff: 'solar:ranking-bold', invincibles: 'solar:shield-check-bold', perfect: 'solar:target-bold' }
+	const trophyCards = computed(() =>
+		TROPHY_CARDS.map(t => {
+			const won = climb.saved.trophies?.[t.id]
+			return {
+				...t,
+				won: !!won,
+				count: won?.count ?? 0,
+				first: won?.first ?? 0,
+				style: t.kind === 'title' ? TIER_STYLE[t.tier] : 'special',
+				icon: t.kind === 'title' ? (t.tier === 5 ? 'solar:star-shine-bold' : 'solar:cup-star-bold') : (ICONS[t.id] ?? 'solar:medal-ribbon-bold'),
+			}
+		}),
 	)
-	const titleCount = computed(() => titles.value.length)
+	const trophiesWon = computed(() => trophyCards.value.filter(t => t.won).length)
 
 	function ordinal(n: number): string {
 		const s = ['th', 'st', 'nd', 'rd']
@@ -744,24 +758,94 @@
 		}
 	}
 
-	.trophies {
+	.cards-head {
+		align-items: baseline;
 		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-	}
+		justify-content: space-between;
 
-	.trophy {
-		align-items: center;
-		background: color-mix(in srgb, var(--tertiary-color, #f2b84b) 14%, transparent);
-		border-radius: 999px;
-		display: inline-flex;
-		font-size: 0.8rem;
-		font-weight: 800;
-		gap: 0.35rem;
-		padding: 0.35rem 0.7rem;
-
-		.iconify {
-			color: var(--tertiary-color, #f2b84b);
+		.count {
+			color: var(--text-secondary);
+			font-size: 0.8rem;
+			font-weight: 800;
+			margin: 0;
 		}
 	}
+
+	.trophy-grid {
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.t-icon {
+		color: var(--metal);
+		display: flex;
+	}
+
+	.t-name {
+		font-family: var(--font-display);
+		font-size: 0.72rem;
+		line-height: 1.1;
+	}
+
+	.t-meta {
+		color: var(--text-secondary);
+		font-size: 0.62rem;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+
+	// A small portrait card per trophy, metal by league
+	.trophy-card {
+		--metal: var(--text-secondary);
+
+		align-items: center;
+		aspect-ratio: 5 / 6;
+		background:
+			radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--metal) 32%, transparent), transparent 70%),
+			var(--bg-primary);
+		border: 1.5px solid color-mix(in srgb, var(--metal) 60%, transparent);
+		border-radius: 0.9rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
+		justify-content: center;
+		padding: 0.5rem 0.35rem;
+		text-align: center;
+
+		&.bronze {
+			--metal: #c98a4b;
+		}
+
+		&.silver {
+			--metal: #b9c4cc;
+		}
+
+		&.gold {
+			--metal: var(--tertiary-color, #f2b84b);
+		}
+
+		&.europe {
+			--metal: #6c8cff;
+		}
+
+		&.special {
+			--metal: #b48cff;
+		}
+
+		&.locked {
+			background: transparent;
+			border: 1.5px dashed var(--border);
+
+			.t-icon,
+			.t-name {
+				color: var(--text-secondary);
+				opacity: 0.7;
+			}
+		}
+	}
+
 </style>

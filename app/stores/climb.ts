@@ -96,6 +96,8 @@ interface Saved {
 	end: SeasonEnd | null
 	/** Players seen in recent matches, newest last, rested from the next one */
 	recent?: string[]
+	/** Trophy cards won: id -> times won and the season first won */
+	trophies?: Record<string, { count: number; first: number }>
 }
 
 const STORAGE_KEY = 'footballdle-climb'
@@ -104,6 +106,14 @@ export const TITLE_HINTS = [1, 1, 1, 2, 3, 4] as const
 /** Leagues switched on in this build: the first TestFlight only has the first two */
 export const MAX_TIER = 1
 const PENS_QUESTIONS = 5
+
+/** The trophy cards to collect: a title for each league, plus three specials */
+export const TROPHY_CARDS = [
+	...TIER_NAMES.map((name, tier) => ({ id: `title-${tier}`, name, kind: 'title' as const, tier, how: `Win the ${name}` })),
+	{ id: 'playoff', name: 'Play-off winners', kind: 'special' as const, tier: -1, how: 'Go up through the play-off final' },
+	{ id: 'invincibles', name: 'Invincibles', kind: 'special' as const, tier: -1, how: 'Go a whole season unbeaten' },
+	{ id: 'perfect', name: 'Perfect 10', kind: 'special' as const, tier: -1, how: 'Get all 10 right in a match' },
+]
 
 const players = playersData as ClimbPlayer[]
 const empty = (): Saved => ({ v: 1, club: null, season: null, seasons: 0, titles: {}, history: [], live: null, last: null, end: null })
@@ -117,6 +127,12 @@ export const useClimbStore = defineStore('climb', () => {
 		loaded = true
 		const s = readSavedObject<Saved>(STORAGE_KEY)
 		if (s?.v === 1) saved.value = { ...empty(), ...s }
+		// Titles won before trophy cards existed become their cards
+		if (!saved.value.trophies) {
+			saved.value.trophies = Object.fromEntries(
+				Object.entries(saved.value.titles).filter(([, n]) => n > 0).map(([tier, n]) => [`title-${tier}`, { count: n, first: 1 }]),
+			)
+		}
 	}
 	function persist() {
 		try {
@@ -200,6 +216,12 @@ export const useClimbStore = defineStore('climb', () => {
 		saved.value.recent = seen.slice(-restCount(players, tier))
 	}
 
+	function award(id: string) {
+		const trophies = (saved.value.trophies ??= {})
+		const had = trophies[id]
+		trophies[id] = { count: (had?.count ?? 0) + 1, first: had?.first ?? saved.value.seasons }
+	}
+
 	function answer(picked: number[], timeLeft: number) {
 		const live = saved.value.live
 		if (live) live.state = answerQuestion(live.state, picked, timeLeft)
@@ -224,6 +246,7 @@ export const useClimbStore = defineStore('climb', () => {
 		if (!live || !s || !isFinished(live.state)) return
 		const sum = summarise(live.state)
 		const before = table(s).findIndex(r => r.id === YOU) + 1
+		if (live.kind !== 'pens' && sum.correct === live.state.questions.length) award('perfect')
 		const last: LastResult = { kind: live.kind, opponent: live.opponent, score: sum.score, result: sum.result, correct: sum.correct, targets: sum.targets, others: [], posBefore: before, posAfter: before }
 		saved.value.live = null
 
@@ -318,7 +341,13 @@ export const useClimbStore = defineStore('climb', () => {
 		const title = extra.title ?? outcome.kind === 'champions'
 		const hints = title ? TITLE_HINTS[s.tier] ?? 0 : 0
 		if (hints) usePurchasesStore().grantHints(hints)
-		if (title) saved.value.titles[s.tier] = (saved.value.titles[s.tier] ?? 0) + 1
+		if (title) {
+			saved.value.titles[s.tier] = (saved.value.titles[s.tier] ?? 0) + 1
+			award(`title-${s.tier}`)
+		}
+		if (extra.playoffWon) award('playoff')
+		const you = table(s).find(r => r.id === YOU)
+		if (s.tier !== CL_TIER && you && you.played > 0 && you.lost === 0) award('invincibles')
 		saved.value.history.push({ tier: s.tier, number: s.number, position: outcome.position, kind: outcome.kind })
 		let next = nextTier(s, outcome, extra.playoffWon)
 		const capped = next > MAX_TIER && next !== s.tier
