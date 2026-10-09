@@ -189,21 +189,25 @@
 		<NuxtLink
 			v-if="climbEnabled"
 			to="/climb"
-			class="challenge-row climb-row"
+			class="climb-card"
+			:aria-label="`The Climb: ${climbTitle}. ${climbSub}`"
 		>
-			<Icon
-				name="solar:ranking-linear"
-				class="bg-icon challenge"
-				aria-hidden="true"
-			/>
-			<span class="mode-text">
-				<strong>The Climb</strong>
-				<span>{{ climbLine }}</span>
+			<span class="climb-text">
+				<span class="climb-eyebrow">The Climb</span>
+				<strong class="climb-title">{{ climbTitle }}</strong>
+				<span class="climb-sub">{{ climbSub }}</span>
 			</span>
-			<Icon
-				name="solar:alt-arrow-right-linear"
-				size="1.2rem"
-			/>
+			<!-- Six rungs, National League at the bottom: where your club is on the way up -->
+			<span
+				class="climb-ladder"
+				aria-hidden="true"
+			>
+				<i
+					v-for="rung in 6"
+					:key="rung"
+					:class="{ done: 6 - rung < climbTier, now: 6 - rung === climbTier }"
+				></i>
+			</span>
 		</NuxtLink>
 		<NuxtLink
 			v-else
@@ -292,12 +296,17 @@
 	const { climbEnabled } = useRuntimeConfig().public
 	const climb = useClimbStore()
 	onMounted(() => climbEnabled && climb.load())
-	const climbLine = computed(() => {
-		if (!climb.saved.club || !climb.season) return 'Start in the National League, climb to Europe'
+	const started = computed(() => !!climb.saved.club && !!climb.season)
+	const climbTier = computed(() => (started.value ? climb.tier : -1))
+	const climbTitle = computed(() => {
+		if (!started.value) return 'Start your climb'
 		const pos = climb.position
 		const ord = pos + (['th', 'st', 'nd', 'rd'][((pos % 100) - 20) % 10] || ['th', 'st', 'nd', 'rd'][pos % 100] || 'th')
-		return `${climb.saved.club.name} · ${climb.tierName}, ${ord}`
+		return `${climb.tierName} · ${ord}`
 	})
+	const climbSub = computed(() =>
+		started.value ? `${climb.saved.club!.name} · ${climb.nextFixture?.label ?? 'Season over'}` : 'National League to the Champions League',
+	)
 
 	const rings = computed(() => [
 		{ progress: daily.value.progress, color: RING_COLORS.daily },
@@ -844,6 +853,78 @@
 			opacity: 0.1;
 			right: 2.25rem;
 			width: 5.5rem;
+		}
+	}
+
+	// The Climb: its own gold-tinted card so it stands apart from the daily games
+	.climb-card {
+		align-items: center;
+		background:
+			radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--tertiary-color) 26%, transparent), transparent 60%),
+			linear-gradient(135deg, color-mix(in srgb, var(--tertiary-color) 14%, var(--bg-secondary)), var(--bg-secondary));
+		border: 1px solid color-mix(in srgb, var(--tertiary-color) 45%, transparent);
+		border-radius: 1.25rem;
+		color: var(--text-primary);
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		padding: 0.95rem 1.1rem;
+		text-decoration: none;
+		transition: transform 0.15s ease;
+
+		&:active {
+			transform: scale(0.97);
+		}
+	}
+
+	.climb-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0.1rem;
+		min-width: 0;
+	}
+
+	.climb-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+	}
+
+	.climb-eyebrow {
+		color: var(--tertiary-color);
+		font-size: 0.7rem;
+		font-weight: 800;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	.climb-sub {
+		color: var(--text-secondary);
+		font-size: 0.82rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.climb-ladder {
+		display: flex;
+		flex-direction: column;
+		flex-shrink: 0;
+		gap: 3px;
+		width: 2.6rem;
+
+		i {
+			background: color-mix(in srgb, var(--text-primary) 12%, transparent);
+			border-radius: 3px;
+			height: 6px;
+
+			&.done {
+				background: color-mix(in srgb, var(--tertiary-color) 55%, transparent);
+			}
+
+			&.now {
+				background: var(--tertiary-color);
+				box-shadow: 0 0 8px color-mix(in srgb, var(--tertiary-color) 70%, transparent);
+			}
 		}
 	}
 

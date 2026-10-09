@@ -40,17 +40,17 @@ export interface Question {
 export const TIER_NAMES = ['National League', 'League Two', 'League One', 'Championship', 'Premier League', 'Champions League'] as const
 
 export const TIERS: TierRules[] = [
-	{ tier: 0, poolShare: 0.09, links: ['club'], cards: 4, oddOnes: 1, decoys: false },
-	{ tier: 1, poolShare: 0.21, links: ['club', 'nation'], cards: 4, oddOnes: 1, decoys: false },
-	{ tier: 2, poolShare: 0.39, links: ['club', 'nation', 'position'], positions: ['Goalkeeper', 'Defender'], cards: 4, oddOnes: 1, decoys: false },
-	{ tier: 3, poolShare: 0.5, links: ['club', 'nation', 'position'], cards: 4, oddOnes: 1, decoys: true },
-	{ tier: 4, poolShare: 0.66, links: ['club', 'nation', 'position'], cards: 5, oddOnes: 1, decoys: true },
+	{ tier: 0, poolShare: 0.18, links: ['club'], cards: 4, oddOnes: 1, decoys: false },
+	{ tier: 1, poolShare: 0.3, links: ['club', 'nation'], cards: 4, oddOnes: 1, decoys: false },
+	{ tier: 2, poolShare: 0.45, links: ['club', 'nation', 'position'], positions: ['Goalkeeper', 'Defender'], cards: 4, oddOnes: 1, decoys: false },
+	{ tier: 3, poolShare: 0.57, links: ['club', 'nation', 'position'], cards: 4, oddOnes: 1, decoys: true },
+	{ tier: 4, poolShare: 0.72, links: ['club', 'nation', 'position'], cards: 5, oddOnes: 1, decoys: true },
 	{ tier: 5, poolShare: 1, links: ['club', 'nation', 'position'], cards: 6, oddOnes: 2, decoys: true },
 ]
 
 /** Every question shows at least this many well-known players, even in the Champions League */
 export const MIN_KNOWN = 2
-/** "Well known" = within the League Two pool */
+/** "Well known" = the most famous ~20% */
 const KNOWN_SHARE = 0.21
 /** England has a third of the players, so nation links pick it less often */
 const ENGLAND_WEIGHT = 0.35
@@ -185,16 +185,24 @@ export function generateQuestion(pools: Pools, rules: TierRules, rng: () => numb
 	return null
 }
 
-/** A match's questions: no player twice and no link used twice in the same match */
-export function generateMatch(players: ClimbPlayer[], tier: number, seed: number, count = 10): Question[] {
+/** How many recently seen players to rest from the next match: about 40% of the tier's pool */
+export function restCount(players: ClimbPlayer[], tier: number): number {
+	return Math.round(poolsFor(rankByFame(players), TIERS[tier]!).pool.length * 0.4)
+}
+
+/** A match's questions: no player twice and no link used twice in the same match. Players in
+ *  `recent` (seen in the last match or two) are left out where possible, so the same faces
+ *  don't come round every week. */
+export function generateMatch(players: ClimbPlayer[], tier: number, seed: number, count = 10, recent: Iterable<string> = []): Question[] {
 	const rules = TIERS[tier]!
 	const pools = poolsFor(rankByFame(players), rules)
 	const rng = seededRandom(seed)
 	const used = new Set<string>()
+	const rested = new Set(recent)
 	const links = new Set<string>()
 	const questions: Question[] = []
 	for (let i = 0; questions.length < count && i < count * 20; i++) {
-		const q = generateQuestion(pools, rules, rng, used)
+		const q = generateQuestion(pools, rules, rng, new Set([...used, ...rested])) ?? generateQuestion(pools, rules, rng, used)
 		if (!q) break
 		const linkKey = `${q.link.type}:${q.link.value}`
 		if (links.has(linkKey) && i < count * 10) continue

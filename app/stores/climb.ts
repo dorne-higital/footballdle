@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import playersData from '../data/players.json'
 import { readSavedObject } from '../utils/storage'
-import { generateMatch, seededRandom, TIER_NAMES, type ClimbPlayer } from '../utils/climb/questions'
+import { generateMatch, restCount, seededRandom, TIER_NAMES, type ClimbPlayer } from '../utils/climb/questions'
 import {
 	answer as answerQuestion,
 	isFinished,
@@ -94,6 +94,8 @@ interface Saved {
 	live: LiveMatch | null
 	last: LastResult | null
 	end: SeasonEnd | null
+	/** Players seen in recent matches, newest last, rested from the next one */
+	recent?: string[]
 }
 
 const STORAGE_KEY = 'footballdle-climb'
@@ -187,8 +189,15 @@ export const useClimbStore = defineStore('climb', () => {
 		const round = kind === 'league' ? currentMatchweek(s) : kind === 'knockout' ? s.knockouts!.length - 1 : 0
 		const seed = matchSeed(kind, round)
 		saved.value.last = null
-		saved.value.live = { kind, round, opponent: next.opponent.id, state: startMatch(s.tier, next.standing, generateMatch(players, s.tier, seed), seed) }
+		const questions = generateMatch(players, s.tier, seed, undefined, saved.value.recent)
+		remember(questions, s.tier)
+		saved.value.live = { kind, round, opponent: next.opponent.id, state: startMatch(s.tier, next.standing, questions, seed) }
 		return saved.value.live
+	}
+
+	function remember(questions: { cards: ClimbPlayer[] }[], tier: number) {
+		const seen = [...(saved.value.recent ?? []), ...questions.flatMap(q => q.cards.map(c => c.name))]
+		saved.value.recent = seen.slice(-restCount(players, tier))
 	}
 
 	function answer(picked: number[], timeLeft: number) {
@@ -254,7 +263,7 @@ export const useClimbStore = defineStore('climb', () => {
 				kind: 'pens',
 				round: live.round,
 				opponent: live.opponent,
-				state: startMatch(s.tier, 'mid', generateMatch(players, s.tier, seed, PENS_QUESTIONS), seed),
+				state: startMatch(s.tier, 'mid', generateMatch(players, s.tier, seed, PENS_QUESTIONS, saved.value.recent), seed),
 				pens: { tie, theirs },
 			}
 			return

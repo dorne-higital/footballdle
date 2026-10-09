@@ -7,6 +7,7 @@ import {
 	MIN_KNOWN,
 	poolsFor,
 	positionGroup,
+	restCount,
 	rankByFame,
 	seededRandom,
 	solve,
@@ -105,6 +106,17 @@ describe('generateMatch', () => {
 			const names = match.flatMap(q => q.cards.map(c => c.name))
 			expect(new Set(names).size).toBe(names.length)
 			expect(generateMatch(players, rules.tier, 42)).toEqual(match)
+		}
+	})
+
+	it('rests players seen in the last match where it can', () => {
+		for (const rules of TIERS) {
+			const first = generateMatch(players, rules.tier, 1)
+			const recent = first.flatMap(q => q.cards.map(c => c.name)).slice(-restCount(players, rules.tier))
+			const second = generateMatch(players, rules.tier, 2, 10, recent)
+			const repeats = second.flatMap(q => q.cards.map(c => c.name)).filter(n => recent.includes(n))
+			expect(second).toHaveLength(10)
+			expect(repeats.length).toBeLessThan(recent.length * 0.25)
 		}
 	})
 
