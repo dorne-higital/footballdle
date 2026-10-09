@@ -22,7 +22,7 @@ Guess the footballer daily
 Can be changed any time without a new app review, so use it for season or transfer-window news.
 
 ```
-A new footballer to find every day. Start with 3 free hints, unlock 25 trophies and climb the Game Center leaderboards. Fresh puzzles drop at midnight.
+A new footballer to find every day. Collect Player Cards, unlock 57 trophies and climb the Game Center leaderboards. Fresh puzzles drop at midnight.
 ```
 
 ## Keywords (100)
@@ -38,7 +38,7 @@ football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,scout,club,leag
 ```
 Think you know your footballers? Prove it, every single day.
 
-Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
+Footballdle is the daily football guessing game. A new mystery player drops at midnight: guess their five- or six-letter surname in six tries, with green and amber tiles showing how close you are. Then take on two more modes and close all three of your activity rings.
 
 THREE MODES, ONE MATCHDAY
 • Daily: guess the hidden five- or six-letter surname in six tries. Win it to collect that player's card, and finish a club's set for free hints. Stuck? Use a hint to reveal the player's club, nationality and position, then the first letters of their surname.
@@ -46,8 +46,13 @@ THREE MODES, ONE MATCHDAY
 • Spot the Baller: ten rapid-fire rounds against the clock. Pick the right name before time runs out.
 • Challenge mode: finish the Daily to unlock unlimited games against a 45-second clock.
 
-25 TROPHIES TO UNLOCK
-• From Off the Mark to Club Legend, earn badges for wins, streaks, quickfire finishes and perfect rounds
+PLAYER CARDS
+• Win the Daily to collect that day's player card, and a shiny one for winning in two guesses or fewer
+• Fill every club's set to earn free hints
+• Missed a card? Replay it from the Cards tab
+
+57 TROPHIES TO UNLOCK
+• From Off the Mark to Club Legend, earn badges for wins, streaks, quickfire finishes, perfect rounds and Player Cards
 • One hidden trophy for the true worldie
 • Track your progress on the Trophies screen and in Game Center
 
@@ -62,7 +67,7 @@ COMPETE WITH EVERYONE
 • Your scores and trophies are submitted automatically
 
 MADE FOR IPHONE
-• A floodlit design built for one-handed play, with haptic feedback on every key
+• A floodlit design built for one-handed play, in dark or light, with haptic feedback on every key
 • No account, no sign-up, no ads
 
 HINTS AND PRO
