@@ -4,6 +4,9 @@
 // a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
 // (Apple rejects external tip links, and AdSense doesn't run in native apps).
 const isApp = process.env.APP_TARGET === 'ios'
+// The app's look (layouts, Matchday home, tab bar, Floodlights theme). Always on in the app;
+// on the website only with WEB_SHELL=app until the new look ships there
+const appShell = isApp || process.env.WEB_SHELL === 'app'
 
 // Applies the saved theme before first paint to avoid a light-mode flash
 const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
@@ -87,6 +90,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			isApp,
+			appShell,
 			googleAnalyticsId: isApp ? '' : process.env.GOOGLE_ANALYTICS_ID || '',
 			adsensePublisherId: isApp ? '' : process.env.ADSENSE_PUBLISHER_ID || '',
 			adsenseSlotId: isApp ? '' : process.env.ADSENSE_SLOT_ID || '',
@@ -99,12 +103,8 @@ export default defineNuxtConfig({
 	app: {
 		...(isApp ? { pageTransition: { name: 'app-slide', mode: 'out-in' } } : {}),
 		head: {
-			...(isApp
-				? {
-						viewport: 'width=device-width, initial-scale=1, viewport-fit=cover',
-						htmlAttrs: { class: 'app-shell' },
-					}
-				: {}),
+			...(isApp ? { viewport: 'width=device-width, initial-scale=1, viewport-fit=cover' } : {}),
+			...(appShell ? { htmlAttrs: { class: 'app-shell' } } : {}),
 			link: [
 				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },

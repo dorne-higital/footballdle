@@ -1,7 +1,7 @@
 <template>
 	<!-- iOS app: a card per guess, with labelled attribute tiles -->
 	<div
-		v-if="$config.public.isApp"
+		v-if="$config.public.appShell"
 		:class="['scout-card', { solved }]"
 	>
 		<div class="card-head">

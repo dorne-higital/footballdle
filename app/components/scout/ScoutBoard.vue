@@ -1,7 +1,7 @@
 <template>
 	<div class="scout-board">
 		<div
-			v-if="results.length && !$config.public.isApp"
+			v-if="results.length && !$config.public.appShell"
 			class="board-header"
 		>
 			<span>Player</span>
@@ -21,7 +21,7 @@
 				:index="i"
 			/>
 			<!-- iOS app: slim placeholders for the guesses still to come -->
-			<template v-if="$config.public.isApp && !gameOver">
+			<template v-if="$config.public.appShell && !gameOver">
 				<div
 					v-for="n in maxGuesses - results.length"
 					:key="`empty-${n}`"
@@ -47,7 +47,7 @@
 		/>
 
 		<div
-			v-if="$config.public.isApp"
+			v-if="$config.public.appShell"
 			class="app-footer"
 		>
 			<div

@@ -125,7 +125,7 @@
 	} from '../utils/achievements'
 
 	// iOS app only: the website has no Game Center
-	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
+	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
 
 	useHead({ title: 'Trophies' })
 

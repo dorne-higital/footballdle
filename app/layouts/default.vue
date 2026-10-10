@@ -1,8 +1,8 @@
 <template>
-	<div :class="{ 'app-page-layout': $config.public.isApp, 'has-tab-bar': isTab }">
-		<AppTopBar v-if="$config.public.isApp" />
+	<div :class="{ 'app-page-layout': $config.public.appShell, 'has-tab-bar': isTab }">
+		<AppTopBar v-if="$config.public.appShell" />
 		<slot />
-		<HubSheets v-if="$config.public.isApp" />
+		<HubSheets v-if="$config.public.appShell" />
 		<AppTabBar v-if="isTab" />
 	</div>
 </template>
@@ -15,9 +15,9 @@
 	import { tabFor } from '../utils/appTabs'
 
 	const route = useRoute()
-	const { isApp } = useRuntimeConfig().public
-	// Stats, Trophies and Settings are tabs in the app: tab bar on, no back button
-	const isTab = computed(() => isApp && tabFor(route.path) !== null)
+	const { appShell } = useRuntimeConfig().public
+	// Stats, Trophies and Settings are tabs in the app shell: tab bar on, no back button
+	const isTab = computed(() => appShell && tabFor(route.path) !== null)
 </script>
 
 <style scoped lang="scss">

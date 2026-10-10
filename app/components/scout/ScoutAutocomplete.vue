@@ -84,7 +84,7 @@
 	const emit = defineEmits<{ guess: [name: string] }>()
 
 	const store = useScoutReportStore()
-	const isApp = !!useRuntimeConfig().public.isApp
+	const isApp = !!useRuntimeConfig().public.appShell
 	const season = playerMeta.season
 	const query = ref('')
 	const highlightedIndex = ref(0)

@@ -74,7 +74,7 @@
 	import ClubCrest from '../../components/cards/ClubCrest.vue'
 
 	// iOS app only: the website has no hint bank, so no cards
-	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
+	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
 	useHead({ title: 'Cards' })
 
 	const cards = useCardsStore()

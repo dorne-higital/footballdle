@@ -8,6 +8,7 @@
     "build:analyze": "ANALYZE=true nuxt build",
     "dev": "nuxt dev",
     "dev:app": "APP_TARGET=ios nuxt dev",
+    "dev:web-app": "WEB_SHELL=app nuxt dev",
     "dev:fast": "nuxt dev --port 3000 --hostname 0.0.0.0",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

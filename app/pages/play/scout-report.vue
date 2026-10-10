@@ -44,7 +44,7 @@
 				@unlock="scoutStore.unlockHint()"
 			/>
 			<FullTimePanel
-				v-if="$config.public.isApp && scoutStore.gameOver"
+				v-if="$config.public.appShell && scoutStore.gameOver"
 				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
 				:is-win="scoutStore.isWin"
 				:countdown="scoutStore.countdown"
@@ -130,7 +130,7 @@
 
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings && !$config.public.isApp"
+			v-if="modalsStore.showSettings && !$config.public.appShell"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -143,7 +143,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats && !$config.public.isApp"
+			v-if="modalsStore.showStats && !$config.public.appShell"
 			heading="Statistics"
 			accent="info"
 			variant="small"
@@ -310,7 +310,7 @@
 		// and a finished game opens on its board (result sheet too from "See result")
 		const start = useRoute().query.start
 		if (start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
-		if (useRuntimeConfig().public.isApp && scoutStore.gameOver) {
+		if (useRuntimeConfig().public.appShell && scoutStore.gameOver) {
 			scoutStore.showIntro = false
 			if (start === 'result') scoutStore.showGameOverModal = true
 		}

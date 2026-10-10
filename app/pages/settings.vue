@@ -8,7 +8,7 @@
 	import ThemePickerSettings from '../components/shared/ThemePickerSettings.vue'
 
 	// iOS app only: the website shows settings in a sheet from the header
-	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
+	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
 
 	useHead({ title: 'Settings' })
 </script>
