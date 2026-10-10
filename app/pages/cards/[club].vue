@@ -71,7 +71,7 @@
 	import { clubStyle } from '../../utils/clubs'
 	import ClubCrest from '../../components/cards/ClubCrest.vue'
 
-	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
+	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
 
 	const route = useRoute()
 	const cards = useCardsStore()

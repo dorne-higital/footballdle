@@ -1,7 +1,7 @@
 <template>
 	<div class="error-page">
 		<nav
-			v-if="!$config.public.isApp"
+			v-if="!$config.public.appShell"
 			class="error-nav"
 		>
 			<NuxtLink
@@ -62,7 +62,7 @@
 		</main>
 
 		<footer
-			v-if="!$config.public.isApp"
+			v-if="!$config.public.appShell"
 			class="error-footer"
 		>
 			<p>Daily Premier League footballer guessing game.</p>

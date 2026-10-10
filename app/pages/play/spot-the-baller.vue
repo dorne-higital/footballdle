@@ -28,7 +28,7 @@
 			/>
 
 			<div
-				v-if="$config.public.isApp"
+				v-if="$config.public.appShell"
 				class="round-dots"
 				:aria-label="`Score ${spotStore.score} of ${spotStore.maxGuesses}`"
 			>
@@ -188,7 +188,7 @@
 
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings && !$config.public.isApp"
+			v-if="modalsStore.showSettings && !$config.public.appShell"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -201,7 +201,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats && !$config.public.isApp"
+			v-if="modalsStore.showStats && !$config.public.appShell"
 			heading="Statistics"
 			accent="info"
 			variant="small"
@@ -251,7 +251,7 @@
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
 	import { useShare } from '../../composables/useShare'
 
-	const isAppBuild = !!useRuntimeConfig().public.isApp
+	const isAppBuild = !!useRuntimeConfig().public.appShell
 
 	definePageMeta({ layout: 'play' })
 

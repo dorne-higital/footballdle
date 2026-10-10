@@ -56,7 +56,7 @@
 	import { useReplayStore } from '../../../stores/replay'
 	import { useCardsStore } from '../../../stores/cards'
 
-	if (!useRuntimeConfig().public.isApp) await navigateTo('/', { replace: true })
+	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
 	useHead({ title: 'Replay a card' })
 
 	const route = useRoute()

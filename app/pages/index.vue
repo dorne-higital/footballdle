@@ -1,6 +1,6 @@
 <template>
 	<div class="hub-page">
-		<AppHome v-if="$config.public.isApp" />
+		<AppHome v-if="$config.public.appShell" />
 		<template v-else>
 			<ModeSelectHub
 				:daily-streak="statsStore.stats.currentStreak"
@@ -11,7 +11,7 @@
 			<HubStatsStrip :modes="modeSummaries" />
 		</template>
 
-		<HubSheets v-if="!$config.public.isApp" />
+		<HubSheets v-if="!$config.public.appShell" />
 	</div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
 	<div :class="['play-layout', { 'has-tab-bar': showTabBar }]">
-		<template v-if="$config.public.isApp">
+		<template v-if="$config.public.appShell">
 			<AppTopBar v-if="!showTabBar" />
 		</template>
 		<AppHeader v-else />
@@ -15,7 +15,7 @@
 
 		<AppTabBar v-if="showTabBar" />
 		<!-- iOS app: the same Stats and Settings sheets as everywhere else -->
-		<HubSheets v-if="$config.public.isApp" />
+		<HubSheets v-if="$config.public.appShell" />
 	</div>
 </template>
 
@@ -27,10 +27,10 @@
 	import HubSheets from '../components/shared/HubSheets.vue'
 
 	const route = useRoute()
-	const { isApp } = useRuntimeConfig().public
+	const { appShell } = useRuntimeConfig().public
 
 	// iOS app: tab bar on the Matchday home, back-button top bar inside games
-	const showTabBar = computed(() => isApp && route.path.replace(/\/+$/, '') === '')
+	const showTabBar = computed(() => appShell && route.path.replace(/\/+$/, '') === '')
 </script>
 
 <style scoped lang="scss">

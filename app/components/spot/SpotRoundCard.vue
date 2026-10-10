@@ -1,7 +1,7 @@
 <template>
 	<!-- iOS app: scouting card up top, quiz-style answers at the bottom -->
 	<div
-		v-if="$config.public.isApp"
+		v-if="$config.public.appShell"
 		class="spot-round-card app-round"
 	>
 		<section class="scout-card">

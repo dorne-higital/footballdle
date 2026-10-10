@@ -108,7 +108,7 @@
 			</button>
 
 			<FullTimePanel
-				v-if="$config.public.isApp && gameStore.gameOver"
+				v-if="$config.public.appShell && gameStore.gameOver"
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
@@ -192,7 +192,7 @@
 					>
 						{{ answerPlayer.club }} · {{ answerPlayer.position }} · {{ answerPlayer.nationality }}
 					</p>
-					<CardAward v-if="$config.public.isApp" />
+					<CardAward v-if="$config.public.appShell" />
 					<div class="share-preview">
 						<p class="share-header">
 							Footballdle ⚽ {{ gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr }} &nbsp;·&nbsp;
@@ -279,7 +279,7 @@
 
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings && !$config.public.isApp"
+			v-if="modalsStore.showSettings && !$config.public.appShell"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -292,7 +292,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats && !$config.public.isApp"
+			v-if="modalsStore.showStats && !$config.public.appShell"
 			heading="Statistics"
 			accent="info"
 			variant="small"
@@ -493,7 +493,7 @@
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 
-	const isAppBuild = !!useRuntimeConfig().public.isApp
+	const isAppBuild = !!useRuntimeConfig().public.appShell
 
 	// Who the Daily answer was, for the result sheet: full name and that day's clues
 	const answerPlayer = computed(() => getAnswerPlayerForDay(gameStore.todayStr))

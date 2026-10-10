@@ -1,7 +1,7 @@
 <template>
 	<div class="solution-page">
 		<nav
-			v-if="!$config.public.isApp"
+			v-if="!$config.public.appShell"
 			class="solution-nav"
 		>
 			<NuxtLink
