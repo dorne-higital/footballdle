@@ -28,6 +28,9 @@ export default defineNuxtConfig({
 	compatibilityDate: '2025-07-15',
 	devtools: { enabled: true },
 	ssr: !isApp,
+	// Nuxt's dev server crashes with ssr: false ("No entry found in rollupOptions.input");
+	// its newer Vite mode doesn't, so yarn dev:app uses that. Builds are untouched
+	$development: isApp ? { experimental: { viteEnvironmentApi: true } } : {},
 	modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt'],
 
 	icon: {
