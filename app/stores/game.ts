@@ -40,7 +40,7 @@ export const useGameStore = defineStore('game', () => {
 	const errorMessage = ref('')
 	const purchasedHints = ref(0)
 	const haptics = useHaptics()
-	const isApp = !!useRuntimeConfig().public.isApp
+	const hintBank = !!useRuntimeConfig().public.appShell
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
@@ -59,8 +59,8 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
-	// The app only reveals clues through hints, up to five; the website also unlocks the
-	// first three as you guess (club after guess 2, nationality after 3, position after 4)
+	// The app shell only reveals clues through banked hints, up to five; the old website look
+	// also unlocks the first three as you guess (club after guess 2, nationality after 3, position after 4)
 	const MAX_APP_HINTS = 5
 
 	const hints = computed(() => {
@@ -75,7 +75,7 @@ export const useGameStore = defineStore('game', () => {
 			{ label: 'Starts with', value: surname.slice(0, 1), icon: 'solar:text-square-linear' },
 			{ label: 'Starts with', value: surname.slice(0, 2), icon: 'solar:text-square-linear' },
 		]
-		const unlocked = isApp
+		const unlocked = hintBank
 			? purchasedHints.value
 			: Math.min(3, Math.max(0, guesses.value.length + purchasedHints.value - 1))
 
@@ -87,7 +87,7 @@ export const useGameStore = defineStore('game', () => {
 
 	const canPurchaseHint = computed(() =>
 		!gameOver.value &&
-		(isApp ? purchasedHints.value < MAX_APP_HINTS : guesses.value.length + purchasedHints.value < 4),
+		(hintBank ? purchasedHints.value < MAX_APP_HINTS : guesses.value.length + purchasedHints.value < 4),
 	)
 
 	function unlockHint() {

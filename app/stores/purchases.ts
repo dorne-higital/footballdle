@@ -9,7 +9,7 @@ const PRO_CACHE_KEY = 'footballdle-pro'
 // Bought-but-unused hints. Consumables can't be restored by Apple, so the bank
 // lives on the device.
 const HINT_BANK_KEY = 'footballdle-hint-bank'
-// Everyone starts the app with a few free hints, given once per install
+// Everyone starts with a few free hints, given once per install (or browser)
 const WELCOME_HINTS = 3
 const WELCOME_HINTS_KEY = 'footballdle-welcome-hints'
 // App Store transactions already turned into banked hints, so each pack is credited
@@ -31,7 +31,7 @@ function readHintBank(): number {
 	}
 }
 
-// In-app purchases for the iOS app via RevenueCat. Inert on the website.
+// The hint bank (app and website), plus in-app purchases via RevenueCat on iPhone only
 export const usePurchasesStore = defineStore('purchases', () => {
 	// ============================================================================
 	// REACTIVE STATE
@@ -47,7 +47,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const hintBank = ref(readHintBank())
 	// Read once while the store is created: later calls (e.g. a retry from a watcher)
 	// run outside the Nuxt context, where useRuntimeConfig() throws
-	const { isApp, revenuecatAppleKey } = useRuntimeConfig().public
+	const { appShell, revenuecatAppleKey } = useRuntimeConfig().public
 	// Why products didn't load, in words a player understands (details go to the console)
 	const loadError = ref('')
 	const loadingProducts = ref(false)
@@ -73,7 +73,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// FUNCTIONS
 	// ============================================================================
 	function grantWelcomeHints() {
-		if (!import.meta.client || !isApp) return
+		if (!import.meta.client || !appShell) return
 		try {
 			if (localStorage.getItem(WELCOME_HINTS_KEY)) return
 			localStorage.setItem(WELCOME_HINTS_KEY, '1')
@@ -82,6 +82,12 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		}
 		hintBank.value += WELCOME_HINTS
 		saveHintBank()
+	}
+
+	/** Re-reads the bank from storage: on the website the server-rendered page arrives with
+	 *  an empty one, which replaces what the store first read */
+	function loadHintBank() {
+		hintBank.value = readHintBank()
 	}
 
 	function saveHintBank() {
@@ -255,6 +261,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 
 	/** Sets up RevenueCat once, then (re)loads products; safe to call again to retry */
 	async function init() {
+		loadHintBank()
 		grantWelcomeHints()
 		if (!Capacitor.isNativePlatform()) return
 		const apiKey = revenuecatAppleKey

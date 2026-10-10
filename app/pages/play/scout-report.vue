@@ -37,7 +37,7 @@
 				/>
 			</PlaySurfaceFrame>
 			<AppHintBar
-				v-if="$config.public.isApp && !scoutStore.gameOver"
+				v-if="$config.public.appShell && !scoutStore.gameOver"
 				:hints="scoutStore.hints"
 				:can-purchase="scoutStore.canPurchaseHint"
 				:next-clue-name="scoutStore.nextClueName"

@@ -88,7 +88,7 @@ export function lastDayOf(season: Season, id: string): number {
 }
 
 export const useCardsStore = defineStore('cards', () => {
-	const { isApp } = useRuntimeConfig().public
+	const { appShell } = useRuntimeConfig().public
 	const saved = ref<SavedCards>({ v: 1, cards: {}, sets: {}, played: {} })
 	/** What the latest win gave, for the result sheet */
 	const lastAward = ref<{ card: CardInfo; owned: OwnedCard; isNew: boolean; club: string; have: number; size: number; setHints: number } | null>(null)
@@ -149,7 +149,7 @@ export const useCardsStore = defineStore('cards', () => {
 	/** A finished Daily: records it as played and, if won in a card season, gives the card
 	 *  (once per day) and pays any set it completes. Safe to call again for the same day. */
 	function finishDaily(dateStr: string, won: boolean, guesses: number) {
-		if (!isApp) return
+		if (!appShell) return
 		load()
 		const today = cardForDay(dateStr)
 		const alreadyPlayed = !!saved.value.played[dateStr]
@@ -179,7 +179,7 @@ export const useCardsStore = defineStore('cards', () => {
 
 	/** A replay win: the missed card joins the album (never shiny) and may finish a set */
 	function collectReplay(id: string, guesses: number) {
-		if (!isApp) return
+		if (!appShell) return
 		load()
 		const season = currentSeason()
 		const card = season?.season.cards[id]

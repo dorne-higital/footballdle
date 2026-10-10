@@ -1,6 +1,9 @@
 // App Store identifiers for the iOS app. Each one must be created with the
 // exact same ID in App Store Connect (and the products/entitlement in RevenueCat).
 
+// The website's "Get the app" links
+export const APP_STORE_URL = 'https://apps.apple.com/app/id6819602707'
+
 export const PRO_ENTITLEMENT = 'pro'
 
 // App Store Connect "Product ID" values (permanent once created). The
