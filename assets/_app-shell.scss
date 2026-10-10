@@ -345,3 +345,22 @@ html.app-shell {
 		min-height: 0;
 	}
 }
+
+// The app look on the website, on a tablet or computer: a phone-width column down the
+// middle. The column is its own scroller and (via the transform) the box that fixed
+// things like the tab bar sit in, so they stay inside it rather than at the window edges.
+@media (width >= 640px) {
+	html.app-web body {
+		background: #030906;
+	}
+
+	html.app-web #__nuxt {
+		background: var(--bg-primary);
+		box-shadow: 0 0 0 1px var(--border), 0 30px 80px rgb(0 0 0 / 45%);
+		height: 100dvh;
+		margin: 0 auto;
+		max-width: 480px;
+		overflow-y: auto;
+		transform: translateZ(0);
+	}
+}

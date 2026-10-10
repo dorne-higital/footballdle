@@ -63,21 +63,8 @@
 				</div>
 			</TransitionGroup>
 
-			<button
-				v-if="gameStore.canPurchaseHint && (adPlatformReady || isAdTestMode)"
-				class="watch-ad-btn"
-				:disabled="adLoading"
-				@click="handleWatchAd"
-			>
-				<Icon
-					name="solar:play-circle-linear"
-					size="1rem"
-				/>
-				{{ adLoading ? 'Loading ad...' : 'Watch an ad for a hint' }}
-			</button>
-
 			<div
-				v-if="gameStore.canPurchaseHint && $config.public.isApp && pendingHint"
+				v-if="gameStore.canPurchaseHint && $config.public.appShell && pendingHint"
 				class="app-hint-btn pending"
 				role="status"
 			>
@@ -95,7 +82,7 @@
 				></span>
 			</div>
 			<button
-				v-else-if="gameStore.canPurchaseHint && $config.public.isApp"
+				v-else-if="gameStore.canPurchaseHint && $config.public.appShell"
 				class="app-hint-btn"
 				:disabled="purchases.busy"
 				@click="handleAppHint"
@@ -504,18 +491,6 @@
 	const PitchCardModal = defineAsyncComponent(() => import('../../components/shared/PitchCardModal.vue'))
 	const ChallengeModal = defineAsyncComponent(() => import('../../components/ChallengeModal.vue'))
 
-	const { public: { adsensePublisherId } } = useRuntimeConfig()
-	if (adsensePublisherId && !import.meta.dev) {
-		useHead({
-			script: [
-				{
-					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
-					async: true,
-					crossorigin: 'anonymous',
-				},
-			],
-		})
-	}
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
@@ -617,9 +592,6 @@
 	// REACTIVE STATE
 	// ============================================================================
 	const activeStatsTab = ref('daily')
-	const adLoading = ref(false)
-	const adPlatformReady = ref(false)
-	const isAdTestMode = ref(false)
 
 	const dailyUspTiles = [
 		{ icon: 'solar:calendar-linear', text: 'New player to guess every day' },
@@ -628,7 +600,7 @@
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
 
-	// iOS app: hints come from Pro or the hint bank instead of a rewarded ad
+	// Hints come from Pro or the hint bank
 	// Shared so the hint pill in the top bar can open it too
 	const showHintShop = useState('hint-shop-open', () => false)
 	onBeforeUnmount(() => { showHintShop.value = false })
@@ -679,32 +651,6 @@
 		pendingHint.value = false
 	}
 	onBeforeUnmount(cancelHint)
-
-	// A purchase from the shop reveals a hint straight away; the rest stay banked
-	function handleWatchAd() {
-		if (!import.meta.client) return
-
-		const isTestMode = new URLSearchParams(window.location.search).get('adtest') === '1'
-		if (isTestMode) {
-			adLoading.value = true
-			setTimeout(() => {
-				adLoading.value = false
-				gameStore.unlockHint()
-			}, 2000)
-			return
-		}
-
-		const adBreak = (window as any).adBreak
-		if (!adBreak) return
-		adBreak({
-			type: 'reward',
-			name: 'hint-unlock',
-			beforeAd: () => { adLoading.value = true },
-			afterAd: () => { adLoading.value = false },
-			adDismissed: () => { adLoading.value = false },
-			adViewed: () => { gameStore.unlockHint() },
-		})
-	}
 
 	const sessionStartTime = ref(Date.now())
 	const shareToast = ref(false)
@@ -761,13 +707,6 @@
 		gameStore.loadState()
 		gameStore.startCountdown()
 
-		isAdTestMode.value = new URLSearchParams(window.location.search).get('adtest') === '1'
-		if ((window as any).adConfig) {
-			;(window as any).adConfig({
-				preloadAdBreaks: 'on',
-				onReady: () => { adPlatformReady.value = true },
-			})
-		}
 
 		challengeStore.loadChallengeState()
 		challengeStatsStore.loadStats()
@@ -1139,33 +1078,6 @@
 		}
 	}
 
-	.watch-ad-btn {
-		align-items: center;
-		background: transparent;
-		border: 1px dashed var(--border);
-		border-radius: var(--global-border-radius);
-		color: var(--text-secondary);
-		cursor: pointer;
-		display: flex;
-		flex-shrink: 0;
-		font-size: 0.8rem;
-		gap: 0.4rem;
-		justify-content: center;
-		margin: 0.5rem 0.5rem 0;
-		padding: 0.4rem 1rem;
-		transition: all 0.2s;
-
-		&:disabled {
-			cursor: wait;
-			opacity: 0.5;
-		}
-
-		&:hover:not(:disabled) {
-			border-color: var(--primary-color);
-			color: var(--primary-color);
-		}
-	}
-
 	.hint-enter-active {
 		transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
@@ -1185,12 +1097,6 @@
 				gap: 0.25rem;
 				padding: 0.2rem 0.5rem;
 			}
-		}
-
-		.watch-ad-btn {
-			font-size: 0.7rem;
-			margin: 0.3rem 0.3rem 0;
-			padding: 0.3rem 0.75rem;
 		}
 	}
 

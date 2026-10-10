@@ -92,8 +92,6 @@ export default defineNuxtConfig({
 			isApp,
 			appShell,
 			googleAnalyticsId: isApp ? '' : process.env.GOOGLE_ANALYTICS_ID || '',
-			adsensePublisherId: isApp ? '' : process.env.ADSENSE_PUBLISHER_ID || '',
-			adsenseSlotId: isApp ? '' : process.env.ADSENSE_SLOT_ID || '',
 			// RevenueCat *public* Apple key (appl_...), safe to ship in the app
 			revenuecatAppleKey: isApp ? process.env.REVENUECAT_APPLE_KEY || '' : '',
 			// The Climb (1.2, replacing Challenge in the app): hidden unless CLIMB=1 at build time
@@ -106,14 +104,14 @@ export default defineNuxtConfig({
 		...(isApp ? { pageTransition: { name: 'app-slide', mode: 'out-in' } } : {}),
 		head: {
 			...(isApp ? { viewport: 'width=device-width, initial-scale=1, viewport-fit=cover' } : {}),
-			...(appShell ? { htmlAttrs: { class: 'app-shell' } } : {}),
+			// app-web: the app look on the website (a phone-width column on big screens)
+			...(appShell ? { htmlAttrs: { class: isApp ? 'app-shell' : 'app-shell app-web' } } : {}),
 			link: [
 				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
 			meta: [
-				...(isApp ? [] : [{ name: 'google-adsense-account', content: 'ca-pub-8134902947215331' }]),
 				{ name: 'theme-color', content: '#dc2626' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
@@ -124,9 +122,6 @@ export default defineNuxtConfig({
 					innerHTML: themeBootScript,
 				},
 			] : [
-				{
-					innerHTML: `window.adBreak=window.adBreak||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};window.adConfig=window.adConfig||function(o){(window.adsbygoogle=window.adsbygoogle||[]).push({breaksData:[o]})};`,
-				},
 				{
 					type: 'application/ld+json',
 					innerHTML: JSON.stringify({

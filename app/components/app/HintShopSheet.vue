@@ -65,6 +65,48 @@
 					</button>
 				</div>
 
+				<!-- Website: no purchases, so how to earn hints and where to get more -->
+				<div
+					v-if="!$config.public.isApp"
+					class="hint-earn"
+				>
+					<p class="hint-shop-intro">Earn free hints by:</p>
+					<ul>
+						<li>
+							<Icon
+								name="solar:fire-linear"
+								size="1rem"
+							/>
+							Every 5 days of your Daily streak
+						</li>
+						<li>
+							<Icon
+								name="solar:card-2-linear"
+								size="1rem"
+							/>
+							Finishing a club's Player Card set
+						</li>
+					</ul>
+					<a
+						:href="APP_STORE_URL"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="hint-pack pro"
+					>
+						<span class="pack-name">
+							<Icon
+								name="solar:smartphone-linear"
+								size="1rem"
+							/>
+							Get the app for hint packs and Pro
+						</span>
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							size="1rem"
+						/>
+					</a>
+				</div>
+				<template v-else>
 				<p
 					v-if="!purchases.hintPacks.length && !purchases.proProduct"
 					class="hint-shop-empty"
@@ -117,6 +159,7 @@
 				>
 					{{ purchases.message }}
 				</p>
+				</template>
 			</div>
 		</template>
 	</PitchCardModal>
@@ -129,8 +172,9 @@
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useChallengeStore } from '../../stores/challenge'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
+	import { APP_STORE_URL } from '../../utils/appStore'
 
-	// iOS app: the hint shop, opened from the hint pill or the Daily's hint button on
+	// The hint shop (on the website: how to earn hints, and a link to the app), opened from the hint pill or the Daily's hint button on
 	// any screen. It only reveals a clue when you're actually mid-Daily; anywhere else
 	// hints go to the bank and it says where they can be used.
 	const PitchCardModal = defineAsyncComponent(() => import('../shared/PitchCardModal.vue'))
@@ -201,6 +245,33 @@
 </script>
 
 <style scoped lang="scss">
+	.hint-earn {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+
+		ul {
+			display: flex;
+			flex-direction: column;
+			gap: 0.4rem;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		li {
+			align-items: center;
+			color: var(--text-primary);
+			display: flex;
+			font-size: 0.9rem;
+			gap: 0.5rem;
+		}
+
+		a.hint-pack {
+			text-decoration: none;
+		}
+	}
+
 	.hint-shop {
 		display: flex;
 		flex-direction: column;

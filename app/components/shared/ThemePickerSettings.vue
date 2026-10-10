@@ -1,7 +1,7 @@
 <template>
 	<div class="settings-section">
 		<div
-			v-if="!$config.public.isApp"
+			v-if="!$config.public.appShell"
 			class="setting-group"
 		>
 			<label>Choose Theme</label>
@@ -75,7 +75,7 @@
 			class="setting-group support-group"
 		>
 			<label>Support Footballdle</label>
-			<p>Enjoying the game? Help keep it free and ad-light.</p>
+			<p>Enjoying the game? Help keep it free.</p>
 			<a
 				href="https://buymeacoffee.com/dhorne92E"
 				target="_blank"
@@ -91,7 +91,7 @@
 			</a>
 		</div>
 
-		<template v-else>
+		<template v-if="$config.public.appShell">
 			<div
 				v-if="gameCenter.isAvailable"
 				class="setting-group support-group"
@@ -182,7 +182,33 @@
 				</div>
 			</div>
 
-			<div class="setting-group support-group">
+			<div
+				v-if="!$config.public.isApp"
+				class="setting-group support-group"
+			>
+				<label>Footballdle on iPhone</label>
+				<p>
+					Hint packs and Pro for unlimited hints, Player Cards backed up to iCloud, and Game Center
+					leaderboards.
+				</p>
+				<a
+					:href="APP_STORE_URL"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="store-button pro-button"
+				>
+					<Icon
+						name="solar:smartphone-linear"
+						size="1rem"
+					/>
+					Get the app
+				</a>
+			</div>
+
+			<div
+				v-else
+				class="setting-group support-group"
+			>
 				<label>Footballdle Pro</label>
 				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
 				<template v-else>
@@ -313,6 +339,7 @@
 	import CoinStack from './CoinStack.vue'
 	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
 	import { useAppearanceStore, type Appearance } from '../../stores/appearance'
+	import { APP_STORE_URL } from '../../utils/appStore'
 
 	const APPEARANCES: { value: Appearance; label: string; icon: string }[] = [
 		{ value: 'dark', label: 'Dark', icon: 'solar:moon-linear' },

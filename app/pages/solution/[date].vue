@@ -76,7 +76,6 @@
 				{{ playerData.club }} ({{ playerData.nationality }}). Did you get it? Come back tomorrow for a new puzzle.
 			</p>
 
-			<AdUnit />
 
 			<div class="cta-section">
 				<p class="cta-text">Can you guess today's player?</p>
@@ -107,7 +106,6 @@
 					</NuxtLink>
 				</div>
 			</div>
-			<AdUnit v-if="!$config.public.isApp" />
 		</main>
 
 		<footer
@@ -123,19 +121,6 @@
 <script setup lang="ts">
 	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
-	const { public: { adsensePublisherId } } = useRuntimeConfig()
-
-	if (adsensePublisherId && !import.meta.dev) {
-		useHead({
-			script: [
-				{
-					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
-					async: true,
-					crossorigin: 'anonymous',
-				},
-			],
-		})
-	}
 
 	const route = useRoute()
 	const dateParam = route.params.date as string

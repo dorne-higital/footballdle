@@ -96,7 +96,6 @@
 			</template>
 		</div>
 
-		<AdUnit v-if="showAd" />
 
 		<a
 			v-if="!$config.public.isApp"
@@ -117,7 +116,6 @@
 
 <script setup lang="ts">
 	import ModeStreakBadge from './ModeStreakBadge.vue'
-	import AdUnit from '../AdUnit.vue'
 
 	withDefaults(
 		defineProps<{
@@ -128,7 +126,6 @@
 			streak?: number
 			winPercentage?: number
 			recentForm?: boolean[]
-			showAd?: boolean
 		}>(),
 		{
 			activeMode: 'daily',
@@ -137,7 +134,6 @@
 			spotballStreak: 0,
 			streak: 0,
 			winPercentage: 0,
-			showAd: true,
 		},
 	)
 

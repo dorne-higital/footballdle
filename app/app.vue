@@ -2,7 +2,7 @@
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
-	<HintShopSheet v-if="$config.public.isApp" />
+	<HintShopSheet v-if="$config.public.appShell" />
 	<UpdatePrompt v-if="$config.public.isApp" />
 	<AppLoader v-if="$config.public.isApp" />
 </template>
