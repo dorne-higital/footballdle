@@ -1,75 +1,22 @@
-# Nuxt Minimal Starter
+# Footballdle
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+The daily football guessing game: [footballdle.co.uk](https://footballdle.co.uk) and the iPhone app, built from one Nuxt codebase.
 
-## Setup
+**The handbook:** https://claude.ai/artifact/MTYZ43XNt7Sf9YwuhSusp4
 
-Make sure to install dependencies:
+How the game works, what the app and the website each do, the tech, branches and releases, commands, gotchas and the roadmap.
+
+## Quick start
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
 yarn install
-
-# bun
-bun install
+yarn dev              # the website
+yarn dev:app          # the iPhone app's version, in the browser
+CLIMB=1 yarn dev:app  # the app with The Climb on
+yarn test             # Vitest
 ```
 
-## Development Server
+## Other pages
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [The Climb plan](https://claude.ai/artifact/AiUxS2ZyCU6JRv2XYUr1Km)
+- [Launch social kit](https://claude.ai/artifact/HuQaHveR1UD7HnPQ3Yuu56)
