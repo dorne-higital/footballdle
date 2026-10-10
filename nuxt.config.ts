@@ -4,9 +4,9 @@
 // a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
 // (Apple rejects external tip links, and AdSense doesn't run in native apps).
 const isApp = process.env.APP_TARGET === 'ios'
-// The app's look (layouts, Matchday home, tab bar, Floodlights theme). Always on in the app;
-// on the website only with WEB_SHELL=app until the new look ships there
-const appShell = isApp || process.env.WEB_SHELL === 'app'
+// The app's look (layouts, Matchday home, tab bar, Floodlights theme), on the app and the
+// website alike. WEB_SHELL=old builds the website's previous look, as a fallback
+const appShell = isApp || process.env.WEB_SHELL !== 'old'
 
 // Applies the saved theme before first paint to avoid a light-mode flash
 const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
