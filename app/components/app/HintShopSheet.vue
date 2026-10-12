@@ -88,6 +88,7 @@
 						</li>
 					</ul>
 					<a
+						v-if="APP_STORE_LIVE"
 						:href="APP_STORE_URL"
 						target="_blank"
 						rel="noopener noreferrer"
@@ -105,6 +106,12 @@
 							size="1rem"
 						/>
 					</a>
+					<p
+						v-else
+						class="hint-shop-intro"
+					>
+						Hint packs and Pro are coming soon in the Footballdle iPhone app.
+					</p>
 				</div>
 				<template v-else>
 				<p
@@ -172,7 +179,7 @@
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useChallengeStore } from '../../stores/challenge'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
-	import { APP_STORE_URL } from '../../utils/appStore'
+	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
 	// The hint shop (on the website: how to earn hints, and a link to the app), opened from the hint pill or the Daily's hint button on
 	// any screen. It only reveals a clue when you're actually mid-Daily; anywhere else

@@ -192,6 +192,7 @@
 					leaderboards.
 				</p>
 				<a
+					v-if="APP_STORE_LIVE"
 					:href="APP_STORE_URL"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -203,6 +204,12 @@
 					/>
 					Get the app
 				</a>
+				<p
+					v-else
+					class="coming-soon"
+				>
+					Coming soon to the App Store.
+				</p>
 			</div>
 
 			<div
@@ -339,7 +346,7 @@
 	import CoinStack from './CoinStack.vue'
 	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
 	import { useAppearanceStore, type Appearance } from '../../stores/appearance'
-	import { APP_STORE_URL } from '../../utils/appStore'
+	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
 	const APPEARANCES: { value: Appearance; label: string; icon: string }[] = [
 		{ value: 'dark', label: 'Dark', icon: 'solar:moon-linear' },
@@ -506,6 +513,13 @@
 				font-weight: 600;
 				text-decoration: none;
 			}
+		}
+
+		.coming-soon {
+			color: var(--primary-color);
+			font-size: 0.9rem;
+			font-weight: 700;
+			margin: 0.5rem 0 0;
 		}
 
 		.store-message {
