@@ -60,6 +60,7 @@
 		'/play/daily': 'Daily',
 		'/play/scout-report': 'Scout Report',
 		'/play/spot-the-baller': 'Spot the Baller',
+		'/play/grid': 'The Grid',
 		'/how-to-play': 'How to play',
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
@@ -87,7 +88,10 @@
 	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
 	// Games that use the shared hint bank
 	const takesHints = computed(
-		() => (route.path.startsWith('/play/daily') && !challengeStore.isActive) || route.path.startsWith('/play/scout-report'),
+		() =>
+			(route.path.startsWith('/play/daily') && !challengeStore.isActive) ||
+			route.path.startsWith('/play/scout-report') ||
+			route.path.startsWith('/play/grid'),
 	)
 	// Tab screens: no back button, and no Stats/Settings buttons (they're tabs)
 	const isTab = computed(() => tabFor(route.path) !== null)

@@ -12,7 +12,7 @@
 				v-model="query"
 				type="text"
 				class="input"
-				:placeholder="isApp ? 'Search for a player' : 'Guess a Premier League player…'"
+				:placeholder="placeholder ?? (isApp ? 'Search for a player' : 'Guess a Premier League player…')"
 				enterkeyhint="go"
 				autocapitalize="words"
 				autocorrect="off"
@@ -52,7 +52,11 @@
 				@mousedown.prevent="select(player.name)"
 			>
 				<span class="s-name">{{ player.name }}</span>
-				<span class="s-meta">{{ player.club }}</span>
+				<span
+					v-if="showClub"
+					class="s-meta"
+					>{{ player.club }}</span
+				>
 			</li>
 		</ul>
 		<ul
@@ -63,7 +67,7 @@
 				class="empty"
 				role="status"
 			>
-				No {{ season }} Premier League player matches "{{ query.trim() }}"
+				{{ emptyText ?? `No ${season} Premier League player matches` }} "{{ query.trim() }}"
 			</li>
 		</ul>
 	</div>
@@ -74,23 +78,29 @@
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import playerMeta from '../../data/meta.json'
 
-	withDefaults(
+	const props = withDefaults(
 		defineProps<{
 			disabled?: boolean
+			/** Another mode's player search (default: Scout Report's) */
+			search?: (query: string) => { name: string; club: string }[]
+			/** Show each suggestion's club (The Grid hides it: it would give the answer away) */
+			showClub?: boolean
+			placeholder?: string
+			emptyText?: string
 		}>(),
-		{ disabled: false },
+		{ disabled: false, search: undefined, showClub: true, placeholder: undefined, emptyText: undefined },
 	)
 
 	const emit = defineEmits<{ guess: [name: string] }>()
 
-	const store = useScoutReportStore()
+	const store = props.search ? null : useScoutReportStore()
 	const isApp = !!useRuntimeConfig().public.appShell
 	const season = playerMeta.season
 	const query = ref('')
 	const highlightedIndex = ref(0)
 	const inputEl = ref<HTMLInputElement | null>(null)
 
-	const suggestions = computed(() => store.searchPlayers(query.value))
+	const suggestions = computed(() => (props.search ? props.search(query.value) : store!.searchPlayers(query.value)))
 
 	watch(suggestions, () => {
 		highlightedIndex.value = 0
