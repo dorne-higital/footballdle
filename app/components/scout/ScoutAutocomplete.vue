@@ -220,7 +220,7 @@
 			background: var(--pitchcard-accent-win, var(--primary-color));
 			border: 0;
 			border-radius: 50%;
-			color: #06140d;
+			color: var(--on-success);
 			display: flex;
 			height: 2.4rem;
 			justify-content: center;

@@ -140,7 +140,7 @@
 
 			&.correct {
 				background: var(--color-success);
-				color: #06140d;
+				color: var(--on-success);
 			}
 
 			&.present {

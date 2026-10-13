@@ -572,7 +572,7 @@
 		.answer-tiles .tile {
 			align-items: center;
 			animation: tile-flip 0.45s ease both;
-			color: #06140d;
+			color: var(--on-success);
 			display: flex;
 			font-family: var(--font-display);
 			font-size: 1.25rem;
@@ -618,7 +618,7 @@
 			background: var(--primary-color);
 			border: 0;
 			border-radius: 1rem;
-			color: var(--on-success);
+			color: var(--on-primary);
 			cursor: pointer;
 			display: flex;
 			font: inherit;
@@ -637,7 +637,7 @@
 			align-items: center;
 			background: var(--primary-color);
 			border-radius: 1rem;
-			color: var(--on-success);
+			color: var(--on-primary);
 			display: flex;
 			font-size: 1rem;
 			font-weight: 800;

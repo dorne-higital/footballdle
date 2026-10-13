@@ -213,7 +213,7 @@
 	.primary {
 		background: var(--primary-color);
 		border: 0;
-		color: var(--on-success);
+		color: var(--on-primary);
 	}
 
 	.secondary {

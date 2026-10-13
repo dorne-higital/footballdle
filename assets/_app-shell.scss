@@ -21,6 +21,10 @@ html.app-shell {
 	--color-absent: #24352d;
 	--on-success: #04130b;
 	--on-present: #1b1203;
+	--on-primary: #04130b;
+	--on-absent: #fff;
+	// A Theme Library texture behind every screen (set by stores/appearance.ts)
+	--theme-pattern: none;
 	--color-gradient: linear-gradient(135deg, #2fe08a 0%, #1fa866 100%);
 	--subtle-gradient: linear-gradient(135deg, #163126 0%, #0f2219 100%);
 	--global-border-radius: 14px;
@@ -63,6 +67,7 @@ html.app-shell {
 	.play-layout,
 	.app-page-layout {
 		background:
+			var(--theme-pattern),
 			radial-gradient(ellipse 120% 45% at 50% -8%, var(--fl-glow) 0%, transparent 70%),
 			var(--bg-primary);
 	}
@@ -123,7 +128,7 @@ html.app-shell {
 		width: var(--tile);
 
 		&.correct {
-			box-shadow: 0 0 20px rgb(47 224 138 / 45%);
+			box-shadow: 0 0 20px color-mix(in srgb, var(--color-success) 45%, transparent);
 		}
 	}
 
@@ -141,7 +146,7 @@ html.app-shell {
 		&[data-key='ENTER'] {
 			background: var(--primary-color);
 			border-color: var(--primary-color);
-			color: var(--on-success);
+			color: var(--on-primary);
 			font-family: var(--font-body);
 			font-weight: 800;
 		}
@@ -194,13 +199,14 @@ html.app-shell {
 	}
 
 	.button.primary {
-		color: var(--on-success);
+		color: var(--on-primary);
 	}
 }
 
 // Light Floodlights (Settings → Appearance). Same layout, daylight colours: the bright
 // pitch green is kept for fills, with a deeper green wherever green is used as text.
 html.app-shell.app-light {
+	--on-primary: #04130b;
 	--text-primary: #10231a;
 	--text-secondary: #55695e;
 	--bg-primary: #f2f6f3;

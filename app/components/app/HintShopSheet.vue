@@ -395,7 +395,7 @@
 			.pack-price {
 				background: var(--primary-color);
 				border-radius: 999px;
-				color: var(--on-success, #fff);
+				color: var(--on-primary);
 				font-size: 0.9rem;
 				font-weight: 800;
 				padding: 0.35rem 0.8rem;

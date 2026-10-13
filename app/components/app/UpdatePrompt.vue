@@ -94,7 +94,7 @@
 
 	.primary {
 		background: var(--primary-color);
-		color: var(--on-success);
+		color: var(--on-primary);
 	}
 
 	.later {

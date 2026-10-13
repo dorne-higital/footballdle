@@ -335,7 +335,7 @@
 		100% {
 			background: var(--color-absent);
 			border-color: var(--color-absent);
-			color: #fff;
+			color: var(--on-absent, #fff);
 			transform: rotateX(0deg) scale(1);
 		}
 	}

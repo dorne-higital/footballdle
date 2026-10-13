@@ -120,6 +120,13 @@ App Store Connect → your app → **Monetization → In-App Purchases** → **+
 | Consumable | Small Tip | `fts` | £0.99 |
 | Consumable | Medium Tip | `ftm` | £2.99 |
 | Consumable | Large Tip | `ftl` | £3.99 |
+| Non-Consumable | footballdle_theme_retro (Retro 90s) | `theme_retro` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_chalk (Tactics Chalkboard) | `theme_chalk` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_sunday (Sunday League) | `theme_sunday` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_night (Night Match) | `theme_night` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_golden (Golden Boot) | `theme_golden` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_programme (Classic Programme) | `theme_programme` | £0.99 (1.3) |
+| Non-Consumable | footballdle_theme_colour_pack (Colour Pack) | `theme_colours` | £2.99 (1.3) |
 
 For each one, add an English (UK) display name and description, plus a **review screenshot**
 (a screenshot of the Settings screen showing the buttons, taken from TestFlight).
@@ -132,8 +139,8 @@ https://www.revenuecat.com. It's free until the app makes real money.
 1. Create a project → add an **App Store** app with bundle ID `uk.co.footballdle.app`.
 2. Give it an **In-App Purchase key**: App Store Connect → Users and Access → Integrations →
    **In-App Purchase** → generate, then upload the `.p8` to RevenueCat with its Key ID and Issuer ID.
-3. **Product catalog → Products** → import or add all seven product IDs above.
-4. **Entitlements** → create one called exactly **`pro`** → attach the `pro` product only (not the hints or tips).
+3. **Product catalog → Products** → import or add all the product IDs above (the seven themes too, from 1.3).
+4. **Entitlements** → create one called exactly **`pro`** → attach the `pro` product only (not the hints, tips or themes). Themes need no entitlement: the app checks the purchase history, and Pro unlocks them in code.
 5. **API keys** → copy the **Apple public key** (starts `appl_`) → put it in `codemagic.yaml` as `REVENUECAT_APPLE_KEY`.
 
 TestFlight builds use Apple's sandbox automatically, so test purchases are free.

@@ -482,7 +482,7 @@
 
 		&.done .wg-number {
 			background: var(--primary-color);
-			color: var(--on-success);
+			color: var(--on-primary);
 		}
 	}
 
@@ -731,7 +731,7 @@
 		background: var(--primary-color);
 		border: 0;
 		border-radius: var(--global-border-radius);
-		color: var(--on-success);
+		color: var(--on-primary);
 		cursor: pointer;
 		font-family: var(--font-body);
 		font-size: 0.95rem;

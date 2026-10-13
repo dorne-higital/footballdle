@@ -20,7 +20,20 @@ export const PRODUCT_IDS = {
 	tipLarge: 'ftl', // footballdle_tip_large (Large Tip)
 } as const
 
-export const TIP_PRODUCT_IDS = [PRODUCT_IDS.tipSmall, PRODUCT_IDS.tipMedium, PRODUCT_IDS.tipLarge]
+// Theme Library (1.3, utils/themes.ts): non-consumables, £0.99 each; the Colour Pack is
+// one £2.99 purchase for six plain colour themes. Pro unlocks every theme. Reference
+// names: footballdle_theme_<key> (footballdle_theme_colour_pack for the pack).
+export const THEME_PRODUCT_IDS = {
+	retro: 'theme_retro',
+	chalk: 'theme_chalk',
+	sunday: 'theme_sunday',
+	night: 'theme_night',
+	golden: 'theme_golden',
+	programme: 'theme_programme',
+	colourPack: 'theme_colours',
+} as const
+
+export const TIP_PRODUCT_IDS =[PRODUCT_IDS.tipSmall, PRODUCT_IDS.tipMedium, PRODUCT_IDS.tipLarge]
 
 // Consumable hint packs: how many hints each product adds to the player's bank
 export const HINT_PACKS = [

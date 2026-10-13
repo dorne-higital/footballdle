@@ -435,7 +435,7 @@
 			&.correct {
 				background: var(--color-success);
 				border-color: var(--color-success);
-				color: #06140d;
+				color: var(--on-success);
 
 				.letter {
 					background: rgb(0 0 0 / 12%);

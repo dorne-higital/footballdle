@@ -113,7 +113,7 @@
 		align-items: center;
 		background: var(--primary-color);
 		border-radius: 0.9rem;
-		color: var(--on-success);
+		color: var(--on-primary);
 		display: flex;
 		font-weight: 800;
 		justify-content: center;

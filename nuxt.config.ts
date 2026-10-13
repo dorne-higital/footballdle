@@ -51,6 +51,12 @@ export default defineNuxtConfig({
 			// iOS app "Floodlights" look (assets/_app-shell.scss)
 			{ name: 'Archivo Black', provider: 'google', weights: [400], display: 'swap' },
 			{ name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800], display: 'swap' },
+			// Theme Library headings (utils/themes.ts). Only set from script, so declared
+			// globally to be bundled; each file loads only when its theme is on
+			{ name: 'Bungee', provider: 'google', weights: [400], display: 'swap', global: true },
+			{ name: 'Permanent Marker', provider: 'google', weights: [400], display: 'swap', global: true },
+			{ name: 'Abril Fatface', provider: 'google', weights: [400], display: 'swap', global: true },
+			{ name: 'Alfa Slab One', provider: 'google', weights: [400], display: 'swap', global: true },
 		],
 		defaults: {
 			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },

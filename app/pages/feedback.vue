@@ -323,7 +323,7 @@
 		background: var(--primary-color);
 		border: 0;
 		border-radius: 0.9rem;
-		color: #06140d;
+		color: var(--on-primary);
 		cursor: pointer;
 		font: inherit;
 		font-weight: 800;

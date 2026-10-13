@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed, toRaw } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import type { CustomerInfo, MakePurchaseResult, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
-import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
+import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, THEME_PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
 
 // Cached so Pro perks still work offline / before RevenueCat answers
 const PRO_CACHE_KEY = 'footballdle-pro'
@@ -21,6 +21,29 @@ const HINT_TRANSACTIONS_KEY = 'footballdle-hint-transactions'
 // not Apple's, so when the transaction turns up later it settles one of these instead
 // of being credited a second time.
 const HINT_PREPAID_KEY = 'footballdle-hint-prepaid'
+// Themes bought one by one (product ids), cached like Pro so they work offline and are
+// on screen before RevenueCat answers
+const OWNED_THEMES_KEY = 'footballdle-owned-themes'
+const THEME_IDS = new Set<string>(Object.values(THEME_PRODUCT_IDS))
+
+function readCachedPro(): boolean {
+	if (!import.meta.client) return false
+	try {
+		return localStorage.getItem(PRO_CACHE_KEY) === '1'
+	} catch {
+		return false
+	}
+}
+
+function readOwnedThemes(): string[] {
+	if (!import.meta.client) return []
+	try {
+		const saved = JSON.parse(localStorage.getItem(OWNED_THEMES_KEY) || '[]')
+		return Array.isArray(saved) ? saved.map(String).filter(id => THEME_IDS.has(id)) : []
+	} catch {
+		return []
+	}
+}
 
 function readHintBank(): number {
 	if (!import.meta.client) return 0
@@ -37,7 +60,8 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// REACTIVE STATE
 	// ============================================================================
 	const isReady = ref(false)
-	const isPro = ref(false)
+	const isPro = ref(readCachedPro())
+	const ownedThemes = ref<string[]>(readOwnedThemes())
 	const products = ref<PurchasesStoreProduct[]>([])
 	const busy = ref(false)
 	const message = ref('')
@@ -56,6 +80,12 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// COMPUTED PROPERTIES
 	// ============================================================================
 	const proProduct = computed(() => products.value.find(p => p.identifier === PRODUCT_IDS.pro))
+
+	/** The App Store product for a theme (or the Colour Pack), once prices have loaded */
+	const themeProduct = (productId: string) => products.value.find(p => p.identifier === productId)
+
+	/** Pro unlocks every theme; otherwise it's the ones bought */
+	const ownsThemeProduct = (productId: string) => isPro.value || ownedThemes.value.includes(productId)
 
 	const tipProducts = computed(() =>
 		TIP_PRODUCT_IDS.map(id => products.value.find(p => p.identifier === id)).filter(
@@ -215,6 +245,11 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			localStorage.setItem(PRO_CACHE_KEY, isPro.value ? '1' : '0')
 		} catch {}
 		creditHintPurchases(info)
+		// Non-consumables stay in the purchase history for good (a refund removes them)
+		ownedThemes.value = info.allPurchasedProductIdentifiers.filter(id => THEME_IDS.has(id))
+		try {
+			localStorage.setItem(OWNED_THEMES_KEY, JSON.stringify(ownedThemes.value))
+		} catch {}
 	}
 
 	const STORE_UNREACHABLE = 'Couldn\'t reach the App Store.'
@@ -277,7 +312,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			await withTimeout(configure(apiKey), 'configuring RevenueCat')
 			const { Purchases } = await getSdk()
 			const result = await withTimeout(
-				Purchases.getProducts({ productIdentifiers: Object.values(PRODUCT_IDS) }),
+				Purchases.getProducts({ productIdentifiers: [...Object.values(PRODUCT_IDS), ...THEME_IDS] }),
 				'loading products',
 			)
 			products.value = result.products
@@ -335,6 +370,19 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		return ok
 	}
 
+	async function buyTheme(productId: string, name: string) {
+		const product = themeProduct(productId)
+		if (!product) {
+			message.value = `${name} is unavailable right now. Please try again later.`
+			return false
+		}
+		const ok = !!(await purchase(product))
+		// Shown straight away, before RevenueCat's customer info catches up
+		if (ok && !ownedThemes.value.includes(productId)) ownedThemes.value = [...ownedThemes.value, productId]
+		if (ok) message.value = `${name} unlocked. Cheers!`
+		return ok
+	}
+
 	async function tip(product: PurchasesStoreProduct) {
 		const ok = !!(await purchase(product))
 		if (ok) message.value = 'Thanks for the support! 🍻'
@@ -349,7 +397,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			const { Purchases } = await getSdk()
 			const { customerInfo } = await Purchases.restorePurchases()
 			applyCustomerInfo(customerInfo)
-			message.value = isPro.value ? 'Pro restored.' : 'No previous purchases found.'
+			message.value = isPro.value ? 'Pro restored.' : ownedThemes.value.length ? 'Themes restored.' : 'No previous purchases found.'
 		} catch (error: any) {
 			const reason = error?.message || ''
 			message.value = `Restore failed${reason ? ` (${reason})` : ''}. Please try again.`
@@ -362,6 +410,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		// State
 		isReady,
 		isPro,
+		ownedThemes,
 		products,
 		busy,
 		message,
@@ -375,12 +424,15 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		proProduct,
 		tipProducts,
 		hintPacks,
+		themeProduct,
+		ownsThemeProduct,
 
 		// Functions
 		init,
 		creditHintPurchases,
 		buyPro,
 		buyHints,
+		buyTheme,
 		spendHint,
 		grantHints,
 		tip,
