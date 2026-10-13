@@ -2,7 +2,7 @@
 
 Generated from `app/utils/achievements.ts`. Every Achievement ID must exist in App Store Connect with these points; badge images are `app-store/achievements/<id>.jpg` (1024×1024).
 
-The `fd_challenge_*` IDs are kept for The Grid (Game Center IDs can't be renamed), so Challenge wins from 1.1 still count towards them. Grid Week also needs a recurring weekly leaderboard (resets Saturday 00:00 UK); put its ID in `GRID_WEEK_LEADERBOARD` in `app/utils/appStore.ts`.
+The `fd_challenge_*` IDs are kept for The Grid (Game Center IDs can't be renamed), so Challenge wins from 1.1 still count towards them. Grid Week has a recurring leaderboard, `footballdle.grid.week` (ID `5`, created 13 Oct 2026): every 7 days from Sat 17 Oct 2026 01:00 BST (midnight GMT), best score, 0–4,500, high to low. It goes for review with the next app version.
 
 50 achievements, 960 / 1000 points. Tiers: bronze 5, silver 15, gold 25, emerald 35.
 

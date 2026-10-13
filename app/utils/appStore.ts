@@ -38,7 +38,8 @@ export const LEADERBOARD_IDS = {
 	totalWins: '4', // footballdle.total_wins
 } as const
 
-// The Grid's weekly leaderboard: a *recurring* Game Center leaderboard (resets every
-// Saturday, UK) for the week's points. Empty until it's created in App Store Connect;
-// scores are only sent once this holds its Leaderboard ID.
-export const GRID_WEEK_LEADERBOARD = ''
+// The Grid's weekly leaderboard (footballdle.grid.week): a *recurring* Game Center
+// leaderboard for the week's points, best score, 0-4,500. It restarts every 7 days from
+// Sat 17 Oct 2026 00:00 GMT, so midnight UK in winter and 1am in summer (Game Center
+// doesn't follow BST); scores sent in that summer hour count towards the week before.
+export const GRID_WEEK_LEADERBOARD = '5'
