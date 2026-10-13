@@ -1,6 +1,9 @@
 <template>
 	<div class="solution-page">
-		<nav class="solution-nav">
+		<nav
+			v-if="!$config.public.appShell"
+			class="solution-nav"
+		>
 			<NuxtLink
 				to="/play/daily"
 				class="back-link"
@@ -16,7 +19,12 @@
 
 		<main class="solution-main">
 			<div class="puzzle-meta">
-				<span class="puzzle-number">Puzzle #{{ puzzleNumber }}</span>
+				<span
+					v-if="displayNumber"
+					class="puzzle-number"
+				>
+					Puzzle #{{ displayNumber }}
+				</span>
 				<span class="puzzle-date">{{ formattedDate }}</span>
 			</div>
 
@@ -63,13 +71,11 @@
 				v-if="playerData"
 				class="solution-description"
 			>
-				The answer to Footballdle puzzle #{{ puzzleNumber }} on {{ formattedDate }} was
-				<strong>{{ answer.toUpperCase() }}</strong> — a {{ playerData.nationality }}
-				{{ playerData.position.toLowerCase() }} who plays for {{ playerData.club }} in the Premier
-				League. Did you get it? Come back tomorrow for a new puzzle.
+				The answer to {{ displayNumber ? `Footballdle puzzle #${displayNumber}` : 'the Footballdle Daily' }} on {{ formattedDate }} was
+				<strong>{{ answer.toUpperCase() }}</strong>, who plays as {{ positionPhrase }} for
+				{{ playerData.club }} ({{ playerData.nationality }}). Did you get it? Come back tomorrow for a new puzzle.
 			</p>
 
-			<AdUnit />
 
 			<div class="cta-section">
 				<p class="cta-text">Can you guess today's player?</p>
@@ -100,10 +106,12 @@
 					</NuxtLink>
 				</div>
 			</div>
-			<AdUnit />
 		</main>
 
-		<footer class="solution-footer">
+		<footer
+			v-if="!$config.public.isApp"
+			class="solution-footer"
+		>
 			<p>A new Premier League footballer to guess every day at midnight (UK time).</p>
 			<NuxtLink to="/" title="Play Footballdle">footballdle.co.uk</NuxtLink>
 		</footer>
@@ -111,21 +119,8 @@
 </template>
 
 <script setup lang="ts">
-	import { getAnswerForDay, getPlayerData, getPuzzleNumber } from '../../composables/useFootballers'
+	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
-	const { public: { adsensePublisherId } } = useRuntimeConfig()
-
-	if (adsensePublisherId && !import.meta.dev) {
-		useHead({
-			script: [
-				{
-					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
-					async: true,
-					crossorigin: 'anonymous',
-				},
-			],
-		})
-	}
 
 	const route = useRoute()
 	const dateParam = route.params.date as string
@@ -162,14 +157,17 @@
 
 	const ukToday = getUKToday()
 
-	if (parsedDate > ukToday) {
+	// Today's answer stays hidden until tomorrow
+	if (parsedDate >= ukToday) {
 		throw createError({ statusCode: 404, statusMessage: 'This puzzle has not been released yet' })
 	}
 
 	const ukDateStr = toUKDateStr(parsedDate)
-	const puzzleNumber = getPuzzleNumber(ukDateStr)
+	// The public number restarted at #1; earlier days are shown by date only
+	const displayNumber = getDisplayNumber(ukDateStr)
+	const numberLabel = displayNumber ? `#${displayNumber} ` : ''
 	const answer = getAnswerForDay(ukDateStr)
-	const playerData = getPlayerData(answer)
+	const playerData = getAnswerPlayerForDay(ukDateStr)
 
 	const formattedDate = parsedDate.toLocaleDateString('en-GB', {
 		day: 'numeric',
@@ -191,24 +189,27 @@
 		.slice(0, 5)
 
 	const answerUpper = answer.toUpperCase()
+	// "Central Midfield" -> "a central midfielder", "Attacking Midfield" -> "an attacking midfielder"
+	const positionNoun = (playerData?.position ?? '').toLowerCase().replace(/midfield$/, 'midfielder')
+	const positionPhrase = `${/^[aeiou]/.test(positionNoun) ? 'an' : 'a'} ${positionNoun}`
 	const playerDesc = playerData ? ` – ${playerData.position} for ${playerData.club}` : ''
 
 	const faqAnswer = playerData
-		? `The Footballdle answer on ${formattedDate} was ${answerUpper} — a ${playerData.nationality} ${playerData.position.toLowerCase()} who plays for ${playerData.club} in the Premier League.`
+		? `The Footballdle answer on ${formattedDate} was ${answerUpper}, who plays as ${positionPhrase} for ${playerData.club} (${playerData.nationality}).`
 		: `The Footballdle answer on ${formattedDate} was ${answerUpper}.`
 
 	useHead({
-		title: `Footballdle #${puzzleNumber} Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
+		title: `Footballdle ${numberLabel}Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
 		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/solution/${dateParam}` }],
 		meta: [
 			{
 				name: 'description',
-				content: `The answer to Footballdle puzzle #${puzzleNumber} on ${formattedDate} was ${answerUpper}${playerDesc}. Play today's free Premier League footballer guessing game at footballdle.co.uk.`,
+				content: `The answer to the Footballdle Daily ${numberLabel}on ${formattedDate} was ${answerUpper}${playerDesc}. Play today's free Premier League footballer guessing game at footballdle.co.uk.`,
 			},
-			{ property: 'og:title', content: `Footballdle #${puzzleNumber} Answer – ${answerUpper}` },
+			{ property: 'og:title', content: `Footballdle ${numberLabel}Answer – ${answerUpper}` },
 			{
 				property: 'og:description',
-				content: `Puzzle #${puzzleNumber} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
+				content: `${displayNumber ? `Puzzle #${displayNumber}` : formattedDate} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
 			},
 			{ property: 'og:url', content: `https://footballdle.co.uk/solution/${dateParam}` },
 			{ property: 'og:type', content: 'article' },
@@ -234,7 +235,7 @@
 							name: 'What is Footballdle?',
 							acceptedAnswer: {
 								'@type': 'Answer',
-								text: 'Footballdle is a free daily Premier League footballer guessing game. Each day, guess a hidden 6-letter footballer surname in up to 6 tries. A new player is revealed every day at midnight UK time.',
+								text: 'Footballdle is a free daily Premier League footballer guessing game. Each day, guess a hidden footballer surname in up to 6 tries. A new player is revealed every day at midnight UK time.',
 							},
 						},
 					],
@@ -246,7 +247,7 @@
 
 <style scoped lang="scss">
 	.solution-page {
-		height: 100dvh;
+		height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 		overflow-y: auto;
 		padding: 0 1rem 3rem;
 	}

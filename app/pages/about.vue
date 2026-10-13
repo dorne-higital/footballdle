@@ -1,6 +1,9 @@
 <template>
 	<div class="static-page">
-		<nav class="static-nav">
+		<nav
+			v-if="!$config.public.appShell"
+			class="static-nav"
+		>
 			<NuxtLink
 				to="/play/daily"
 				class="back-link"
@@ -18,10 +21,17 @@
 			<h1>About Footballdle</h1>
 			<p>
 				Footballdle is a free daily word game for Premier League football fans. Each day a hidden
-				six-letter player surname is chosen from the current 2025/26 Premier League season — your job is
+				five- or six-letter player surname is chosen from the current {{ season }} Premier League season — your job is
 				to guess it in up to six tries. After every guess the tiles change colour to reveal how close you
-				are, Wordle-style. There are no ads chasing you around the page, no account required, and no
-				paywalls. Just a clean daily puzzle that takes a couple of minutes to play.
+				are, Wordle-style.
+				<template v-if="$config.public.isApp">
+					There are no ads and no account to make. Every game is free to play, with optional hints if you get
+					stuck.
+				</template>
+				<template v-else>
+					There are no ads chasing you around the page, no account required, and no paywalls.
+				</template>
+				Just a clean daily puzzle that takes a couple of minutes to play.
 			</p>
 
 			<h2>Where the idea came from</h2>
@@ -40,12 +50,16 @@
 
 			<h2>How it works</h2>
 			<p>
-				Every puzzle uses a six-letter Premier League surname drawn from the active 2025/26 season squad
+				Every puzzle uses a five- or six-letter Premier League surname drawn from the active {{ season }} season squad
 				list. Answers are selected in a shuffled order so the same name doesn't come up twice until the
 				full list has been exhausted. The puzzle resets at midnight UK time — everyone around the world
 				gets the same answer on the same day, which is part of what makes it fun to compare scores.
 			</p>
-			<p>
+			<p v-if="$config.public.isApp">
+				Your streak, statistics and game history are stored on your iPhone. No personal data is collected
+				and there is nothing to sign up for. The downside is that deleting the app resets your stats.
+			</p>
+			<p v-else>
 				Your streak, statistics, and game history are stored locally in your browser using
 				<code>localStorage</code>. Nothing is sent to a server and no personal data is collected. The
 				downside is that clearing your browser data will reset your stats — the upside is that there is
@@ -68,7 +82,7 @@
 			</p>
 			<p>
 				Player data isn't perfect. Surnames get transliterated differently across sources, some squad
-				lists lag behind transfer deadlines, and occasionally a six-letter name slips through that most
+				lists lag behind transfer deadlines, and occasionally a name slips through that most
 				fans wouldn't recognise. If you spot an error or a missing player, please get in touch — the list
 				genuinely gets better every time someone flags something.
 			</p>
@@ -77,9 +91,8 @@
 			<p>
 				Footballdle was built and is maintained by Dan, a developer and football fan based in the UK. It
 				started as a personal project and remains one — there's no team, no VC funding, and no grand
-				monetisation plan. The site is supported by a small number of display ads and the occasional
-				coffee bought through the link at the top of the page. Both are genuinely appreciated and help
-				cover hosting costs.
+				monetisation plan. The site is supported by the occasional coffee, and the iPhone app by optional
+				hints, Pro and the tip jar. All of it is genuinely appreciated and helps cover hosting costs.
 			</p>
 			<p>
 				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer" title="Nuxt.js framework">Nuxt</a>
@@ -101,8 +114,8 @@
 
 			<h2>Contact</h2>
 			<p>
-				For missing players, bug reports, or anything else:
-				<a href="mailto:footballdleadmin@gmail.com" title="Email Footballdle">footballdleadmin@gmail.com</a>
+				For missing players, bug reports, or anything else, use the
+				<NuxtLink to="/feedback" title="Send feedback">feedback form</NuxtLink>.
 			</p>
 			<p>
 				Response times vary — this is a one-person operation run in spare time — but every message gets
@@ -124,6 +137,11 @@
 </template>
 
 <script setup lang="ts">
+	import playerMeta from '../data/meta.json'
+
+	// Season of the current player list (updated by yarn update-players)
+	const season = playerMeta.season
+
 	useHead({
 		title: 'About Footballdle | Daily Premier League Footballer Guessing Game',
 		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/about' }],

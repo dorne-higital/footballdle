@@ -1,0 +1,366 @@
+// iOS app "Floodlights" look. Only the app build puts .app-shell on <html>
+// (nuxt.config.ts), so nothing here reaches the website. Most of the restyle comes
+// from overriding the theme tokens; the rest turns website patterns into app ones.
+// `html.app-shell` outranks the `.dark` / `.greyscale` / `.theme-pastel` theme classes.
+
+html.app-shell {
+	--font-display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
+	--font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+
+	--text-primary: #eaf5ee;
+	--text-secondary: #8fa89a;
+	--bg-primary: #07130d;
+	--bg-secondary: #0f2219;
+	--bg-gradient: linear-gradient(160deg, #07130d 0%, #0f2219 100%);
+	--primary-color: #2fe08a;
+	--secondary-color: #eaf5ee;
+	--accent-color: #2fe08a;
+	--tertiary-color: #f2b84b;
+	--color-success: #2fe08a;
+	--color-present: #f2b84b;
+	--color-absent: #24352d;
+	--on-success: #04130b;
+	--on-present: #1b1203;
+	--color-gradient: linear-gradient(135deg, #2fe08a 0%, #1fa866 100%);
+	--subtle-gradient: linear-gradient(135deg, #163126 0%, #0f2219 100%);
+	--global-border-radius: 14px;
+	--border: rgb(255 255 255 / 8%);
+	--border-hover: #2fe08a;
+
+	--turf-base: #0b1a12;
+	--turf-stripe: #0f2219;
+	--touchline-color: rgb(255 255 255 / 6%);
+	--pitchcard-accent-win: #2fe08a;
+	--pitchcard-accent-loss: #ff8a80;
+	--pitchcard-accent-neutral: #eaf5ee;
+	--pitchcard-accent-info: #8fa89a;
+	--scoreboard-bg: #0b1a12;
+	--scoreboard-fg: #eaf5ee;
+	--scoreboard-accent: #2fe08a;
+
+	// App-only extras
+	--fl-raised: #163126;
+	--fl-blue: #6ea8ff;
+	--fl-red: #ff8a80;
+	--fl-glow: rgb(47 224 138 / 16%);
+	--fl-key: #1e3329;
+	--fl-key-pressed: #2a4437;
+	--fl-grabber: rgb(255 255 255 / 22%);
+	--fl-shadow: rgb(0 0 0 / 60%);
+
+	background: var(--bg-primary);
+	color-scheme: dark;
+	// Archivo Black ships one weight; don't fake-bold it where CSS asks for 700
+	font-synthesis: none;
+	overscroll-behavior: none;
+
+	body {
+		background: var(--bg-primary);
+		overscroll-behavior: none;
+	}
+
+	// Stadium floodlight glow behind every screen
+	.play-layout,
+	.app-page-layout {
+		background:
+			radial-gradient(ellipse 120% 45% at 50% -8%, var(--fl-glow) 0%, transparent 70%),
+			var(--bg-primary);
+	}
+
+	// The pitch-stripe texture fights the glow; the app doesn't need it
+	.pitch-texture {
+		display: none;
+	}
+
+	.has-tab-bar .play-content {
+		padding-bottom: 0;
+	}
+
+	// The layout lifts page content into its own layer above the pitch texture, which
+	// would trap modals under the tab bar. No texture in the app, so drop the layer.
+	.play-layout .play-content > :not(.pitch-texture) {
+		z-index: auto;
+	}
+
+	// Dock the keyboard to the bottom like a real one
+	.game-screen > .keyboard {
+		margin-top: auto;
+		padding-bottom: 0.25rem;
+	}
+
+	.app-page-layout {
+		min-height: 100%;
+	}
+
+	.site-footer {
+		display: none;
+	}
+
+	// ---------------------------------------------------------------------------
+	// Board and keyboard
+	// ---------------------------------------------------------------------------
+	// Square tiles sized from whichever runs out first, width or height, so big phones
+	// get a bigger board instead of a dead band above the keyboard (about 500pt is
+	// the top bar, hint button, clue chips and keyboard)
+	.game-board {
+		--tile: clamp(
+			36px,
+			min(
+				calc((100vw - 4.5rem) / var(--cols, 6)),
+				calc((100dvh - 500px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) / 6.6)
+			),
+			60px
+		);
+	}
+
+	.game-board .guess-row .letter {
+		border-width: 1.5px;
+		font-size: calc(var(--tile) * 0.5);
+		font-weight: 400;
+		height: var(--tile);
+		line-height: var(--tile);
+		margin: 0 3px;
+		width: var(--tile);
+
+		&.correct {
+			box-shadow: 0 0 20px rgb(47 224 138 / 45%);
+		}
+	}
+
+	.keyboard .row button {
+		background: var(--fl-key);
+		border-color: transparent;
+		border-radius: 10px;
+		font-weight: 800;
+
+		&:active {
+			background: var(--fl-key-pressed);
+			transform: scale(0.94);
+		}
+
+		&[data-key='ENTER'] {
+			background: var(--primary-color);
+			border-color: var(--primary-color);
+			color: var(--on-success);
+			font-family: var(--font-body);
+			font-weight: 800;
+		}
+
+		&[data-key='BACKSPACE'] {
+			color: var(--text-primary);
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Modals become iOS-style bottom sheets
+	// ---------------------------------------------------------------------------
+	.base-modal {
+		align-items: flex-end;
+		backdrop-filter: blur(4px);
+		background: rgb(0 0 0 / 55%);
+		animation: app-fade-in 0.2s ease;
+	}
+
+	.base-modal .modal.modal:not(.fullscreen) {
+		animation: app-sheet-up 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+		border: 0;
+		border-radius: 28px 28px 0 0;
+		box-shadow: 0 -12px 40px -12px var(--fl-shadow);
+		max-height: 88dvh;
+		max-width: 100%;
+		padding: 1.25rem 0.75rem calc(env(safe-area-inset-bottom) + 0.75rem);
+		width: 100%;
+
+		// Grabber handle
+		&::before {
+			background: var(--fl-grabber);
+			border-radius: 999px;
+			content: '';
+			height: 5px;
+			left: 50%;
+			position: absolute;
+			top: 0.5rem;
+			transform: translateX(-50%);
+			width: 38px;
+		}
+	}
+
+	// ---------------------------------------------------------------------------
+	// Buttons feel pressable
+	// ---------------------------------------------------------------------------
+	.button,
+	button {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.button.primary {
+		color: var(--on-success);
+	}
+}
+
+// Light Floodlights (Settings → Appearance). Same layout, daylight colours: the bright
+// pitch green is kept for fills, with a deeper green wherever green is used as text.
+html.app-shell.app-light {
+	--text-primary: #10231a;
+	--text-secondary: #55695e;
+	--bg-primary: #f2f6f3;
+	--bg-secondary: #fff;
+	--bg-gradient: linear-gradient(160deg, #f2f6f3 0%, #e6efe9 100%);
+	--primary-color: #128d53;
+	--secondary-color: #10231a;
+	--accent-color: #128d53;
+	--tertiary-color: #b7790f;
+	--color-success: #22b36b;
+	--color-present: #e3a72f;
+	--color-absent: #7b8b82;
+	--on-success: #04130b;
+	--on-present: #1b1203;
+	--color-gradient: linear-gradient(135deg, #22b36b 0%, #128d53 100%);
+	--subtle-gradient: linear-gradient(135deg, #e6efe9 0%, #fff 100%);
+	--border: rgb(16 35 26 / 11%);
+	--border-hover: #128d53;
+
+	--turf-base: #e6efe9;
+	--turf-stripe: #dde8e1;
+	--touchline-color: rgb(16 35 26 / 8%);
+	--pitchcard-accent-win: #128d53;
+	--pitchcard-accent-loss: #c9483d;
+	--pitchcard-accent-neutral: #10231a;
+	--pitchcard-accent-info: #55695e;
+	--scoreboard-bg: #e6efe9;
+	--scoreboard-fg: #10231a;
+	--scoreboard-accent: #128d53;
+
+	--fl-raised: #fff;
+	--fl-blue: #2f6fd6;
+	--fl-red: #c9483d;
+	--fl-glow: rgb(34 179 107 / 18%);
+	--fl-key: #dbe5df;
+	--fl-key-pressed: #c6d5cc;
+	--fl-grabber: rgb(16 35 26 / 18%);
+	--fl-shadow: rgb(16 35 26 / 18%);
+
+	color-scheme: light;
+}
+
+// Page change: a short iOS-style slide
+.app-slide-enter-active,
+.app-slide-leave-active {
+	transition:
+		opacity 0.18s ease,
+		transform 0.18s ease;
+}
+
+.app-slide-enter-from {
+	opacity: 0;
+	transform: translateX(18px);
+}
+
+.app-slide-leave-to {
+	opacity: 0;
+	transform: translateX(-18px);
+}
+
+@keyframes app-sheet-up {
+	from {
+		transform: translateY(100%);
+	}
+
+	to {
+		transform: translateY(0);
+	}
+}
+
+@keyframes app-fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.app-slide-enter-active,
+	.app-slide-leave-active {
+		transition: none;
+	}
+
+	html.app-shell .base-modal,
+	html.app-shell .base-modal .modal.modal {
+		animation: none;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Scout Report and Spot the Baller fill the screen instead of stopping half way
+// -----------------------------------------------------------------------------
+html.app-shell {
+	.scout-page .play-surface-frame,
+	.spot-page .play-surface-frame {
+		flex: 1;
+		margin-bottom: 0.5rem;
+		min-height: 0;
+		overflow: hidden;
+		padding-bottom: 0.75rem;
+	}
+
+	// Scout: guess slots fill the space, search box sits at the bottom
+	.scout-board {
+		flex: 1;
+		min-height: 0;
+
+		.rows {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 0.45rem;
+			max-height: none;
+			min-height: 0;
+			overflow-y: auto;
+			scrollbar-width: none;
+		}
+	}
+
+	.scout-autocomplete .suggestions {
+		bottom: 100%;
+		margin: 0 0 0.4rem;
+		max-height: 45vh;
+		top: auto;
+	}
+
+	// While the keyboard is up the screen is ~300px shorter: keep the guesses and the
+	// search field, drop the extras
+	&.keyboard-open {
+		.scout-page .scoreboard-strip,
+		.scout-board .app-footer {
+			display: none;
+		}
+	}
+
+	// Spot: the round card fills the frame so answers sit at the bottom
+	.spot-round-card {
+		flex: 1;
+		min-height: 0;
+	}
+}
+
+// The app look on the website, on a tablet or computer: a phone-width column down the
+// middle. The column is its own scroller and (via the transform) the box that fixed
+// things like the tab bar sit in, so they stay inside it rather than at the window edges.
+@media (width >= 640px) {
+	html.app-web body {
+		background: #030906;
+	}
+
+	html.app-web #__nuxt {
+		background: var(--bg-primary);
+		box-shadow: 0 0 0 1px var(--border), 0 30px 80px rgb(0 0 0 / 45%);
+		height: 100dvh;
+		margin: 0 auto;
+		max-width: 480px;
+		overflow-y: auto;
+		transform: translateZ(0);
+	}
+}

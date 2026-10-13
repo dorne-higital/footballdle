@@ -7,7 +7,7 @@
 
 		<div class="intro-content">
 			<div class="eyebrow-row">
-				<span class="eyebrow">{{ eyebrowLabel }}</span>
+				<span class="eyebrow">Today's match</span>
 				<span class="match-no">{{ kickoffLabel }}</span>
 			</div>
 
@@ -56,7 +56,7 @@
 					@click="$emit('start-game')"
 					class="button primary play-button"
 				>
-					{{ hasIncompleteGame ? 'Resume Game' : 'Play Now' }}
+					{{ hasIncompleteGame ? 'Resume game' : 'Play now' }}
 				</button>
 			</div>
 
@@ -82,7 +82,7 @@
 				class="already-played-section"
 			>
 				<h3 class="heading">{{ modeName }} played!</h3>
-				<p class="caption">Looks like you have played today, come back tomorrow to play it again</p>
+				<p class="caption">You've played today's. New puzzles drop at {{ resetTime }}.</p>
 
 				<div class="countdown">
 					<h4>{{ countdown }}</h4>
@@ -98,7 +98,7 @@
 							name="solar:share-linear"
 							size="1rem"
 						/>
-						Todays result
+						Today's result
 					</button>
 
 					<NuxtLink
@@ -111,7 +111,7 @@
 							name="solar:history-linear"
 							size="0.9rem"
 						/>
-						Prev answer
+						Yesterday's answer
 					</NuxtLink>
 				</div>
 
@@ -159,7 +159,7 @@
 								size="1.5rem"
 							/>
 
-							<h6>Unlimed plays</h6>
+							<h6>Unlimited plays</h6>
 						</div>
 					</div>
 
@@ -167,7 +167,7 @@
 						@click="$emit('start-challenge')"
 						class="button primary full large challenge play-button"
 					>
-						Play now!
+						Play now
 					</button>
 				</div>
 			</div>
@@ -176,8 +176,9 @@
 </template>
 
 <script setup lang="ts">
-	import { computed } from 'vue'
-	import { getPuzzleNumber } from '../composables/useFootballers'
+	import { computed, onMounted, ref } from 'vue'
+	import { getDisplayNumber } from '../composables/useFootballers'
+	import { nextPuzzleTimeLabel } from '../utils/dateStreak'
 
 	const props = withDefaults(
 		defineProps<{
@@ -218,10 +219,13 @@
 	// Decorative "match" header — mirrors the daily puzzle numbering used
 	// elsewhere in the app (see stores/game.ts) without requiring a new prop.
 	const todayUK = new Date().toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
-	const puzzleNumber = getPuzzleNumber(todayUK)
+	const puzzleNumber = getDisplayNumber(todayUK)
 
-	const eyebrowLabel = computed(() => `${props.modeName} Match`)
-	const kickoffLabel = computed(() => `No. ${puzzleNumber} · Kick-off 00:00 GMT`)
+	// The reset is UK midnight; say it in the player's own time ("8:00 am" in Sydney).
+	// Worked out on the device, since the website's HTML is rendered elsewhere.
+	const resetTime = ref('midnight UK')
+	onMounted(() => (resetTime.value = nextPuzzleTimeLabel()))
+	const kickoffLabel = computed(() => `${puzzleNumber ? `No. ${puzzleNumber} · ` : ''}New puzzle at ${resetTime.value}`)
 
 	defineEmits(['start-game', 'start-challenge', 'show-result'])
 </script>
@@ -274,8 +278,10 @@
 			.eyebrow-row {
 				align-items: baseline;
 				display: flex;
+				gap: 0.5rem;
 				justify-content: space-between;
 				margin-bottom: 0.4rem;
+				white-space: nowrap;
 
 				.eyebrow {
 					background: color-mix(in srgb, var(--primary-color) 14%, transparent);
@@ -291,6 +297,8 @@
 
 				.match-no {
 					color: var(--text-secondary);
+					min-width: 0;
+					overflow-wrap: anywhere;
 					font-family: var(--font-mono);
 					font-size: 0.7rem;
 					letter-spacing: 0.02em;

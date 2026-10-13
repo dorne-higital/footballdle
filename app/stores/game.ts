@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
+import { nextUKMidnight } from '../utils/dateStreak'
+import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
-import { getAnswerForDay, isValidFootballer, getPlayerData, getPuzzleNumber } from '../composables/useFootballers'
+import { getAnswerForDay, getAnswerPlayerForDay, isValidFootballer, getDisplayNumber } from '../composables/useFootballers'
+import { useHaptics } from '../composables/useHaptics'
+import { useCardsStore } from './cards'
 
 export const useGameStore = defineStore('game', () => {
 	// ============================================================================
@@ -11,22 +15,18 @@ export const useGameStore = defineStore('game', () => {
 		return now.toLocaleDateString('en-GB', { timeZone: 'Europe/London' })
 	}
 
-	function getNextGameTime() {
-		// Get current time in UK
-		const now = new Date()
-		const ukNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }))
-		// Set to next midnight UK time
-		ukNow.setHours(0, 0, 0, 0)
-		ukNow.setDate(ukNow.getDate() + 1)
-		return ukNow
-	}
+	// Was UK wall-clock time read as device time: wrong by the offset outside the UK
+	const getNextGameTime = () => nextUKMidnight()
 
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
 	const todayStr = getUKDateString() || ''
 	const answer = getAnswerForDay(todayStr) || ''
-	const puzzleNumber = getPuzzleNumber(todayStr)
+	// Some days are 5-letter surnames, some 6; the board and input follow the answer
+	const wordLength = answer.length || 6
+	// The public number (#1 from the restart), for display and sharing only
+	const puzzleNumber = getDisplayNumber(todayStr)
 	const nextGameTime = getNextGameTime()
 
 	// Game state
@@ -39,10 +39,13 @@ export const useGameStore = defineStore('game', () => {
 	const showIntro = ref(true)
 	const errorMessage = ref('')
 	const purchasedHints = ref(0)
+	const haptics = useHaptics()
+	const hintBank = !!useRuntimeConfig().public.appShell
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
 		errorMessage.value = msg
+		haptics.error()
 		if (errorTimer) clearTimeout(errorTimer)
 		errorTimer = setTimeout(() => {
 			errorMessage.value = ''
@@ -56,26 +59,43 @@ export const useGameStore = defineStore('game', () => {
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
+	// The app shell only reveals clues through banked hints, up to five; the old website look
+	// also unlocks the first three as you guess (club after guess 2, nationality after 3, position after 4)
+	const MAX_APP_HINTS = 5
+
 	const hints = computed(() => {
-		const player = getPlayerData(answer)
+		const player = getAnswerPlayerForDay(todayStr)
 		if (!player) return []
 
-		const effective = guesses.value.length + purchasedHints.value
-		const revealed: { label: string; value: string; icon: string }[] = []
-		if (effective >= 2) revealed.push({ label: '', value: player.club, icon: 'solar:shield-linear' })
-		if (effective >= 3) revealed.push({ label: '', value: player.nationality, icon: 'solar:earth-linear' })
-		if (effective >= 4) revealed.push({ label: '', value: player.position, icon: 'solar:football-linear' })
+		const surname = answer.toUpperCase()
+		const clues = [
+			{ label: 'Club', value: player.club, icon: 'solar:shield-linear' },
+			{ label: 'Nation', value: player.nationality, icon: 'solar:earth-linear' },
+			{ label: 'Position', value: player.position, icon: 'solar:football-linear' },
+			{ label: 'Starts with', value: surname.slice(0, 1), icon: 'solar:text-square-linear' },
+			{ label: 'Starts with', value: surname.slice(0, 2), icon: 'solar:text-square-linear' },
+		]
+		const unlocked = hintBank
+			? purchasedHints.value
+			: Math.min(3, Math.max(0, guesses.value.length + purchasedHints.value - 1))
 
-		return revealed
+		// The second letter hint replaces the first rather than sitting beside it
+		const shown = clues.slice(0, unlocked)
+		if (unlocked >= 5) shown.splice(3, 1)
+		return shown
 	})
 
-	const canPurchaseHint = computed(
-		() => !gameOver.value && guesses.value.length + purchasedHints.value < 4,
+	const canPurchaseHint = computed(() =>
+		!gameOver.value &&
+		(hintBank ? purchasedHints.value < MAX_APP_HINTS : guesses.value.length + purchasedHints.value < 4),
 	)
 
 	function unlockHint() {
 		purchasedHints.value++
+		haptics.tap()
 		saveState()
+		// Remembered for the "Tactical Review" Game Center achievement
+		localStorage.setItem('footballdle-hint-used', '1')
 	}
 
 	// Derived from the store's own reactive `gameOver` ref rather than reading
@@ -92,12 +112,12 @@ export const useGameStore = defineStore('game', () => {
 	function submitGuess(guess: string) {
 		if (gameOver.value) return // Prevent guess if game is over
 		guess = guess.trim().toUpperCase()
-		if (guess.length !== 6) {
-			setError('Must be 6 letters')
+		if (guess.length !== wordLength) {
+			setError(`Must be ${wordLength} letters`)
 			return
 		}
 		if (!isValidFootballer(guess)) {
-			setError('Not a valid footballer')
+			setError("Not a current Premier League surname")
 			return
 		}
 		if (guesses.value.map((g) => g.toUpperCase()).includes(guess)) {
@@ -115,6 +135,8 @@ export const useGameStore = defineStore('game', () => {
 			gameOver.value = true
 			showGameOverModal.value = true
 		}
+		// Player Cards: before the save, so a card is never missed (loadState backfills too)
+		if (gameOver.value) useCardsStore().finishDaily(todayStr, isWin.value, guesses.value.length)
 		currentGuess.value = ''
 		saveState()
 	}
@@ -125,7 +147,7 @@ export const useGameStore = defineStore('game', () => {
 			submitGuess(currentGuess.value)
 		} else if (key === 'BACKSPACE') {
 			currentGuess.value = currentGuess.value.slice(0, -1)
-		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < 6) {
+		} else if (/^[A-Z]$/.test(key) && currentGuess.value.length < wordLength) {
 			currentGuess.value += key
 		}
 	}
@@ -196,16 +218,18 @@ export const useGameStore = defineStore('game', () => {
 	}
 
 	function loadState() {
-		const savedGame = localStorage.getItem('footballdle-game')
-		if (savedGame) {
-			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedPurchasedHints } = JSON.parse(savedGame)
+		const saved = readSavedObject('footballdle-game')
+		if (saved) {
+			const { date, guesses: savedGuesses, gameOver: savedOver, isWin: savedWin, purchasedHints: savedPurchasedHints } = saved
 			if (date === todayStr) {
-				guesses.value = savedGuesses
-				gameOver.value = savedOver
-				isWin.value = savedWin
-				purchasedHints.value = savedPurchasedHints || 0
+				guesses.value = Array.isArray(savedGuesses) ? savedGuesses : []
+				gameOver.value = !!savedOver
+				isWin.value = !!savedWin
+				purchasedHints.value = Number(savedPurchasedHints) || 0
 				showGameOverModal.value = false
 				showIntro.value = savedOver
+				// A finished game always has its card (no-op if it's already recorded)
+				if (gameOver.value) useCardsStore().finishDaily(todayStr, isWin.value, guesses.value.length)
 			}
 		}
 	}
@@ -237,6 +261,8 @@ export const useGameStore = defineStore('game', () => {
 
 		// Computed
 		hints,
+		purchasedHints,
+		wordLength,
 		canPlay,
 		canPurchaseHint,
 

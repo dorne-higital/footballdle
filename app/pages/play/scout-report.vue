@@ -36,6 +36,20 @@
 					@guess="handleGuess"
 				/>
 			</PlaySurfaceFrame>
+			<AppHintBar
+				v-if="$config.public.appShell && !scoutStore.gameOver"
+				:hints="scoutStore.hints"
+				:can-purchase="scoutStore.canPurchaseHint"
+				:next-clue-name="scoutStore.nextClueName"
+				@unlock="scoutStore.unlockHint()"
+			/>
+			<FullTimePanel
+				v-if="$config.public.appShell && scoutStore.gameOver"
+				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
+				:is-win="scoutStore.isWin"
+				:countdown="scoutStore.countdown"
+				@result="scoutStore.showGameOverModal = true"
+			/>
 		</div>
 
 		<!-- Game Over Modal -->
@@ -48,8 +62,8 @@
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="scoutStore.isWin">You win!</h4>
-					<h4 v-else>You lose!</h4>
+					<h4 v-if="scoutStore.isWin">Found in {{ scoutStore.guesses.length }}/{{ scoutStore.maxGuesses }}</h4>
+					<h4 v-else>Not today</h4>
 					<div
 						v-if="scoutStore.isWin && statsStore.stats.currentStreak > 1"
 						class="streak-celebration"
@@ -63,15 +77,38 @@
 					<p>
 						The answer was <strong class="answer">{{ scoutStore.answer }}</strong>
 					</p>
+					<div class="result-share">
+						<div
+							class="share-grid"
+							aria-hidden="true"
+						>
+							<div
+								v-for="(row, ri) in scoutStore.guessResults"
+								:key="ri"
+								class="share-row"
+							>
+								<span
+									v-for="(cell, ci) in [row.club, row.nationality, row.position]"
+									:key="ci"
+									:class="['share-tile', cell.state]"
+								></span>
+							</div>
+						</div>
+						<ShareResultButton
+							:text="shareText"
+							@shared="trackShare('scout')"
+						/>
+					</div>
 				</div>
 			</template>
 
 			<template #footer>
 				<div v-if="scoutStore.getNextGameTime">
-					<p class="caption">Next game in:</p>
+					<p class="caption">New puzzles in</p>
 					<h3>{{ scoutStore.countdown }}</h3>
 				</div>
 				<a
+					v-if="!$config.public.isApp"
 					href="https://buymeacoffee.com/dhorne92E"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -93,7 +130,7 @@
 
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings"
+			v-if="modalsStore.showSettings && !$config.public.appShell"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -106,7 +143,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats"
+			v-if="modalsStore.showStats && !$config.public.appShell"
 			heading="Statistics"
 			accent="info"
 			variant="small"
@@ -152,6 +189,10 @@
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
+	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
+	import FullTimePanel from '../../components/app/FullTimePanel.vue'
+	import AppHintBar from '../../components/app/AppHintBar.vue'
+	import { useShare } from '../../composables/useShare'
 
 	definePageMeta({ layout: 'play' })
 
@@ -195,6 +236,7 @@
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackBuyMeCoffee,
+		trackShare,
 	} = useAnalytics()
 
 	function handleBuyMeCoffee(location: string) {
@@ -225,6 +267,17 @@
 		scoutStore.isWin && scoutStore.gameOver ? scoutStore.guesses.length : 0,
 	)
 
+	const { getScoutShareText } = useShare()
+	const shareText = computed(() =>
+		getScoutShareText(
+			scoutStore.guessResults,
+			scoutStore.isWin,
+			scoutStore.maxGuesses,
+			scoutStore.puzzleNumber,
+			statsStore.stats.currentStreak,
+		),
+	)
+
 	const streakMessage = computed(() => {
 		const s = statsStore.stats.currentStreak
 		if (s >= 30) return `${s} day streak — absolute legend!`
@@ -252,6 +305,15 @@
 		scoutStore.loadState()
 		scoutStore.startCountdown()
 		sessionStartTime.value = Date.now()
+
+		// iOS app: the Matchday home links straight into play, skipping the intro screen,
+		// and a finished game opens on its board (result sheet too from "See result")
+		const start = useRoute().query.start
+		if (start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
+		if (useRuntimeConfig().public.appShell && scoutStore.gameOver) {
+			scoutStore.showIntro = false
+			if (start === 'result') scoutStore.showGameOverModal = true
+		}
 	})
 
 	onUnmounted(() => {
@@ -290,6 +352,55 @@
 </script>
 
 <style scoped lang="scss">
+
+	// Result-sheet share preview (Scout rows / Spot dots) and button
+	.result-share {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+		width: 100%;
+
+		.share-grid {
+			display: flex;
+			flex-direction: column;
+			gap: 3px;
+		}
+
+		.share-row {
+			display: flex;
+			gap: 3px;
+			justify-content: center;
+		}
+
+		.share-tile {
+			border-radius: 3px;
+			height: 16px;
+			width: 16px;
+
+			&.correct {
+				background: var(--color-success);
+			}
+
+			&.present {
+				background: var(--color-present);
+			}
+
+			&.absent {
+				background: var(--color-absent);
+			}
+
+			&.dot {
+				border-radius: 50%;
+			}
+		}
+
+		.share-result-btn {
+			width: 100%;
+		}
+	}
+
 	.scout-page-wrapper {
 		align-items: flex-start;
 		display: flex;

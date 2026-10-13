@@ -1,78 +1,30 @@
 <template>
 	<div class="hub-page">
-		<ModeSelectHub
-			:daily-streak="statsStore.stats.currentStreak"
-			:scout-streak="scoutStatsStore.stats.currentStreak"
-			:spotball-streak="spotballStatsStore.stats.currentStreak"
-		/>
+		<AppHome v-if="$config.public.appShell" />
+		<template v-else>
+			<ModeSelectHub
+				:daily-streak="statsStore.stats.currentStreak"
+				:scout-streak="scoutStatsStore.stats.currentStreak"
+				:spotball-streak="spotballStatsStore.stats.currentStreak"
+			/>
 
-		<HubStatsStrip :modes="modeSummaries" />
+			<HubStatsStrip :modes="modeSummaries" />
+		</template>
 
-		<!-- Settings Modal -->
-		<PitchCardModal
-			v-if="modalsStore.showSettings"
-			heading="Settings"
-			accent="info"
-			variant="small"
-			@close="modalsStore.closeSettings"
-		>
-			<template #body>
-				<ThemePickerSettings @buy-coffee="handleBuyMeCoffee" />
-			</template>
-		</PitchCardModal>
-
-		<!-- Stats Modal -->
-		<PitchCardModal
-			v-if="modalsStore.showStats"
-			heading="Statistics"
-			accent="info"
-			variant="small"
-			@close="modalsStore.closeStats"
-		>
-			<template #body>
-				<div class="hub-stats-modal">
-					<div
-						v-for="mode in modeSummaries"
-						:key="mode.label"
-						class="mode-row"
-					>
-						<div class="mode-row-top">
-							<h4>{{ mode.label }}</h4>
-							<span
-								v-if="mode.currentStreak > 0"
-								class="streak-tag"
-							>
-								<Icon
-									name="solar:fire-bold"
-									size="0.85rem"
-								/>
-								{{ mode.currentStreak }}
-							</span>
-						</div>
-						<div class="mode-row-stats">
-							<span><strong>{{ mode.gamesPlayed }}</strong> played</span>
-							<span><strong>{{ mode.winRate }}%</strong> win rate</span>
-						</div>
-					</div>
-				</div>
-			</template>
-		</PitchCardModal>
+		<HubSheets v-if="!$config.public.appShell" />
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { onMounted, computed, defineAsyncComponent } from 'vue'
+	import { onMounted, computed } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
-	import { useModalsStore } from '../stores/modals'
-	import { useAnalytics } from '../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeSelectHub from '../components/hub/ModeSelectHub.vue'
 	import HubStatsStrip from '../components/hub/HubStatsStrip.vue'
-	import ThemePickerSettings from '../components/shared/ThemePickerSettings.vue'
+	import AppHome from '../components/app/AppHome.vue'
+	import HubSheets from '../components/shared/HubSheets.vue'
 
 	definePageMeta({ layout: 'play' })
-
-	const PitchCardModal = defineAsyncComponent(() => import('../components/shared/PitchCardModal.vue'))
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Games',
@@ -124,8 +76,6 @@
 	const statsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
-	const modalsStore = useModalsStore()
-	const { trackBuyMeCoffee } = useAnalytics()
 
 	const modeSummaries = computed(() => [
 		{
@@ -151,14 +101,6 @@
 		},
 	])
 
-	function handleBuyMeCoffee(location: string) {
-		trackBuyMeCoffee(location)
-		if (import.meta.client) {
-			const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
-			btn?.click()
-		}
-	}
-
 	onMounted(() => {
 		statsStore.loadStats()
 		scoutStatsStore.loadStats()
@@ -171,56 +113,5 @@
 		height: 100%;
 		overflow-y: auto;
 		width: 100%;
-	}
-
-	.hub-stats-modal {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		width: 100%;
-
-		.mode-row {
-			background: var(--bg-secondary);
-			border: 1px solid var(--border);
-			border-radius: var(--global-border-radius);
-			padding: 0.9rem 1rem;
-		}
-
-		.mode-row-top {
-			align-items: center;
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: 0.4rem;
-
-			h4 {
-				color: var(--text-primary);
-				font-family: var(--font-display);
-				font-size: 0.95rem;
-				font-weight: 700;
-				margin: 0;
-			}
-		}
-
-		.streak-tag {
-			align-items: center;
-			color: var(--tertiary-color);
-			display: inline-flex;
-			font-family: var(--font-mono);
-			font-size: 0.8rem;
-			font-weight: 700;
-			gap: 0.25rem;
-		}
-
-		.mode-row-stats {
-			color: var(--text-secondary);
-			display: flex;
-			font-size: 0.82rem;
-			gap: 1.25rem;
-
-			strong {
-				color: var(--text-primary);
-				font-family: var(--font-mono);
-			}
-		}
 	}
 </style>

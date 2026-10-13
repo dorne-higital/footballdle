@@ -1,6 +1,9 @@
 <template>
-	<div class="play-layout">
-		<AppHeader />
+	<div :class="['play-layout', { 'has-tab-bar': showTabBar }]">
+		<template v-if="$config.public.appShell">
+			<AppTopBar v-if="!showTabBar" />
+		</template>
+		<AppHeader v-else />
 
 		<div class="play-content">
 			<div
@@ -9,11 +12,25 @@
 			></div>
 			<slot />
 		</div>
+
+		<AppTabBar v-if="showTabBar" />
+		<!-- iOS app: the same Stats and Settings sheets as everywhere else -->
+		<HubSheets v-if="$config.public.appShell" />
 	</div>
 </template>
 
 <script setup lang="ts">
+	import { computed } from 'vue'
 	import AppHeader from '../components/shared/AppHeader.vue'
+	import AppTopBar from '../components/app/AppTopBar.vue'
+	import AppTabBar from '../components/app/AppTabBar.vue'
+	import HubSheets from '../components/shared/HubSheets.vue'
+
+	const route = useRoute()
+	const { appShell } = useRuntimeConfig().public
+
+	// iOS app: tab bar on the Matchday home, back-button top bar inside games
+	const showTabBar = computed(() => appShell && route.path.replace(/\/+$/, '') === '')
 </script>
 
 <style scoped lang="scss">
@@ -21,7 +38,7 @@
 		background: var(--bg-primary);
 		display: flex;
 		flex-direction: column;
-		height: 100dvh;
+		height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 		overflow: hidden;
 		width: 100%;
 	}

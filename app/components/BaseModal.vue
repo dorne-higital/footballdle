@@ -117,6 +117,8 @@
 					height: 100dvh;
 					max-height: 100dvh;
 					max-width: 100vw;
+					padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+					padding-top: calc(0.5rem + env(safe-area-inset-top));
 					width: 100vw;
 				}
 			}
@@ -143,11 +145,11 @@
 					cursor: pointer;
 					display: inline-flex;
 					flex: none;
-					height: 32px;
+					height: 44px;
 					justify-content: center;
 					padding: 0;
 					transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-					width: 32px;
+					width: 44px;
 
 					&:hover {
 						background: color-mix(in srgb, var(--primary-color) 14%, var(--bg-secondary));
@@ -162,6 +164,19 @@
 				min-height: 0;
 				overflow-y: auto;
 				padding: 1rem 0.5rem;
+				// Centre short content with auto margins rather than justify-content, which
+				// pushes the top of tall content out of scroll reach (`safe center` would
+				// do it too, but older iOS Safari ignores it)
+				justify-content: flex-start;
+
+				// Slotted content carries the parent's scope id, hence :slotted
+				> :slotted(:first-child) {
+					margin-top: auto;
+				}
+
+				> :slotted(:last-child) {
+					margin-bottom: auto;
+				}
 
 				&.left {
 					align-items: flex-start;

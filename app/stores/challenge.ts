@@ -4,6 +4,8 @@ import { ref, computed } from 'vue'
 import { getChallengeFootballerByIndex, useChallengeFootballers } from '../composables/useChallengeFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString } from '../utils/dateStreak'
+import { readSavedObject } from '../utils/storage'
+import { useHaptics } from '../composables/useHaptics'
 
 const { isValidChallengeFootballer } = useChallengeFootballers()
 
@@ -13,7 +15,11 @@ export const useChallengeStore = defineStore('challenge', () => {
 	// ============================================================================
 	const isUnlocked = ref(false)
 	const isActive = ref(false)
-	const sessionGameIndex = ref(0)
+	// Where this install starts in the shuffled answer list: random, so mates don't all
+	// get the same sequence and spoil it for each other
+	const sessionGameIndex = ref(Math.floor(Math.random() * 10_000))
+	// Challenges won since entering Challenge mode (shown as the session score)
+	const sessionWins = ref(0)
 	const currentAnswer = ref('')
 	const guesses = ref<string[]>([])
 	const currentGuess = ref('')
@@ -26,10 +32,12 @@ export const useChallengeStore = defineStore('challenge', () => {
 	const isPaused = ref(false)
 
 	const errorMessage = ref('')
+	const haptics = useHaptics()
 	let errorTimer: ReturnType<typeof setTimeout> | null = null
 
 	function setError(msg: string) {
 		errorMessage.value = msg
+		haptics.error()
 		if (errorTimer) clearTimeout(errorTimer)
 		errorTimer = setTimeout(() => {
 			errorMessage.value = ''
@@ -83,7 +91,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		}
 
 		if (!isValidChallengeFootballer(guess)) {
-			setError('Not a valid footballer')
+			setError("Not a current Premier League surname")
 			return
 		}
 
@@ -96,6 +104,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 
 		if (guess.toUpperCase() === currentAnswer.value.toUpperCase()) {
 			isWin.value = true
+			sessionWins.value++
 			gameOver.value = true
 			showGameOverModal.value = true
 			stopTimer()
@@ -146,6 +155,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 
 	function endChallenge() {
 		isActive.value = false
+		sessionWins.value = 0
 		gameOver.value = false
 		isWin.value = false
 		guesses.value = []
@@ -181,6 +191,10 @@ export const useChallengeStore = defineStore('challenge', () => {
 			if (isPaused.value) return
 
 			timeRemaining.value--
+			// Saved every tick so a relaunch can't hand back a fuller clock
+			if (timeRemaining.value > 0) saveChallengeState()
+			// A light tick for each of the last 3 seconds
+			if (timeRemaining.value > 0 && timeRemaining.value <= 3) haptics.select()
 			if (timeRemaining.value <= 0) {
 				isWin.value = false
 				gameOver.value = true
@@ -206,6 +220,20 @@ export const useChallengeStore = defineStore('challenge', () => {
 			clearInterval(timerInterval.value)
 			timerInterval.value = null
 		}
+	}
+
+	/** Leaving the screen or backgrounding the app: the clock stops where it is
+	 *  (unlike togglePause, nothing on screen changes) */
+	function pauseTimer() {
+		if (!timerInterval.value) return
+		stopTimer()
+		saveChallengeState()
+	}
+
+	/** Back on the challenge screen: carry on from the time that was left */
+	function resumeTimer() {
+		if (!isActive.value || gameOver.value || isPaused.value || timeRemaining.value <= 0 || timerInterval.value) return
+		startTimer()
 	}
 
 	// ============================================================================
@@ -236,28 +264,30 @@ export const useChallengeStore = defineStore('challenge', () => {
 			timeRemaining: timeRemaining.value,
 			isPaused: isPaused.value,
 			sessionGameIndex: sessionGameIndex.value,
+			sessionWins: sessionWins.value,
 		}
 		localStorage.setItem('footballdle-challenge', JSON.stringify(state))
 	}
 
 	function loadChallengeState() {
-		const saved = localStorage.getItem('footballdle-challenge')
-		if (saved) {
-			const state = JSON.parse(saved)
-			isUnlocked.value = state.isUnlocked || false
-			isActive.value = state.isActive || false
+		// Unlocked by finishing today's Daily, so it locks again each new day
+		const daily = readSavedObject('footballdle-game')
+		isUnlocked.value = daily?.date === getUKDateString() && !!daily.gameOver
+		const state = readSavedObject('footballdle-challenge')
+		if (state) {
+			isActive.value = isUnlocked.value && !!state.isActive
 			currentAnswer.value = state.currentAnswer || ''
-			guesses.value = state.guesses || []
+			guesses.value = Array.isArray(state.guesses) ? state.guesses : []
 			currentGuess.value = state.currentGuess || ''
 			gameOver.value = state.gameOver || false
 			isWin.value = state.isWin || false
 			timeRemaining.value = state.timeRemaining || 45
 			isPaused.value = state.isPaused || false
-			sessionGameIndex.value = state.sessionGameIndex || 0
-
-			if (isActive.value && !gameOver.value && timeRemaining.value > 0 && !isPaused.value) {
-				startTimer()
-			}
+			// Old saves all started at 0 (same order for everyone), so only keep a real position
+			if (state.sessionGameIndex > 0) sessionGameIndex.value = state.sessionGameIndex
+			sessionWins.value = state.sessionWins || 0
+			// The clock isn't restarted here: the challenge screen calls resumeTimer
+			// once it's actually showing
 		}
 	}
 
@@ -278,6 +308,7 @@ export const useChallengeStore = defineStore('challenge', () => {
 		isUnlocked,
 		isActive,
 		sessionGameIndex,
+		sessionWins,
 		currentAnswer,
 		guesses,
 		currentGuess,
@@ -302,6 +333,8 @@ export const useChallengeStore = defineStore('challenge', () => {
 		endChallenge,
 		closeGameOverModal,
 		togglePause,
+		pauseTimer,
+		resumeTimer,
 		startTimer,
 		stopTimer,
 		saveChallengeState,

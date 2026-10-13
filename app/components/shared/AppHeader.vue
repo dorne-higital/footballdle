@@ -36,12 +36,13 @@
 
 			<div class="wordmark-text">
 				<h1 class="heading">FOOT<span>BALL</span>DLE</h1>
-				<p class="tagline">Six letters. Six tries. One kick-off a day.</p>
+				<p class="tagline">Five or six letters. Six tries. One kick-off a day.</p>
 			</div>
 		</NuxtLink>
 
 		<div class="icons">
 			<a
+				v-if="!$config.public.isApp"
 				href="https://buymeacoffee.com/dhorne92E"
 				target="_blank"
 				rel="noopener noreferrer"
@@ -54,6 +55,19 @@
 					size="1.15em"
 				/>
 			</a>
+
+			<button
+				v-if="gameCenter.isAvailable"
+				type="button"
+				class="icon-btn"
+				aria-label="Leaderboards"
+				@click="gameCenter.showLeaderboards()"
+			>
+				<Icon
+					name="uil:trophy"
+					size="1.15em"
+				/>
+			</button>
 
 			<NuxtLink
 				to="/how-to-play"
@@ -97,8 +111,10 @@
 <script setup lang="ts">
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
+	import { useGameCenter } from '../../composables/useGameCenter'
 
 	const modalsStore = useModalsStore()
+	const gameCenter = useGameCenter()
 	const { trackInfoModal, trackSettingsModal, trackStatsModal, trackHomeClick, trackBuyMeCoffee } = useAnalytics()
 
 	function handleHomeClick() {

@@ -1,9 +1,9 @@
 <template>
 	<div class="daily-page-wrapper">
-	<div :class="['daily-page', { 'is-intro': gameStore.showIntro }]">
+	<div :class="['daily-page', { 'is-intro': gameStore.showIntro && !challengeStore.isActive }]">
 		<!-- Intro / ready-to-play screen -->
 		<ModeIntroScreen
-			v-if="gameStore.showIntro"
+			v-if="gameStore.showIntro && !challengeStore.isActive"
 			mode-name="Daily"
 			mode-tagline="Guess the Premier League footballer"
 			:usp-tiles="dailyUspTiles"
@@ -54,26 +54,56 @@
 				>
 					<Icon
 						:name="hint.icon"
-						size="0.85rem"
+						size="1rem"
 					/>
-					<span class="hint-value">{{ hint.value }}</span>
+					<span class="hint-text">
+						<span class="hint-label">{{ hint.label }}</span>
+						<span class="hint-value">{{ hint.value }}</span>
+					</span>
 				</div>
 			</TransitionGroup>
 
+			<div
+				v-if="gameStore.canPurchaseHint && $config.public.appShell && pendingHint"
+				class="app-hint-btn pending"
+				role="status"
+			>
+				<span class="pending-text">Revealing the {{ nextClueName }}…</span>
+				<button
+					type="button"
+					class="undo-btn"
+					@click="cancelHint"
+				>
+					Undo
+				</button>
+				<span
+					class="pending-bar"
+					aria-hidden="true"
+				></span>
+			</div>
 			<button
-				v-if="gameStore.canPurchaseHint && (adPlatformReady || isAdTestMode)"
-				class="watch-ad-btn"
-				:disabled="adLoading"
-				@click="handleWatchAd"
+				v-else-if="gameStore.canPurchaseHint && $config.public.appShell"
+				class="app-hint-btn"
+				:disabled="purchases.busy"
+				@click="handleAppHint"
 			>
 				<Icon
-					name="solar:play-circle-linear"
-					size="1rem"
+					name="solar:lightbulb-bolt-bold"
+					size="1.2rem"
 				/>
-				{{ adLoading ? 'Loading ad...' : 'Watch an ad for a hint' }}
+				{{ appHintLabel }}
 			</button>
 
+			<FullTimePanel
+				v-if="$config.public.appShell && gameStore.gameOver"
+				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
+				:is-win="gameStore.isWin"
+				:countdown="gameStore.countdown"
+				:challenge="challengeStore.isUnlocked"
+				@result="gameStore.showGameOverModal = true"
+			/>
 			<Keyboard
+				v-else
 				:disabled="gameStore.gameOver"
 				:guesses="gameStore.guesses"
 				:answer="gameStore.answer"
@@ -98,6 +128,7 @@
 				:can-play="challengeStore.canPlay"
 				:is-paused="challengeStore.isPaused"
 				:game-over="challengeStore.gameOver"
+				:session-wins="challengeStore.sessionWins"
 				:error-message="challengeStore.errorMessage"
 				@key="handleChallengeKey"
 				@end-challenge="handleEndChallenge"
@@ -116,8 +147,8 @@
 		>
 			<template #body>
 				<div class="game-over-section">
-					<h4 v-if="gameStore.isWin">You win!</h4>
-					<h4 v-else>You lose!</h4>
+					<h4 v-if="gameStore.isWin">Solved in {{ gameStore.guesses.length }}/6</h4>
+					<h4 v-else>Not today</h4>
 					<div
 						v-if="gameStore.isWin && statsStore.stats.currentStreak > 1"
 						class="streak-celebration"
@@ -128,12 +159,30 @@
 						/>
 						{{ streakMessage }}
 					</div>
+					<div
+						v-if="purchases.rewardNote"
+						class="reward-note"
+						role="status"
+					>
+						<Icon
+							name="solar:gift-bold"
+							size="1rem"
+						/>
+						{{ purchases.rewardNote }}
+					</div>
 					<p>
-						The answer was <strong class="answer">{{ gameStore.answer }}</strong>
+						The answer was <strong class="answer">{{ answerFullName || gameStore.answer }}</strong>
 					</p>
+					<p
+						v-if="answerPlayer"
+						class="answer-details"
+					>
+						{{ answerPlayer.club }} · {{ answerPlayer.position }} · {{ answerPlayer.nationality }}
+					</p>
+					<CardAward v-if="$config.public.appShell" />
 					<div class="share-preview">
 						<p class="share-header">
-							Footballdle ⚽ #{{ gameStore.puzzleNumber }} &nbsp;·&nbsp;
+							Footballdle ⚽ {{ gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr }} &nbsp;·&nbsp;
 							{{ gameStore.isWin ? gameStore.guesses.length : 'X' }}/6
 						</p>
 						<div class="share-emoji-grid">
@@ -146,17 +195,7 @@
 									v-for="(char, ci) in guess.split('')"
 									:key="ci"
 									class="share-tile"
-									:class="{
-										correct:
-											gameStore.answer[ci] &&
-											char.toUpperCase() === gameStore.answer[ci].toUpperCase(),
-										present:
-											!(
-												gameStore.answer[ci] &&
-												char.toUpperCase() === gameStore.answer[ci].toUpperCase()
-											) && gameStore.answer.toUpperCase().includes(char.toUpperCase()),
-										absent: !gameStore.answer.toUpperCase().includes(char.toUpperCase()),
-									}"
+									:class="tileStates(guess, gameStore.answer)[ci]"
 								></span>
 							</div>
 						</div>
@@ -167,12 +206,13 @@
 							@click="handleShare"
 						>
 							<Icon
-								name="solar:copy-linear"
+								:name="$config.public.isApp ? 'solar:share-linear' : 'solar:copy-linear'"
 								size="1rem"
 							/>
-							{{ shareToast ? 'Copied!' : 'Copy result' }}
+							{{ $config.public.isApp ? 'Share' : shareToast ? 'Copied!' : 'Copy result' }}
 						</button>
 						<button
+							v-if="!$config.public.isApp"
 							class="btn-x"
 							@click="handleShareTwitter"
 						>
@@ -188,7 +228,7 @@
 
 			<template #footer>
 				<div v-if="gameStore.getNextGameTime">
-					<p class="caption">Next game in:</p>
+					<p class="caption">New puzzles in</p>
 					<h3>{{ gameStore.countdown }}</h3>
 				</div>
 				<NuxtLink
@@ -203,6 +243,7 @@
 					Yesterday's answer
 				</NuxtLink>
 				<a
+					v-if="!$config.public.isApp"
 					href="https://buymeacoffee.com/dhorne92E"
 					target="_blank"
 					rel="noopener noreferrer"
@@ -222,9 +263,10 @@
 			</template>
 		</PitchCardModal>
 
+
 		<!-- Settings Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showSettings"
+			v-if="modalsStore.showSettings && !$config.public.appShell"
 			heading="Settings"
 			accent="info"
 			variant="small"
@@ -237,7 +279,7 @@
 
 		<!-- Stats Modal -->
 		<PitchCardModal
-			v-if="modalsStore.showStats"
+			v-if="modalsStore.showStats && !$config.public.appShell"
 			heading="Statistics"
 			accent="info"
 			variant="small"
@@ -309,12 +351,15 @@
 					<h4 v-if="challengeStore.isWin">
 						You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!
 					</h4>
-					<h4 v-else>Better luck next time!</h4>
+					<h4 v-else>Not this time</h4>
 					<p>
 						The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong>
 					</p>
 
-					<div class="share-preview">
+					<div
+						v-if="challengeStore.guesses.length"
+						class="share-preview"
+					>
 						<p class="share-header">
 							Footballdle ⚽ Challenge{{
 								challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : ''
@@ -330,37 +375,28 @@
 									v-for="(char, ci) in guess.split('')"
 									:key="ci"
 									class="share-tile"
-									:class="{
-										correct:
-											challengeStore.currentAnswer[ci] &&
-											char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase(),
-										present:
-											!(
-												challengeStore.currentAnswer[ci] &&
-												char.toUpperCase() === challengeStore.currentAnswer[ci].toUpperCase()
-											) &&
-											challengeStore.currentAnswer.toUpperCase().includes(char.toUpperCase()),
-										absent: !challengeStore.currentAnswer
-											.toUpperCase()
-											.includes(char.toUpperCase()),
-									}"
+									:class="tileStates(guess, challengeStore.currentAnswer)[ci]"
 								></span>
 							</div>
 						</div>
 					</div>
 
-					<div class="share-buttons">
+					<div
+						v-if="challengeStore.guesses.length"
+						class="share-buttons"
+					>
 						<button
 							class="button primary"
 							@click="handleChallengeShare"
 						>
 							<Icon
-								name="solar:copy-linear"
+								:name="$config.public.isApp ? 'solar:share-linear' : 'solar:copy-linear'"
 								size="1rem"
 							/>
-							{{ shareToast ? 'Copied!' : 'Copy result' }}
+							{{ $config.public.isApp ? 'Share' : shareToast ? 'Copied!' : 'Copy result' }}
 						</button>
 						<button
+							v-if="!$config.public.isApp"
 							class="btn-x"
 							@click="handleChallengeShareTwitter"
 						>
@@ -373,17 +409,13 @@
 					</div>
 
 					<div class="challenge-buttons">
-						<nuxt-link
-							class="button link"
-							to="/play/daily"
+						<button
+							type="button"
+							class="button full end-challenge-btn"
 							@click="handleEndChallenge"
 						>
-							<Icon
-								name="solar:alt-arrow-left-linear"
-								size="1rem"
-							/>
-							Home
-						</nuxt-link>
+							End challenge
+						</button>
 
 						<button
 							class="button primary full"
@@ -393,6 +425,7 @@
 						</button>
 					</div>
 					<a
+						v-if="!$config.public.isApp"
 						href="https://buymeacoffee.com/dhorne92E"
 						target="_blank"
 						rel="noopener noreferrer"
@@ -425,12 +458,17 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, watch, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
+	import playerMeta from '../../data/meta.json'
+	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useChallengeStore } from '../../stores/challenge'
-	import { useShare } from '../../composables/useShare'
+	import { usePurchasesStore } from '../../stores/purchases'
+	import { tileStates, useShare } from '../../composables/useShare'
+	import FullTimePanel from '../../components/app/FullTimePanel.vue'
+	import CardAward from '../../components/cards/CardAward.vue'
+	import { fullNameFor, getAnswerPlayerForDay } from '../../composables/useFootballers'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
@@ -442,23 +480,17 @@
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
 
+	const isAppBuild = !!useRuntimeConfig().public.appShell
+
+	// Who the Daily answer was, for the result sheet: full name and that day's clues
+	const answerPlayer = computed(() => getAnswerPlayerForDay(gameStore.todayStr))
+	const answerFullName = computed(() => (answerPlayer.value ? fullNameFor(answerPlayer.value) : undefined))
+
 	definePageMeta({ layout: 'play' })
 
 	const PitchCardModal = defineAsyncComponent(() => import('../../components/shared/PitchCardModal.vue'))
 	const ChallengeModal = defineAsyncComponent(() => import('../../components/ChallengeModal.vue'))
 
-	const { public: { adsensePublisherId } } = useRuntimeConfig()
-	if (adsensePublisherId && !import.meta.dev) {
-		useHead({
-			script: [
-				{
-					src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsensePublisherId}`,
-					async: true,
-					crossorigin: 'anonymous',
-				},
-			],
-		})
-	}
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
@@ -467,7 +499,7 @@
 			{
 				name: 'description',
 				content:
-					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
+					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new player to find every day — the ultimate free football Wordle.',
 			},
 			{
 				name: 'keywords',
@@ -481,7 +513,7 @@
 			{
 				property: 'og:description',
 				content:
-					'Think you know your Premier League players? Guess the hidden 6-letter footballer surname in 6 tries. A new challenge every day.',
+					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new challenge every day.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
 			{ property: 'og:url', content: 'https://footballdle.co.uk/play/daily' },
@@ -503,7 +535,7 @@
 					name: 'Footballdle',
 					url: 'https://footballdle.co.uk/play/daily',
 					description:
-						'Daily Premier League football wordle. Guess the 6-letter footballer surname in 6 tries.',
+						'Daily Premier League football wordle. Guess the footballer surname in 6 tries.',
 					applicationCategory: 'Game',
 					genre: 'Puzzle',
 					gamePlatform: 'Web Browser',
@@ -520,6 +552,7 @@
 	// STORES
 	// ============================================================================
 	const gameStore = useGameStore()
+	const purchases = usePurchasesStore()
 	const statsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
@@ -559,41 +592,65 @@
 	// REACTIVE STATE
 	// ============================================================================
 	const activeStatsTab = ref('daily')
-	const adLoading = ref(false)
-	const adPlatformReady = ref(false)
-	const isAdTestMode = ref(false)
 
 	const dailyUspTiles = [
 		{ icon: 'solar:calendar-linear', text: 'New player to guess every day' },
-		{ icon: 'solar:football-outline', text: '25/26 Premier League players' },
+		{ icon: 'solar:football-outline', text: `${playerMeta.season} Premier League players` },
 		{ icon: 'solar:magnifer-linear', text: 'Only players with 6 letter surnames' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
 
-	function handleWatchAd() {
-		if (!import.meta.client) return
+	// Hints come from Pro or the hint bank
+	// Shared so the hint pill in the top bar can open it too
+	const showHintShop = useState('hint-shop-open', () => false)
+	onBeforeUnmount(() => { showHintShop.value = false })
+	// Products may not have loaded at launch (offline, or the store was slow), so retry
+	// The shop itself is components/app/HintShopSheet.vue, shared by every screen
+	// The streak reward is shown once, on the result sheet
+	watch(
+		() => gameStore.showGameOverModal,
+		(open) => {
+			if (!open) purchases.rewardNote = ''
+		},
+	)
 
-		const isTestMode = new URLSearchParams(window.location.search).get('adtest') === '1'
-		if (isTestMode) {
-			adLoading.value = true
-			setTimeout(() => {
-				adLoading.value = false
-				gameStore.unlockHint()
-			}, 2000)
+	const appHintLabel = computed(() => {
+		if (purchases.isPro) return 'Reveal a hint'
+		if (purchases.hintBank > 0) return `Use a hint · ${purchases.hintBank} left`
+		return 'Get hints'
+	})
+
+	// A banked hint is paid for, so there's a short window to undo a mis-tap before it's
+	// spent and the clue shown. Pro hints are unlimited, so those reveal straight away.
+	const HINT_UNDO_MS = 3000
+	const CLUE_NAMES = ['club', 'nationality', 'position', 'first letter', 'second letter']
+	const pendingHint = ref(false)
+	let pendingTimer: ReturnType<typeof setTimeout> | null = null
+	const nextClueName = computed(() => CLUE_NAMES[gameStore.purchasedHints] ?? 'next clue')
+
+	function handleAppHint() {
+		if (purchases.isPro) {
+			if (purchases.spendHint()) gameStore.unlockHint()
 			return
 		}
-
-		const adBreak = (window as any).adBreak
-		if (!adBreak) return
-		adBreak({
-			type: 'reward',
-			name: 'hint-unlock',
-			beforeAd: () => { adLoading.value = true },
-			afterAd: () => { adLoading.value = false },
-			adDismissed: () => { adLoading.value = false },
-			adViewed: () => { gameStore.unlockHint() },
-		})
+		if (purchases.hintBank <= 0) {
+			showHintShop.value = true
+			return
+		}
+		pendingHint.value = true
+		pendingTimer = setTimeout(() => {
+			pendingHint.value = false
+			pendingTimer = null
+			if (gameStore.canPurchaseHint && purchases.spendHint()) gameStore.unlockHint()
+		}, HINT_UNDO_MS)
 	}
+
+	function cancelHint() {
+		if (pendingTimer) clearTimeout(pendingTimer)
+		pendingTimer = null
+		pendingHint.value = false
+	}
+	onBeforeUnmount(cancelHint)
 
 	const sessionStartTime = ref(Date.now())
 	const shareToast = ref(false)
@@ -650,18 +707,28 @@
 		gameStore.loadState()
 		gameStore.startCountdown()
 
-		isAdTestMode.value = new URLSearchParams(window.location.search).get('adtest') === '1'
-		if ((window as any).adConfig) {
-			;(window as any).adConfig({
-				preloadAdBreaks: 'on',
-				onReady: () => { adPlatformReady.value = true },
-			})
-		}
 
 		challengeStore.loadChallengeState()
 		challengeStatsStore.loadStats()
+		// A challenge in progress shows straight away (not behind the intro) and its
+		// clock only runs while the screen is visible
+		challengeStore.resumeTimer()
+		document.addEventListener('visibilitychange', onChallengeVisibility)
 
 		sessionStartTime.value = Date.now()
+
+		// iOS app: the Matchday home links straight into play, skipping the intro screen
+		const start = useRoute().query.start
+		if (gameStore.showIntro && !challengeStore.isActive) {
+			if (start === 'play' && gameStore.canPlay) handleStartGame()
+			else if (start === 'challenge' && challengeStore.isUnlocked) handleStartChallenge()
+		}
+		// iOS app: a finished Daily opens on its board (no web intro), with the result
+		// sheet straight away when coming from the Matchday "See result" card
+		if (isAppBuild && gameStore.gameOver && !challengeStore.isActive) {
+			gameStore.showIntro = false
+			if (start === 'result') gameStore.showGameOverModal = true
+		}
 	})
 
 	onUnmounted(() => {
@@ -675,21 +742,19 @@
 
 	onUnmounted(() => {
 		gameStore.stopCountdown()
+		document.removeEventListener('visibilitychange', onChallengeVisibility)
+		challengeStore.pauseTimer()
 	})
+
+	function onChallengeVisibility() {
+		if (document.hidden) challengeStore.pauseTimer()
+		else challengeStore.resumeTimer()
+	}
 
 	// ============================================================================
 	// WATCHERS
 	// ============================================================================
-	watch(
-		() => gameStore.getUKDateString(),
-		(newDate, oldDate) => {
-			if (newDate !== oldDate) {
-				gameStore.resetGame()
-				challengeStore.resetDaily()
-				location.reload()
-			}
-		},
-	)
+	// A new UK day is handled by plugins/day-rollover.client.ts (reloads the app)
 
 	watch(
 		() => gameStore.showGameOverModal,
@@ -713,7 +778,7 @@
 	// EVENT HANDLERS
 	// ============================================================================
 	async function handleShare() {
-		const label = `#${gameStore.puzzleNumber}`
+		const label = gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr
 		const streak = statsStore.stats.currentStreak
 		const copied = await onShare(gameStore.guesses, gameStore.answer, gameStore.isWin, label, streak)
 		if (copied) {
@@ -726,7 +791,7 @@
 
 	function handleShareTwitter() {
 		const streak = statsStore.stats.currentStreak
-		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, `#${gameStore.puzzleNumber}`, streak)
+		onShareTwitter(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr, streak)
 		trackShare('twitter')
 	}
 
@@ -785,7 +850,8 @@
 			trackChallengeAbandon(45 - challengeStore.timeRemaining)
 		}
 		challengeStore.endChallenge()
-		gameStore.showIntro = true
+		// The app goes back to the finished board; the website to its intro
+		gameStore.showIntro = !isAppBuild
 	}
 
 	function handleChallengePlayAgain() {
@@ -903,43 +969,112 @@
 			align-items: center;
 			background: var(--bg-primary);
 			border: 1px solid var(--border);
-			border-radius: 2rem;
+			border-radius: 0.9rem;
 			color: var(--text-primary);
 			display: inline-flex;
-			font-size: 0.8rem;
-			gap: 0.35rem;
-			padding: 0.3rem 0.75rem;
+			gap: 0.45rem;
+			padding: 0.35rem 0.8rem 0.35rem 0.6rem;
+			text-align: left;
+
+			> .iconify,
+			> svg {
+				color: var(--primary-color);
+				flex-shrink: 0;
+			}
+
+			.hint-text {
+				display: flex;
+				flex-direction: column;
+				line-height: 1.15;
+			}
+
+			.hint-label {
+				color: var(--text-secondary);
+				font-size: 0.62rem;
+				font-weight: 700;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
 
 			.hint-value {
+				font-size: 0.92rem;
 				font-weight: 700;
 			}
 		}
 	}
 
-	.watch-ad-btn {
+	.app-hint-btn.pending {
+		cursor: default;
+		justify-content: space-between;
+		overflow: hidden;
+		position: relative;
+
+		.pending-text {
+			font-weight: 700;
+		}
+
+		.undo-btn {
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 0.7rem;
+			color: var(--text-primary);
+			cursor: pointer;
+			font: inherit;
+			font-weight: 800;
+			min-height: 34px;
+			padding: 0 0.9rem;
+		}
+
+		// Drains over the undo window
+		.pending-bar {
+			animation: hint-undo 3s linear forwards;
+			background: var(--primary-color);
+			bottom: 0;
+			height: 3px;
+			left: 0;
+			position: absolute;
+			width: 100%;
+		}
+	}
+
+	@keyframes hint-undo {
+		to {
+			width: 0;
+		}
+	}
+
+	// iOS app: hints are how clues are revealed (and what the shop sells), so the
+	// button is a real, full-size control rather than a footnote
+	.app-hint-btn {
 		align-items: center;
-		background: transparent;
-		border: 1px dashed var(--border);
-		border-radius: var(--global-border-radius);
-		color: var(--text-secondary);
+		background: color-mix(in srgb, var(--primary-color) 16%, var(--bg-secondary));
+		border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+		border-radius: 0.9rem;
+		color: var(--text-primary);
 		cursor: pointer;
 		display: flex;
 		flex-shrink: 0;
-		font-size: 0.8rem;
-		gap: 0.4rem;
+		font: inherit;
+		font-size: 0.95rem;
+		font-weight: 700;
+		gap: 0.5rem;
 		justify-content: center;
 		margin: 0.5rem 0.5rem 0;
-		padding: 0.4rem 1rem;
-		transition: all 0.2s;
+		min-height: 44px;
+		padding: 0.5rem 1rem;
+
+		.iconify,
+		svg {
+			color: var(--tertiary-color);
+		}
+
+		&:active:not(:disabled) {
+			transform: scale(0.98);
+		}
 
 		&:disabled {
 			cursor: wait;
 			opacity: 0.5;
-		}
-
-		&:hover:not(:disabled) {
-			border-color: var(--primary-color);
-			color: var(--primary-color);
 		}
 	}
 
@@ -962,12 +1097,6 @@
 				gap: 0.25rem;
 				padding: 0.2rem 0.5rem;
 			}
-		}
-
-		.watch-ad-btn {
-			font-size: 0.7rem;
-			margin: 0.3rem 0.3rem 0;
-			padding: 0.3rem 0.75rem;
 		}
 	}
 
@@ -1023,6 +1152,32 @@
 			font-weight: 700;
 			letter-spacing: 0.05rem;
 			text-transform: uppercase;
+		}
+
+		.reward-note {
+			align-items: center;
+			background: color-mix(in srgb, var(--tertiary-color) 16%, var(--bg-secondary));
+			border: 1px solid color-mix(in srgb, var(--tertiary-color) 40%, transparent);
+			border-radius: 2rem;
+			color: var(--text-primary);
+			display: inline-flex;
+			font-size: 0.85rem;
+			font-weight: 700;
+			gap: 0.4rem;
+			margin: 0 auto 0.75rem;
+			padding: 0.4rem 0.9rem;
+		}
+
+		.end-challenge-btn {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			color: var(--text-primary);
+		}
+
+		.answer-details {
+			color: var(--text-secondary);
+			font-size: 0.85rem;
+			margin: -0.35rem 0 0.5rem;
 		}
 
 		.streak-celebration {

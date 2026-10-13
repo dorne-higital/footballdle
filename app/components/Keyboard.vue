@@ -65,6 +65,7 @@
 
 <script setup lang="ts">
 	import { onMounted, onUnmounted, watch, toRef } from 'vue'
+	import { useHaptics } from '../composables/useHaptics'
 
 	const props = withDefaults(
 		defineProps<{
@@ -83,6 +84,7 @@
 	)
 
 	const emit = defineEmits(['key'])
+	const haptics = useHaptics()
 	const row1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P']
 	const row2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L']
 	const row3 = ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
@@ -159,6 +161,7 @@
 
 	function press(key: string) {
 		if (disabledRef.value) return
+		haptics.tap()
 		emit('key', key)
 	}
 	function handlePhysicalKey(e: KeyboardEvent) {
@@ -261,13 +264,13 @@
 				&.correct {
 					background: var(--color-success);
 					border-color: var(--color-success);
-					color: #fff;
+					color: var(--on-success, #fff);
 				}
 
 				&.present {
 					background: var(--color-present);
 					border-color: var(--color-present);
-					color: #fff;
+					color: var(--on-present, #fff);
 				}
 
 				&.absent {

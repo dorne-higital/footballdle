@@ -1,12 +1,22 @@
 <template>
 	<div class="scout-autocomplete">
-		<div class="input-row">
+		<div :class="['input-row', { 'app-search': isApp }]">
+			<Icon
+				v-if="isApp"
+				name="solar:magnifer-linear"
+				size="1.15rem"
+				class="search-icon"
+			/>
 			<input
 				ref="inputEl"
 				v-model="query"
 				type="text"
 				class="input"
-				placeholder="Guess a Premier League player…"
+				:placeholder="isApp ? 'Search for a player' : 'Guess a Premier League player…'"
+				enterkeyhint="go"
+				autocapitalize="words"
+				autocorrect="off"
+				spellcheck="false"
 				autocomplete="off"
 				:disabled="disabled"
 				@keydown.down.prevent="moveHighlight(1)"
@@ -18,9 +28,15 @@
 				type="button"
 				class="submit-btn"
 				:disabled="disabled || !query.trim()"
+				:aria-label="isApp ? 'Guess' : undefined"
 				@click="submitHighlighted"
 			>
-				Guess
+				<Icon
+					v-if="isApp"
+					name="solar:arrow-up-linear"
+					size="1.2rem"
+				/>
+				<template v-else>Guess</template>
 			</button>
 		</div>
 
@@ -39,12 +55,24 @@
 				<span class="s-meta">{{ player.club }}</span>
 			</li>
 		</ul>
+		<ul
+			v-else-if="query.trim().length >= 3"
+			class="suggestions"
+		>
+			<li
+				class="empty"
+				role="status"
+			>
+				No {{ season }} Premier League player matches "{{ query.trim() }}"
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { ref, computed, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
+	import playerMeta from '../../data/meta.json'
 
 	withDefaults(
 		defineProps<{
@@ -56,6 +84,8 @@
 	const emit = defineEmits<{ guess: [name: string] }>()
 
 	const store = useScoutReportStore()
+	const isApp = !!useRuntimeConfig().public.appShell
+	const season = playerMeta.season
 	const query = ref('')
 	const highlightedIndex = ref(0)
 	const inputEl = ref<HTMLInputElement | null>(null)
@@ -148,6 +178,53 @@
 		}
 	}
 
+	// iOS app: one rounded search field with the guess button tucked inside
+	.input-row.app-search {
+		align-items: center;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		gap: 0.25rem;
+		padding: 0.3rem 0.3rem 0.3rem 0.9rem;
+		transition: border-color 0.2s;
+
+		&:focus-within {
+			border-color: var(--pitchcard-accent-win, var(--primary-color));
+		}
+
+		.search-icon {
+			color: var(--text-secondary);
+			flex-shrink: 0;
+		}
+
+		.input {
+			background: transparent;
+			border: 0;
+			border-radius: 0;
+			font-size: 1rem;
+			padding: 0.55rem 0.35rem;
+		}
+
+		.submit-btn {
+			align-items: center;
+			background: var(--pitchcard-accent-win, var(--primary-color));
+			border: 0;
+			border-radius: 50%;
+			color: #06140d;
+			display: flex;
+			height: 2.4rem;
+			justify-content: center;
+			padding: 0;
+			width: 2.4rem;
+
+			&:disabled {
+				background: color-mix(in srgb, var(--text-primary) 12%, transparent);
+				color: var(--text-secondary);
+				opacity: 1;
+			}
+		}
+	}
+
 	.suggestions {
 		background: var(--bg-secondary);
 		border: 1px solid var(--border);
@@ -173,8 +250,15 @@
 			justify-content: space-between;
 			padding: 0.5rem 0.6rem;
 
+			&.empty {
+				color: var(--text-secondary);
+				cursor: default;
+				font-size: 0.85rem;
+				justify-content: flex-start;
+			}
+
 			&.active,
-			&:hover {
+			&:not(.empty):hover {
 				background: color-mix(in srgb, var(--primary-color) 12%, transparent);
 			}
 

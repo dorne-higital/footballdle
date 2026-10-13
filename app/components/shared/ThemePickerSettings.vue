@@ -1,6 +1,9 @@
 <template>
 	<div class="settings-section">
-		<div class="setting-group">
+		<div
+			v-if="!$config.public.appShell"
+			class="setting-group"
+		>
 			<label>Choose Theme</label>
 			<p>Select your preferred theme</p>
 
@@ -67,9 +70,12 @@
 			</div>
 		</div>
 
-		<div class="setting-group support-group">
+		<div
+			v-if="!$config.public.isApp"
+			class="setting-group support-group"
+		>
 			<label>Support Footballdle</label>
-			<p>Enjoying the game? Help keep it free and ad-light.</p>
+			<p>Enjoying the game? Help keep it free.</p>
 			<a
 				href="https://buymeacoffee.com/dhorne92E"
 				target="_blank"
@@ -84,13 +90,295 @@
 				Buy me a <span class="accent">coffee</span>
 			</a>
 		</div>
+
+		<template v-if="$config.public.appShell">
+			<div
+				v-if="gameCenter.isAvailable"
+				class="setting-group support-group"
+			>
+				<label>Leaderboards</label>
+				<p>See how your streaks stack up against everyone else.</p>
+				<button
+					type="button"
+					class="store-button"
+					@click="gameCenter.showLeaderboards()"
+				>
+					<Icon
+						name="uil:trophy"
+						size="1rem"
+					/>
+					Open leaderboards
+				</button>
+			</div>
+
+			<div
+				v-if="reminders.isAvailable"
+				class="setting-group support-group"
+			>
+				<div class="reminder-head">
+					<div>
+						<label>Daily reminder</label>
+						<p>A nudge to play, skipped on days you've already played.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="reminders.enabled"
+						aria-label="Daily reminder"
+						:class="['switch', { on: reminders.enabled }]"
+						@click="toggleReminder"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div
+					v-if="reminders.enabled"
+					class="reminder-times"
+					role="radiogroup"
+					aria-label="Reminder time"
+				>
+					<button
+						v-for="h in REMINDER_HOURS"
+						:key="h"
+						type="button"
+						role="radio"
+						:aria-checked="reminders.hour === h"
+						:class="['time-chip', { active: reminders.hour === h }]"
+						@click="reminders.setHour(h)"
+					>
+						{{ formatHour(h) }}
+					</button>
+				</div>
+				<p
+					v-if="reminders.denied"
+					class="store-status"
+				>
+					Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
+				</p>
+			</div>
+
+			<div class="setting-group support-group">
+				<label id="appearance-label">Appearance</label>
+				<div
+					class="segmented"
+					role="radiogroup"
+					aria-labelledby="appearance-label"
+				>
+					<button
+						v-for="option in APPEARANCES"
+						:key="option.value"
+						type="button"
+						role="radio"
+						:aria-checked="appearance.appearance === option.value"
+						:class="{ active: appearance.appearance === option.value }"
+						@click="appearance.set(option.value)"
+					>
+						<Icon
+							:name="option.icon"
+							size="1rem"
+						/>
+						{{ option.label }}
+					</button>
+				</div>
+			</div>
+
+			<div
+				v-if="!$config.public.isApp"
+				class="setting-group support-group"
+			>
+				<label>Footballdle on iPhone</label>
+				<p>
+					Hint packs and Pro for unlimited hints, Player Cards backed up to iCloud, and Game Center
+					leaderboards.
+				</p>
+				<a
+					v-if="APP_STORE_LIVE"
+					:href="APP_STORE_URL"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="store-button pro-button"
+				>
+					<Icon
+						name="solar:smartphone-linear"
+						size="1rem"
+					/>
+					Get the app
+				</a>
+				<p
+					v-else
+					class="coming-soon"
+				>
+					Coming soon to the App Store.
+				</p>
+			</div>
+
+			<div
+				v-else
+				class="setting-group support-group"
+			>
+				<label>Footballdle Pro</label>
+				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
+				<template v-else>
+					<p>
+						Unlimited hints in the Daily and Scout Report. One-off purchase, no subscription.
+						<template v-if="purchases.hintBank > 0">
+							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
+						</template>
+					</p>
+					<button
+						v-if="purchases.proProduct"
+						type="button"
+						class="store-button pro-button"
+						:disabled="purchases.busy"
+						@click="purchases.buyPro()"
+					>
+						<Icon
+							name="solar:crown-bold"
+							size="1rem"
+						/>
+						Get Pro · {{ purchases.proProduct.priceString }}
+					</button>
+					<button
+						v-else-if="purchases.loadingProducts"
+						type="button"
+						class="store-button pro-button"
+						disabled
+					>
+						<Icon
+							name="solar:refresh-linear"
+							size="1rem"
+							class="spin"
+						/>
+						Getting the price…
+					</button>
+					<button
+						v-else
+						type="button"
+						class="store-button"
+						@click="purchases.init()"
+					>
+						<Icon
+							name="solar:refresh-linear"
+							size="1rem"
+						/>
+						Try again
+					</button>
+					<p
+						v-if="!purchases.proProduct && !purchases.loadingProducts && purchases.loadError"
+						class="store-status"
+					>
+						{{ purchases.loadError }} Check your connection and tap Try again.
+					</p>
+				</template>
+				<button
+					type="button"
+					class="text-button"
+					:disabled="purchases.busy"
+					@click="purchases.restore()"
+				>
+					Restore purchases
+				</button>
+				<!-- Right under the buttons that cause it (Pro, Restore, and the Tip Jar just below) -->
+				<p
+					v-if="purchases.message"
+					class="store-message"
+				>
+					{{ purchases.message }}
+				</p>
+			</div>
+
+			<div
+				v-if="purchases.tipProducts.length"
+				class="setting-group support-group"
+			>
+				<label>Tip Jar</label>
+				<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
+				<div class="tip-list">
+					<button
+						v-for="(product, i) in purchases.tipProducts"
+						:key="product.identifier"
+						type="button"
+						class="tip-option"
+						:disabled="purchases.busy"
+						:aria-label="`${TIP_SIZES[i]} tip, ${product.priceString}`"
+						@click="purchases.tip(product)"
+					>
+						<CoinStack :count="i + 1" />
+						<span class="tip-name">{{ TIP_SIZES[i] }}</span>
+						<span class="tip-price">{{ product.priceString }}</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="setting-group support-group">
+				<label>Help</label>
+				<div class="link-list">
+					<NuxtLink
+						to="/how-to-play"
+						@click="modalsStore.closeSettings()"
+					>
+						How to play
+					</NuxtLink>
+					<NuxtLink
+						to="/feedback"
+						@click="modalsStore.closeSettings()"
+					>
+						Send feedback
+					</NuxtLink>
+					<NuxtLink
+						to="/privacy-policy"
+						@click="modalsStore.closeSettings()"
+					>
+						Privacy policy
+					</NuxtLink>
+				</div>
+			</div>
+		</template>
 	</div>
 </template>
 
 <script setup lang="ts">
+	import { onMounted, onUnmounted } from 'vue'
 	import { useThemeStore } from '../../stores/theme'
+	import { usePurchasesStore } from '../../stores/purchases'
+	import { useGameCenter } from '../../composables/useGameCenter'
+	import { useModalsStore } from '../../stores/modals'
+	import CoinStack from './CoinStack.vue'
+	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
+	import { useAppearanceStore, type Appearance } from '../../stores/appearance'
+	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
+
+	const APPEARANCES: { value: Appearance; label: string; icon: string }[] = [
+		{ value: 'dark', label: 'Dark', icon: 'solar:moon-linear' },
+		{ value: 'light', label: 'Light', icon: 'solar:sun-2-linear' },
+		{ value: 'system', label: 'Auto', icon: 'solar:smartphone-linear' },
+	]
+	const appearance = useAppearanceStore()
+
+	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
+	const TIP_SIZES = ['Small', 'Medium', 'Large']
+
+	const reminders = useRemindersStore()
+	// Purchase messages belong to this visit to Settings, not the next one
+	onUnmounted(() => (usePurchasesStore().message = ''))
+	// Products may not have loaded at launch (offline, or the store was slow)
+	onMounted(() => {
+		const store = usePurchasesStore()
+		if (!store.products.length) store.init()
+	})
+	reminders.load()
+
+	async function toggleReminder() {
+		if (reminders.enabled) await reminders.disable()
+		else await reminders.enable()
+	}
+
+	const formatHour = (h: number) => (h === 12 ? 'Midday' : h < 12 ? `${h}am` : `${h - 12}pm`)
 
 	const themeStore = useThemeStore()
+	const purchases = usePurchasesStore()
+	const gameCenter = useGameCenter()
+	const modalsStore = useModalsStore()
 
 	defineEmits(['buy-coffee'])
 </script>
@@ -104,7 +392,14 @@
 			padding-top: 1.5rem;
 			text-align: left;
 
-			.coffee-button {
+			// In the app the theme picker is hidden, so this can be the first group
+			&:first-child {
+				border-top: 0;
+				padding-top: 0.5rem;
+			}
+
+			.coffee-button,
+			.store-button {
 				align-items: center;
 				background: var(--text-primary);
 				border: 1.5px solid var(--text-primary);
@@ -124,11 +419,114 @@
 					color: var(--tertiary-color);
 				}
 
-				&:hover {
+				// Pro is the one thing for sale here, so it gets the brand colour
+				&.pro-button {
+					background: var(--primary-color);
+					border-color: var(--primary-color);
+					color: #06140d;
+				}
+
+				.spin {
+					animation: spin 1s linear infinite;
+				}
+
+				&:hover:not(:disabled) {
 					box-shadow: 0 10px 24px -12px rgb(24 32 25 / 35%);
 					transform: translateY(-2px);
 				}
+
+				&:disabled {
+					cursor: default;
+					opacity: 0.5;
+				}
 			}
+
+			// Tip names come from App Store Connect, so they can be renamed without a release
+			.tip-list {
+				display: grid;
+				gap: 0.5rem;
+				grid-template-columns: repeat(3, 1fr);
+				width: 100%;
+			}
+
+			.tip-option {
+				align-items: center;
+				background: var(--bg-primary);
+				border: 1px solid var(--border);
+				border-radius: 16px;
+				color: var(--text-primary);
+				cursor: pointer;
+				display: flex;
+				flex-direction: column;
+				font-family: var(--font-body);
+				gap: 0.35rem;
+				padding: 0.85rem 0.4rem 0.75rem;
+				transition: transform 0.1s ease;
+
+				&:active:not(:disabled) {
+					transform: scale(0.96);
+				}
+
+				&:disabled {
+					opacity: 0.6;
+				}
+
+				.tip-name {
+					color: var(--text-secondary);
+					font-size: 0.75rem;
+					font-weight: 800;
+					letter-spacing: 0.06em;
+					text-transform: uppercase;
+				}
+
+				.tip-price {
+					background: var(--tertiary-color);
+					border-radius: 999px;
+					color: var(--on-present, #fff);
+					font-size: 0.85rem;
+					font-weight: 800;
+					padding: 0.3rem 0.7rem;
+				}
+			}
+
+			.text-button {
+				background: none;
+				border: 0;
+				color: var(--text-secondary);
+				cursor: pointer;
+				font-size: 0.85rem;
+				margin-top: 0.25rem;
+				// A 44pt tap area around a small text link
+				min-height: 44px;
+				padding: 0;
+				text-decoration: underline;
+			}
+		}
+
+		.link-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+
+			a {
+				color: var(--text-primary);
+				font-weight: 600;
+				text-decoration: none;
+			}
+		}
+
+		.coming-soon {
+			color: var(--primary-color);
+			font-size: 0.9rem;
+			font-weight: 700;
+			margin: 0.5rem 0 0;
+		}
+
+		.store-message {
+			color: var(--text-primary);
+			font-size: 0.9rem;
+			font-weight: 600;
+			margin: 0;
 		}
 
 		.setting-group {
@@ -307,6 +705,120 @@
 					}
 				}
 			}
+		}
+	}
+	.reminder-head {
+		align-items: center;
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+		width: 100%;
+
+		p {
+			margin-bottom: 0;
+		}
+	}
+
+	.switch {
+		background: color-mix(in srgb, var(--text-primary) 18%, transparent);
+		border: 0;
+		border-radius: 999px;
+		cursor: pointer;
+		flex-shrink: 0;
+		height: 31px;
+		padding: 2px;
+		position: relative;
+		transition: background 0.2s ease;
+		width: 51px;
+
+		.knob {
+			background: #fff;
+			border-radius: 50%;
+			box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+			display: block;
+			height: 27px;
+			transition: transform 0.2s ease;
+			width: 27px;
+		}
+
+		&.on {
+			background: var(--color-success);
+
+			.knob {
+				transform: translateX(20px);
+			}
+		}
+	}
+
+	.reminder-times {
+		display: grid;
+		gap: 0.4rem;
+		grid-template-columns: repeat(4, 1fr);
+		margin-top: 0.75rem;
+		width: 100%;
+	}
+
+	.time-chip {
+		background: var(--bg-primary);
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		color: var(--text-primary);
+		cursor: pointer;
+		font: inherit;
+		font-size: 0.8rem;
+		font-weight: 700;
+		min-height: 44px;
+		padding: 0.5rem 0;
+
+		&.active {
+			background: var(--color-success);
+			border-color: var(--color-success);
+			color: #06140d;
+		}
+	}
+
+	.store-status {
+		font-size: 0.75rem;
+		margin-top: 0.4rem;
+		opacity: 0.7;
+	}
+
+	.segmented {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 0.9rem;
+		display: grid;
+		gap: 0.25rem;
+		grid-template-columns: repeat(3, 1fr);
+		margin-top: 0.5rem;
+		padding: 0.25rem;
+		width: 100%;
+
+		button {
+			align-items: center;
+			background: none;
+			border: 0;
+			border-radius: 0.7rem;
+			color: var(--text-secondary);
+			cursor: pointer;
+			display: inline-flex;
+			font: inherit;
+			font-size: 0.9rem;
+			font-weight: 700;
+			gap: 0.35rem;
+			justify-content: center;
+			min-height: 40px;
+
+			&.active {
+				background: var(--primary-color);
+				color: var(--on-success);
+			}
+		}
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
 		}
 	}
 </style>

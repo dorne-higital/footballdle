@@ -1,0 +1,297 @@
+import { defineStore } from 'pinia'
+import { computed, ref, watch } from 'vue'
+import cardsData from '../data/cards.json'
+import { getDisplayNumber, getPuzzleNumber } from '../composables/useFootballers'
+import { getUKDateString } from '../utils/dateStreak'
+import { readSavedObject } from '../utils/storage'
+import { isTrusted, serverChecks, trustedDate } from '../utils/trustedClock'
+import { usePurchasesStore } from './purchases'
+
+// Player Cards (iOS app): win a Daily in a card season to collect that player's card;
+// completing a club's set pays hints into the shared bank. Seasons, sets and which card
+// each day gives come from app/data/cards.json (yarn update-players --card-season=…).
+export interface CardInfo {
+	name: string
+	surname: string
+	club: string
+	nationality: string
+	position: string
+}
+interface Season {
+	start: string
+	end: string
+	startPuzzle: number
+	endPuzzle: number
+	clubs: Record<string, { size: number; hints: number; members: string[] }>
+	cards: Record<string, CardInfo>
+	days: string[]
+}
+export interface OwnedCard {
+	id: string
+	season: string
+	puzzle: number
+	/** The public puzzle number (#…) shown on the card; none for a replay */
+	number?: number | null
+	guesses: number
+	/** Won in 2 guesses or fewer */
+	foil: boolean
+	replay?: boolean
+	/** Won on a day no server had vouched for yet (see utils/trustedClock); doesn't count
+	 *  towards a set until confirmed */
+	pending?: boolean
+}
+interface SavedCards {
+	v: 1
+	/** By date (DD/MM/YYYY): the card that day's win gave */
+	cards: Record<string, OwnedCard>
+	/** `${season}|${club}` -> when the set was finished and what it paid */
+	sets: Record<string, { completedOn: string; hints: number }>
+	/** Every Daily finished, win or lose, so a reset can't replay a lost day for its card */
+	played: Record<string, true>
+}
+
+const STORAGE_KEY = 'footballdle-cards'
+const FOIL_MAX_GUESSES = 2
+const seasons = (cardsData as { seasons: Record<string, Season> }).seasons
+
+/** The card season a date falls in, and the card that day gives (if any) */
+export function cardForDay(dateStr: string): { season: string; id: string; card: CardInfo } | null {
+	const puzzle = getPuzzleNumber(dateStr)
+	for (const [label, s] of Object.entries(seasons)) {
+		if (puzzle < s.startPuzzle || puzzle > s.endPuzzle) continue
+		const id = s.days[puzzle - s.startPuzzle]
+		const card = id ? s.cards[id] : undefined
+		return id && card ? { season: label, id, card } : null
+	}
+	return null
+}
+
+/** The season to show: the one running today, else the next, else the latest */
+export function currentSeason(todayStr = getUKDateString()): { label: string; season: Season; state: 'upcoming' | 'live' | 'over' } | null {
+	const today = getPuzzleNumber(todayStr)
+	const all = Object.entries(seasons).sort((a, b) => a[1].startPuzzle - b[1].startPuzzle)
+	const live = all.find(([, s]) => today >= s.startPuzzle && today <= s.endPuzzle)
+	if (live) return { label: live[0], season: live[1], state: 'live' }
+	const next = all.find(([, s]) => today < s.startPuzzle)
+	if (next) return { label: next[0], season: next[1], state: 'upcoming' }
+	const last = all[all.length - 1]
+	return last ? { label: last[0], season: last[1], state: 'over' } : null
+}
+
+/** Cards whose every scheduled day has passed without being won: these can be replayed */
+export function lastDayOf(season: Season, id: string): number {
+	let last = -1
+	season.days.forEach((d, i) => {
+		if (d === id) last = season.startPuzzle + i
+	})
+	return last
+}
+
+export const useCardsStore = defineStore('cards', () => {
+	const { appShell } = useRuntimeConfig().public
+	const saved = ref<SavedCards>({ v: 1, cards: {}, sets: {}, played: {} })
+	/** What the latest win gave, for the result sheet */
+	const lastAward = ref<{ card: CardInfo; owned: OwnedCard; isNew: boolean; club: string; have: number; size: number; setHints: number } | null>(null)
+	/** The card today's loss missed, for the result sheet */
+	const lastMiss = ref<{ club: string } | null>(null)
+	let loaded = false
+
+	/** A saved card still matches the season data: the card that day really gives (or, for a
+	 *  replay, a card that's in the season). Cards from an old or test season plan fail this. */
+	function stillValid(key: string, card: OwnedCard): boolean {
+		if (!card?.id || !seasons[card.season]?.cards[card.id]) return false
+		if (key.startsWith('replay:')) return true
+		const today = cardForDay(key)
+		return !!today && today.season === card.season && today.id === card.id
+	}
+	const validCards = (cards: Record<string, OwnedCard>) => Object.fromEntries(Object.entries(cards).filter(([k, c]) => stillValid(k, c)))
+
+	function load() {
+		if (loaded || !import.meta.client) return
+		loaded = true
+		const s = readSavedObject<SavedCards>(STORAGE_KEY)
+		saved.value = {
+			v: 1,
+			cards: s?.cards && typeof s.cards === 'object' ? validCards(s.cards) : {},
+			sets: s?.sets && typeof s.sets === 'object' ? s.sets : {},
+			played: s?.played && typeof s.played === 'object' ? s.played : {},
+		}
+		// The saved trusted date may be old (offline since), so this only confirms
+		reconcile(false)
+	}
+
+	function persist() {
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(saved.value))
+		} catch {}
+	}
+
+	/** Distinct card ids owned in a season */
+	function ownedIds(season: string): Set<string> {
+		return new Set(Object.values(saved.value.cards).filter(c => c.season === season).map(c => c.id))
+	}
+
+	function clubProgress(season: string, club: string) {
+		const set = seasons[season]?.clubs[club]
+		if (!set) return { have: 0, size: 0, hints: 0, confirmed: 0 }
+		const owned = ownedIds(season)
+		const confirmed = new Set(
+			Object.values(saved.value.cards).filter(c => c.season === season && !c.pending).map(c => c.id),
+		)
+		return {
+			have: set.members.filter(m => owned.has(m)).length,
+			confirmed: set.members.filter(m => confirmed.has(m)).length,
+			size: set.size,
+			hints: set.hints,
+		}
+	}
+
+	/** A finished Daily: records it as played and, if won in a card season, gives the card
+	 *  (once per day) and pays any set it completes. Safe to call again for the same day. */
+	function finishDaily(dateStr: string, won: boolean, guesses: number) {
+		if (!appShell) return
+		load()
+		const today = cardForDay(dateStr)
+		const alreadyPlayed = !!saved.value.played[dateStr]
+		const existing = saved.value.cards[dateStr]
+		saved.value.played[dateStr] = true
+		if (!today || !won || existing || (alreadyPlayed && !existing)) {
+			if (today && !existing) lastMiss.value = { club: today.card.club }
+			persist()
+			if (today && existing) showAward(today, existing, false)
+			return
+		}
+		const before = ownedIds(today.season).has(today.id)
+		const owned: OwnedCard = {
+			id: today.id,
+			season: today.season,
+			puzzle: getPuzzleNumber(dateStr),
+			number: getDisplayNumber(dateStr),
+			guesses,
+			foil: guesses <= FOIL_MAX_GUESSES,
+			...(isTrusted(dateStr) ? {} : { pending: true }),
+		}
+		saved.value.cards[dateStr] = owned
+		const paid = payCompletedSet(today.season, today.card.club, dateStr)
+		persist()
+		showAward(today, owned, !before, paid)
+	}
+
+	/** A replay win: the missed card joins the album (never shiny) and may finish a set */
+	function collectReplay(id: string, guesses: number) {
+		if (!appShell) return
+		load()
+		const season = currentSeason()
+		const card = season?.season.cards[id]
+		if (!season || !card || ownedIds(season.label).has(id)) return
+		const today = getUKDateString()
+		const owned: OwnedCard = {
+			id,
+			season: season.label,
+			puzzle: lastDayOf(season.season, id),
+			guesses,
+			foil: false,
+			replay: true,
+			...(isTrusted(today) ? {} : { pending: true }),
+		}
+		saved.value.cards[`replay:${today}`] = owned
+		const paid = payCompletedSet(season.label, card.club, today)
+		persist()
+		const { have, size } = clubProgress(season.label, card.club)
+		lastAward.value = { card, owned, isNew: true, club: card.club, have, size, setHints: paid }
+	}
+
+	function payCompletedSet(season: string, club: string, dateStr: string): number {
+		const key = `${season}|${club}`
+		const { confirmed, size, hints } = clubProgress(season, club)
+		if (!size || confirmed < size || saved.value.sets[key]) return 0
+		saved.value.sets[key] = { completedOn: dateStr, hints }
+		usePurchasesStore().grantHints(hints)
+		return hints
+	}
+
+	function showAward(today: NonNullable<ReturnType<typeof cardForDay>>, owned: OwnedCard, isNew: boolean, paid = 0) {
+		const { have, size } = clubProgress(today.season, today.card.club)
+		lastAward.value = { card: today.card, owned, isNew, club: today.card.club, have, size, setHints: paid }
+	}
+
+	// When a server vouches for a newer date: cards from days up to it are confirmed (and
+	// may finish a set); pending cards dated beyond a FRESH server date were won with the
+	// clock moved forward, so they go. A stale saved date never discards anything.
+	function reconcile(fresh = true) {
+		if (!trustedDate.value) return
+		load()
+		let changed = false
+		const touched = new Set<string>()
+		for (const [key, card] of Object.entries(saved.value.cards)) {
+			if (!card.pending) continue
+			const date = key.startsWith('replay:') ? key.slice(7) : key
+			if (isTrusted(date)) {
+				delete card.pending
+				touched.add(`${card.season}|${seasons[card.season]?.cards[card.id]?.club}`)
+				changed = true
+			} else if (fresh) {
+				delete saved.value.cards[key]
+				changed = true
+			}
+		}
+		for (const key of touched) {
+			const [season, club] = key.split('|')
+			if (season && club) payCompletedSet(season, club, trustedDate.value)
+		}
+		if (changed) persist()
+	}
+	if (import.meta.client) watch(serverChecks, () => reconcile(true))
+
+	/** Folds in a backup (iCloud): cards, finished sets and played days are only ever added,
+	 *  so merging from any device in any order ends up the same. Returns true if anything new. */
+	function mergeBackup(raw: string | null | undefined): boolean {
+		if (!raw) return false
+		load()
+		let other: Partial<SavedCards>
+		try {
+			other = JSON.parse(raw)
+		} catch {
+			return false
+		}
+		let changed = false
+		for (const [key, card] of Object.entries(other.cards ?? {})) {
+			const mine = saved.value.cards[key]
+			if (!stillValid(key, card)) continue
+			if (!mine) {
+				saved.value.cards[key] = { ...card }
+				changed = true
+			} else if (mine.pending && !card.pending) {
+				delete mine.pending
+				changed = true
+			}
+		}
+		for (const [key, set] of Object.entries(other.sets ?? {})) {
+			// Already paid on the device that finished it, and the hint bank comes back separately
+			if (!saved.value.sets[key] && set) {
+				saved.value.sets[key] = { ...set }
+				changed = true
+			}
+		}
+		for (const date of Object.keys(other.played ?? {})) {
+			if (!saved.value.played[date]) {
+				saved.value.played[date] = true
+				changed = true
+			}
+		}
+		if (changed) persist()
+		return changed
+	}
+
+	const totalOwned = computed(() => new Set(Object.values(saved.value.cards).map(c => `${c.season}|${c.id}`)).size)
+
+	function missedIds(label: string): Set<string> {
+		const season = seasons[label]
+		if (!season) return new Set()
+		const today = getPuzzleNumber(getUKDateString())
+		const owned = ownedIds(label)
+		return new Set(Object.keys(season.cards).filter(id => !owned.has(id) && lastDayOf(season, id) < today))
+	}
+
+	return { saved, lastAward, lastMiss, totalOwned, missedIds, collectReplay, load, finishDaily, mergeBackup, clubProgress, ownedIds, seasons }
+})

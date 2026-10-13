@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { wasYesterday } from '../utils/dateStreak'
 
@@ -113,14 +114,13 @@ export function useModeStatsStore(modeId: ModeId) {
 		}
 
 		function loadStats() {
-			const saved = localStorage.getItem(`footballdle-stats-${modeId}`)
-			if (saved) {
-				const parsed = JSON.parse(saved)
+			const parsed = readSavedObject<ModeStats>(`footballdle-stats-${modeId}`)
+			if (parsed) {
 				stats.value = {
 					...defaultStats(),
 					...parsed,
 					guessDistribution: parsed.guessDistribution || defaultStats().guessDistribution,
-					recentForm: parsed.recentForm || [],
+					recentForm: Array.isArray(parsed.recentForm) ? parsed.recentForm : [],
 				}
 			}
 		}
