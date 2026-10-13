@@ -2,7 +2,8 @@
 //
 //   node --experimental-strip-types --no-warnings scripts/plan-grid-weeks.ts
 //
-// Writes app/data/grid-weeks.json. APPEND-ONLY, like the Daily schedule: weeks already
+// Writes app/data/grid-practice.json (every fair grid, for practice; rebuilt each run)
+// and app/data/grid-weeks.json. The weeks file is APPEND-ONLY, like the Daily schedule: weeks already
 // planned are never changed (people may be mid-week on them, and app builds already out
 // there carry them), so a squad update only affects weeks planned after it. Run it after
 // `yarn update-players` to keep about two years planned ahead.
@@ -10,11 +11,12 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { allFairGrids, gridKey, mulberry32, pickWeek, weekIndex, type GridDeal, type GridPlayer } from '../app/utils/grid.ts'
+import { allFairGrids, gridClubs, gridKey, gridRows, mulberry32, pickWeek, weekIndex, type GridDeal, type GridPlayer } from '../app/utils/grid.ts'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PLAYERS_PATH = join(ROOT, 'app/data/players.json')
 const WEEKS_PATH = join(ROOT, 'app/data/grid-weeks.json')
+const PRACTICE_PATH = join(ROOT, 'app/data/grid-practice.json')
 // The first Saturday of Grid Week
 const EPOCH = '10/10/2026'
 const WEEKS_AHEAD = 104
@@ -39,6 +41,15 @@ while (file.weeks.length < target) {
 }
 
 writeFileSync(WEEKS_PATH, JSON.stringify(file))
+
+// Practice: every fair grid as club and row indexes, so the app needn't work them out
+const clubs = gridClubs(players)
+const rows = gridRows(players)
+writeFileSync(PRACTICE_PATH, JSON.stringify({
+	clubs,
+	rows,
+	grids: grids.map(g => [...g.clubs.map(c => clubs.indexOf(c)), ...g.rows.map(r => rows.indexOf(r)), g.singles]),
+}))
 const englandGrids = grids.filter(g => g.england).length
 console.log(`Fair grids with current squads: ${grids.length} (${englandGrids} with England, ${grids.filter(g => g.rows.every(r => r.startsWith('nat:'))).length} countries only)`)
 console.log(`Grid Week: ${before} weeks kept, ${file.weeks.length - before} added, ${file.weeks.length} planned from ${file.epoch}`)

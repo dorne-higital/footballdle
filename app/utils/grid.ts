@@ -167,6 +167,20 @@ export function allFairGrids(players: GridPlayer[]): FairGrid[] {
 	return out
 }
 
+/** The practice list as written by scripts/plan-grid-weeks.ts */
+export interface PracticeFile {
+	clubs: string[]
+	rows: RowId[]
+	grids: number[][]
+}
+
+export function readPracticeGrids(file: PracticeFile): FairGrid[] {
+	return file.grids.map(([a, b, c, x, y, z, singles]) => {
+		const rows = [file.rows[x!]!, file.rows[y!]!, file.rows[z!]!] as GridDeal['rows']
+		return { clubs: [file.clubs[a!]!, file.clubs[b!]!, file.clubs[c!]!], rows, singles: singles!, england: rows.includes('nat:England') }
+	})
+}
+
 const keyCache = new WeakMap<object, string>()
 
 /** The same grid whatever order its clubs and rows are in */
