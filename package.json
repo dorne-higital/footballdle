@@ -7,6 +7,8 @@
     "build": "nuxt build",
     "build:analyze": "ANALYZE=true nuxt build",
     "dev": "nuxt dev",
+    "test": "vitest run",
+    "plan-grid-weeks": "node --experimental-strip-types --no-warnings scripts/plan-grid-weeks.ts",
     "dev:app": "APP_TARGET=ios nuxt dev",
     "dev:fast": "nuxt dev --port 3000 --hostname 0.0.0.0",
     "generate": "nuxt generate",
@@ -49,6 +51,7 @@
     "stylelint-config-standard-scss": "^15.0.1",
     "stylelint-config-standard-vue": "^1.0.0",
     "stylelint-order": "^6.0.4",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "vitest": "^3"
   }
 }
