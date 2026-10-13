@@ -89,12 +89,17 @@
 				Africa are well represented — don't only think of English names.
 			</p>
 
-			<h2>Challenge mode</h2>
+			<h2>The Grid</h2>
 			<p>
-				Complete the daily puzzle to unlock Challenge mode. This is a faster, unlimited game where you guess
-				a different five-letter Premier League surname against a 45-second countdown. Challenge mode can be
-				played as many times as you like — it's great for practising pattern recognition and sharpening your
-				letter instincts before the next daily puzzle.
+				Every Saturday, five new grids drop for everyone. Each grid has three clubs across the top and three
+				rows down the side, mostly countries, sometimes Goalkeeper, Forward or Priced £7m+. Name a current
+				player who fits both the club and the row for each of the nine squares.
+			</p>
+			<p>
+				A square is worth 100 points if your first guess is right, and 25 less for each wrong guess. Four wrong
+				guesses lock it at 0, and so does a square you leave empty. A perfect grid is 900 and a perfect week is
+				4,500. A name that isn't a player in the game costs nothing. A hint shows the first letter of an
+				answer for 50 points. Want more? Practice grids are unlimited and don't count towards your week.
 			</p>
 
 			<template v-if="$config.public.isApp">
@@ -218,7 +223,7 @@
 			{
 				name: 'description',
 				content:
-					'Learn how to play Footballdle — the free daily Premier League footballer guessing game. Understand the colour system, rules, tips, and how Challenge mode works.',
+					'Learn how to play Footballdle — the free daily Premier League footballer guessing game. Understand the colour system, rules, tips, and how The Grid works.',
 			},
 			{ name: 'robots', content: 'index, follow' },
 		],

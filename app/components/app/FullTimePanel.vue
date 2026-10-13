@@ -26,16 +26,15 @@
 				See result
 			</button>
 			<NuxtLink
-				v-if="challenge"
-				:to="{ path: '/play/daily', query: { start: 'challenge' } }"
+				v-if="grid"
+				to="/play/grid"
 				class="ft-btn"
-				@click="$emit('challenge')"
 			>
 				<Icon
-					name="solar:stopwatch-linear"
+					name="solar:widget-4-linear"
 					size="1.1rem"
 				/>
-				Play Challenge
+				Play The Grid
 			</NuxtLink>
 		</div>
 	</section>
@@ -44,8 +43,8 @@
 <script setup lang="ts">
 	// iOS app: shown under a finished game's board in place of the controls, so a
 	// finished game opens on your own result rather than the website's intro page
-	defineProps<{ summary: string; isWin: boolean; countdown?: string; challenge?: boolean }>()
-	defineEmits<{ result: []; challenge: [] }>()
+	defineProps<{ summary: string; isWin: boolean; countdown?: string; grid?: boolean }>()
+	defineEmits<{ result: [] }>()
 </script>
 
 <style scoped lang="scss">

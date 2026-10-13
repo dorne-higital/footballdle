@@ -37,3 +37,8 @@ export const LEADERBOARD_IDS = {
 	spotballStreak: '3', // footballdle.spotball.best_streak
 	totalWins: '4', // footballdle.total_wins
 } as const
+
+// The Grid's weekly leaderboard: a *recurring* Game Center leaderboard (resets every
+// Saturday, UK) for the week's points. Empty until it's created in App Store Connect;
+// scores are only sent once this holds its Leaderboard ID.
+export const GRID_WEEK_LEADERBOARD = ''

@@ -10,7 +10,8 @@ import { usePlayStreakStore } from '../stores/playStreak'
 import { useRemindersStore } from '../stores/reminders'
 import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
-import { LEADERBOARD_IDS } from '../utils/appStore'
+import { GRID_WEEK_LEADERBOARD, LEADERBOARD_IDS } from '../utils/appStore'
+import { useGridStore } from '../stores/grid'
 import { ACHIEVEMENTS, achievementProgress, buildAchievementContext } from '../utils/achievements'
 
 // Progress already sent to Game Center, so only changes are reported
@@ -93,14 +94,19 @@ export default defineNuxtPlugin((nuxtApp) => {
 		if (!gameCenter.isAuthenticated.value) gameCenter.authenticate(5000)
 	}).catch(() => {})
 
+	// The Grid: loaded at launch so its stats count towards trophies and total wins
+	const grid = useGridStore()
+	grid.load()
+
 	const totalWins = computed(
-		() => daily.stats.wins + scout.stats.wins + spotball.stats.wins + challenge.stats.wins,
+		() => daily.stats.wins + scout.stats.wins + spotball.stats.wins + challenge.stats.wins + grid.stats.wins,
 	)
 	const scores: [string, () => number][] = [
 		[LEADERBOARD_IDS.dailyStreak, () => daily.stats.maxStreak],
 		[LEADERBOARD_IDS.scoutStreak, () => scout.stats.maxStreak],
 		[LEADERBOARD_IDS.spotballStreak, () => spotball.stats.maxStreak],
 		[LEADERBOARD_IDS.totalWins, () => totalWins.value],
+		...(GRID_WEEK_LEADERBOARD ? [[GRID_WEEK_LEADERBOARD, () => grid.weekPoints] as [string, () => number]] : []),
 	]
 	for (const [leaderboardId, score] of scores) {
 		watch([score, gameCenter.isAuthenticated], ([value, signedIn]) => {
@@ -137,7 +143,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 	}
 
 	watch(
-		[() => [daily.stats, scout.stats, spotball.stats, challenge.stats], gameCenter.isAuthenticated],
+		[() => [daily.stats, scout.stats, spotball.stats, challenge.stats, grid.stats], gameCenter.isAuthenticated],
 		() => reportAchievementProgress(),
 		{ deep: true },
 	)

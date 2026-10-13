@@ -109,6 +109,7 @@
 				</button>
 			</PlaySurfaceFrame>
 			<FullTimePanel
+				grid
 				v-if="isAppBuild && spotStore.gameOver"
 				:summary="`${spotStore.score}/${spotStore.maxGuesses} · ${spotStore.scoreLabel}`"
 				:is-win="spotStore.isWin"

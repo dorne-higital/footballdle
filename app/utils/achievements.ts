@@ -1,5 +1,6 @@
 import type { ModeStats } from '../stores/modeStats'
 import { getUKDateString } from './dateStreak'
+import { gridPoints, type SquareState } from './grid'
 
 // Game Center achievements. Each `id` must exist with the same Achievement ID in
 // App Store Connect, along with the title, descriptions, points and badge
@@ -9,7 +10,11 @@ export interface AchievementContext {
 	daily: ModeStats
 	scout: ModeStats
 	spot: ModeStats
+	/** Challenge mode's stats, kept read-only since The Grid replaced it: its wins and
+	 *  games still count towards the Grid trophies and the across-every-mode totals */
 	challenge: ModeStats
+	/** The Grid (footballdle-grid-stats) */
+	grid: { gamesPlayed: number; wins: number; perfectGrids: number; perfectWeek: boolean }
 	today: string
 	spotPerfectGames: number
 	hintUsed: boolean
@@ -40,7 +45,10 @@ const towards = (value: number, target: number) => Math.min(100, (value / target
 const solvedIn = (stats: ModeStats, guesses: number) => (stats.guessDistribution[String(guesses)] ?? 0) > 0 ? 100 : 0
 const wonToday = (stats: ModeStats, today: string) =>
 	stats.lastPlayedDate === today && stats.recentForm[stats.recentForm.length - 1] === true
-const allModes = (ctx: AchievementContext) => [ctx.daily, ctx.scout, ctx.spot, ctx.challenge]
+const allModes = (ctx: AchievementContext) => [ctx.daily, ctx.scout, ctx.spot, ctx.challenge, ctx.grid]
+// Grid trophies count Challenge games from before The Grid replaced it
+const gridWins = (c: AchievementContext) => c.grid.wins + c.challenge.wins
+const gridPlayed = (c: AchievementContext) => c.grid.gamesPlayed + c.challenge.gamesPlayed
 
 export const ACHIEVEMENTS: Achievement[] = [
 	// Daily
@@ -84,14 +92,15 @@ export const ACHIEVEMENTS: Achievement[] = [
 	{ id: 'fd_spot_streak_30', title: 'Never Misses', goal: 'Win Spot the Baller 30 days in a row.', earned: 'You won Spot the Baller 30 days in a row.', points: 25, progress: c => towards(c.spot.maxStreak, 30) },
 	{ id: 'fd_spot_perfect_5', title: 'Perfectionist', goal: 'Get all 10 rounds right in Spot the Baller five times.', earned: 'You got a perfect 10 in Spot the Baller five times.', points: 35, progress: c => towards(c.spotPerfectGames, 5) },
 
-	// Challenge
-	{ id: 'fd_challenge_first_win', title: 'Against the Clock', goal: 'Win a Challenge game.', earned: 'You won a Challenge game.', points: 5, progress: c => towards(c.challenge.wins, 1) },
-	{ id: 'fd_challenge_quickfire', title: 'Quickfire', goal: 'Win a Challenge game in under 15 seconds.', earned: 'You won a Challenge game in under 15 seconds.', points: 25, progress: c => (c.challenge.bestTime !== undefined && c.challenge.bestTime < 15 ? 100 : 0) },
-	{ id: 'fd_challenge_wins_25', title: 'Extra Time Specialist', goal: 'Win 25 Challenge games.', earned: 'You won 25 Challenge games.', points: 15, progress: c => towards(c.challenge.wins, 25) },
-	{ id: 'fd_challenge_wins_10', title: 'Beat the Clock', goal: 'Win 10 Challenge games.', earned: 'You won 10 Challenge games.', points: 15, progress: c => towards(c.challenge.wins, 10) },
-	{ id: 'fd_challenge_wins_100', title: 'Stoppage-Time King', goal: 'Win 100 Challenge games.', earned: 'You won 100 Challenge games.', points: 35, progress: c => towards(c.challenge.wins, 100) },
-	{ id: 'fd_challenge_speed_10', title: 'Lightning Counter', goal: 'Win a Challenge game in under 10 seconds.', earned: 'You won a Challenge game in under 10 seconds.', points: 25, hidden: true, progress: c => (c.challenge.bestTime !== undefined && c.challenge.bestTime < 10 ? 100 : 0) },
-	{ id: 'fd_challenge_played_50', title: 'Glutton for Punishment', goal: 'Play 50 Challenge games.', earned: 'You played 50 Challenge games.', points: 15, progress: c => towards(c.challenge.gamesPlayed, 50) },
+	// The Grid. These keep the IDs of the Challenge trophies they replaced (Game Center IDs
+	// can't be deleted), so earned Challenge trophies stay earned.
+	{ id: 'fd_challenge_first_win', title: 'On the Grid', goal: 'Fill 5 squares in a grid.', earned: 'You filled 5 squares in a grid.', points: 5, progress: c => towards(gridWins(c), 1) },
+	{ id: 'fd_challenge_quickfire', title: 'Full House', goal: 'Score a perfect 900 on a grid.', earned: 'You scored a perfect 900 on a grid.', points: 25, progress: c => towards(c.grid.perfectGrids, 1) },
+	{ id: 'fd_challenge_wins_25', title: 'Grid Regular', goal: 'Fill 5 or more squares in 25 grids.', earned: 'You filled 5 or more squares in 25 grids.', points: 15, progress: c => towards(gridWins(c), 25) },
+	{ id: 'fd_challenge_wins_10', title: 'Grid Habit', goal: 'Fill 5 or more squares in 10 grids.', earned: 'You filled 5 or more squares in 10 grids.', points: 15, progress: c => towards(gridWins(c), 10) },
+	{ id: 'fd_challenge_wins_100', title: 'Grid Master', goal: 'Fill 5 or more squares in 100 grids.', earned: 'You filled 5 or more squares in 100 grids.', points: 35, progress: c => towards(gridWins(c), 100) },
+	{ id: 'fd_challenge_speed_10', title: 'Perfect Week', goal: 'Score the full 4,500 in a Grid Week.', earned: 'You scored the full 4,500 in a Grid Week.', points: 25, hidden: true, progress: c => (c.grid.perfectWeek ? 100 : 0) },
+	{ id: 'fd_challenge_played_50', title: 'Grid Addict', goal: 'Finish 50 grids.', earned: 'You finished 50 grids.', points: 15, progress: c => towards(gridPlayed(c), 50) },
 
 	// Across every mode
 	{ id: 'fd_all_treble', title: 'The Treble', goal: 'Win the Daily, Scout Report and Spot the Baller on the same day.', earned: 'You won all three daily modes on the same day.', points: 25, progress: c => ([c.daily, c.scout, c.spot].every(s => wonToday(s, c.today)) ? 100 : 0) },
@@ -118,7 +127,8 @@ export const ACHIEVEMENT_GROUPS = [
 	{ title: 'Daily', prefix: 'fd_daily_' },
 	{ title: 'Scout Report', prefix: 'fd_scout_' },
 	{ title: 'Spot the Baller', prefix: 'fd_spot_' },
-	{ title: 'Challenge', prefix: 'fd_challenge_' },
+	// The Grid's trophies keep the Challenge IDs they replaced
+	{ title: 'The Grid', prefix: 'fd_challenge_' },
 	{ title: 'Matchday streak', prefix: 'fd_matchday_' },
 	{ title: 'Player Cards', prefix: 'fd_cards_' },
 	{ title: 'Across every mode', prefix: 'fd_all_', extra: ['fd_hint_first'] },
@@ -131,6 +141,7 @@ export const TOTAL_ACHIEVEMENT_POINTS = ACHIEVEMENTS.reduce((sum, a) => sum + a.
 
 /** Context from the mode stats plus the extras the stats stores don't track */
 export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' | 'scout' | 'spot' | 'challenge'>): AchievementContext {
+	const grid: AchievementContext['grid'] = { gamesPlayed: 0, wins: 0, perfectGrids: 0, perfectWeek: false }
 	let spotPerfectGames = 0
 	let hintUsed = false
 	let matchdayBest = 0
@@ -155,7 +166,17 @@ export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' 
 		hintUsed = localStorage.getItem('footballdle-hint-used') === '1'
 		matchdayBest = JSON.parse(localStorage.getItem('footballdle-play-streak') || 'null')?.best ?? 0
 	} catch {}
-	return { ...stats, today: getUKDateString(), spotPerfectGames, hintUsed, matchdayBest, cardsCollected, foilCards, setsCompleted, seasonComplete }
+	try {
+		const gridStats = JSON.parse(localStorage.getItem('footballdle-grid-stats') || 'null')
+		grid.gamesPlayed = Number(gridStats?.gamesPlayed) || 0
+		grid.wins = Number(gridStats?.wins) || 0
+		grid.perfectGrids = Number(gridStats?.perfectGrids) || 0
+		const pastWeeks: { points: number }[] = Array.isArray(gridStats?.weeks) ? gridStats.weeks : []
+		const thisWeek: { squares: SquareState[] }[] = JSON.parse(localStorage.getItem('footballdle-grid') || 'null')?.week ?? []
+		const thisWeekPoints = thisWeek.reduce((sum, g) => sum + gridPoints(g.squares ?? []), 0)
+		grid.perfectWeek = pastWeeks.some(w => w.points >= 4500) || thisWeekPoints >= 4500
+	} catch {}
+	return { ...stats, grid, today: getUKDateString(), spotPerfectGames, hintUsed, matchdayBest, cardsCollected, foilCards, setsCompleted, seasonComplete }
 }
 
 const BEST_KEY = 'footballdle-achievement-best'

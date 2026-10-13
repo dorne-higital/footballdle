@@ -99,7 +99,7 @@
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
-				:challenge="challengeStore.isUnlocked"
+				:grid="true"
 				@result="gameStore.showGameOverModal = true"
 			/>
 			<Keyboard
@@ -727,6 +727,11 @@
 
 		// iOS app: the Matchday home links straight into play, skipping the intro screen
 		const start = useRoute().query.start
+		// The Grid replaced Challenge: old links and bookmarks go there
+		if (start === 'challenge' && isAppBuild) {
+			navigateTo('/play/grid', { replace: true })
+			return
+		}
 		if (gameStore.showIntro && !challengeStore.isActive) {
 			if (start === 'play' && gameStore.canPlay) handleStartGame()
 			else if (start === 'challenge' && challengeStore.isUnlocked) handleStartChallenge()

@@ -10,8 +10,9 @@
 			<div class="hint-shop">
 				<p class="hint-shop-intro">
 					Each hint reveals a clue in the Daily (club, nationality, position, then the surname's first letters)
-					or Scout Report (continent, nation, position and name initials, in a different order each day). Up
-					to five per game; hints you don't use stay in the bank.
+					or Scout Report (continent, nation, position and name initials, in a different order each day), up
+					to five per game, or the first letter of an answer for a square in The Grid. Hints you don't use stay
+					in the bank.
 				</p>
 				<p
 					v-if="purchases.isPro || purchases.hintBank > 0"
@@ -51,7 +52,7 @@
 					v-else-if="!onHintGame && nextGame"
 					class="hint-shop-context"
 				>
-					<span>Hints are used in the Daily and Scout Report.</span>
+					<span>Hints are used in the Daily, Scout Report and The Grid.</span>
 					<button
 						type="button"
 						class="hint-link"
@@ -178,6 +179,7 @@
 	import { useGameStore } from '../../stores/game'
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useChallengeStore } from '../../stores/challenge'
+	import { useGridStore } from '../../stores/grid'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
@@ -207,7 +209,10 @@
 		() => route.path.startsWith('/play/scout-report') && !scoutStore.showIntro && scoutStore.canPurchaseHint,
 	)
 	// Mid-game somewhere a hint can be used right now
-	const onHintGame = computed(() => onDailyGame.value || onScoutGame.value)
+	// The Grid: a square picked that a hint can help with
+	const gridStore = useGridStore()
+	const onGridGame = computed(() => route.path.startsWith('/play/grid') && gridStore.canHintSelected)
+	const onHintGame = computed(() => onDailyGame.value || onScoutGame.value || onGridGame.value)
 	// Where to send someone who isn't in a game: the first hint game they haven't finished
 	const nextGame = computed(() => {
 		const done = (status: string) => ['won', 'lost'].includes(status)
@@ -228,7 +233,8 @@
 
 	function useHint() {
 		if (purchases.spendHint()) {
-			if (onScoutGame.value) scoutStore.unlockHint()
+			if (onGridGame.value) gridStore.hint()
+			else if (onScoutGame.value) scoutStore.unlockHint()
 			else gameStore.unlockHint()
 		}
 		open.value = false

@@ -44,6 +44,7 @@
 				@unlock="scoutStore.unlockHint()"
 			/>
 			<FullTimePanel
+				grid
 				v-if="$config.public.appShell && scoutStore.gameOver"
 				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
 				:is-win="scoutStore.isWin"

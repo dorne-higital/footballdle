@@ -187,33 +187,23 @@
 		</div>
 
 		<NuxtLink
-			:to="challengeUnlocked ? { path: '/play/daily', query: { start: 'challenge' } } : '/play/daily'"
-			:class="['challenge-row', { locked: !challengeUnlocked }]"
+			to="/play/grid"
+			class="challenge-row"
 		>
 			<Icon
-				:name="challengeUnlocked ? 'solar:bolt-linear' : 'solar:lock-keyhole-linear'"
+				name="solar:widget-4-linear"
 				class="bg-icon challenge"
 				aria-hidden="true"
 			/>
 			<span class="mode-text">
-				<strong>Challenge mode</strong>
-				<span>{{ challengeUnlocked ? 'Unlimited games against the clock' : 'Finish today\'s Daily to unlock' }}</span>
-			</span>
-			<span
-				v-if="!challengeUnlocked"
-				class="lock-chip"
-			>
-				<Icon
-					name="solar:lock-keyhole-minimalistic-bold"
-					size="0.8rem"
-				/>
-				Locked
+				<strong>The Grid</strong>
+				<span>{{ gridLine }}</span>
 			</span>
 			<Icon
-				v-else
 				name="solar:alt-arrow-right-linear"
-				size="1.2rem"
 				class="chevron"
+				size="1.1rem"
+				aria-hidden="true"
 			/>
 		</NuxtLink>
 
@@ -240,6 +230,7 @@
 	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
+	import { useGridStore } from '../../stores/grid'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { getDisplayNumber, getAnswerForDay } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
@@ -264,8 +255,14 @@
 		timeZone: 'Europe/London',
 	})
 
-	// Challenge opens once today's Daily is finished, win or lose
-	const challengeUnlocked = computed(() => ['won', 'lost'].includes(daily.value.status))
+	// The Grid: this week's points once it has been played, otherwise what it is
+	const grid = useGridStore()
+	onMounted(() => grid.load())
+	const gridLine = computed(() =>
+		grid.ready && grid.weekSolved > 0
+			? `Grid Week · ${grid.weekPoints.toLocaleString('en-GB')} / 4,500`
+			: 'Five new grids every Saturday',
+	)
 
 	const rings = computed(() => [
 		{ progress: daily.value.progress, color: RING_COLORS.daily },

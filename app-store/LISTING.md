@@ -44,7 +44,7 @@ THREE MODES, ONE MATCHDAY
 • Daily: guess the hidden five- or six-letter surname in six tries. Win it to collect that player's card, and finish a club's set for free hints. Stuck? Use a hint to reveal the player's club, nationality and position, then the first letters of their surname.
 • Scout Report: name any player from the top flight and get scouting clues on club, nation and position after every guess.
 • Spot the Baller: ten rapid-fire rounds against the clock. Pick the right name before time runs out.
-• Challenge mode: finish the Daily to unlock unlimited games against a 45-second clock.
+• The Grid: name a player for every square of a 3x3 grid of clubs and countries. Five new grids every Saturday, 100 points a square, plus unlimited practice grids.
 
 PLAYER CARDS
 • Win the Daily to collect that day's player card, and a shiny one for winning in two guesses or fewer

@@ -86,7 +86,7 @@
 		{
 			icon: 'solar:fire-bold',
 			title: 'Keep your streak going',
-			text: 'Finish any game to keep your Matchday streak alive. Finish the Daily to unlock Challenge mode for unlimited games against the clock.',
+			text: 'Finish any game to keep your Matchday streak alive. Every Saturday, five new grids drop in The Grid.',
 		},
 		{
 			icon: 'solar:lightbulb-bolt-bold',

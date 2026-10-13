@@ -2,6 +2,8 @@
 
 Generated from `app/utils/achievements.ts`. Every Achievement ID must exist in App Store Connect with these points; badge images are `app-store/achievements/<id>.jpg` (1024×1024).
 
+The `fd_challenge_*` IDs are kept for The Grid (Game Center IDs can't be renamed), so Challenge wins from 1.1 still count towards them. Grid Week also needs a recurring weekly leaderboard (resets Saturday 00:00 UK); put its ID in `GRID_WEEK_LEADERBOARD` in `app/utils/appStore.ts`.
+
 50 achievements, 960 / 1000 points. Tiers: bronze 5, silver 15, gold 25, emerald 35.
 
 | Achievement ID | Title | Points | Hidden | Pre-earned description | Earned description | Status |
@@ -41,13 +43,13 @@ Generated from `app/utils/achievements.ts`. Every Achievement ID must exist in A
 | `fd_spot_streak_3` | Spot On | 5 | no | Win Spot the Baller 3 days in a row. | You won Spot the Baller 3 days in a row. | NEW - create |
 | `fd_spot_streak_30` | Never Misses | 25 | no | Win Spot the Baller 30 days in a row. | You won Spot the Baller 30 days in a row. | NEW - create |
 | `fd_spot_perfect_5` | Perfectionist | 35 | no | Get all 10 rounds right in Spot the Baller five times. | You got a perfect 10 in Spot the Baller five times. | NEW - create |
-| `fd_challenge_first_win` | Against the Clock | 5 | no | Win a Challenge game. | You won a Challenge game. | exists - check points |
-| `fd_challenge_quickfire` | Quickfire | 25 | no | Win a Challenge game in under 15 seconds. | You won a Challenge game in under 15 seconds. | exists - check points |
-| `fd_challenge_wins_25` | Extra Time Specialist | 15 | no | Win 25 Challenge games. | You won 25 Challenge games. | exists - check points |
-| `fd_challenge_wins_10` | Beat the Clock | 15 | no | Win 10 Challenge games. | You won 10 Challenge games. | NEW - create |
-| `fd_challenge_wins_100` | Stoppage-Time King | 35 | no | Win 100 Challenge games. | You won 100 Challenge games. | NEW - create |
-| `fd_challenge_speed_10` | Lightning Counter | 25 | yes | Win a Challenge game in under 10 seconds. | You won a Challenge game in under 10 seconds. | NEW - create |
-| `fd_challenge_played_50` | Glutton for Punishment | 15 | no | Play 50 Challenge games. | You played 50 Challenge games. | NEW - create |
+| `fd_challenge_first_win` | On the Grid | 5 | no | Fill 5 squares in a grid. | You filled 5 squares in a grid. | exists - rename, new text + badge |
+| `fd_challenge_quickfire` | Full House | 25 | no | Score a perfect 900 on a grid. | You scored a perfect 900 on a grid. | exists - rename, new text + badge |
+| `fd_challenge_wins_25` | Grid Regular | 15 | no | Fill 5 or more squares in 25 grids. | You filled 5 or more squares in 25 grids. | exists - rename, new text + badge |
+| `fd_challenge_wins_10` | Grid Habit | 15 | no | Fill 5 or more squares in 10 grids. | You filled 5 or more squares in 10 grids. | NEW - create |
+| `fd_challenge_wins_100` | Grid Master | 35 | no | Fill 5 or more squares in 100 grids. | You filled 5 or more squares in 100 grids. | NEW - create |
+| `fd_challenge_speed_10` | Perfect Week | 25 | yes | Score the full 4,500 in a Grid Week. | You scored the full 4,500 in a Grid Week. | NEW - create |
+| `fd_challenge_played_50` | Grid Addict | 15 | no | Finish 50 grids. | You finished 50 grids. | NEW - create |
 | `fd_all_treble` | The Treble | 25 | no | Win the Daily, Scout Report and Spot the Baller on the same day. | You won all three daily modes on the same day. | exists - check points |
 | `fd_all_games_100` | Season Ticket Holder | 15 | no | Play 100 games across every mode. | You played 100 games across every mode. | exists - check points |
 | `fd_all_wins_250` | Hall of Famer | 35 | no | Win 250 games across every mode. | You won 250 games across every mode. | exists - check points |

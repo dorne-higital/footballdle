@@ -66,12 +66,11 @@
 				genuinely nothing to sign up for.
 			</p>
 
-			<h2>Challenge mode</h2>
+			<h2>The Grid</h2>
 			<p>
-				Finishing the daily puzzle unlocks Challenge mode — a faster, unlimited version of the game. In
-				Challenge mode the answer is a five-letter Premier League surname and you play against a
-				45-second countdown. There are no limits on how many times you can play, so it's useful for
-				practising letter placement and improving your opening guesses ahead of the next daily puzzle.
+				Every Saturday, five new grids drop, the same for everyone. Each square is a club and a country (or a
+				position or price), and you name a player who fits both: 100 points first time, 25 less for every miss.
+				Practice grids are unlimited if you want more.
 			</p>
 
 			<h2>Keeping the player list accurate</h2>
@@ -149,7 +148,7 @@
 			{
 				name: 'description',
 				content:
-					'Footballdle is a free daily Premier League footballer guessing game. Find out how it was built, how the player list is maintained, and how Challenge mode works.',
+					'Footballdle is a free daily Premier League footballer guessing game. Find out how it was built, how the player list is maintained, and how The Grid works.',
 			},
 			{ name: 'robots', content: 'index, follow' },
 		],

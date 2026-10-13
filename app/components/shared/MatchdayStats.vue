@@ -34,8 +34,45 @@
 			</button>
 		</div>
 
+		<!-- The Grid keeps its own stats (weeks and points rather than wins and streaks) -->
+		<div
+			v-if="selected === 'grid'"
+			class="grid-stats"
+		>
+			<div class="grid-stat-row">
+				<div
+					v-for="item in gridStats"
+					:key="item.label"
+					class="grid-stat"
+				>
+					<strong>{{ item.value }}</strong>
+					<span>{{ item.label }}</span>
+				</div>
+			</div>
+			<div
+				v-if="recentWeeks.length"
+				class="grid-weeks"
+				aria-label="Recent Grid Weeks"
+			>
+				<div
+					v-for="week in recentWeeks"
+					:key="week.start"
+					class="grid-week"
+				>
+					<span class="gw-date">{{ week.label }}</span>
+					<span class="gw-bar"><span :style="{ width: `${(week.points / 4500) * 100}%` }"></span></span>
+					<span class="gw-points">{{ week.points.toLocaleString('en-GB') }}</span>
+				</div>
+			</div>
+			<p
+				v-else
+				class="empty-mode"
+			>
+				Play this week's grids to start your Grid Week record.
+			</p>
+		</div>
 		<p
-			v-if="!current.store.stats.gamesPlayed"
+			v-else-if="!current.store?.stats.gamesPlayed"
 			class="empty-mode"
 		>
 			<Icon
@@ -48,10 +85,10 @@
 			v-else
 			:key="selected"
 			:primary-stats="current.primary"
-			:win-percentage="current.store.winPercentage"
-			:distribution="selected === 'spotball' ? undefined : current.store.stats.guessDistribution"
+			:win-percentage="current.store!.winPercentage"
+			:distribution="selected === 'spotball' ? undefined : current.store!.stats.guessDistribution"
 			:score-histogram="selected === 'spotball' ? spotHistogram : undefined"
-			:recent-form="current.store.stats.recentForm"
+			:recent-form="current.store!.stats.recentForm"
 		/>
 	</div>
 </template>
@@ -63,20 +100,21 @@
 	import { SPOT_TIER_LABELS } from '../../utils/spotTiers'
 	import { readSavedObject } from '../../utils/storage'
 	import SeasonFormDashboard from './SeasonFormDashboard.vue'
+	import { useGridStore } from '../../stores/grid'
 
 	// The one Stats view (tab and sheet): Matchday streak, then the same breakdown for
 	// whichever mode is picked. Opened from inside a game, that game is picked first.
-	type ModeId = 'daily' | 'scout' | 'spotball' | 'challenge'
+	type ModeId = 'daily' | 'scout' | 'spotball' | 'grid'
 	const stores = {
 		daily: useModeStatsStore('daily'),
 		scout: useModeStatsStore('scout'),
 		spotball: useModeStatsStore('spotball'),
-		challenge: useModeStatsStore('challenge'),
 	}
+	const grid = useGridStore()
 	const playStreak = usePlayStreakStore()
 	const route = useRoute()
 
-	const basics = (id: ModeId) => [
+	const basics = (id: Exclude<ModeId, 'grid'>) => [
 		{ label: 'Games', value: stores[id].stats.gamesPlayed },
 		{ label: 'Wins', value: stores[id].stats.wins },
 		{ label: 'Streak', value: stores[id].stats.currentStreak },
@@ -88,22 +126,30 @@
 			{ id: 'daily' as const, label: 'Daily', primary: basics('daily') },
 			{ id: 'scout' as const, label: 'Scout', primary: basics('scout') },
 			{ id: 'spotball' as const, label: 'Spot', primary: basics('spotball') },
-			{
-				id: 'challenge' as const,
-				label: 'Challenge',
-				primary: [
-					{ label: 'Challenges', value: stores.challenge.stats.gamesPlayed },
-					{ label: 'Wins', value: stores.challenge.stats.wins },
-					{ label: 'Best Streak', value: stores.challenge.stats.maxStreak },
-					{ label: 'Best Time', value: `${stores.challenge.stats.bestTime || 0}s` },
-				],
-			},
-		].map(m => ({ ...m, store: stores[m.id] })),
+			{ id: 'grid' as const, label: 'Grid', primary: [] },
+		].map(m => ({ ...m, store: m.id === 'grid' ? null : stores[m.id] })),
+	)
+
+	const gridStats = computed(() => [
+		{ label: 'This week', value: grid.weekPoints.toLocaleString('en-GB') },
+		{ label: 'Best week', value: grid.bestWeek.toLocaleString('en-GB') },
+		{ label: 'Weeks played', value: grid.stats.weeks.length },
+		{ label: 'Grids finished', value: grid.stats.gamesPlayed },
+		{ label: 'Perfect grids', value: grid.stats.perfectGrids },
+		{ label: 'Practice grids', value: grid.stats.practicePlayed },
+	])
+	const recentWeeks = computed(() =>
+		grid.stats.weeks.slice(-6).reverse().map(w => {
+			const [d, m, y] = w.start.split('/').map(Number)
+			const label = new Date(Date.UTC(y!, m! - 1, d!)).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+			return { ...w, label }
+		}),
 	)
 
 	function modeForRoute(path: string): ModeId {
 		if (path.startsWith('/play/scout-report')) return 'scout'
 		if (path.startsWith('/play/spot-the-baller')) return 'spotball'
+		if (path.startsWith('/play/grid')) return 'grid'
 		return 'daily'
 	}
 	const selected = ref<ModeId>(modeForRoute(route.path))
@@ -116,12 +162,93 @@
 
 	onMounted(() => {
 		for (const store of Object.values(stores)) store.loadStats()
+		grid.load()
 		playStreak.load()
 		spotTiers.value = readSavedObject<Record<string, number>>('footballdle-spot-tiers') ?? {}
 	})
 </script>
 
 <style scoped lang="scss">
+	.grid-stats {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.grid-stat-row {
+		display: grid;
+		gap: 0.5rem;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.grid-stat {
+		align-items: center;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 0.85rem;
+		display: flex;
+		flex-direction: column;
+		padding: 0.65rem 0.25rem;
+		text-align: center;
+
+		strong {
+			font-family: var(--font-display);
+			font-size: 1.2rem;
+			font-variant-numeric: tabular-nums;
+		}
+
+		span {
+			color: var(--text-secondary);
+			font-size: 0.68rem;
+			font-weight: 800;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+		}
+	}
+
+	.grid-weeks {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 0.85rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+		padding: 0.85rem;
+	}
+
+	.grid-week {
+		align-items: center;
+		display: flex;
+		font-size: 0.82rem;
+		font-variant-numeric: tabular-nums;
+		font-weight: 800;
+		gap: 0.6rem;
+	}
+
+	.gw-date {
+		color: var(--text-secondary);
+		width: 3.4rem;
+	}
+
+	.gw-bar {
+		background: var(--fl-raised, var(--border));
+		border-radius: 999px;
+		flex: 1;
+		height: 0.5rem;
+		overflow: hidden;
+
+		span {
+			background: var(--primary-color);
+			display: block;
+			height: 100%;
+		}
+	}
+
+	.gw-points {
+		text-align: right;
+		width: 3rem;
+	}
+
 	.hub-stats-modal {
 		display: flex;
 		flex-direction: column;
