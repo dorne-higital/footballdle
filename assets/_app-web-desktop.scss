@@ -1,0 +1,121 @@
+// The website on a computer (1024px and wider): a side menu instead of the tab bar, and
+// screens laid out across the width. Only html.app-web gets these rules, so the iPhone
+// app never does, and phones and tablets keep the app layout untouched.
+
+$rail: 15.5rem;
+
+@media (width >= 1024px) {
+	html.app-web {
+		.desktop-rail {
+			background: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+			border-right: 1px solid var(--border);
+			bottom: 0;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			gap: 1.75rem;
+			left: 0;
+			overflow-y: auto;
+			padding: 1.75rem 1.1rem;
+			position: fixed;
+			top: 0;
+			width: $rail;
+			z-index: 20;
+		}
+
+		.app-tab-bar {
+			display: none;
+		}
+
+		.app-page-layout,
+		.play-layout {
+			box-sizing: border-box;
+			padding-left: $rail;
+		}
+
+		.has-tab-bar {
+			padding-bottom: 2rem;
+		}
+
+		// Matchday: the Daily and the other games on the left, today's progress on the right
+		.app-home {
+			align-items: start;
+			display: grid;
+			gap: 1.25rem;
+			grid-template-areas:
+				'head head'
+				'daily rings'
+				'daily challenge'
+				'modes fact'
+				'kick fact';
+			grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+			// The flexible third row soaks up the Daily card's extra height, so the rings and
+			// Challenge sit together at the top of the right column
+			grid-template-rows: auto auto 1fr auto auto;
+			max-width: 70rem;
+			padding: 1.5rem 1rem 3rem;
+		}
+
+		.home-header {
+			grid-area: head;
+
+			h1 {
+				font-size: 2.75rem;
+			}
+		}
+
+		// The menu shows the hints and the streak
+		.header-pills {
+			display: none;
+		}
+
+		.daily-hero {
+			grid-area: daily;
+			min-height: 18rem;
+		}
+
+		.rings-card {
+			grid-area: rings;
+		}
+
+		.challenge-row {
+			grid-area: challenge;
+		}
+
+		.mode-grid {
+			grid-area: modes;
+		}
+
+		.fact-card {
+			align-self: stretch;
+			grid-area: fact;
+		}
+
+		.kickoff {
+			grid-area: kick;
+		}
+
+		// Tab screens: wider columns, and grids for the long lists
+		.cards-page,
+		.trophies,
+		.club-page {
+			max-width: 68rem;
+		}
+
+		.tab-page {
+			max-width: 44rem;
+		}
+
+		.club-list {
+			display: grid;
+			gap: 0.9rem;
+			grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+		}
+
+		.trophies .group ul {
+			display: grid;
+			gap: 0.6rem;
+			grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+		}
+	}
+}

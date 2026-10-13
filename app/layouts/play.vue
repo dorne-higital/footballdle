@@ -1,5 +1,6 @@
 <template>
 	<div :class="['play-layout', { 'has-tab-bar': showTabBar }]">
+		<DesktopRail v-if="$config.public.appShell && !$config.public.isApp" />
 		<template v-if="$config.public.appShell">
 			<AppTopBar v-if="!showTabBar" />
 		</template>
@@ -24,6 +25,7 @@
 	import AppHeader from '../components/shared/AppHeader.vue'
 	import AppTopBar from '../components/app/AppTopBar.vue'
 	import AppTabBar from '../components/app/AppTabBar.vue'
+	import DesktopRail from '../components/app/DesktopRail.vue'
 	import HubSheets from '../components/shared/HubSheets.vue'
 
 	const route = useRoute()

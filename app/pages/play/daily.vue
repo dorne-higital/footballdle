@@ -443,7 +443,14 @@
 		</PitchCardModal>
 	</div>
 
+	<GameSidePanel
+		v-if="$config.public.appShell"
+		class="desktop-side-panel"
+		mode="daily"
+		:revision="gameStore.guesses.length + (gameStore.gameOver ? 10 : 0)"
+	/>
 	<DashboardSidePanel
+		v-else
 		class="desktop-side-panel"
 		active-mode="daily"
 		:daily-streak="statsStore.stats.currentStreak"
@@ -479,6 +486,7 @@
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
+	import GameSidePanel from '../../components/app/GameSidePanel.vue'
 
 	const isAppBuild = !!useRuntimeConfig().public.appShell
 

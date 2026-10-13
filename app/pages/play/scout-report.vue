@@ -161,7 +161,14 @@
 		</PitchCardModal>
 	</div>
 
+	<GameSidePanel
+		v-if="$config.public.appShell"
+		class="desktop-side-panel"
+		mode="scout"
+		:revision="scoutStore.guesses.length + (scoutStore.gameOver ? 10 : 0)"
+	/>
 	<DashboardSidePanel
+		v-else
 		class="desktop-side-panel"
 		active-mode="scout"
 		:daily-streak="dailyStatsStore.stats.currentStreak"
@@ -189,6 +196,7 @@
 	import SeasonFormDashboard from '../../components/shared/SeasonFormDashboard.vue'
 	import ThemePickerSettings from '../../components/shared/ThemePickerSettings.vue'
 	import DashboardSidePanel from '../../components/shared/DashboardSidePanel.vue'
+	import GameSidePanel from '../../components/app/GameSidePanel.vue'
 	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
 	import AppHintBar from '../../components/app/AppHintBar.vue'

@@ -346,10 +346,10 @@ html.app-shell {
 	}
 }
 
-// The app look on the website, on a tablet or computer: a phone-width column down the
-// middle. The column is its own scroller and (via the transform) the box that fixed
+// The app look on the website, on a tablet: a phone-width column down the middle
+// (computers get the desktop layout, assets/_app-web-desktop.scss). The column is its own scroller and (via the transform) the box that fixed
 // things like the tab bar sit in, so they stay inside it rather than at the window edges.
-@media (width >= 640px) {
+@media (640px <= width < 1024px) {
 	html.app-web body {
 		background: #030906;
 	}

@@ -1,5 +1,6 @@
 <template>
 	<div :class="{ 'app-page-layout': $config.public.appShell, 'has-tab-bar': isTab }">
+		<DesktopRail v-if="$config.public.appShell && !$config.public.isApp" />
 		<AppTopBar v-if="$config.public.appShell" />
 		<slot />
 		<HubSheets v-if="$config.public.appShell" />
@@ -11,6 +12,7 @@
 	import { computed } from 'vue'
 	import AppTopBar from '../components/app/AppTopBar.vue'
 	import AppTabBar from '../components/app/AppTabBar.vue'
+	import DesktopRail from '../components/app/DesktopRail.vue'
 	import HubSheets from '../components/shared/HubSheets.vue'
 	import { tabFor } from '../utils/appTabs'
 
