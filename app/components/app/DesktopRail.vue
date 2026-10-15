@@ -94,6 +94,11 @@
 		display: none;
 	}
 
+	// The site-wide link hover line (assets/_typography.scss) doesn't belong on the logo or the menu
+	.desktop-rail a:hover {
+		border-bottom-color: transparent;
+	}
+
 	.rail-brand {
 		align-items: center;
 		color: var(--text-primary);
@@ -166,7 +171,9 @@
 		height: 2.9rem;
 		padding: 0 0.9rem;
 		text-decoration: none;
-		transition: background 0.15s, color 0.15s;
+		transition:
+			background 0.15s,
+			color 0.15s;
 
 		&:hover {
 			background: color-mix(in srgb, var(--fl-raised) 60%, transparent);
