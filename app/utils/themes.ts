@@ -1,4 +1,4 @@
-// The Theme Library (1.3). Floodlights and Light are the app's own look (assets/_app-shell.scss);
+// The Theme Library (1.2). Floodlights and Light are the app's own look (assets/_app-shell.scss);
 // every other theme is a set of colours laid over it as CSS variables (stores/appearance.ts).
 // Paid themes are one-off App Store purchases (utils/appStore.ts THEME_PRODUCT_IDS); Pro
 // unlocks all of them. Spec: THEMES.md.

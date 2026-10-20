@@ -1,4 +1,4 @@
-# Theme Library (version 1.3)
+# Theme Library (version 1.2)
 
 Sixteen themes in Settings → Theme. Four are free, six are sold one at a time, and six plain colours come as one pack. Pro unlocks all of them.
 
@@ -61,20 +61,11 @@ Mock-ups: https://claude.ai/artifact/YE8nbPCWDmhPNJMxy11pCc
   - An English (UK) display name and description.
   - A review screenshot of Settings → Theme.
   - A price: £0.99, or £2.99 for the pack.
-- **When to submit:** add them to the 1.3 review, together with the build.
+- **When to submit:** they're in the draft submission with the 1.2 Game Center items, and go to review with the 1.2 build.
 - **RevenueCat:** add the 7 products to the catalogue. They go in no entitlement.
 - **Pro:** Pro's App Store description can mention themes once 1.1 is out of review. Don't edit it while it's in review.
 
 ## Branch and keeping up with 1.2
 
-- **Branch:** `feature/themes`, made from `feature/the-grid` (1.2) and set to version 1.3.
-- **If 1.2 changes** (a fix after review, say), merge it into this branch so 1.3 keeps it:
-  ```
-  git switch feature/themes && git merge feature/the-grid
-  ```
-- **After 1.2 is merged to main,** merge main into this branch instead:
-  ```
-  git switch feature/themes && git merge main
-  ```
-- **When 1.3 ships,** it's a fast-forward or a plain merge of `feature/themes` into main.
+- **Branch:** built on `feature/themes`, then folded into `feature/the-grid` on 20 Oct 2026: Dan wants one 1.2 release with The Grid and the Theme Library together. `feature/the-grid` is the 1.2 branch and merges into main when 1.1 is approved.
 - **Fewer conflicts:** almost all theme code is in new files. The shared files it touches are the theme picker in Settings, the purchases store, the appearance store, `appStore.ts`, `_app-shell.scss`, `nuxt.config.ts`, the version number, and one-line `--on-primary` swaps in a few components.

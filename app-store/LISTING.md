@@ -115,6 +115,19 @@ The files in each `raw/` folder work as alternates.
 someone else's trademark in the name, subtitle or keywords (guideline 5.2). The copy above
 describes the game without them. Keep it that way in the metadata.
 
+## What's New in 1.2 (draft)
+
+The Grid is here! Five new grids every Saturday, the same for everyone: name a player who fits each club and row for 100 points, 25 less for every miss. Chase a perfect week on the new Grid Week leaderboard, or play unlimited practice grids.
+
+Also new:
+• The Theme Library: Pastel and Greyscale free, six themes with their own fonts and textures, and a six-colour Colour Pack. Try any theme before you buy, and Pro unlocks them all
+• Seven Grid trophies and a Grid tab in Stats
+• Lots of polish and fixes
+
+For the description (version page), swap these lines in:
+• MADE FOR IPHONE: "A floodlit design built for one-handed play, with 16 themes to choose from and haptic feedback on every key"
+• HINTS AND PRO: add "Themes can be bought one at a time, and Pro unlocks every theme too." after the Pro sentence
+
 ## What's New in 1.1 (draft)
 
 Player Cards are here! Win the Daily to collect that day's player, fill every club's set, and earn free hints for each one you finish. Missed one? Replay it from the new Cards tab.
