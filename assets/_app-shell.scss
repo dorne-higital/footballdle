@@ -370,3 +370,21 @@ html.app-shell {
 		transform: translateZ(0);
 	}
 }
+
+// iPhone app only: no sideways scrolling anywhere, and no scroll bars (the screens
+// still scroll). clip, not hidden, so body doesn't become a scroll container and break
+// the sticky bars. MainViewController.swift hides the web view's own indicators
+html.app-shell:not(.app-web) {
+	&,
+	body {
+		overflow-x: clip;
+	}
+
+	* {
+		scrollbar-width: none;
+	}
+
+	*::-webkit-scrollbar {
+		display: none;
+	}
+}
