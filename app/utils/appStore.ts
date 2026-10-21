@@ -1,9 +1,9 @@
 // App Store identifiers for the iOS app. Each one must be created with the
 // exact same ID in App Store Connect (and the products/entitlement in RevenueCat).
 
-// The website's "Get the app" links. Off until the app is on the App Store (the page
-// doesn't exist before then); the website says "coming soon" instead. Flip on approval.
-export const APP_STORE_LIVE = false
+// The website's "Get the app" links. On since 1.1 was approved (21 Oct 2026); false
+// makes the website say "coming soon" instead.
+export const APP_STORE_LIVE = true
 export const APP_STORE_URL = 'https://apps.apple.com/app/id6819602707'
 
 export const PRO_ENTITLEMENT = 'pro'
