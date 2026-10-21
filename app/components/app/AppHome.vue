@@ -150,7 +150,7 @@
 				class="mode-card"
 			>
 				<Icon
-					name="solar:magnifer-linear"
+					name="solar:clipboard-list-linear"
 					class="bg-icon scout"
 					aria-hidden="true"
 				/>
@@ -858,9 +858,12 @@
 			opacity: 0.1;
 		}
 
+		// Pulled in from the corner so the whole eye shows, not just its middle
 		&.spot {
+			bottom: -0.6rem;
 			color: var(--tertiary-color);
 			opacity: 0.1;
+			right: -0.4rem;
 		}
 
 		&.challenge {

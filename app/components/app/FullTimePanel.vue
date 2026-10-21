@@ -62,7 +62,7 @@
 		if (unfinished(progress.daily.value.status))
 			return { label: 'Play the Daily', to: '/play/daily?start=play', icon: 'solar:calendar-linear' }
 		if (unfinished(progress.scout.value.status))
-			return { label: 'Play Scout Report', to: '/play/scout-report?start=play', icon: 'solar:magnifer-linear' }
+			return { label: 'Play Scout Report', to: '/play/scout-report?start=play', icon: 'solar:clipboard-list-linear' }
 		if (unfinished(progress.spot.value.status))
 			return { label: 'Play Spot the Baller', to: '/play/spot-the-baller?start=play', icon: 'solar:eye-linear' }
 		if (grid.ready && !grid.weekDone) return { label: 'Play The Grid', to: '/play/grid', icon: 'solar:widget-4-linear' }
