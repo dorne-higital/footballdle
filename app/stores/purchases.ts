@@ -10,7 +10,7 @@ const PRO_CACHE_KEY = 'footballdle-pro'
 // lives on the device.
 const HINT_BANK_KEY = 'footballdle-hint-bank'
 // Everyone starts with a few free hints, given once per install (or browser)
-const WELCOME_HINTS = 3
+export const WELCOME_HINTS = 3
 const WELCOME_HINTS_KEY = 'footballdle-welcome-hints'
 // App Store transactions already turned into banked hints, so each pack is credited
 // exactly once, however it arrives (straight away, after Ask to Buy, or on a relaunch
@@ -218,6 +218,13 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		saveHintBank()
 	}
 
+	/** Hidden tester reset (Settings > tap the version 7 times): back to the welcome amount.
+	 *  The iCloud backup watches the bank, so the lower number is backed up too */
+	function resetHintBank() {
+		hintBank.value = WELCOME_HINTS
+		saveHintBank()
+	}
+
 	function grantHints(count: number) {
 		hintBank.value += count
 		saveHintBank()
@@ -417,6 +424,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		rewardNote,
 		hintBank,
 		restoreHintBank,
+		resetHintBank,
 		loadError,
 		loadingProducts,
 

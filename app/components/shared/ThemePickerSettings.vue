@@ -312,14 +312,62 @@
 					</NuxtLink>
 				</div>
 			</div>
+
+			<!-- iPhone app: the version, and a hidden tester reset behind 7 taps on it -->
+			<div
+				v-if="$config.public.isApp && appVersion"
+				class="version-footer"
+			>
+				<button
+					type="button"
+					class="version-label"
+					@click="tapVersion"
+				>
+					Footballdle {{ appVersion }}
+				</button>
+				<div
+					v-if="testerTools"
+					class="tester-tools"
+				>
+					<p>Tester tools. Resets your hint balance to {{ WELCOME_HINT_COUNT }} on this iPhone and in iCloud.</p>
+					<p
+						v-if="resetDone"
+						class="tester-done"
+						role="status"
+					>
+						Hints reset to {{ WELCOME_HINT_COUNT }}.
+					</p>
+					<div
+						v-else
+						class="tester-actions"
+					>
+						<button
+							type="button"
+							class="tester-reset"
+							@click="resetHints"
+						>
+							Reset hints to {{ WELCOME_HINT_COUNT }}
+						</button>
+						<button
+							type="button"
+							class="tester-cancel"
+							@click="testerTools = false"
+						>
+							Cancel
+						</button>
+					</div>
+				</div>
+			</div>
 		</template>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { onMounted, onUnmounted } from 'vue'
+	import { onMounted, onUnmounted, ref } from 'vue'
+	import { App } from '@capacitor/app'
+	import { Capacitor } from '@capacitor/core'
 	import { useThemeStore } from '../../stores/theme'
-	import { usePurchasesStore } from '../../stores/purchases'
+	import { usePurchasesStore, WELCOME_HINTS as WELCOME_HINT_COUNT } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
 	import { useModalsStore } from '../../stores/modals'
 	import CoinStack from './CoinStack.vue'
@@ -352,12 +400,103 @@
 	const gameCenter = useGameCenter()
 	const modalsStore = useModalsStore()
 
+	// Version line (iPhone app), with the hidden tester reset behind 7 quick taps
+	const TESTER_TAPS = 7
+	const appVersion = ref('')
+	const testerTools = ref(false)
+	const resetDone = ref(false)
+	let taps = 0
+	let tapTimer: ReturnType<typeof setTimeout> | undefined
+	onMounted(async () => {
+		if (!Capacitor.isNativePlatform()) return
+		try {
+			const info = await App.getInfo()
+			appVersion.value = `${info.version} (${info.build})`
+		} catch {}
+	})
+	function tapVersion() {
+		clearTimeout(tapTimer)
+		tapTimer = setTimeout(() => (taps = 0), 1500)
+		if (++taps < TESTER_TAPS) return
+		taps = 0
+		resetDone.value = false
+		testerTools.value = true
+	}
+	function resetHints() {
+		purchases.resetHintBank()
+		resetDone.value = true
+	}
+
 	defineEmits(['buy-coffee'])
 </script>
 
 <style scoped lang="scss">
 	.settings-section {
 		width: 100%;
+
+		.version-footer {
+			display: grid;
+			gap: 0.75rem;
+			justify-items: center;
+			padding: 1.5rem 0 0.5rem;
+		}
+
+		.version-label {
+			background: none;
+			border: 0;
+			color: var(--text-secondary);
+			font-family: var(--font-body);
+			font-size: 0.8rem;
+			padding: 0.5rem 1rem;
+			-webkit-user-select: none;
+			user-select: none;
+		}
+
+		.tester-tools {
+			border: 1px dashed var(--border);
+			border-radius: var(--global-border-radius);
+			display: grid;
+			gap: 0.6rem;
+			padding: 0.9rem 1rem;
+			text-align: left;
+			width: 100%;
+
+			p {
+				color: var(--text-secondary);
+				font-size: 0.85rem;
+				margin: 0;
+			}
+
+			.tester-done {
+				color: var(--primary-color);
+				font-weight: 700;
+			}
+		}
+
+		.tester-actions {
+			display: flex;
+			gap: 0.5rem;
+
+			button {
+				border-radius: var(--global-border-radius);
+				font-family: var(--font-body);
+				font-size: 0.85rem;
+				font-weight: 700;
+				padding: 0.55rem 1rem;
+			}
+
+			.tester-reset {
+				background: var(--primary-color);
+				border: 0;
+				color: var(--on-primary);
+			}
+
+			.tester-cancel {
+				background: none;
+				border: 1px solid var(--border);
+				color: var(--text-primary);
+			}
+		}
 
 		.support-group {
 			border-top: 1px solid var(--border);
