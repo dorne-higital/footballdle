@@ -50,6 +50,36 @@ export function useShare() {
 		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}${relaxed ? ' ⏱️' : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
 	}
 
+	/** All of today's games in one message, once the Daily, Scout Report and Spot the
+	 *  Baller are finished: each one's result, plus this week's Grid points if played */
+	function getMatchdayShareText(m: {
+		puzzle: number | null
+		streak: number
+		daily: { guesses: string[]; answer: string; isWin: boolean }
+		scout: { results: ScoutGuessResult[]; isWin: boolean; maxGuesses: number }
+		spot: { results: boolean[]; score: number; rounds: number; relaxed?: boolean }
+		gridPoints?: number
+	}) {
+		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
+		const dailyRows = m.daily.guesses.map(g => tileStates(g, m.daily.answer).map(emoji).join('')).join('\n')
+		const scoutRows = m.scout.results.map(r => [r.club, r.nationality, r.position].map(c => emoji(c.state as TileState)).join('')).join('\n')
+		const lines = [
+			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${streakLine(m.streak)}`,
+			'',
+			`⚽ Daily ${m.daily.isWin ? m.daily.guesses.length : 'X'}/6`,
+			dailyRows,
+			'',
+			`🔎 Scout Report ${m.scout.isWin ? m.scout.results.length : 'X'}/${m.scout.maxGuesses}`,
+			scoutRows,
+			'',
+			`👀 Spot the Baller ${m.spot.score}/${m.spot.rounds}${m.spot.relaxed ? ' ⏱️' : ''}`,
+			m.spot.results.map(r => (r ? hit : miss)).join(''),
+		]
+		if (m.gridPoints) lines.push('', `🧩 Grid Week ${m.gridPoints.toLocaleString('en-GB')} / 4,500`)
+		lines.push('', 'footballdle.co.uk')
+		return lines.join('\n')
+	}
+
 	/** iOS app: the native share sheet (returns false, nothing was copied). Website:
 	 *  copies to the clipboard and returns true for a "Copied!" toast. */
 	async function shareText(text: string): Promise<boolean> {
@@ -74,5 +104,5 @@ export function useShare() {
 		window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
 	}
 
-	return { onShare, onShareTwitter, getShareText, getScoutShareText, getSpotShareText, shareText }
+	return { onShare, onShareTwitter, getShareText, getScoutShareText, getSpotShareText, getMatchdayShareText, shareText }
 }

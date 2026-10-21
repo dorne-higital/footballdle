@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { usePlayStreakStore } from './playStreak'
 import { computed, ref } from 'vue'
 import playersData from '../data/players.json'
 import weeksData from '../data/grid-weeks.json'
@@ -230,6 +231,9 @@ export const useGridStore = defineStore('grid', () => {
 		if (!g || g.done) return
 		g.done = true
 		record(g, active.value === 'practice')
+		// Finishing any grid, weekly or practice, keeps the Matchday streak going (the week
+		// rolling over records unfinished grids too, but that isn't playing today)
+		usePlayStreakStore().markPlayed()
 		selected.value = null
 		persist()
 	}
