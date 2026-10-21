@@ -1,20 +1,50 @@
 <template>
 	<div class="hub-stats-modal">
-		<div class="play-streak-card">
-			<Icon
-				name="solar:fire-bold"
-				size="1.6rem"
-				class="flame"
-			/>
-			<div class="play-streak-text">
-				<h4>Matchday streak</h4>
-				<p>Days in a row you've finished a game, win or lose</p>
+		<!-- Matchday streak: the number and the last 7 days, today dashed until a game is finished -->
+		<section
+			:class="['play-streak-card', { cold: !playStreak.playedToday }]"
+			aria-label="Matchday streak"
+		>
+			<div class="streak-top">
+				<p class="streak-count">
+					<strong>{{ playStreak.activeStreak }}</strong>
+					<span>day Matchday streak</span>
+				</p>
+				<span class="best-chip">Best <b>{{ playStreak.best }}</b></span>
 			</div>
-			<div class="play-streak-numbers">
-				<strong>{{ playStreak.activeStreak }}</strong>
-				<span>Best {{ playStreak.best }}</span>
-			</div>
-		</div>
+			<ol class="streak-days">
+				<li
+					v-for="(day, i) in week"
+					:key="i"
+					:class="['streak-day', day.state]"
+					:aria-label="`${day.isToday ? 'Today' : day.weekday}: ${DAY_SPOKEN[day.state]}`"
+				>
+					<span
+						class="streak-dot"
+						aria-hidden="true"
+					>
+						<svg
+							v-if="day.state === 'played'"
+							viewBox="0 0 12 12"
+						>
+							<path
+								d="M2.5 6.2l2.3 2.3 4.7-5"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+					</span>
+					<span
+						class="streak-label"
+						aria-hidden="true"
+					>{{ day.isToday ? 'Today' : day.weekday.charAt(0) }}</span>
+				</li>
+			</ol>
+			<p :class="['streak-foot', { warn: !playStreak.playedToday && playStreak.activeStreak > 0 }]">{{ streakFoot }}</p>
+		</section>
 
 		<div
 			class="mode-tabs"
@@ -99,6 +129,7 @@
 	import { usePlayStreakStore } from '../../stores/playStreak'
 	import { SPOT_TIER_LABELS } from '../../utils/spotTiers'
 	import { readSavedObject } from '../../utils/storage'
+	import { getUKDateString, streakWeek, type StreakDayState } from '../../utils/dateStreak'
 	import SeasonFormDashboard from './SeasonFormDashboard.vue'
 	import { useGridStore } from '../../stores/grid'
 
@@ -113,6 +144,15 @@
 	const grid = useGridStore()
 	const playStreak = usePlayStreakStore()
 	const route = useRoute()
+
+	// The streak card's week of ticks, and the line under it
+	const week = computed(() => streakWeek(playStreak.activeStreak, playStreak.playedToday, getUKDateString()))
+	const DAY_SPOKEN: Record<StreakDayState, string> = { played: 'played', missed: 'missed', unknown: 'not played', today: 'not played yet' }
+	const streakFoot = computed(() => {
+		if (playStreak.playedToday) return 'Finish any game, win or lose, to add a day.'
+		if (playStreak.activeStreak > 0) return `Play any game today to make it ${playStreak.activeStreak + 1}.`
+		return 'Finish any game today to start a streak.'
+	})
 
 	const basics = (id: Exclude<ModeId, 'grid'>) => [
 		{ label: 'Games', value: stores[id].stats.gamesPlayed },
@@ -256,49 +296,119 @@
 		width: 100%;
 
 		.play-streak-card {
-			align-items: center;
-			background: color-mix(in srgb, var(--tertiary-color) 12%, var(--bg-secondary));
-			border: 1px solid color-mix(in srgb, var(--tertiary-color) 35%, transparent);
-			border-radius: var(--global-border-radius);
-			display: flex;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 1.1rem;
+			display: grid;
 			gap: 0.75rem;
 			padding: 0.9rem 1rem;
 			text-align: left;
+		}
 
-			.flame {
+		.streak-top {
+			align-items: center;
+			display: flex;
+			gap: 0.75rem;
+			justify-content: space-between;
+		}
+
+		.streak-count {
+			align-items: baseline;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0 0.5rem;
+			margin: 0;
+
+			strong {
 				color: var(--tertiary-color);
-				flex-shrink: 0;
+				font-family: var(--font-display);
+				font-size: 2.1rem;
+				line-height: 1;
 			}
 
-			.play-streak-text {
-				flex: 1;
-
-				h4 {
-					margin: 0;
-				}
-
-				p {
-					color: var(--text-secondary);
-					font-size: 0.78rem;
-					margin: 0.15rem 0 0;
-				}
+			span {
+				color: var(--text-primary);
+				font-size: 0.9rem;
+				font-weight: 700;
 			}
+		}
 
-			.play-streak-numbers {
-				align-items: flex-end;
-				display: flex;
-				flex-direction: column;
+		.cold .streak-count strong {
+			color: var(--text-secondary);
+		}
 
-				strong {
-					font-family: var(--font-display);
-					font-size: 1.6rem;
-					line-height: 1;
-				}
+		.best-chip {
+			background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+			border: 1px solid var(--border);
+			border-radius: 999px;
+			color: var(--text-secondary);
+			flex-shrink: 0;
+			font-size: 0.78rem;
+			font-weight: 700;
+			padding: 0.3rem 0.7rem;
 
-				span {
-					color: var(--text-secondary);
-					font-size: 0.72rem;
-				}
+			b {
+				color: var(--text-primary);
+			}
+		}
+
+		.streak-days {
+			display: grid;
+			gap: 0.4rem;
+			grid-template-columns: repeat(7, 1fr);
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.streak-day {
+			color: var(--text-secondary);
+			display: grid;
+			font-size: 0.7rem;
+			font-weight: 700;
+			gap: 0.3rem;
+			justify-items: center;
+		}
+
+		.streak-dot {
+			aspect-ratio: 1;
+			background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+			border: 1px solid var(--border);
+			border-radius: 0.6rem;
+			display: grid;
+			max-width: 2.2rem;
+			place-items: center;
+			width: 100%;
+
+			svg {
+				height: 0.9rem;
+				width: 0.9rem;
+			}
+		}
+
+		.played .streak-dot {
+			background: var(--tertiary-color);
+			border-color: var(--tertiary-color);
+			color: #2a1a02;
+		}
+
+		.missed .streak-dot {
+			background: transparent;
+		}
+
+		.today .streak-dot {
+			background: transparent;
+			border: 2px dashed var(--tertiary-color);
+		}
+
+		.streak-foot {
+			color: var(--text-secondary);
+			font-size: 0.8rem;
+			margin: 0;
+
+			&.warn {
+				color: var(--tertiary-color);
+				font-weight: 700;
 			}
 		}
 	}

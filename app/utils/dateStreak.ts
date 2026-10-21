@@ -34,3 +34,32 @@ export function nextUKMidnight(now = new Date()): Date {
 	next.setHours(24, 0, 0, 0)
 	return new Date(now.getTime() + (next.getTime() - uk.getTime()))
 }
+
+export type StreakDayState = 'played' | 'missed' | 'unknown' | 'today'
+export interface StreakDay {
+	/** Day of the week, e.g. "Mon" */
+	weekday: string
+	isToday: boolean
+	state: StreakDayState
+}
+
+/** The last 7 days for the Matchday streak card, oldest first, from what the streak
+ *  store keeps (the streak and whether today is played). Days in the current run are
+ *  played, the day before it was missed, anything older isn't known; today is 'today'
+ *  until a game is finished. */
+export function streakWeek(streak: number, playedToday: boolean, todayStr: string): StreakDay[] {
+	const [d, m, y] = todayStr.split('/').map(Number)
+	// The run covers days back from today (or from yesterday if today isn't played yet)
+	const runFrom = playedToday ? 0 : 1
+	const runTo = streak > 0 ? runFrom + streak - 1 : -1
+	const days: StreakDay[] = []
+	for (let back = 6; back >= 0; back--) {
+		const date = new Date(Date.UTC(y!, m! - 1, d! - back))
+		let state: StreakDayState = 'unknown'
+		if (back === 0 && !playedToday) state = 'today'
+		else if (back >= runFrom && back <= runTo) state = 'played'
+		else if (streak > 0 && back === runTo + 1) state = 'missed'
+		days.push({ weekday: date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' }), isToday: back === 0, state })
+	}
+	return days
+}
