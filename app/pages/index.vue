@@ -109,9 +109,14 @@
 </script>
 
 <style scoped lang="scss">
+	// The Matchday scrolls in its own box (play layout). Up and down only: on iPhone the
+	// mode cards' oversized background icons otherwise let the box drift sideways
 	.hub-page {
 		height: 100%;
+		overflow-x: hidden;
 		overflow-y: auto;
+		overscroll-behavior-x: none;
+		touch-action: pan-y;
 		width: 100%;
 	}
 </style>

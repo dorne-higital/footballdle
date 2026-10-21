@@ -707,6 +707,9 @@
 	.daily-hero,
 	.mode-card,
 	.challenge-row {
+		// paint containment: WebKit can count the rotated .bg-icon past the card edge as
+		// scrollable width even with overflow: hidden
+		contain: paint;
 		isolation: isolate;
 		overflow: hidden;
 		position: relative;
