@@ -88,9 +88,13 @@
 				0 0 24px color-mix(in srgb, var(--tertiary-color) 35%, transparent);
 		}
 
+		// Not collected yet: a patterned card back in the club's colour (never named)
 		&.hidden {
-			background: var(--bg-secondary);
-			border-style: dashed;
+			background: repeating-linear-gradient(
+				135deg,
+				color-mix(in srgb, var(--club-bg) 22%, var(--bg-secondary)) 0 7px,
+				color-mix(in srgb, var(--club-bg) 12%, var(--bg-secondary)) 7px 14px
+			);
 			box-shadow: none;
 		}
 	}
