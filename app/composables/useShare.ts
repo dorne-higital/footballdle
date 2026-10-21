@@ -23,25 +23,31 @@ export function tileStates(guess: string, answer: string): TileState[] {
 }
 
 const EMOJI: Record<TileState, string> = { correct: '🟩', present: '🟨', absent: '⬛' }
+// Settings > Accessibility > High-contrast tiles: shares match the orange and blue board
+const HIGH_CONTRAST_EMOJI: Record<TileState, string> = { correct: '🟧', present: '🟦', absent: '⬛' }
+const highContrast = () => import.meta.client && document.documentElement.dataset.contrast === 'high'
+const emoji = (state: TileState) => (highContrast() ? HIGH_CONTRAST_EMOJI : EMOJI)[state] ?? '⬛'
 const streakLine = (streak?: number) => (streak && streak > 1 ? ` 🔥 ${streak} day streak` : '')
 
 export function useShare() {
 	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): string {
-		const grid = guesses.map(guess => tileStates(guess, answer).map(s => EMOJI[s]).join('')).join('\n')
+		const grid = guesses.map(guess => tileStates(guess, answer).map(emoji).join('')).join('\n')
 		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
 	}
 
 	/** One row per guess: club, nation, position */
 	function getScoutShareText(results: ScoutGuessResult[], isWin: boolean, maxGuesses: number, puzzle: number | null, streak?: number) {
 		const grid = results
-			.map(r => [r.club, r.nationality, r.position].map(c => EMOJI[c.state as TileState] ?? '⬛').join(''))
+			.map(r => [r.club, r.nationality, r.position].map(c => emoji(c.state as TileState)).join(''))
 			.join('\n')
 		return `Footballdle Scout Report 🔎${puzzle ? ` #${puzzle}` : ''}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
 	}
 
-	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number | null, streak?: number) {
-		const dots = results.map(r => (r.correct ? '🟢' : '🔴')).join('')
-		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
+	/** relaxed: played with Settings > Accessibility > Relaxed timer, marked with ⏱️ */
+	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number | null, streak?: number, relaxed = false) {
+		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
+		const dots = results.map(r => (r.correct ? hit : miss)).join('')
+		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}${relaxed ? ' ⏱️' : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
 	}
 
 	/** iOS app: the native share sheet (returns false, nothing was copied). Website:

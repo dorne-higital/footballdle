@@ -12,6 +12,7 @@ import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
 import { GRID_WEEK_LEADERBOARD, LEADERBOARD_IDS } from '../utils/appStore'
 import { useGridStore } from '../stores/grid'
+import { useAccessibilityStore } from '../stores/accessibility'
 import { ACHIEVEMENTS, achievementProgress, buildAchievementContext } from '../utils/achievements'
 
 // Progress already sent to Game Center, so only changes are reported
@@ -45,6 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 	const daily = useModeStatsStore('daily')
 	const scout = useModeStatsStore('scout')
 	const spotball = useModeStatsStore('spotball')
+	const accessibility = useAccessibilityStore()
 	const challenge = useModeStatsStore('challenge')
 	for (const store of [daily, scout, spotball, challenge]) store.loadStats()
 
@@ -104,7 +106,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 	const scores: [string, () => number][] = [
 		[LEADERBOARD_IDS.dailyStreak, () => daily.stats.maxStreak],
 		[LEADERBOARD_IDS.scoutStreak, () => scout.stats.maxStreak],
-		[LEADERBOARD_IDS.spotballStreak, () => spotball.stats.maxStreak],
+		// Not while Settings > Accessibility > Relaxed timer is on: those rounds are twice as long
+		[LEADERBOARD_IDS.spotballStreak, () => (accessibility.relaxedTimer ? 0 : spotball.stats.maxStreak)],
 		[LEADERBOARD_IDS.totalWins, () => totalWins.value],
 		...(GRID_WEEK_LEADERBOARD ? [[GRID_WEEK_LEADERBOARD, () => grid.weekPoints] as [string, () => number]] : []),
 	]

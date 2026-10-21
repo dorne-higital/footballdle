@@ -2,10 +2,13 @@
 	<section
 		:class="componentName"
 		:style="{ '--cols': wordLength }"
+		aria-label="Guesses"
 	>
 		<div
 			class="toast"
 			:class="{ visible: errorMessage }"
+			role="status"
+			aria-live="polite"
 		>
 			{{ errorMessage }}
 		</div>
@@ -18,6 +21,8 @@
 				{ 'active-row': !gameOver && i - 1 === guesses.length },
 				{ shake: shaking && i - 1 === guesses.length },
 			]"
+			role="group"
+			:aria-label="rowLabel(i - 1)"
 		>
 			<span
 				v-for="j in wordLength"
@@ -29,6 +34,7 @@
 					tileState(i - 1, j - 1),
 				]"
 				:style="getAnimationDelay(i - 1, j - 1)"
+				aria-hidden="true"
 			>
 				{{ getRowGuess(i - 1)[j - 1] || '' }}
 			</span>
@@ -110,6 +116,19 @@
 		}
 
 		return result
+	}
+
+	// VoiceOver reads a whole row at once instead of tile by tile
+	const SPOKEN: Record<string, string> = { correct: 'right', present: 'in the name', absent: 'not in the name' }
+	function rowLabel(guessIdx: number) {
+		const n = `Guess ${guessIdx + 1}`
+		if (guessIdx < props.guesses.length) {
+			const guess = props.guesses[guessIdx] || ''
+			const parts = guess.split('').map((char, j) => `${char}, ${SPOKEN[feedbackClass(guessIdx, j)] ?? ''}`)
+			return `${n}: ${parts.join('. ')}`
+		}
+		const typed = guessIdx === props.guesses.length && !props.gameOver ? (props.currentGuess || '').trim() : ''
+		return typed ? `${n}, typing: ${typed.split('').join(' ')}` : `${n}, empty`
 	}
 
 	function tileState(guessIdx: number, charIdx: number) {
@@ -221,6 +240,23 @@
 				&.absent {
 					animation: absent-reveal 0.6s ease-in-out forwards;
 				}
+			}
+		}
+	}
+
+	// Reduced motion: no flip or shake; tiles still end on their colours
+	@media (prefers-reduced-motion: reduce) {
+		.game-board .guess-row {
+			&.shake {
+				animation: none;
+			}
+
+			.letter.animate,
+			.letter.correct,
+			.letter.present,
+			.letter.absent {
+				animation-delay: 0s !important;
+				animation-duration: 0.01s;
 			}
 		}
 	}

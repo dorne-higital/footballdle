@@ -385,6 +385,8 @@
 	.home-header {
 		align-items: flex-end;
 		display: flex;
+		// Large text (Settings > Accessibility): the pills drop under the title
+		flex-wrap: wrap;
 		gap: 0.5rem;
 		justify-content: space-between;
 

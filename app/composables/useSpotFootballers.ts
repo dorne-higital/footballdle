@@ -100,3 +100,5 @@ export function getSpotRoundsForDay(dateStr: string): SpotRound[] {
 
 export const SPOT_ROUNDS_PER_MATCH = ROUNDS_PER_MATCH
 export const SPOT_ROUND_TIME = 8
+// Settings > Accessibility > Relaxed timer
+export const SPOT_RELAXED_ROUND_TIME = 16

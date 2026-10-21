@@ -157,6 +157,79 @@
 				</p>
 			</div>
 
+			<div class="setting-group support-group accessibility-group">
+				<label>Accessibility</label>
+				<div class="reminder-head">
+					<div>
+						<span class="option-name">High-contrast tiles</span>
+						<p>Orange for right and blue for close, with a dot on right letters. Works with every theme.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.highContrast"
+						aria-label="High-contrast tiles"
+						:class="['switch', { on: accessibility.highContrast }]"
+						@click="accessibility.update({ highContrast: !accessibility.highContrast })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div class="reminder-head">
+					<div>
+						<span class="option-name">Relaxed timer</span>
+						<p>16 seconds a round in Spot the Baller. Scores stay off its Game Center leaderboard.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.relaxedTimer"
+						aria-label="Relaxed timer"
+						:class="['switch', { on: accessibility.relaxedTimer }]"
+						@click="accessibility.update({ relaxedTimer: !accessibility.relaxedTimer })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div
+					v-if="$config.public.isApp"
+					class="reminder-head"
+				>
+					<div>
+						<span class="option-name">Haptics</span>
+						<p>Little taps when you type, win or lose.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.haptics"
+						aria-label="Haptics"
+						:class="['switch', { on: accessibility.haptics }]"
+						@click="accessibility.update({ haptics: !accessibility.haptics })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<span class="option-name">Text size</span>
+				<div
+					class="reminder-times"
+					role="radiogroup"
+					aria-label="Text size"
+				>
+					<button
+						v-for="size in TEXT_SIZES"
+						:key="size.id"
+						type="button"
+						role="radio"
+						:aria-checked="accessibility.textSize === size.id"
+						:class="['time-chip', { active: accessibility.textSize === size.id }]"
+						@click="accessibility.update({ textSize: size.id })"
+					>
+						{{ size.label }}
+					</button>
+				</div>
+			</div>
+
 			<div class="setting-group support-group">
 				<ThemeLibrary />
 			</div>
@@ -373,12 +446,14 @@
 	import CoinStack from './CoinStack.vue'
 	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
 	import ThemeLibrary from './ThemeLibrary.vue'
+	import { TEXT_SIZES, useAccessibilityStore } from '../../stores/accessibility'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
 
 	const reminders = useRemindersStore()
+	const accessibility = useAccessibilityStore()
 	// Purchase messages belong to this visit to Settings, not the next one
 	onUnmounted(() => (usePurchasesStore().message = ''))
 	// Products may not have loaded at launch (offline, or the store was slow)
@@ -433,6 +508,26 @@
 <style scoped lang="scss">
 	.settings-section {
 		width: 100%;
+
+		.accessibility-group {
+			display: grid;
+			gap: 0.85rem;
+
+			.option-name {
+				color: var(--text-primary);
+				display: block;
+				font-size: 0.95rem;
+				font-weight: 700;
+			}
+
+			.reminder-head p {
+				margin: 0.15rem 0 0;
+			}
+
+			.reminder-times {
+				margin-top: -0.4rem;
+			}
+		}
 
 		.version-footer {
 			display: grid;

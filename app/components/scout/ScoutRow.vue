@@ -3,6 +3,8 @@
 	<div
 		v-if="$config.public.appShell"
 		:class="['scout-card', { solved }]"
+		role="group"
+		:aria-label="`Guess ${index + 1}: ${result.name}${solved ? ', solved' : ''}`"
 	>
 		<div class="card-head">
 			<span class="guess-number">{{ index + 1 }}</span>
@@ -19,6 +21,7 @@
 				v-for="attr in attrs"
 				:key="attr.label"
 				:class="['attr', attr.state]"
+				:aria-label="`${attr.label}: ${attr.value}, ${SPOKEN[attr.state]}`"
 			>
 				<span class="attr-label">{{ attr.label }}</span>
 				<span class="attr-value">{{ attr.value }}</span>
@@ -31,15 +34,30 @@
 		class="scout-row"
 	>
 		<div class="cell name-cell">{{ result.name }}</div>
-		<div :class="['cell', 'chip', result.club.state]">{{ result.club.value }}</div>
-		<div :class="['cell', 'chip', result.nationality.state]">{{ result.nationality.value }}</div>
-		<div :class="['cell', 'chip', result.position.state]">{{ result.position.value }}</div>
+		<div
+			:class="['cell', 'chip', result.club.state]"
+			:aria-label="`Club: ${result.club.value}, ${SPOKEN[result.club.state]}`"
+		>
+			{{ result.club.value }}
+		</div>
+		<div
+			:class="['cell', 'chip', result.nationality.state]"
+			:aria-label="`Nation: ${result.nationality.value}, ${SPOKEN[result.nationality.state]}`"
+		>
+			{{ result.nationality.value }}
+		</div>
+		<div
+			:class="['cell', 'chip', result.position.state]"
+			:aria-label="`Position: ${result.position.value}, ${SPOKEN[result.position.state]}`"
+		>
+			{{ result.position.value }}
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { computed } from 'vue'
-	import type { ScoutGuessResult } from '../../stores/scoutReport'
+	import type { AttributeState, ScoutGuessResult } from '../../stores/scoutReport'
 
 	const props = withDefaults(
 		defineProps<{
@@ -56,6 +74,9 @@
 	])
 
 	const solved = computed(() => attrs.value.every(a => a.state === 'correct'))
+
+	// VoiceOver: "Nation: France, close"
+	const SPOKEN: Record<AttributeState, string> = { correct: 'right', present: 'close', absent: 'wrong' }
 </script>
 
 <style scoped lang="scss">

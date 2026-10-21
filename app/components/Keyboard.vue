@@ -7,6 +7,7 @@
 				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
+				:aria-label="keyLabel(key)"
 			>
 				{{ key }}
 			</button>
@@ -18,6 +19,7 @@
 				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
+				:aria-label="keyLabel(key)"
 			>
 				{{ key }}
 			</button>
@@ -28,6 +30,7 @@
 				:disabled="disabled"
 				data-key="ENTER"
 				class="enter"
+				aria-label="Enter"
 			>
 				ENTER
 			</button>
@@ -37,6 +40,7 @@
 				@click="press(key)"
 				:disabled="disabled"
 				:class="getKeyFeedback(key)"
+				:aria-label="keyLabel(key)"
 			>
 				{{ key }}
 			</button>
@@ -44,6 +48,7 @@
 				@click="press('BACKSPACE')"
 				:disabled="disabled"
 				data-key="BACKSPACE"
+				aria-label="Delete"
 			>
 				⌫
 			</button>
@@ -54,6 +59,7 @@
 		>
 			<button
 				data-key="SPACE"
+				aria-label="Space"
 				:disabled="disabled"
 				@click="press(' ')"
 			>
@@ -90,6 +96,13 @@
 	const row3 = ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
 
 	const disabledRef = toRef(props, 'disabled')
+
+	// VoiceOver: the letter plus what's known about it, e.g. "R, in the name"
+	const SPOKEN: Record<string, string> = { correct: 'right', present: 'in the name', absent: 'not in the name' }
+	function keyLabel(key: string) {
+		const state = SPOKEN[getKeyFeedback(key)]
+		return state ? `${key}, ${state}` : key
+	}
 
 	function getKeyFeedback(key: string): string {
 		if (!props.answer || props.guesses.length === 0) return ''

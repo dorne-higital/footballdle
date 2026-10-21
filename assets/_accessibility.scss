@@ -1,0 +1,32 @@
+// Settings > Accessibility (stores/accessibility.ts sets these attributes on <html>)
+
+// High-contrast tiles: orange for right, blue for close, whatever the theme. !important
+// because library themes set these as inline styles on <html> (stores/appearance.ts)
+html[data-contrast='high'] {
+	--color-success: #f5793a !important;
+	--color-present: #85c0f9 !important;
+	--on-success: #1f0d02 !important;
+	--on-present: #04203a !important;
+
+	// A dot on right letters, so they don't rely on colour at all
+	.game-board .letter.correct,
+	.scout-card .attr.correct {
+		position: relative;
+
+		&::after {
+			background: currentColor;
+			border-radius: 50%;
+			content: '';
+			height: 0.3rem;
+			position: absolute;
+			right: 0.3rem;
+			top: 0.3rem;
+			width: 0.3rem;
+		}
+	}
+}
+
+// Text size: everything sized in rem grows with it
+html[data-text-size='large'] {
+	font-size: 112.5%;
+}
