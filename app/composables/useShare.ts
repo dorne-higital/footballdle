@@ -40,10 +40,12 @@ export function useShare() {
 	}
 
 	/** One row per guess: club, nation, position */
+	// Club, nation, position, then price when the player has one (1.3)
+	const scoutRow = (r: ScoutGuessResult) =>
+		[r.club, r.nationality, r.position, ...(r.price ? [r.price] : [])].map(c => emoji(c.state as TileState)).join('')
+
 	function getScoutShareText(results: ScoutGuessResult[], isWin: boolean, maxGuesses: number, puzzle: number | null, streak?: number) {
-		const grid = results
-			.map(r => [r.club, r.nationality, r.position].map(c => emoji(c.state as TileState)).join(''))
-			.join('\n')
+		const grid = results.map(scoutRow).join('\n')
 		return `Footballdle Scout Report 🔎${puzzle ? ` #${puzzle}` : ''}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\n${SHARE_LINK}`
 	}
 
@@ -66,7 +68,7 @@ export function useShare() {
 	}) {
 		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
 		const dailyRows = m.daily.guesses.map(g => tileStates(g, m.daily.answer).map(emoji).join('')).join('\n')
-		const scoutRows = m.scout.results.map(r => [r.club, r.nationality, r.position].map(c => emoji(c.state as TileState)).join('')).join('\n')
+		const scoutRows = m.scout.results.map(scoutRow).join('\n')
 		const lines = [
 			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${streakLine(m.streak)}`,
 			'',

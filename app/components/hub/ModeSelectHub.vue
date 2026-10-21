@@ -41,7 +41,7 @@
 					<ModeStreakBadge :streak="scoutStreak" />
 				</div>
 				<h3>Scout Report</h3>
-				<p class="caption">Guess any Premier League player. Get attribute clues on club, nationality and position.</p>
+				<p class="caption">Guess any Premier League player from a scout's brief, then club, nation, position and price clues.</p>
 				<span class="mode-cta">
 					Play now
 					<Icon

@@ -105,9 +105,12 @@
 			<template v-if="$config.public.isApp">
 				<h2>Scout Report</h2>
 				<p>
-					Guess any Premier League player in six tries. Each guess shows how it compares with the mystery
-					player's club, nationality and position: green is a match, amber is close (for example, a nationality from the
-					same continent), grey is a miss.
+					Guess any Premier League player in six tries. Each day starts with a scout's brief: two facts about
+					the target, like "We're after an African midfielder". Each guess then compares with the target's club,
+					nation, position and fantasy price: green is a match, amber is close (a club in the same part of the
+					country, a nation from the same continent, the next line on the pitch, or within £1m), grey is a miss.
+					The arrow on the price shows whether the target costs more or less. The dossier at the top keeps
+					track of everything you've learned.
 				</p>
 
 				<h2>Spot the Baller</h2>
