@@ -66,7 +66,7 @@ export const useAnalytics = () => {
 		}
 	}
 
-	const trackIntroButtonClick = (action: 'play_now' | 'resume_game' | 'challenge_play') => {
+	const trackIntroButtonClick = (action: 'play_now' | 'resume_game') => {
 		if (import.meta.client) {
 			event('intro_button_click', {
 				event_category: 'engagement',
@@ -75,62 +75,11 @@ export const useAnalytics = () => {
 		}
 	}
 
-	const trackStatsTabSwitch = (tab: 'daily' | 'challenge') => {
+	const trackStatsTabSwitch = (tab: 'daily') => {
 		if (import.meta.client) {
 			event('stats_tab_switch', {
 				event_category: 'ui',
 				event_label: tab,
-			})
-		}
-	}
-
-	const trackChallengeStart = () => {
-		if (import.meta.client) {
-			event('challenge_start', {
-				event_category: 'challenge',
-				event_label: 'challenge_mode',
-			})
-		}
-	}
-
-	const trackChallengeWin = (timeUsed: number) => {
-		if (import.meta.client) {
-			event('challenge_win', {
-				event_category: 'challenge',
-				event_label: 'challenge_mode',
-				time_used: timeUsed,
-				value: timeUsed,
-			})
-		}
-	}
-
-	const trackChallengeLoss = (timeUsed: number) => {
-		if (import.meta.client) {
-			event('challenge_loss', {
-				event_category: 'challenge',
-				event_label: 'challenge_mode',
-				time_used: timeUsed,
-				value: timeUsed,
-			})
-		}
-	}
-
-	const trackChallengeAbandon = (timeUsed: number) => {
-		if (import.meta.client) {
-			event('challenge_abandon', {
-				event_category: 'challenge',
-				event_label: 'challenge_mode',
-				time_used: timeUsed,
-				value: timeUsed,
-			})
-		}
-	}
-
-	const trackChallengePlayAgain = () => {
-		if (import.meta.client) {
-			event('challenge_play_again', {
-				event_category: 'challenge',
-				event_label: 'challenge_mode',
 			})
 		}
 	}
@@ -240,11 +189,6 @@ export const useAnalytics = () => {
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackStatsTabSwitch,
-		trackChallengeStart,
-		trackChallengeWin,
-		trackChallengeLoss,
-		trackChallengeAbandon,
-		trackChallengePlayAgain,
 		trackThemeChange,
 		trackThemeLight,
 		trackThemeDark,

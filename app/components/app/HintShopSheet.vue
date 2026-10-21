@@ -178,7 +178,6 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameStore } from '../../stores/game'
 	import { useScoutReportStore } from '../../stores/scoutReport'
-	import { useChallengeStore } from '../../stores/challenge'
 	import { useGridStore } from '../../stores/grid'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
@@ -191,7 +190,6 @@
 	const open = useState('hint-shop-open', () => false)
 	const purchases = usePurchasesStore()
 	const gameStore = useGameStore()
-	const challengeStore = useChallengeStore()
 	const progress = useTodayProgress()
 	const route = useRoute()
 
@@ -202,7 +200,6 @@
 			route.path.startsWith('/play/daily') &&
 			!gameStore.showIntro &&
 			!gameStore.gameOver &&
-			!challengeStore.isActive &&
 			gameStore.canPurchaseHint,
 	)
 	const onScoutGame = computed(

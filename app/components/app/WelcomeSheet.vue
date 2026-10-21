@@ -106,9 +106,11 @@
 	onMounted(() => {
 		try {
 			if (localStorage.getItem(SEEN_KEY)) return
-			const hasPlayed = ['daily', 'scout', 'spotball', 'challenge'].some(
-				mode => Number(readSavedObject(`footballdle-stats-${mode}`)?.gamesPlayed) > 0,
-			)
+			// 'challenge' stays: Challenge was replaced by The Grid, but its players aren't new
+			const hasPlayed =
+				['daily', 'scout', 'spotball', 'challenge'].some(
+					mode => Number(readSavedObject(`footballdle-stats-${mode}`)?.gamesPlayed) > 0,
+				) || Number(readSavedObject('footballdle-grid-stats')?.gamesPlayed) > 0
 			if (hasPlayed) {
 				localStorage.setItem(SEEN_KEY, '1')
 				return

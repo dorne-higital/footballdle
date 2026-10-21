@@ -52,7 +52,6 @@
 	import { computed } from 'vue'
 	import HintPill from './HintPill.vue'
 	import { useModalsStore } from '../../stores/modals'
-	import { useChallengeStore } from '../../stores/challenge'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { tabFor } from '../../utils/appTabs'
 
@@ -77,19 +76,15 @@
 
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
-		if (inChallenge.value) return 'Challenge'
 		if (path.startsWith('/cards/replay')) return 'Replay'
 		if (path.startsWith('/cards/')) return 'Cards'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
 
-	const challengeStore = useChallengeStore()
-	// Challenge runs on the Daily route but has no hints, so it gets its own title
-	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
 	// Games that use the shared hint bank
 	const takesHints = computed(
 		() =>
-			(route.path.startsWith('/play/daily') && !challengeStore.isActive) ||
+			route.path.startsWith('/play/daily') ||
 			route.path.startsWith('/play/scout-report') ||
 			route.path.startsWith('/play/grid'),
 	)
