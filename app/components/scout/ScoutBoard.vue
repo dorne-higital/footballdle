@@ -1,5 +1,20 @@
 <template>
 	<div class="scout-board">
+		<ScoutDossier
+			v-if="$config.public.appShell"
+			:brief="brief"
+			:dossier="dossier"
+			:guess-count="results.length"
+			:max-guesses="maxGuesses"
+			:game-over="gameOver"
+			:explain-price="explainPrice && results.some(r => r.price)"
+		/>
+		<p
+			v-else-if="brief"
+			class="web-brief"
+		>
+			<b>Scout's brief:</b> “{{ brief.text }}”
+		</p>
 		<div
 			v-if="results.length && !$config.public.appShell"
 			class="board-header"
@@ -8,6 +23,7 @@
 			<span>Club</span>
 			<span>Nation</span>
 			<span>Position</span>
+			<span>Price</span>
 		</div>
 
 		<div
@@ -29,7 +45,7 @@
 					aria-hidden="true"
 				>
 					<span class="guess-number">{{ results.length + n }}</span>
-					{{ n === 1 ? 'Search for a player below' : `Guess ${results.length + n}` }}
+					{{ n === 1 ? (results.length ? 'Search for your next signing' : 'Make your first signing') : `Guess ${results.length + n}` }}
 				</div>
 			</template>
 		</div>
@@ -60,7 +76,7 @@
 					:class="{ used: n <= results.length }"
 				></span>
 			</div>
-			<p class="legend"><i class="amber"></i> Same continent</p>
+			<p class="legend"><i class="amber"></i> Close: same region, continent or line, within £1m</p>
 		</div>
 		<p
 			v-else
@@ -75,10 +91,15 @@
 	import { nextTick, ref, watch } from 'vue'
 	import ScoutRow from './ScoutRow.vue'
 	import ScoutAutocomplete from './ScoutAutocomplete.vue'
-	import type { ScoutGuessResult } from '../../stores/scoutReport'
+	import ScoutDossier from './ScoutDossier.vue'
+	import type { ScoutDossier as Dossier, ScoutGuessResult } from '../../stores/scoutReport'
+	import type { ScoutBrief } from '../../utils/scoutClues'
 
 	const props = defineProps<{
 		results: ScoutGuessResult[]
+		brief: ScoutBrief | null
+		dossier: Dossier
+		explainPrice?: boolean
 		maxGuesses: number
 		gameOver: boolean
 		errorMessage?: string
@@ -107,7 +128,7 @@
 		.board-header {
 			display: grid;
 			gap: 0.4rem;
-			grid-template-columns: 1.1fr 1fr 1fr 1fr;
+			grid-template-columns: 1.1fr 1fr 1fr 1fr 0.8fr;
 			margin-bottom: 0.5rem;
 
 			span {
@@ -203,6 +224,20 @@
 				display: inline-block;
 				height: 0.6rem;
 				width: 0.6rem;
+			}
+		}
+
+		.web-brief {
+			background: color-mix(in srgb, var(--color-present) 12%, var(--bg-secondary));
+			border: 1px solid color-mix(in srgb, var(--color-present) 40%, var(--border));
+			border-radius: var(--global-border-radius);
+			font-size: 0.9rem;
+			margin: 0 0 0.75rem;
+			padding: 0.55rem 0.8rem;
+			text-align: center;
+
+			b {
+				color: var(--color-present);
 			}
 		}
 

@@ -30,6 +30,9 @@
 			<PlaySurfaceFrame>
 				<ScoutBoard
 					:results="scoutStore.guessResults"
+					:brief="scoutStore.brief"
+					:dossier="scoutStore.dossier"
+					:explain-price="explainPrice"
 					:max-guesses="scoutStore.maxGuesses"
 					:game-over="scoutStore.gameOver"
 					:error-message="scoutStore.errorMessage"
@@ -183,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
+	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
@@ -213,7 +216,7 @@
 			{
 				name: 'description',
 				content:
-					'Scout Report: guess any Premier League player. Every guess reveals club, nationality and position clues — narrow it down and build your streak.',
+					"Scout Report: guess any Premier League player. Start with a scout's brief, then every guess reveals club, nation, position and price clues — narrow it down and build your streak.",
 			},
 			{ name: 'robots', content: 'index, follow' },
 			{ property: 'og:type', content: 'website' },
@@ -260,12 +263,30 @@
 	// ============================================================================
 	const scoutUspTiles = [
 		{ icon: 'solar:magnifer-linear', text: 'Guess any Premier League player' },
-		{ icon: 'solar:shield-linear', text: 'Club, nationality & position clues' },
-		{ icon: 'solar:map-point-linear', text: 'Close guesses show partial matches' },
+		{ icon: 'solar:document-text-linear', text: "A scout's brief to start you off" },
+		{ icon: 'solar:shield-linear', text: 'Club, nation, position & price clues' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
 
 	const sessionStartTime = ref(Date.now())
+
+	// The dossier explains Fantasy price until the first Scout Report is finished
+	const PRICE_EXPLAINED_KEY = 'footballdle-scout-price-explained'
+	const explainPrice = ref(false)
+	onMounted(() => {
+		try {
+			explainPrice.value = !localStorage.getItem(PRICE_EXPLAINED_KEY)
+		} catch {}
+	})
+	watch(
+		() => scoutStore.gameOver,
+		over => {
+			if (!over || !explainPrice.value) return
+			try {
+				localStorage.setItem(PRICE_EXPLAINED_KEY, '1')
+			} catch {}
+		},
+	)
 
 	// ============================================================================
 	// COMPUTED

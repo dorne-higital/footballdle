@@ -1,5 +1,5 @@
 <template>
-	<header class="app-top-bar">
+	<header :class="['app-top-bar', { game: !isTab }]">
 		<span
 			v-if="isTab"
 			aria-hidden="true"
@@ -109,6 +109,28 @@
 		padding: 0.5rem 1rem 0.25rem;
 		position: relative;
 		z-index: 2;
+
+		// Game pages: back, title, then up to three buttons. The title takes what's left
+		// and truncates, so the buttons never spill off a 390pt screen
+		&.game {
+			grid-template-columns: auto minmax(0, 1fr) auto;
+			padding-inline: 0.75rem;
+
+			.bar-title {
+				font-size: clamp(1rem, 4.3vw, 1.15rem);
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.bar-actions {
+				gap: 0.4rem;
+			}
+
+			.bar-btn {
+				height: 2.6rem;
+				width: 2.6rem;
+			}
+		}
 	}
 
 	.bar-title {

@@ -12,6 +12,19 @@ import {
 	normaliseKey,
 } from '../composables/useAllFootballers'
 import { getConfederation, type Confederation } from '../composables/useConfederations'
+import {
+	CONTINENTS as CONTINENT_NAMES,
+	PRICE_CLOSE,
+	PRICE_RANGE,
+	comparePrice,
+	formatPrice,
+	positionsAreNear,
+	priceOf,
+	regionOf,
+	scoutBrief,
+	type Region,
+} from '../utils/scoutClues'
+import type { PositionGroup } from '../composables/useFootballers'
 import { getUKDateString, nextUKMidnight } from '../utils/dateStreak'
 
 export type AttributeState = 'correct' | 'present' | 'absent'
@@ -59,6 +72,8 @@ function clueOrder(puzzle: number): ScoutClue[] {
 export interface AttributeChip {
 	value: string
 	state: AttributeState
+	/** Price only: whether the target costs more or less */
+	arrow?: 'up' | 'down' | null
 }
 
 export interface ScoutGuessResult {
@@ -66,6 +81,17 @@ export interface ScoutGuessResult {
 	club: AttributeChip
 	nationality: AttributeChip
 	position: AttributeChip
+	/** Fantasy price; missing when either player's price isn't known */
+	price?: AttributeChip
+}
+
+/** What the guesses (and the brief) have taught so far, for the target dossier */
+export interface ScoutDossier {
+	club: { found?: string; region?: Region; ruledOut: string[] }
+	nation: { found?: string; continent?: string; ruledOut: string[] }
+	position: { found?: PositionGroup; ruledOut: PositionGroup[] }
+	/** In tenths of a million; null when the target's price isn't known */
+	price: { found?: number; min: number; max: number } | null
 }
 
 export const useScoutReportStore = defineStore('scoutReport', () => {
@@ -149,11 +175,18 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 			const guessPosition = getPositionGroup(player.position) ?? player.position
 			const answerPosition = getPositionGroup(answerPlayer.position) ?? answerPlayer.position
 
+			// Close: a club in the same region, a neighbouring position (1.3)
+			const answerRegion = regionOf(answerPlayer.club)
+			const sameRegion = player.club !== answerPlayer.club && !!answerRegion && regionOf(player.club) === answerRegion
+			const guessPrice = priceOf(player.name)
+			const answerPrice = priceOf(answerPlayer.name)
+			const price = guessPrice !== null && answerPrice !== null ? comparePrice(guessPrice, answerPrice) : null
+
 			return {
 				name: player.name,
 				club: {
 					value: player.club,
-					state: compareAttribute(player.club, answerPlayer.club, false),
+					state: compareAttribute(player.club, answerPlayer.club, sameRegion),
 				},
 				nationality: {
 					value: player.nationality,
@@ -161,10 +194,64 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 				},
 				position: {
 					value: guessPosition,
-					state: compareAttribute(guessPosition, answerPosition, false),
+					state: compareAttribute(guessPosition, answerPosition, positionsAreNear(guessPosition, answerPosition)),
 				},
+				...(price && guessPrice !== null ? { price: { value: formatPrice(guessPrice), state: price.state, arrow: price.arrow } } : {}),
 			}
 		})
+	})
+
+	// The scout's brief: two facts about today's target, before any guess
+	const brief = computed(() => {
+		const player = getScoutAnswerPlayerForDay(todayStr)
+		return player ? scoutBrief(player) : null
+	})
+
+	// Everything learned so far, from the brief and every guess, for the dossier
+	const dossier = computed<ScoutDossier>(() => {
+		const answerPrice = (() => {
+			const player = getScoutAnswerPlayerForDay(todayStr)
+			return player ? priceOf(player.name) : null
+		})()
+		const d: ScoutDossier = {
+			club: { region: brief.value?.region, ruledOut: [] },
+			nation: {
+				continent: brief.value?.continent ? CONTINENT_NAMES[brief.value.continent].name : undefined,
+				ruledOut: [],
+			},
+			position: { found: brief.value?.position, ruledOut: [] },
+			price: answerPrice === null ? null : { ...PRICE_RANGE },
+		}
+		for (const r of guessResults.value) {
+			if (r.club.state === 'correct') d.club.found = r.club.value
+			else {
+				if (r.club.state === 'present') d.club.region = regionOf(r.club.value) ?? d.club.region
+				if (!d.club.ruledOut.includes(r.club.value)) d.club.ruledOut.push(r.club.value)
+			}
+			if (r.nationality.state === 'correct') d.nation.found = r.nationality.value
+			else {
+				const confederation = getConfederation(r.nationality.value)
+				if (r.nationality.state === 'present' && confederation) d.nation.continent = CONTINENT_NAMES[confederation].name
+				if (!d.nation.ruledOut.includes(r.nationality.value)) d.nation.ruledOut.push(r.nationality.value)
+			}
+			const position = r.position.value as PositionGroup
+			if (r.position.state === 'correct') d.position.found = position
+			else if (!d.position.ruledOut.includes(position)) d.position.ruledOut.push(position)
+			if (d.price && r.price) {
+				const guess = priceOf(r.name)
+				if (guess === null) continue
+				if (r.price.state === 'correct') d.price.found = guess
+				else {
+					if (r.price.arrow === 'up') d.price.min = Math.max(d.price.min, guess + 1)
+					if (r.price.arrow === 'down') d.price.max = Math.min(d.price.max, guess - 1)
+					if (r.price.state === 'present') {
+						d.price.min = Math.max(d.price.min, guess - PRICE_CLOSE)
+						d.price.max = Math.min(d.price.max, guess + PRICE_CLOSE)
+					}
+				}
+			}
+		}
+		return d
 	})
 
 	// ============================================================================
@@ -291,7 +378,13 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// ============================================================================
 	// HINTS (iOS app; same bank as the Daily)
 	// ============================================================================
-	const order = clueOrder(getPuzzleNumber(todayStr))
+	// Clues the brief already gave are skipped, so a hint always tells you something new
+	const order = clueOrder(getPuzzleNumber(todayStr)).filter(kind => {
+		const facts = brief.value?.facts ?? []
+		if (kind === 'continent') return !facts.includes('continent')
+		if (kind === 'position') return !facts.includes('position')
+		return true
+	})
 
 	function clueFor(kind: ScoutClue, player: Footballer): ScoutHint {
 		const parts = player.name.trim().split(/\s+/)
@@ -321,7 +414,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		return order.slice(0, purchasedHints.value).map(kind => clueFor(kind, player))
 	})
 
-	const canPurchaseHint = computed(() => !gameOver.value && purchasedHints.value < MAX_HINTS)
+	const canPurchaseHint = computed(() => !gameOver.value && purchasedHints.value < Math.min(MAX_HINTS, order.length))
 	const nextClueName = computed(() => CLUE_NAMES[order[purchasedHints.value]!] ?? 'next clue')
 
 	function unlockHint() {
@@ -361,6 +454,8 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		// Computed
 		canPlay,
 		guessResults,
+		brief,
+		dossier,
 
 		// Functions
 		submitGuess,

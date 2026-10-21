@@ -35,4 +35,17 @@ describe('Share Matchday', () => {
 			].join('\n'),
 		)
 	})
+
+	it('Scout Report shares a fourth square for price when there is one', () => {
+		const text = useShare().getScoutShareText(
+			[
+				{ name: 'A', club: { value: 'x', state: 'present' }, nationality: { value: 'y', state: 'absent' }, position: { value: 'z', state: 'correct' }, price: { value: '£5.3m', state: 'present', arrow: 'down' } },
+				{ name: 'B', club: { value: 'x', state: 'correct' }, nationality: { value: 'y', state: 'correct' }, position: { value: 'z', state: 'correct' } },
+			],
+			true,
+			6,
+			73,
+		)
+		expect(text.split('\n').slice(3, 5)).toEqual(['🟨⬛🟩🟨', '🟩🟩🟩'])
+	})
 })

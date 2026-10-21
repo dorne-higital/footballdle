@@ -36,6 +36,8 @@ export interface RosterPlayer extends Footballer {
 	known: boolean
 	dailyKnown: boolean
 	pop: number
+	/** Fantasy price in tenths of a million (55 = £5.5m) */
+	cost?: number
 }
 /** [name, club, nationality, position], frozen as the player was on the day */
 export type Snapshot = [string, string, string, string]
