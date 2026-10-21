@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { APP_STORE_LIVE } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
 // a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
@@ -73,7 +74,7 @@ export default defineNuxtConfig({
 		compressPublicAssets: !isApp,
 		minify: true,
 		prerender: {
-			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', ...getSolutionRoutes()],
+			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', '/app', ...getSolutionRoutes()],
 		},
 
 	},
@@ -120,6 +121,8 @@ export default defineNuxtConfig({
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
+				// Website on iPhone Safari: Apple's "Open in the App Store" bar at the top
+				...(!isApp && APP_STORE_LIVE ? [{ name: 'apple-itunes-app', content: 'app-id=6819602707' }] : []),
 			],
 			script: isApp ? [
 				{

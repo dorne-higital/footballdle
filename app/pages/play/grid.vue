@@ -244,6 +244,7 @@
 	import { useGridStore, type GridProgress } from '../../stores/grid'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useHaptics } from '../../composables/useHaptics'
+	import { SHARE_LINK } from '../../composables/useShare'
 	import { HINT_COST, MAX_WRONG, SQUARE_POINTS, WRONG_COST, gridPoints, isLocked, nameKey, rowLabel, squareOf, type GridPlayer } from '../../utils/grid'
 
 	definePageMeta({ layout: 'play' })
@@ -369,12 +370,12 @@
 		if (!g) return ''
 		const rows = [0, 1, 2].map(r => g.squares.slice(r * 3, r * 3 + 3).map(squareEmoji).join('')).join('\n')
 		const label = grid.active === 'practice' ? 'The Grid (practice)' : `The Grid · week of ${niceDate(grid.weekStartLabel)} · grid ${Number(grid.active) + 1}`
-		return `Footballdle ${label}\n${fmt(gridPoints(g.squares))}/900\n\n${rows}\n\nfootballdle.co.uk`
+		return `Footballdle ${label}\n${fmt(gridPoints(g.squares))}/900\n\n${rows}\n\n${SHARE_LINK}`
 	})
 
 	const weekShareText = computed(() => {
 		const lines = grid.thisWeek.map((g, i) => `${i + 1} ${g.squares.map(squareEmoji).join('')} ${fmt(gridPoints(g.squares))}`)
-		return `Footballdle The Grid · week of ${niceDate(grid.weekStartLabel)}\n${fmt(grid.weekPoints)}/4,500\n\n${lines.join('\n')}\n\nfootballdle.co.uk`
+		return `Footballdle The Grid · week of ${niceDate(grid.weekStartLabel)}\n${fmt(grid.weekPoints)}/4,500\n\n${lines.join('\n')}\n\n${SHARE_LINK}`
 	})
 </script>
 

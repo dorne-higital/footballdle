@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { useShare } from '../app/composables/useShare'
+import { SHARE_LINK, useShare } from '../app/composables/useShare'
 
 describe('Share Matchday', () => {
 	it('puts every game in one message', () => {
@@ -31,7 +31,7 @@ describe('Share Matchday', () => {
 				'',
 				'🧩 Grid Week 2,350 / 4,500',
 				'',
-				'footballdle.co.uk',
+				SHARE_LINK,
 			].join('\n'),
 		)
 	})

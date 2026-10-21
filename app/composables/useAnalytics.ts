@@ -181,7 +181,15 @@ export const useAnalytics = () => {
 		}
 	}
 
+	/** footballdle.co.uk/app: an iPhone sent to the App Store, or the App Store button tapped */
+	const trackGetApp = (action: 'redirect' | 'store_click') => {
+		if (import.meta.client) {
+			event('get_app', { event_category: 'engagement', event_label: action })
+		}
+	}
+
 	return {
+		trackGetApp,
 		trackGameStart,
 		trackGameWin,
 		trackGameLoss,
