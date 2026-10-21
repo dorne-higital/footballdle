@@ -383,6 +383,22 @@
 					>
 						Privacy policy
 					</NuxtLink>
+					<template v-if="$config.public.isApp && APP_STORE_LIVE">
+						<a
+							:href="`${APP_STORE_URL}?action=write-review`"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Rate Footballdle
+						</a>
+						<button
+							type="button"
+							class="link-button"
+							@click="tellAMate"
+						>
+							Tell a mate
+						</button>
+					</template>
 				</div>
 			</div>
 
@@ -438,6 +454,7 @@
 <script setup lang="ts">
 	import { onMounted, onUnmounted, ref } from 'vue'
 	import { App } from '@capacitor/app'
+	import { Share } from '@capacitor/share'
 	import { Capacitor } from '@capacitor/core'
 	import { useThemeStore } from '../../stores/theme'
 	import { usePurchasesStore, WELCOME_HINTS as WELCOME_HINT_COUNT } from '../../stores/purchases'
@@ -497,6 +514,10 @@
 		resetDone.value = false
 		testerTools.value = true
 	}
+	function tellAMate() {
+		Share.share({ text: 'Fancy a daily football puzzle? Try Footballdle', url: APP_STORE_URL }).catch(() => {})
+	}
+
 	function resetHints() {
 		purchases.resetHintBank()
 		resetDone.value = true
@@ -714,10 +735,20 @@
 			flex-direction: column;
 			gap: 0.75rem;
 
-			a {
+			a,
+			.link-button {
 				color: var(--text-primary);
 				font-weight: 600;
 				text-decoration: none;
+			}
+
+			.link-button {
+				background: none;
+				border: 0;
+				font-family: var(--font-body);
+				font-size: inherit;
+				padding: 0;
+				text-align: left;
 			}
 		}
 

@@ -12,14 +12,20 @@ import { useGameCenter } from '../composables/useGameCenter'
 import { useHaptics } from '../composables/useHaptics'
 import { GRID_WEEK_LEADERBOARD, LEADERBOARD_IDS } from '../utils/appStore'
 import { useGridStore } from '../stores/grid'
+import { useCardsStore } from '../stores/cards'
 import { useAccessibilityStore } from '../stores/accessibility'
 import { ACHIEVEMENTS, achievementProgress, buildAchievementContext } from '../utils/achievements'
 
 // Progress already sent to Game Center, so only changes are reported
 const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
 
-// Daily streaks at which we ask for an App Store rating (iOS rate-limits the prompt itself)
-const REVIEW_PROMPT_STREAKS = [3, 10]
+// App Store rating prompt: asked at good moments only (a Matchday streak of 3, 7 or 30,
+// a perfect grid, a finished card set, a new trophy), at most once every 30 days and never
+// just after a loss. Only Apple's own prompt, no gate in front of it and no reward; iOS
+// itself shows it at most 3 times a year.
+const REVIEW_STREAKS = [3, 7, 30]
+const REVIEW_ASKED_KEY = 'footballdle-review-asked'
+const REVIEW_GAP_MS = 30 * 24 * 60 * 60 * 1000
 
 // Native-only setup for the iOS app; does nothing on the website.
 export default defineNuxtPlugin((nuxtApp) => {
@@ -52,18 +58,43 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	// Full-time buzz: success on a win, error on a loss, in any mode
 	const haptics = useHaptics()
+	let lastLossAt = 0
 	for (const store of [daily, scout, spotball, challenge]) {
 		watch(() => store.stats.wins, (now, before) => now > before && haptics.success())
-		watch(() => store.stats.losses, (now, before) => now > before && haptics.error())
+		watch(
+			() => store.stats.losses,
+			(now, before) => {
+				if (now <= before) return
+				haptics.error()
+				lastLossAt = Date.now()
+			},
+		)
 	}
 
+	// Rating prompt (see REVIEW_STREAKS). Changes in the first few seconds are a fresh
+	// install catching up from iCloud, not a moment to ask
+	const launchedAt = Date.now()
+	function askForReview() {
+		const now = Date.now()
+		if (now - launchedAt < 10_000 || now - lastLossAt < 60_000) return
+		try {
+			if (now - (Number(localStorage.getItem(REVIEW_ASKED_KEY)) || 0) < REVIEW_GAP_MS) return
+			localStorage.setItem(REVIEW_ASKED_KEY, String(now))
+		} catch {
+			return
+		}
+		// After the win sheet has had a moment on screen
+		setTimeout(() => InAppReview.requestReview().catch(() => {}), 1500)
+	}
+	const playStreak = usePlayStreakStore()
 	watch(
-		() => daily.stats.currentStreak,
-		(streak, previous) => {
-			if (streak > previous && REVIEW_PROMPT_STREAKS.includes(streak)) {
-				InAppReview.requestReview().catch(() => {})
-			}
-		},
+		() => playStreak.current,
+		(streak, previous) => streak > previous && REVIEW_STREAKS.includes(streak) && askForReview(),
+	)
+	const cards = useCardsStore()
+	watch(
+		() => Object.keys(cards.saved.sets).length,
+		(sets, previous) => sets > previous && askForReview(),
 	)
 
 	// Sign in once the app is on screen (iOS can't show the sign-in sheet mid-launch).
@@ -98,6 +129,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 	// The Grid: loaded at launch so its stats count towards trophies and total wins
 	const grid = useGridStore()
+	watch(
+		() => grid.stats.perfectGrids,
+		(perfect, previous) => perfect > previous && askForReview(),
+	)
 	grid.load()
 
 	const totalWins = computed(
@@ -148,6 +183,24 @@ export default defineNuxtPlugin((nuxtApp) => {
 	watch(
 		[() => [daily.stats, scout.stats, spotball.stats, challenge.stats, grid.stats], gameCenter.isAuthenticated],
 		() => reportAchievementProgress(),
+		{ deep: true },
+	)
+
+	// A newly unlocked trophy is a good moment to ask for a rating
+	const trophiesEarned = () =>
+		Object.values(
+			achievementProgress(
+				buildAchievementContext({ daily: daily.stats, scout: scout.stats, spot: spotball.stats, challenge: challenge.stats }),
+			),
+		).filter(percent => percent >= 100).length
+	let earned = trophiesEarned()
+	watch(
+		() => [daily.stats, scout.stats, spotball.stats, grid.stats, cards.saved],
+		() => {
+			const now = trophiesEarned()
+			if (now > earned) askForReview()
+			earned = now
+		},
 		{ deep: true },
 	)
 })

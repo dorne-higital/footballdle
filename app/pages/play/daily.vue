@@ -97,7 +97,6 @@
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
-				:grid="true"
 				@result="gameStore.showGameOverModal = true"
 			/>
 			<Keyboard

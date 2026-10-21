@@ -26,25 +26,48 @@
 				See result
 			</button>
 			<NuxtLink
-				v-if="grid"
-				to="/play/grid"
+				:to="next.to"
 				class="ft-btn"
 			>
 				<Icon
-					name="solar:widget-4-linear"
+					:name="next.icon"
 					size="1.1rem"
 				/>
-				Play The Grid
+				{{ next.label }}
 			</NuxtLink>
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
+	import { computed, onMounted } from 'vue'
+	import { useTodayProgress } from '../../composables/useTodayProgress'
+	import { useGridStore } from '../../stores/grid'
+
 	// iOS app: shown under a finished game's board in place of the controls, so a
 	// finished game opens on your own result rather than the website's intro page
-	defineProps<{ summary: string; isWin: boolean; countdown?: string; grid?: boolean }>()
+	defineProps<{ summary: string; isWin: boolean; countdown?: string }>()
 	defineEmits<{ result: [] }>()
+
+	// What to play next: the next daily game not finished today, then this week's Grid
+	// if any of it is left, otherwise back to the Matchday
+	const progress = useTodayProgress()
+	const grid = useGridStore()
+	onMounted(() => {
+		progress.refresh()
+		grid.load()
+	})
+	const unfinished = (status: string) => status === 'new' || status === 'playing'
+	const next = computed(() => {
+		if (unfinished(progress.daily.value.status))
+			return { label: 'Play the Daily', to: '/play/daily?start=play', icon: 'solar:calendar-linear' }
+		if (unfinished(progress.scout.value.status))
+			return { label: 'Play Scout Report', to: '/play/scout-report?start=play', icon: 'solar:magnifer-linear' }
+		if (unfinished(progress.spot.value.status))
+			return { label: 'Play Spot the Baller', to: '/play/spot-the-baller?start=play', icon: 'solar:eye-linear' }
+		if (grid.ready && !grid.weekDone) return { label: 'Play The Grid', to: '/play/grid', icon: 'solar:widget-4-linear' }
+		return { label: 'Back to Matchday', to: '/', icon: 'solar:home-2-linear' }
+	})
 </script>
 
 <style scoped lang="scss">
