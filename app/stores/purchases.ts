@@ -21,6 +21,10 @@ const HINT_TRANSACTIONS_KEY = 'footballdle-hint-transactions'
 // not Apple's, so when the transaction turns up later it settles one of these instead
 // of being credited a second time.
 const HINT_PREPAID_KEY = 'footballdle-hint-prepaid'
+// On a phone's first check, hint packs from the last two days still get credited: an offer
+// code redeemed in the App Store before the app was ever opened is a pack this phone has
+// never seen. Older ones were credited when bought (or come back with the iCloud backup).
+const FRESH_PACK_MS = 2 * 24 * 60 * 60 * 1000
 // Themes bought one by one (product ids), cached like Pro so they work offline and are
 // on screen before RevenueCat answers
 const OWNED_THEMES_KEY = 'footballdle-owned-themes'
@@ -162,25 +166,28 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		const counts = new Map<string, number>(HINT_PACKS.map(pack => [pack.id, pack.count]))
 		const hintTransactions = (info.nonSubscriptionTransactions ?? []).filter(t => counts.has(t.productIdentifier))
 		const credited = readCreditedTransactions()
-		if (!credited) {
-			// First run of this check: packs bought before it existed were already
-			// credited on purchase, so only record them
-			saveCreditedTransactions(new Set(hintTransactions.map(t => t.transactionIdentifier)))
-			return 0
-		}
 		let added = 0
 		let changed = false
+		let pending = hintTransactions
+		if (!credited) {
+			// First run of this check: older packs were already credited on purchase, so
+			// only record them; recent ones (a code redeemed before first launch) still count
+			const recent = (t: (typeof hintTransactions)[number]) => Date.now() - Date.parse(t.purchaseDate) < FRESH_PACK_MS
+			pending = hintTransactions.filter(recent)
+			saveCreditedTransactions(new Set(hintTransactions.filter(t => !recent(t)).map(t => t.transactionIdentifier)))
+		}
+		const record = readCreditedTransactions() ?? new Set<string>()
 		const prepaid = readPrepaid()
-		for (const t of hintTransactions) {
-			if (credited.has(t.transactionIdentifier)) continue
-			credited.add(t.transactionIdentifier)
+		for (const t of pending) {
+			if (record.has(t.transactionIdentifier)) continue
+			record.add(t.transactionIdentifier)
 			changed = true
 			const early = prepaid.indexOf(t.productIdentifier)
 			if (early !== -1) prepaid.splice(early, 1)
 			else added += counts.get(t.productIdentifier) ?? 0
 		}
 		if (changed) {
-			saveCreditedTransactions(credited)
+			saveCreditedTransactions(record)
 			savePrepaid(prepaid)
 		}
 		if (added) {
@@ -396,6 +403,18 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		return ok
 	}
 
+	/** Apple's own sheet for an offer code (free Pro, a free hint pack). What it unlocks
+	 *  arrives through the customer info listener, like any other purchase. */
+	async function redeemCode() {
+		message.value = ''
+		try {
+			const { Purchases } = await getSdk()
+			await Purchases.presentCodeRedemptionSheet()
+		} catch {
+			message.value = 'Couldn\'t open the code sheet. You can also redeem in the App Store: tap your picture, then Redeem Gift Card or Code.'
+		}
+	}
+
 	async function restore() {
 		if (busy.value) return
 		busy.value = true
@@ -445,5 +464,6 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		grantHints,
 		tip,
 		restore,
+		redeemCode,
 	}
 })

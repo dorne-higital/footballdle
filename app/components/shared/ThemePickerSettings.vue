@@ -322,14 +322,25 @@
 						{{ purchases.loadError }} Check your connection and tap Try again.
 					</p>
 				</template>
-				<button
-					type="button"
-					class="text-button"
-					:disabled="purchases.busy"
-					@click="purchases.restore()"
-				>
-					Restore purchases
-				</button>
+				<!-- Restore, and Apple's sheet for offer codes (free Pro or hints from a creator or event) -->
+				<div class="store-links">
+					<button
+						type="button"
+						class="text-button"
+						:disabled="purchases.busy"
+						@click="purchases.restore()"
+					>
+						Restore purchases
+					</button>
+					<button
+						type="button"
+						class="text-button"
+						:disabled="purchases.busy"
+						@click="purchases.redeemCode()"
+					>
+						Redeem a code
+					</button>
+				</div>
 				<!-- Right under the buttons that cause it (Pro, Restore, and the Tip Jar just below) -->
 				<p
 					v-if="purchases.message"
@@ -714,6 +725,12 @@
 					font-weight: 800;
 					padding: 0.3rem 0.7rem;
 				}
+			}
+
+			.store-links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0 1.5rem;
 			}
 
 			.text-button {
