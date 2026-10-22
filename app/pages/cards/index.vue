@@ -358,9 +358,10 @@
 		text-decoration: none;
 	}
 
+	// Same width as the shelf cards: narrower and a six-letter surname's tiles spill off both edges
 	.today-face {
 		flex-shrink: 0;
-		width: 4.6rem;
+		width: 6.4rem;
 	}
 
 	.face-down {
