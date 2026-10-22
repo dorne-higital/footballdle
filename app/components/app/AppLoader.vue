@@ -142,8 +142,12 @@
 
 	onMounted(() => {
 		const shownAt = performance.now()
-		// The web view now looks identical to the launch screen, so drop the native one
-		requestAnimationFrame(() => SplashScreen.hide({ fadeOutDuration: 0 }).catch(() => {}))
+		// The web view now looks identical to the launch screen, so drop the native one. Two
+		// frames plus a beat: iOS draws the web view in another process, and hiding the
+		// splash before that first frame lands shows a blank web view for an instant
+		requestAnimationFrame(() =>
+			requestAnimationFrame(() => setTimeout(() => SplashScreen.hide({ fadeOutDuration: 150 }).catch(() => {}), 50)),
+		)
 		const finish = () => {
 			const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 			const wait = reduced ? 0 : Math.max(0, MIN_SHOW_MS - (performance.now() - shownAt))

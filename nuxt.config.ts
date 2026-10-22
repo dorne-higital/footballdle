@@ -124,6 +124,8 @@ export default defineNuxtConfig({
 				// Website on iPhone Safari: Apple's "Open in the App Store" bar at the top
 				...(!isApp && APP_STORE_LIVE ? [{ name: 'apple-itunes-app', content: 'app-id=6819602707' }] : []),
 			],
+			// iOS app: dark green from the very first paint, before the stylesheet applies
+			...(isApp ? { style: [{ innerHTML: 'html,body{background:#07130d}' }] } : {}),
 			script: isApp ? [
 				{
 					innerHTML: themeBootScript,
