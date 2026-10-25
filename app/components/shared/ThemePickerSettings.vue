@@ -91,188 +91,67 @@
 			</a>
 		</div>
 
-		<template v-if="$config.public.appShell">
-			<div
-				v-if="gameCenter.isAvailable"
-				class="setting-group support-group"
-			>
-				<label>Leaderboards</label>
-				<p>See how your streaks stack up against everyone else.</p>
-				<button
-					type="button"
-					class="store-button"
-					@click="gameCenter.showLeaderboards()"
+		<!-- App look (iPhone app and website): a one-screen menu like iPhone Settings, with
+		     the long parts (themes, accessibility, purchases, tips) on their own pages -->
+		<div
+			v-if="$config.public.appShell"
+			ref="menuEl"
+			class="settings-menu"
+		>
+			<template v-if="view === 'home'">
+				<!-- Pro, or on the website the app itself -->
+				<div
+					v-if="!$config.public.isApp"
+					class="support-group hero-card"
 				>
-					<Icon
-						name="uil:trophy"
-						size="1rem"
-					/>
-					Open leaderboards
-				</button>
-			</div>
-
-			<div
-				v-if="reminders.isAvailable"
-				class="setting-group support-group"
-			>
-				<div class="reminder-head">
-					<div>
-						<label>Daily reminder</label>
-						<p>A nudge to play, skipped on days you've already played.</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						:aria-checked="reminders.enabled"
-						aria-label="Daily reminder"
-						:class="['switch', { on: reminders.enabled }]"
-						@click="toggleReminder"
+					<span class="hero-title">Footballdle on iPhone</span>
+					<p>Hint packs and Pro for unlimited hints, Player Cards backed up to iCloud, and Game Center leaderboards.</p>
+					<a
+						v-if="APP_STORE_LIVE"
+						:href="APP_STORE_URL"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="store-button pro-button"
 					>
-						<span class="knob"></span>
-					</button>
+						<Icon
+							name="solar:smartphone-linear"
+							size="1rem"
+						/>
+						Get the app
+					</a>
+					<p
+						v-else
+						class="coming-soon"
+					>
+						Coming soon to the App Store.
+					</p>
 				</div>
 				<div
-					v-if="reminders.enabled"
-					class="reminder-times"
-					role="radiogroup"
-					aria-label="Reminder time"
+					v-else-if="purchases.isPro"
+					class="support-group hero-card"
 				>
-					<button
-						v-for="h in REMINDER_HOURS"
-						:key="h"
-						type="button"
-						role="radio"
-						:aria-checked="reminders.hour === h"
-						:class="['time-chip', { active: reminders.hour === h }]"
-						@click="reminders.setHour(h)"
-					>
-						{{ formatHour(h) }}
-					</button>
-				</div>
-				<p
-					v-if="reminders.denied"
-					class="store-status"
-				>
-					Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
-				</p>
-			</div>
-
-			<div class="setting-group support-group accessibility-group">
-				<label>Accessibility</label>
-				<div class="reminder-head">
-					<div>
-						<span class="option-name">High-contrast tiles</span>
-						<p>Orange for right and blue for close, with a dot on right letters. Works with every theme.</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						:aria-checked="accessibility.highContrast"
-						aria-label="High-contrast tiles"
-						:class="['switch', { on: accessibility.highContrast }]"
-						@click="accessibility.update({ highContrast: !accessibility.highContrast })"
-					>
-						<span class="knob"></span>
-					</button>
-				</div>
-				<div class="reminder-head">
-					<div>
-						<span class="option-name">Relaxed timer</span>
-						<p>16 seconds a round in Spot the Baller. Scores stay off its Game Center leaderboard.</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						:aria-checked="accessibility.relaxedTimer"
-						aria-label="Relaxed timer"
-						:class="['switch', { on: accessibility.relaxedTimer }]"
-						@click="accessibility.update({ relaxedTimer: !accessibility.relaxedTimer })"
-					>
-						<span class="knob"></span>
-					</button>
+					<span class="hero-title">
+						<Icon
+							name="solar:crown-bold"
+							size="1rem"
+						/>
+						Footballdle Pro
+					</span>
+					<p>Pro unlocked. Hints are on the house and every theme is yours. Cheers for the support!</p>
 				</div>
 				<div
-					v-if="$config.public.isApp"
-					class="reminder-head"
-				>
-					<div>
-						<span class="option-name">Haptics</span>
-						<p>Little taps when you type, win or lose.</p>
-					</div>
-					<button
-						type="button"
-						role="switch"
-						:aria-checked="accessibility.haptics"
-						aria-label="Haptics"
-						:class="['switch', { on: accessibility.haptics }]"
-						@click="accessibility.update({ haptics: !accessibility.haptics })"
-					>
-						<span class="knob"></span>
-					</button>
-				</div>
-				<span class="option-name">Text size</span>
-				<div
-					class="reminder-times"
-					role="radiogroup"
-					aria-label="Text size"
-				>
-					<button
-						v-for="size in TEXT_SIZES"
-						:key="size.id"
-						type="button"
-						role="radio"
-						:aria-checked="accessibility.textSize === size.id"
-						:class="['time-chip', { active: accessibility.textSize === size.id }]"
-						@click="accessibility.update({ textSize: size.id })"
-					>
-						{{ size.label }}
-					</button>
-				</div>
-			</div>
-
-			<div class="setting-group support-group">
-				<ThemeLibrary />
-			</div>
-
-			<div
-				v-if="!$config.public.isApp"
-				class="setting-group support-group"
-			>
-				<label>Footballdle on iPhone</label>
-				<p>
-					Hint packs and Pro for unlimited hints, Player Cards backed up to iCloud, and Game Center
-					leaderboards.
-				</p>
-				<a
-					v-if="APP_STORE_LIVE"
-					:href="APP_STORE_URL"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="store-button pro-button"
-				>
-					<Icon
-						name="solar:smartphone-linear"
-						size="1rem"
-					/>
-					Get the app
-				</a>
-				<p
 					v-else
-					class="coming-soon"
+					class="support-group hero-card"
 				>
-					Coming soon to the App Store.
-				</p>
-			</div>
-
-			<div
-				v-else
-				class="setting-group support-group"
-			>
-				<label>Footballdle Pro</label>
-				<p v-if="purchases.isPro">Pro unlocked. Hints are on the house. Cheers for the support!</p>
-				<template v-else>
+					<span class="hero-title">
+						<Icon
+							name="solar:crown-bold"
+							size="1rem"
+						/>
+						Footballdle Pro
+					</span>
 					<p>
-						Unlimited hints in the Daily and Scout Report. One-off purchase, no subscription.
+						Unlimited hints in the Daily and Scout Report, plus every theme, for good. One-off purchase, no subscription.
 						<template v-if="purchases.hintBank > 0">
 							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
 						</template>
@@ -284,10 +163,6 @@
 						:disabled="purchases.busy"
 						@click="purchases.buyPro()"
 					>
-						<Icon
-							name="solar:crown-bold"
-							size="1rem"
-						/>
 						Get Pro · {{ purchases.proProduct.priceString }}
 					</button>
 					<button
@@ -321,157 +196,459 @@
 					>
 						{{ purchases.loadError }} Check your connection and tap Try again.
 					</p>
-				</template>
-				<!-- Restore, and Apple's sheet for offer codes (free Pro or hints from a creator or event) -->
-				<div class="store-links">
-					<button
-						type="button"
-						class="text-button"
-						:disabled="purchases.busy"
-						@click="purchases.restore()"
+					<p
+						v-if="purchases.message"
+						class="store-message"
 					>
-						Restore purchases
-					</button>
-					<button
-						type="button"
-						class="text-button"
-						:disabled="purchases.busy"
-						@click="purchases.redeemCode()"
-					>
-						Redeem a code
-					</button>
+						{{ purchases.message }}
+					</p>
 				</div>
-				<!-- Right under the buttons that cause it (Pro, Restore, and the Tip Jar just below) -->
-				<p
-					v-if="purchases.message"
-					class="store-message"
-				>
-					{{ purchases.message }}
-				</p>
-			</div>
 
-			<div
-				v-if="purchases.tipProducts.length"
-				class="setting-group support-group"
-			>
-				<label>Tip Jar</label>
-				<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
-				<div class="tip-list">
-					<button
-						v-for="(product, i) in purchases.tipProducts"
-						:key="product.identifier"
-						type="button"
-						class="tip-option"
-						:disabled="purchases.busy"
-						:aria-label="`${TIP_SIZES[i]} tip, ${product.priceString}`"
-						@click="purchases.tip(product)"
-					>
-						<CoinStack :count="i + 1" />
-						<span class="tip-name">{{ TIP_SIZES[i] }}</span>
-						<span class="tip-price">{{ product.priceString }}</span>
-					</button>
-				</div>
-			</div>
-
-			<div class="setting-group support-group">
-				<label>Help</label>
-				<div class="link-list">
-					<NuxtLink
-						to="/how-to-play"
-						@click="modalsStore.closeSettings()"
-					>
-						How to play
-					</NuxtLink>
-					<NuxtLink
-						to="/feedback"
-						@click="modalsStore.closeSettings()"
-					>
-						Send feedback
-					</NuxtLink>
-					<NuxtLink
-						to="/privacy-policy"
-						@click="modalsStore.closeSettings()"
-					>
-						Privacy policy
-					</NuxtLink>
-					<!-- No reward for following (App Review 3.2.2); hint codes are posted there instead -->
-					<a
-						href="https://www.instagram.com/_footballdle/"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Follow us on Instagram
-					</a>
-					<template v-if="$config.public.isApp && APP_STORE_LIVE">
-						<a
-							:href="`${APP_STORE_URL}?action=write-review`"
-							target="_blank"
-							rel="noopener noreferrer"
+				<template v-if="reminders.isAvailable || gameCenter.isAvailable">
+					<h3 class="group-label">Play</h3>
+					<div class="menu-list">
+						<div
+							v-if="reminders.isAvailable"
+							class="menu-row reminder-row"
 						>
-							Rate Footballdle
-						</a>
+							<div class="row-main">
+								<span class="row-icon"><Icon
+									name="solar:bell-linear"
+									size="1.05rem"
+								/></span>
+								<span class="row-text">
+									<span class="row-label">Daily reminder</span>
+									<span class="row-hint">Skipped on days you've already played</span>
+								</span>
+								<button
+									type="button"
+									role="switch"
+									:aria-checked="reminders.enabled"
+									aria-label="Daily reminder"
+									:class="['switch', { on: reminders.enabled }]"
+									@click="toggleReminder"
+								>
+									<span class="knob"></span>
+								</button>
+							</div>
+							<div
+								v-if="reminders.enabled"
+								class="reminder-times"
+								role="radiogroup"
+								aria-label="Reminder time"
+							>
+								<button
+									v-for="h in REMINDER_HOURS"
+									:key="h"
+									type="button"
+									role="radio"
+									:aria-checked="reminders.hour === h"
+									:class="['time-chip', { active: reminders.hour === h }]"
+									@click="reminders.setHour(h)"
+								>
+									{{ formatHour(h) }}
+								</button>
+							</div>
+							<p
+								v-if="reminders.denied"
+								class="store-status"
+							>
+								Notifications are turned off for Footballdle. Switch them on in iPhone Settings → Notifications.
+							</p>
+						</div>
+						<button
+							v-if="gameCenter.isAvailable"
+							type="button"
+							class="menu-row"
+							@click="gameCenter.showLeaderboards()"
+						>
+							<span class="row-icon"><Icon
+								name="uil:trophy"
+								size="1.05rem"
+							/></span>
+							<span class="row-label">Leaderboards</span>
+							<Icon
+								name="solar:alt-arrow-right-linear"
+								size="1rem"
+								class="chevron"
+							/>
+						</button>
+					</div>
+				</template>
+
+				<h3 class="group-label">Look &amp; feel</h3>
+				<div class="menu-list">
+					<button
+						type="button"
+						class="menu-row"
+						@click="go('themes')"
+					>
+						<span class="row-icon"><Icon
+							name="solar:palette-linear"
+							size="1.05rem"
+						/></span>
+						<span class="row-label">Themes</span>
+						<span class="row-value">{{ themeSummary }}</span>
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							size="1rem"
+							class="chevron"
+						/>
+					</button>
+					<button
+						type="button"
+						class="menu-row"
+						@click="go('accessibility')"
+					>
+						<span class="row-icon"><Icon
+							name="solar:accessibility-linear"
+							size="1.05rem"
+						/></span>
+						<span class="row-label">Accessibility</span>
+						<span class="row-value">{{ accessibilitySummary }}</span>
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							size="1rem"
+							class="chevron"
+						/>
+					</button>
+				</div>
+
+				<h3 class="group-label">More</h3>
+				<div class="menu-list">
+					<template v-if="$config.public.isApp">
 						<button
 							type="button"
-							class="link-button"
-							@click="tellAMate"
+							class="menu-row"
+							@click="go('purchases')"
 						>
-							Tell a mate
+							<span class="row-icon"><Icon
+								name="solar:bill-list-linear"
+								size="1.05rem"
+							/></span>
+							<span class="row-label">Purchases &amp; codes</span>
+							<Icon
+								name="solar:alt-arrow-right-linear"
+								size="1rem"
+								class="chevron"
+							/>
+						</button>
+						<button
+							v-if="purchases.tipProducts.length"
+							type="button"
+							class="menu-row"
+							@click="go('tips')"
+						>
+							<span class="row-icon"><Icon
+								name="uil:coffee"
+								size="1.05rem"
+							/></span>
+							<span class="row-label">Tip Jar</span>
+							<Icon
+								name="solar:alt-arrow-right-linear"
+								size="1rem"
+								class="chevron"
+							/>
+						</button>
+					</template>
+					<a
+						v-else
+						href="https://buymeacoffee.com/dhorne92E"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="menu-row"
+						@click.prevent="$emit('buy-coffee', 'settings_modal')"
+					>
+						<span class="row-icon"><Icon
+							name="uil:coffee"
+							size="1.05rem"
+						/></span>
+						<span class="row-label">Buy me a coffee</span>
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							size="1rem"
+							class="chevron"
+						/>
+					</a>
+				</div>
+
+				<h3 class="group-label">Help</h3>
+				<div :class="['help-tiles', { pairs: helpTiles.length % 3 !== 0 }]">
+					<template
+						v-for="tile in helpTiles"
+						:key="tile.label"
+					>
+						<NuxtLink
+							v-if="tile.to"
+							:to="tile.to"
+							class="help-tile"
+							@click="modalsStore.closeSettings()"
+						>
+							<Icon
+								:name="tile.icon"
+								size="1.3rem"
+							/>
+							{{ tile.label }}
+						</NuxtLink>
+						<a
+							v-else-if="tile.href"
+							:href="tile.href"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="help-tile"
+						>
+							<Icon
+								:name="tile.icon"
+								size="1.3rem"
+							/>
+							{{ tile.label }}
+						</a>
+						<button
+							v-else
+							type="button"
+							class="help-tile"
+							@click="tile.action?.()"
+						>
+							<Icon
+								:name="tile.icon"
+								size="1.3rem"
+							/>
+							{{ tile.label }}
 						</button>
 					</template>
 				</div>
-			</div>
 
-			<!-- iPhone app: the version, and a hidden tester reset behind 7 taps on it -->
-			<div
-				v-if="$config.public.isApp && appVersion"
-				class="version-footer"
-			>
-				<button
-					type="button"
-					class="version-label"
-					@click="tapVersion"
-				>
-					Footballdle {{ appVersion }}
-				</button>
+				<!-- iPhone app: the version, and a hidden tester reset behind 7 taps on it -->
 				<div
-					v-if="testerTools"
-					class="tester-tools"
+					v-if="$config.public.isApp && appVersion"
+					class="version-footer"
 				>
-					<p>Tester tools. Resets your hint balance to {{ WELCOME_HINT_COUNT }} on this iPhone and in iCloud.</p>
-					<p
-						v-if="resetDone"
-						class="tester-done"
-						role="status"
+					<button
+						type="button"
+						class="version-label"
+						@click="tapVersion"
 					>
-						Hints reset to {{ WELCOME_HINT_COUNT }}.
-					</p>
+						Footballdle {{ appVersion }}
+					</button>
 					<div
-						v-else
-						class="tester-actions"
+						v-if="testerTools"
+						class="tester-tools"
+					>
+						<p>Tester tools. Resets your hint balance to {{ WELCOME_HINT_COUNT }} on this iPhone and in iCloud.</p>
+						<p
+							v-if="resetDone"
+							class="tester-done"
+							role="status"
+						>
+							Hints reset to {{ WELCOME_HINT_COUNT }}.
+						</p>
+						<div
+							v-else
+							class="tester-actions"
+						>
+							<button
+								type="button"
+								class="tester-reset"
+								@click="resetHints"
+							>
+								Reset hints to {{ WELCOME_HINT_COUNT }}
+							</button>
+							<button
+								type="button"
+								class="tester-cancel"
+								@click="testerTools = false"
+							>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</template>
+
+			<!-- A sub-page: back to the menu, then its settings -->
+			<template v-else>
+				<div class="sub-head">
+					<button
+						type="button"
+						class="back-button"
+						@click="go('home')"
+					>
+						<Icon
+							name="solar:alt-arrow-left-linear"
+							size="1.1rem"
+						/>
+						Settings
+					</button>
+					<h3 class="sub-title">{{ VIEW_TITLES[view] }}</h3>
+				</div>
+
+				<div
+					v-if="view === 'themes'"
+					class="setting-group support-group themes-page"
+				>
+					<ThemeLibrary />
+				</div>
+
+				<div
+					v-else-if="view === 'accessibility'"
+					class="setting-group support-group accessibility-group"
+				>
+					<div class="reminder-head">
+						<div>
+							<span class="option-name">High-contrast tiles</span>
+							<p>Orange for right and blue for close, with a dot on right letters. Works with every theme.</p>
+						</div>
+						<button
+							type="button"
+							role="switch"
+							:aria-checked="accessibility.highContrast"
+							aria-label="High-contrast tiles"
+							:class="['switch', { on: accessibility.highContrast }]"
+							@click="accessibility.update({ highContrast: !accessibility.highContrast })"
+						>
+							<span class="knob"></span>
+						</button>
+					</div>
+					<div class="reminder-head">
+						<div>
+							<span class="option-name">Relaxed timer</span>
+							<p>16 seconds a round in Spot the Baller. Scores stay off its Game Center leaderboard.</p>
+						</div>
+						<button
+							type="button"
+							role="switch"
+							:aria-checked="accessibility.relaxedTimer"
+							aria-label="Relaxed timer"
+							:class="['switch', { on: accessibility.relaxedTimer }]"
+							@click="accessibility.update({ relaxedTimer: !accessibility.relaxedTimer })"
+						>
+							<span class="knob"></span>
+						</button>
+					</div>
+					<div
+						v-if="$config.public.isApp"
+						class="reminder-head"
+					>
+						<div>
+							<span class="option-name">Haptics</span>
+							<p>Little taps when you type, win or lose.</p>
+						</div>
+						<button
+							type="button"
+							role="switch"
+							:aria-checked="accessibility.haptics"
+							aria-label="Haptics"
+							:class="['switch', { on: accessibility.haptics }]"
+							@click="accessibility.update({ haptics: !accessibility.haptics })"
+						>
+							<span class="knob"></span>
+						</button>
+					</div>
+					<span class="option-name">Text size</span>
+					<div
+						class="reminder-times"
+						role="radiogroup"
+						aria-label="Text size"
 					>
 						<button
+							v-for="size in TEXT_SIZES"
+							:key="size.id"
 							type="button"
-							class="tester-reset"
-							@click="resetHints"
+							role="radio"
+							:aria-checked="accessibility.textSize === size.id"
+							:class="['time-chip', { active: accessibility.textSize === size.id }]"
+							@click="accessibility.update({ textSize: size.id })"
 						>
-							Reset hints to {{ WELCOME_HINT_COUNT }}
-						</button>
-						<button
-							type="button"
-							class="tester-cancel"
-							@click="testerTools = false"
-						>
-							Cancel
+							{{ size.label }}
 						</button>
 					</div>
 				</div>
-			</div>
-		</template>
+
+				<div
+					v-else-if="view === 'purchases'"
+					class="setting-group support-group"
+				>
+					<p>
+						New iPhone, or reinstalled? Restore brings back what you've bought.
+						<template v-if="purchases.hintBank > 0">
+							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
+						</template>
+					</p>
+					<!-- Restore, and Apple's sheet for offer codes (free Pro or hints from a creator or event) -->
+					<div class="menu-list">
+						<button
+							type="button"
+							class="menu-row"
+							:disabled="purchases.busy"
+							@click="purchases.restore()"
+						>
+							<span class="row-icon"><Icon
+								name="solar:refresh-linear"
+								size="1.05rem"
+							/></span>
+							<span class="row-text">
+								<span class="row-label">Restore purchases</span>
+								<span class="row-hint">Brings back Pro and your themes</span>
+							</span>
+						</button>
+						<button
+							type="button"
+							class="menu-row"
+							:disabled="purchases.busy"
+							@click="purchases.redeemCode()"
+						>
+							<span class="row-icon"><Icon
+								name="solar:tag-price-linear"
+								size="1.05rem"
+							/></span>
+							<span class="row-text">
+								<span class="row-label">Redeem a code</span>
+								<span class="row-hint">Free hints or Pro, from Apple's code sheet</span>
+							</span>
+						</button>
+					</div>
+					<p
+						v-if="purchases.message"
+						class="store-message"
+					>
+						{{ purchases.message }}
+					</p>
+				</div>
+
+				<div
+					v-else-if="view === 'tips'"
+					class="setting-group support-group"
+				>
+					<p>Enjoying the game? A tip doesn't unlock anything, it just keeps Footballdle going.</p>
+					<div class="tip-list">
+						<button
+							v-for="(product, i) in purchases.tipProducts"
+							:key="product.identifier"
+							type="button"
+							class="tip-option"
+							:disabled="purchases.busy"
+							:aria-label="`${TIP_SIZES[i]} tip, ${product.priceString}`"
+							@click="purchases.tip(product)"
+						>
+							<CoinStack :count="i + 1" />
+							<span class="tip-name">{{ TIP_SIZES[i] }}</span>
+							<span class="tip-price">{{ product.priceString }}</span>
+						</button>
+					</div>
+					<p
+						v-if="purchases.message"
+						class="store-message"
+					>
+						{{ purchases.message }}
+					</p>
+				</div>
+			</template>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { onMounted, onUnmounted, ref } from 'vue'
+	import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
 	import { App } from '@capacitor/app'
 	import { Share } from '@capacitor/share'
 	import { Capacitor } from '@capacitor/core'
@@ -484,6 +661,8 @@
 	import ThemeLibrary from './ThemeLibrary.vue'
 	import { TEXT_SIZES, useAccessibilityStore } from '../../stores/accessibility'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
+	import { useAppearanceStore } from '../../stores/appearance'
+	import { getTheme } from '../../utils/themes'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
@@ -536,6 +715,62 @@
 	function tellAMate() {
 		Share.share({ text: 'Fancy a daily football puzzle? Try Footballdle', url: APP_STORE_URL }).catch(() => {})
 	}
+
+	// The menu and its sub-pages. Not routes, so it works the same in the Settings tab
+	// and in the sheet the game screens open
+	type SettingsView = 'home' | 'themes' | 'accessibility' | 'purchases' | 'tips'
+	const VIEW_TITLES: Record<Exclude<SettingsView, 'home'>, string> = {
+		themes: 'Themes',
+		accessibility: 'Accessibility',
+		purchases: 'Purchases & codes',
+		tips: 'Tip Jar',
+	}
+	const view = ref<SettingsView>('home')
+	const menuEl = ref<HTMLElement>()
+	async function go(next: SettingsView) {
+		view.value = next
+		await nextTick()
+		// Back to the top of whatever scrolls: the sheet's body, or the page
+		let el = menuEl.value?.parentElement
+		while (el && el !== document.body) {
+			if (el.scrollHeight > el.clientHeight && /auto|scroll/.test(getComputedStyle(el).overflowY)) {
+				el.scrollTop = 0
+				return
+			}
+			el = el.parentElement
+		}
+		window.scrollTo(0, 0)
+	}
+
+	const appearance = useAppearanceStore()
+	const themeSummary = computed(() =>
+		appearance.appearance === 'system' && !appearance.theme
+			? 'Match iPhone'
+			: (getTheme(appearance.selectedId)?.name ?? ''),
+	)
+	const accessibilitySummary = computed(() => {
+		const on = [
+			accessibility.highContrast && 'High contrast',
+			accessibility.relaxedTimer && 'Relaxed timer',
+			accessibility.textSize !== 'default' && 'Large text',
+		].filter(Boolean)
+		return on.length ? on.join(', ') : 'Standard'
+	})
+
+	interface HelpTile { label: string; icon: string; to?: string; href?: string; action?: () => void }
+	const helpTiles = computed(() => {
+		const native = useRuntimeConfig().public.isApp && APP_STORE_LIVE
+		const tiles: (HelpTile | false)[] = [
+			{ label: 'How to play', icon: 'solar:question-circle-linear', to: '/how-to-play' },
+			{ label: 'Feedback', icon: 'solar:chat-round-line-linear', to: '/feedback' },
+			native && { label: 'Rate us', icon: 'solar:star-linear', href: `${APP_STORE_URL}?action=write-review` },
+			// No reward for following (App Review 3.2.2); hint codes are posted there instead
+			{ label: 'Instagram', icon: 'ri:instagram-line', href: 'https://www.instagram.com/_footballdle/' },
+			native && { label: 'Tell a mate', icon: 'solar:share-linear', action: tellAMate },
+			{ label: 'Privacy', icon: 'solar:shield-check-linear', to: '/privacy-policy' },
+		]
+		return tiles.filter((t): t is HelpTile => !!t)
+	})
 
 	function resetHints() {
 		purchases.resetHintBank()
@@ -734,47 +969,6 @@
 					padding: 0.3rem 0.7rem;
 				}
 			}
-
-			.store-links {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0 1.5rem;
-			}
-
-			.text-button {
-				background: none;
-				border: 0;
-				color: var(--text-secondary);
-				cursor: pointer;
-				font-size: 0.85rem;
-				margin-top: 0.25rem;
-				// A 44pt tap area around a small text link
-				min-height: 44px;
-				padding: 0;
-				text-decoration: underline;
-			}
-		}
-
-		.link-list {
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
-
-			a,
-			.link-button {
-				color: var(--text-primary);
-				font-weight: 600;
-				text-decoration: none;
-			}
-
-			.link-button {
-				background: none;
-				border: 0;
-				font-family: var(--font-body);
-				font-size: inherit;
-				padding: 0;
-				text-align: left;
-			}
 		}
 
 		.coming-soon {
@@ -969,6 +1163,241 @@
 			}
 		}
 	}
+	// The menu: grouped rows like iPhone Settings
+	.settings-menu {
+		display: grid;
+		gap: 0.5rem;
+		padding-bottom: 0.5rem;
+
+		.hero-card {
+			background: color-mix(in srgb, var(--primary-color) 12%, var(--bg-secondary));
+			border: 1px solid color-mix(in srgb, var(--primary-color) 35%, var(--border));
+			border-radius: 1.1rem;
+			display: grid;
+			gap: 0.35rem;
+			justify-items: start;
+			padding: 1rem 1.1rem 1.1rem;
+
+			&:first-child {
+				padding-top: 1rem;
+			}
+
+			.hero-title {
+				align-items: center;
+				color: var(--text-primary);
+				display: flex;
+				font-family: var(--font-display);
+				font-size: 1.05rem;
+				gap: 0.4rem;
+			}
+
+			p {
+				color: var(--text-secondary);
+				font-size: 0.88rem;
+				margin: 0;
+			}
+
+			.store-button {
+				margin-top: 0.4rem;
+			}
+		}
+
+		.group-label {
+			color: var(--text-secondary);
+			font-family: var(--font-display);
+			font-size: 0.72rem;
+			font-weight: 700;
+			letter-spacing: 0.14em;
+			margin: 0.9rem 0 0 0.25rem;
+			text-transform: uppercase;
+		}
+
+		.menu-list {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 1rem;
+			overflow: hidden;
+		}
+
+		.menu-row {
+			align-items: center;
+			background: none;
+			border: 0;
+			color: var(--text-primary);
+			cursor: pointer;
+			display: flex;
+			font: inherit;
+			gap: 0.75rem;
+			min-height: 52px;
+			padding: 0.5rem 0.9rem;
+			text-align: left;
+			text-decoration: none;
+			width: 100%;
+
+			& + .menu-row {
+				border-top: 1px solid var(--border);
+			}
+
+			&:active {
+				background: color-mix(in srgb, var(--text-primary) 6%, transparent);
+			}
+		}
+
+		.reminder-row {
+			cursor: default;
+			display: block;
+			padding-block: 0.6rem;
+
+			&:active {
+				background: none;
+			}
+
+			.row-main {
+				align-items: center;
+				display: flex;
+				gap: 0.75rem;
+			}
+
+			.reminder-times {
+				margin-top: 0.6rem;
+			}
+		}
+
+		.row-icon {
+			align-items: center;
+			background: color-mix(in srgb, var(--primary-color) 16%, transparent);
+			border-radius: 0.5rem;
+			color: var(--primary-color);
+			display: flex;
+			flex-shrink: 0;
+			height: 1.9rem;
+			justify-content: center;
+			width: 1.9rem;
+		}
+
+		.row-text {
+			display: grid;
+			flex: 1;
+			min-width: 0;
+		}
+
+		.row-label {
+			flex: 1;
+			font-size: 0.95rem;
+			font-weight: 700;
+			min-width: 0;
+		}
+
+		.row-hint {
+			color: var(--text-secondary);
+			font-size: 0.78rem;
+		}
+
+		.row-value {
+			color: var(--text-secondary);
+			font-size: 0.85rem;
+			max-width: 45%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.chevron {
+			color: var(--text-secondary);
+			flex-shrink: 0;
+		}
+
+		.help-tiles {
+			display: grid;
+			gap: 0.5rem;
+			grid-template-columns: repeat(3, 1fr);
+
+			// Four tiles (the website) sit two by two rather than leaving one alone
+			&.pairs {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		.help-tile {
+			align-items: center;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 1rem;
+			color: var(--text-primary);
+			cursor: pointer;
+			display: flex;
+			flex-direction: column;
+			font: inherit;
+			font-size: 0.8rem;
+			font-weight: 700;
+			gap: 0.4rem;
+			justify-content: center;
+			min-height: 4.6rem;
+			padding: 0.7rem 0.3rem;
+			text-align: center;
+			text-decoration: none;
+			transition: transform 0.1s ease;
+
+			.iconify,
+			svg {
+				color: var(--primary-color);
+			}
+
+			&:active {
+				transform: scale(0.96);
+			}
+		}
+
+		// Sub-pages
+		.sub-head {
+			display: grid;
+			gap: 0.1rem;
+			justify-items: start;
+			margin-bottom: 0.75rem;
+		}
+
+		.back-button {
+			align-items: center;
+			background: none;
+			border: 0;
+			color: var(--primary-color);
+			cursor: pointer;
+			display: flex;
+			font: inherit;
+			font-size: 0.95rem;
+			font-weight: 700;
+			gap: 0.15rem;
+			margin-left: -0.3rem;
+			min-height: 44px;
+			padding: 0 0.5rem 0 0;
+		}
+
+		.sub-title {
+			color: var(--text-primary);
+			font-family: var(--font-display);
+			font-size: 1.5rem;
+			margin: 0;
+		}
+
+		.support-group:not(.hero-card) {
+			border-top: 0;
+			padding-top: 0;
+
+			.menu-list {
+				width: 100%;
+			}
+		}
+
+		.menu-row:disabled {
+			opacity: 0.5;
+		}
+
+		// The page title already says Themes
+		.themes-page :deep(#theme-label) {
+			display: none;
+		}
+	}
+
 	.reminder-head {
 		align-items: center;
 		display: flex;
