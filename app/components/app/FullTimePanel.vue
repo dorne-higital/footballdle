@@ -36,6 +36,19 @@
 				{{ next.label }}
 			</NuxtLink>
 		</div>
+		<!-- Where hint codes get posted. Not a reward for following (App Review 3.2.2) -->
+		<a
+			href="https://www.instagram.com/_footballdle/"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="ft-insta"
+		>
+			<Icon
+				name="ri:instagram-line"
+				size="1rem"
+			/>
+			<span>Free hint codes on Instagram <strong>@_footballdle</strong></span>
+		</a>
 	</section>
 </template>
 
@@ -123,6 +136,22 @@
 	.ft-actions {
 		display: flex;
 		gap: 0.5rem;
+	}
+
+	.ft-insta {
+		align-items: center;
+		align-self: center;
+		color: var(--text-secondary);
+		display: flex;
+		font-size: 0.82rem;
+		gap: 0.35rem;
+		min-height: 44px;
+		text-decoration: none;
+		margin-bottom: -0.5rem;
+
+		strong {
+			color: var(--text-primary);
+		}
 	}
 
 	.ft-btn {
