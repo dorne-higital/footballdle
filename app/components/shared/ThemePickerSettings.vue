@@ -394,6 +394,14 @@
 					>
 						Privacy policy
 					</NuxtLink>
+					<!-- No reward for following (App Review 3.2.2); hint codes are posted there instead -->
+					<a
+						href="https://www.instagram.com/_footballdle/"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Follow us on Instagram
+					</a>
 					<template v-if="$config.public.isApp && APP_STORE_LIVE">
 						<a
 							:href="`${APP_STORE_URL}?action=write-review`"
