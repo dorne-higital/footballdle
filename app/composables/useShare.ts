@@ -23,25 +23,67 @@ export function tileStates(guess: string, answer: string): TileState[] {
 }
 
 const EMOJI: Record<TileState, string> = { correct: '🟩', present: '🟨', absent: '⬛' }
+// Settings > Accessibility > High-contrast tiles: shares match the orange and blue board
+const HIGH_CONTRAST_EMOJI: Record<TileState, string> = { correct: '🟧', present: '🟦', absent: '⬛' }
+const highContrast = () => import.meta.client && document.documentElement.dataset.contrast === 'high'
+const emoji = (state: TileState) => (highContrast() ? HIGH_CONTRAST_EMOJI : EMOJI)[state] ?? '⬛'
+/** The link at the end of every share. From the iPhone app it's footballdle.co.uk/app,
+ *  which sends iPhones to the App Store and everyone else to the website (pages/app.vue);
+ *  from the website, the website itself */
+export const SHARE_LINK = Capacitor.isNativePlatform() ? 'footballdle.co.uk/app' : 'footballdle.co.uk'
 const streakLine = (streak?: number) => (streak && streak > 1 ? ` 🔥 ${streak} day streak` : '')
 
 export function useShare() {
 	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): string {
-		const grid = guesses.map(guess => tileStates(guess, answer).map(s => EMOJI[s]).join('')).join('\n')
-		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
+		const grid = guesses.map(guess => tileStates(guess, answer).map(emoji).join('')).join('\n')
+		return `Footballdle ⚽ ${label}\n${isWin ? guesses.length : 'X'}/6${streakLine(streak)}\n\n${grid}\n\n${SHARE_LINK}`
 	}
 
 	/** One row per guess: club, nation, position */
+	// Club, nation, position, then price when the player has one (1.3)
+	const scoutRow = (r: ScoutGuessResult) =>
+		[r.club, r.nationality, r.position, ...(r.price ? [r.price] : [])].map(c => emoji(c.state as TileState)).join('')
+
 	function getScoutShareText(results: ScoutGuessResult[], isWin: boolean, maxGuesses: number, puzzle: number | null, streak?: number) {
-		const grid = results
-			.map(r => [r.club, r.nationality, r.position].map(c => EMOJI[c.state as TileState] ?? '⬛').join(''))
-			.join('\n')
-		return `Footballdle Scout Report 🔎${puzzle ? ` #${puzzle}` : ''}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\nfootballdle.co.uk`
+		const grid = results.map(scoutRow).join('\n')
+		return `Footballdle Scout Report 🔎${puzzle ? ` #${puzzle}` : ''}\n${isWin ? results.length : 'X'}/${maxGuesses}${streakLine(streak)}\n\n${grid}\n\n${SHARE_LINK}`
 	}
 
-	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number | null, streak?: number) {
-		const dots = results.map(r => (r.correct ? '🟢' : '🔴')).join('')
-		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\nfootballdle.co.uk`
+	/** relaxed: played with Settings > Accessibility > Relaxed timer, marked with ⏱️ */
+	function getSpotShareText(results: { correct: boolean }[], score: number, rounds: number, puzzle: number | null, streak?: number, relaxed = false) {
+		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
+		const dots = results.map(r => (r.correct ? hit : miss)).join('')
+		return `Footballdle Spot the Baller 👀${puzzle ? ` #${puzzle}` : ''}${relaxed ? ' ⏱️' : ''}\n${score}/${rounds}${streakLine(streak)}\n\n${dots}\n\n${SHARE_LINK}`
+	}
+
+	/** All of today's games in one message, once the Daily, Scout Report and Spot the
+	 *  Baller are finished: each one's result, plus this week's Grid points if played */
+	function getMatchdayShareText(m: {
+		puzzle: number | null
+		streak: number
+		daily: { guesses: string[]; answer: string; isWin: boolean }
+		scout: { results: ScoutGuessResult[]; isWin: boolean; maxGuesses: number }
+		spot: { results: boolean[]; score: number; rounds: number; relaxed?: boolean }
+		gridPoints?: number
+	}) {
+		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
+		const dailyRows = m.daily.guesses.map(g => tileStates(g, m.daily.answer).map(emoji).join('')).join('\n')
+		const scoutRows = m.scout.results.map(scoutRow).join('\n')
+		const lines = [
+			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${streakLine(m.streak)}`,
+			'',
+			`⚽ Daily ${m.daily.isWin ? m.daily.guesses.length : 'X'}/6`,
+			dailyRows,
+			'',
+			`🔎 Scout Report ${m.scout.isWin ? m.scout.results.length : 'X'}/${m.scout.maxGuesses}`,
+			scoutRows,
+			'',
+			`👀 Spot the Baller ${m.spot.score}/${m.spot.rounds}${m.spot.relaxed ? ' ⏱️' : ''}`,
+			m.spot.results.map(r => (r ? hit : miss)).join(''),
+		]
+		if (m.gridPoints) lines.push('', `🧩 Grid Week ${m.gridPoints.toLocaleString('en-GB')} / 4,500`)
+		lines.push('', SHARE_LINK)
+		return lines.join('\n')
 	}
 
 	/** iOS app: the native share sheet (returns false, nothing was copied). Website:
@@ -68,5 +110,5 @@ export function useShare() {
 		window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
 	}
 
-	return { onShare, onShareTwitter, getShareText, getScoutShareText, getSpotShareText, shareText }
+	return { onShare, onShareTwitter, getShareText, getScoutShareText, getSpotShareText, getMatchdayShareText, shareText }
 }

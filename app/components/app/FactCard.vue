@@ -84,7 +84,7 @@
 	import curated from '../../data/facts.json'
 	import playerMeta from '../../data/meta.json'
 	import { roster } from '../../composables/useFootballers'
-	import { useShare } from '../../composables/useShare'
+	import { SHARE_LINK, useShare } from '../../composables/useShare'
 	import { useHaptics } from '../../composables/useHaptics'
 
 	// Curated, season-dated facts (app/data/facts.json) plus a few worked out from this
@@ -129,7 +129,7 @@
 	}
 
 	async function share() {
-		const text = `⚽ Did you know? ${facts[index.value]}\n\nvia Footballdle, the daily Premier League guessing game: footballdle.co.uk`
+		const text = `⚽ Did you know? ${facts[index.value]}\n\nvia Footballdle, the daily Premier League guessing game: ${SHARE_LINK}`
 		if (await shareText(text)) {
 			copied.value = true
 			setTimeout(() => (copied.value = false), 2000)

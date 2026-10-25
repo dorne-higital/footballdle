@@ -1,5 +1,5 @@
 <template>
-	<header class="app-top-bar">
+	<header :class="['app-top-bar', { game: !isTab }]">
 		<span
 			v-if="isTab"
 			aria-hidden="true"
@@ -52,7 +52,6 @@
 	import { computed } from 'vue'
 	import HintPill from './HintPill.vue'
 	import { useModalsStore } from '../../stores/modals'
-	import { useChallengeStore } from '../../stores/challenge'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { tabFor } from '../../utils/appTabs'
 
@@ -77,19 +76,15 @@
 
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
-		if (inChallenge.value) return 'Challenge'
 		if (path.startsWith('/cards/replay')) return 'Replay'
 		if (path.startsWith('/cards/')) return 'Cards'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
 
-	const challengeStore = useChallengeStore()
-	// Challenge runs on the Daily route but has no hints, so it gets its own title
-	const inChallenge = computed(() => route.path.startsWith('/play/daily') && challengeStore.isActive)
 	// Games that use the shared hint bank
 	const takesHints = computed(
 		() =>
-			(route.path.startsWith('/play/daily') && !challengeStore.isActive) ||
+			route.path.startsWith('/play/daily') ||
 			route.path.startsWith('/play/scout-report') ||
 			route.path.startsWith('/play/grid'),
 	)
@@ -114,6 +109,28 @@
 		padding: 0.5rem 1rem 0.25rem;
 		position: relative;
 		z-index: 2;
+
+		// Game pages: back, title, then up to three buttons. The title takes what's left
+		// and truncates, so the buttons never spill off a 390pt screen
+		&.game {
+			grid-template-columns: auto minmax(0, 1fr) auto;
+			padding-inline: 0.75rem;
+
+			.bar-title {
+				font-size: clamp(1rem, 4.3vw, 1.15rem);
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+
+			.bar-actions {
+				gap: 0.4rem;
+			}
+
+			.bar-btn {
+				height: 2.6rem;
+				width: 2.6rem;
+			}
+		}
 	}
 
 	.bar-title {

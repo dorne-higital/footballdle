@@ -3,6 +3,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import players from '../app/data/players.json'
 import { checkGuess, squareOf, type GridPlayer } from '../app/utils/grid'
 import { useGridStore } from '../app/stores/grid'
+import { usePlayStreakStore } from '../app/stores/playStreak'
+import { getUKDateString } from '../app/utils/dateStreak'
 
 // A fake localStorage the store can use, kept between "reloads"
 const storage = new Map<string, string>()
@@ -84,6 +86,16 @@ describe('grid store', () => {
 		grid.open(2)
 		grid.finish()
 		expect(grid.stats.gamesPlayed).toBe(1)
+	})
+
+	it('finishing a grid keeps the Matchday streak going', () => {
+		const grid = reload()
+		const playStreak = usePlayStreakStore()
+		expect(playStreak.lastDate).toBe('')
+		grid.open('practice')
+		grid.finish()
+		expect(playStreak.lastDate).toBe(getUKDateString())
+		expect(playStreak.current).toBe(1)
 	})
 
 	it('moves on to the next week and keeps the old score', () => {

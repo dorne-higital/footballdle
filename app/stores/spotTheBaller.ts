@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
-import { getSpotRoundsForDay, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
+import { getSpotRoundsForDay, SPOT_RELAXED_ROUND_TIME, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
+import { useAccessibilityStore } from './accessibility'
 import { getDisplayNumber } from '../composables/useFootballers'
 import { useModeStatsStore } from './modeStats'
 import { getUKDateString, nextUKMidnight } from '../utils/dateStreak'
@@ -36,7 +37,10 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	const score = ref(0)
 	const roundResults = ref<SpotRoundResult[]>([])
 	const revealState = ref<'idle' | 'correct' | 'wrong'>('idle')
-	const timeRemaining = ref(SPOT_ROUND_TIME)
+	const accessibility = useAccessibilityStore()
+	/** Seconds a round: 8, or 16 with Settings > Accessibility > Relaxed timer */
+	const roundTime = computed(() => (accessibility.relaxedTimer ? SPOT_RELAXED_ROUND_TIME : SPOT_ROUND_TIME))
+	const timeRemaining = ref(roundTime.value)
 	const haptics = useHaptics()
 	let timerInterval: ReturnType<typeof setInterval> | null = null
 	// A match picked up again (relaunch, back from another screen or the background)
@@ -150,7 +154,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		}
 		roundIndex.value++
 		revealState.value = 'idle'
-		timeRemaining.value = SPOT_ROUND_TIME
+		timeRemaining.value = roundTime.value
 		if (startTimer) startRoundTimer()
 		saveState()
 	}
@@ -173,7 +177,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 	// ============================================================================
 	// ROUND TIMER
 	// ============================================================================
-	function startRoundTimer(from = SPOT_ROUND_TIME) {
+	function startRoundTimer(from = roundTime.value) {
 		stopRoundTimer()
 		timeRemaining.value = from
 		timerInterval = setInterval(() => {
@@ -220,7 +224,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		awaitingResume.value = false
 		if (gameOver.value || showIntro.value || revealState.value !== 'idle' || timerInterval) return
 		if (roundResults.value.length > roundIndex.value) return
-		startRoundTimer(timeRemaining.value > 0 ? timeRemaining.value : SPOT_ROUND_TIME)
+		startRoundTimer(timeRemaining.value > 0 ? timeRemaining.value : roundTime.value)
 	}
 
 	// ============================================================================
@@ -298,7 +302,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 						if (gameOver.value) return
 					} else {
 						const t = Number(parsed.timeRemaining)
-						timeRemaining.value = t > 0 && t <= SPOT_ROUND_TIME ? t : SPOT_ROUND_TIME
+						timeRemaining.value = t > 0 && t <= roundTime.value ? t : roundTime.value
 					}
 					revealState.value = 'idle'
 					awaitingResume.value = true
@@ -316,6 +320,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		roundResults,
 		revealState,
 		timeRemaining,
+		roundTime,
 		gameOver,
 		isWin,
 		showGameOverModal,

@@ -114,62 +114,6 @@
 						Yesterday's answer
 					</NuxtLink>
 				</div>
-
-				<div
-					v-if="challengeUnlocked"
-					class="challenge-section"
-				>
-					<div class="challenge-divider">
-						<p class="caption">or</p>
-					</div>
-
-					<h3>Challenge mode</h3>
-
-					<div class="usp-tiles">
-						<div class="tile">
-							<Icon
-								name="solar:rewind-5-seconds-forward-bold"
-								size="1.5rem"
-							/>
-
-							<h6>Only 5 letters</h6>
-						</div>
-
-						<div class="tile">
-							<Icon
-								name="solar:earth-linear"
-								size="1.5rem"
-							/>
-
-							<h6>Current Premier League player</h6>
-						</div>
-
-						<div class="tile">
-							<Icon
-								name="solar:alarm-outline"
-								size="1.5rem"
-							/>
-
-							<h6>Play against the clock</h6>
-						</div>
-
-						<div class="tile">
-							<Icon
-								name="solar:refresh-linear"
-								size="1.5rem"
-							/>
-
-							<h6>Unlimited plays</h6>
-						</div>
-					</div>
-
-					<button
-						@click="$emit('start-challenge')"
-						class="button primary full large challenge play-button"
-					>
-						Play now
-					</button>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -187,7 +131,6 @@
 			uspTiles: { icon: string; text: string }[]
 			canPlay?: boolean
 			countdown?: string
-			challengeUnlocked?: boolean
 			hasIncompleteGame?: boolean
 			prevAnswerLink?: string
 			stats?: {
@@ -202,7 +145,6 @@
 		{
 			canPlay: true,
 			countdown: '',
-			challengeUnlocked: false,
 			hasIncompleteGame: false,
 			prevAnswerLink: '',
 			stats: () => ({
@@ -227,7 +169,7 @@
 	onMounted(() => (resetTime.value = nextPuzzleTimeLabel()))
 	const kickoffLabel = computed(() => `${puzzleNumber ? `No. ${puzzleNumber} · ` : ''}New puzzle at ${resetTime.value}`)
 
-	defineEmits(['start-game', 'start-challenge', 'show-result'])
+	defineEmits(['start-game', 'show-result'])
 </script>
 
 <style scoped lang="scss">
@@ -555,97 +497,6 @@
 					margin-bottom: 0.5rem;
 				}
 
-				.challenge-section {
-					.challenge-divider {
-						margin: 0.5rem 0;
-						position: relative;
-						text-align: center;
-
-						&::before,
-						&::after {
-							background: var(--border);
-							content: '';
-							height: 1px;
-							position: absolute;
-							top: 50%;
-						}
-
-						&::before {
-							left: 0;
-							width: calc(50% - 1rem);
-						}
-
-						&::after {
-							right: 0;
-							width: calc(50% - 1rem);
-						}
-
-						p {
-							color: var(--text-secondary);
-							font-family: var(--font-display);
-							font-size: 0.75rem;
-							letter-spacing: 0.1em;
-							padding: 0 1rem;
-							position: relative;
-							text-transform: uppercase;
-							z-index: 1;
-						}
-					}
-
-					h3 {
-						color: var(--text-primary);
-						font-family: var(--font-display);
-					}
-
-					.usp-tiles {
-						display: grid;
-						gap: 0.5rem;
-						grid-template-columns: repeat(2, 1fr);
-						margin: 1rem 0;
-
-						@media (width <= 600px) {
-							grid-template-columns: repeat(1, 1fr);
-						}
-
-						.tile {
-							background: var(--bg-primary);
-							border: 1px solid var(--border);
-							border-radius: calc(var(--global-border-radius) - 2px);
-							color: var(--text-primary);
-							padding: 1rem;
-							text-align: center;
-
-							.iconify {
-								color: var(--primary-color);
-							}
-
-							@media (width <= 600px) {
-								align-items: center;
-								display: flex;
-								flex-direction: row;
-								gap: 0.5rem;
-								padding: 0.5rem;
-								text-align: left;
-							}
-
-							h6 {
-								font-size: 0.8rem;
-								margin: 0.35rem 0 0;
-							}
-						}
-					}
-
-					.play-button {
-						background: var(--primary-color);
-						border: 1px solid var(--primary-color);
-						border-radius: var(--global-border-radius);
-						color: #fff;
-
-						&:hover {
-							background: color-mix(in srgb, var(--primary-color) 88%, black);
-						}
-					}
-				}
 			}
 		}
 	}

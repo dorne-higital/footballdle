@@ -118,9 +118,10 @@
 		padding: 0.75rem 1rem calc(env(safe-area-inset-bottom) + 2rem);
 	}
 
+	// The club's own colour fading into the card colour (a flat mix of the two went muddy)
 	.club-head {
 		align-items: center;
-		background: color-mix(in srgb, var(--club-bg) 22%, var(--bg-secondary));
+		background: linear-gradient(120deg, color-mix(in srgb, var(--club-bg) 60%, var(--bg-secondary)) 0%, var(--bg-secondary) 75%);
 		border: 1px solid var(--border);
 		border-radius: 1.25rem;
 		display: flex;

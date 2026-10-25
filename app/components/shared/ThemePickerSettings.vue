@@ -157,6 +157,79 @@
 				</p>
 			</div>
 
+			<div class="setting-group support-group accessibility-group">
+				<label>Accessibility</label>
+				<div class="reminder-head">
+					<div>
+						<span class="option-name">High-contrast tiles</span>
+						<p>Orange for right and blue for close, with a dot on right letters. Works with every theme.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.highContrast"
+						aria-label="High-contrast tiles"
+						:class="['switch', { on: accessibility.highContrast }]"
+						@click="accessibility.update({ highContrast: !accessibility.highContrast })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div class="reminder-head">
+					<div>
+						<span class="option-name">Relaxed timer</span>
+						<p>16 seconds a round in Spot the Baller. Scores stay off its Game Center leaderboard.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.relaxedTimer"
+						aria-label="Relaxed timer"
+						:class="['switch', { on: accessibility.relaxedTimer }]"
+						@click="accessibility.update({ relaxedTimer: !accessibility.relaxedTimer })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<div
+					v-if="$config.public.isApp"
+					class="reminder-head"
+				>
+					<div>
+						<span class="option-name">Haptics</span>
+						<p>Little taps when you type, win or lose.</p>
+					</div>
+					<button
+						type="button"
+						role="switch"
+						:aria-checked="accessibility.haptics"
+						aria-label="Haptics"
+						:class="['switch', { on: accessibility.haptics }]"
+						@click="accessibility.update({ haptics: !accessibility.haptics })"
+					>
+						<span class="knob"></span>
+					</button>
+				</div>
+				<span class="option-name">Text size</span>
+				<div
+					class="reminder-times"
+					role="radiogroup"
+					aria-label="Text size"
+				>
+					<button
+						v-for="size in TEXT_SIZES"
+						:key="size.id"
+						type="button"
+						role="radio"
+						:aria-checked="accessibility.textSize === size.id"
+						:class="['time-chip', { active: accessibility.textSize === size.id }]"
+						@click="accessibility.update({ textSize: size.id })"
+					>
+						{{ size.label }}
+					</button>
+				</div>
+			</div>
+
 			<div class="setting-group support-group">
 				<ThemeLibrary />
 			</div>
@@ -249,14 +322,25 @@
 						{{ purchases.loadError }} Check your connection and tap Try again.
 					</p>
 				</template>
-				<button
-					type="button"
-					class="text-button"
-					:disabled="purchases.busy"
-					@click="purchases.restore()"
-				>
-					Restore purchases
-				</button>
+				<!-- Restore, and Apple's sheet for offer codes (free Pro or hints from a creator or event) -->
+				<div class="store-links">
+					<button
+						type="button"
+						class="text-button"
+						:disabled="purchases.busy"
+						@click="purchases.restore()"
+					>
+						Restore purchases
+					</button>
+					<button
+						type="button"
+						class="text-button"
+						:disabled="purchases.busy"
+						@click="purchases.redeemCode()"
+					>
+						Redeem a code
+					</button>
+				</div>
 				<!-- Right under the buttons that cause it (Pro, Restore, and the Tip Jar just below) -->
 				<p
 					v-if="purchases.message"
@@ -310,6 +394,76 @@
 					>
 						Privacy policy
 					</NuxtLink>
+					<!-- No reward for following (App Review 3.2.2); hint codes are posted there instead -->
+					<a
+						href="https://www.instagram.com/_footballdle/"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Follow us on Instagram
+					</a>
+					<template v-if="$config.public.isApp && APP_STORE_LIVE">
+						<a
+							:href="`${APP_STORE_URL}?action=write-review`"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Rate Footballdle
+						</a>
+						<button
+							type="button"
+							class="link-button"
+							@click="tellAMate"
+						>
+							Tell a mate
+						</button>
+					</template>
+				</div>
+			</div>
+
+			<!-- iPhone app: the version, and a hidden tester reset behind 7 taps on it -->
+			<div
+				v-if="$config.public.isApp && appVersion"
+				class="version-footer"
+			>
+				<button
+					type="button"
+					class="version-label"
+					@click="tapVersion"
+				>
+					Footballdle {{ appVersion }}
+				</button>
+				<div
+					v-if="testerTools"
+					class="tester-tools"
+				>
+					<p>Tester tools. Resets your hint balance to {{ WELCOME_HINT_COUNT }} on this iPhone and in iCloud.</p>
+					<p
+						v-if="resetDone"
+						class="tester-done"
+						role="status"
+					>
+						Hints reset to {{ WELCOME_HINT_COUNT }}.
+					</p>
+					<div
+						v-else
+						class="tester-actions"
+					>
+						<button
+							type="button"
+							class="tester-reset"
+							@click="resetHints"
+						>
+							Reset hints to {{ WELCOME_HINT_COUNT }}
+						</button>
+						<button
+							type="button"
+							class="tester-cancel"
+							@click="testerTools = false"
+						>
+							Cancel
+						</button>
+					</div>
 				</div>
 			</div>
 		</template>
@@ -317,20 +471,25 @@
 </template>
 
 <script setup lang="ts">
-	import { onMounted, onUnmounted } from 'vue'
+	import { onMounted, onUnmounted, ref } from 'vue'
+	import { App } from '@capacitor/app'
+	import { Share } from '@capacitor/share'
+	import { Capacitor } from '@capacitor/core'
 	import { useThemeStore } from '../../stores/theme'
-	import { usePurchasesStore } from '../../stores/purchases'
+	import { usePurchasesStore, WELCOME_HINTS as WELCOME_HINT_COUNT } from '../../stores/purchases'
 	import { useGameCenter } from '../../composables/useGameCenter'
 	import { useModalsStore } from '../../stores/modals'
 	import CoinStack from './CoinStack.vue'
 	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
 	import ThemeLibrary from './ThemeLibrary.vue'
+	import { TEXT_SIZES, useAccessibilityStore } from '../../stores/accessibility'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
 
 	const reminders = useRemindersStore()
+	const accessibility = useAccessibilityStore()
 	// Purchase messages belong to this visit to Settings, not the next one
 	onUnmounted(() => (usePurchasesStore().message = ''))
 	// Products may not have loaded at launch (offline, or the store was slow)
@@ -352,12 +511,127 @@
 	const gameCenter = useGameCenter()
 	const modalsStore = useModalsStore()
 
+	// Version line (iPhone app), with the hidden tester reset behind 7 quick taps
+	const TESTER_TAPS = 7
+	const appVersion = ref('')
+	const testerTools = ref(false)
+	const resetDone = ref(false)
+	let taps = 0
+	let tapTimer: ReturnType<typeof setTimeout> | undefined
+	onMounted(async () => {
+		if (!Capacitor.isNativePlatform()) return
+		try {
+			const info = await App.getInfo()
+			appVersion.value = `${info.version} (${info.build})`
+		} catch {}
+	})
+	function tapVersion() {
+		clearTimeout(tapTimer)
+		tapTimer = setTimeout(() => (taps = 0), 1500)
+		if (++taps < TESTER_TAPS) return
+		taps = 0
+		resetDone.value = false
+		testerTools.value = true
+	}
+	function tellAMate() {
+		Share.share({ text: 'Fancy a daily football puzzle? Try Footballdle', url: APP_STORE_URL }).catch(() => {})
+	}
+
+	function resetHints() {
+		purchases.resetHintBank()
+		resetDone.value = true
+	}
+
 	defineEmits(['buy-coffee'])
 </script>
 
 <style scoped lang="scss">
 	.settings-section {
 		width: 100%;
+
+		.accessibility-group {
+			display: grid;
+			gap: 0.85rem;
+
+			.option-name {
+				color: var(--text-primary);
+				display: block;
+				font-size: 0.95rem;
+				font-weight: 700;
+			}
+
+			.reminder-head p {
+				margin: 0.15rem 0 0;
+			}
+
+			.reminder-times {
+				margin-top: -0.4rem;
+			}
+		}
+
+		.version-footer {
+			display: grid;
+			gap: 0.75rem;
+			justify-items: center;
+			padding: 1.5rem 0 0.5rem;
+		}
+
+		.version-label {
+			background: none;
+			border: 0;
+			color: var(--text-secondary);
+			font-family: var(--font-body);
+			font-size: 0.8rem;
+			padding: 0.5rem 1rem;
+			-webkit-user-select: none;
+			user-select: none;
+		}
+
+		.tester-tools {
+			border: 1px dashed var(--border);
+			border-radius: var(--global-border-radius);
+			display: grid;
+			gap: 0.6rem;
+			padding: 0.9rem 1rem;
+			text-align: left;
+			width: 100%;
+
+			p {
+				color: var(--text-secondary);
+				font-size: 0.85rem;
+				margin: 0;
+			}
+
+			.tester-done {
+				color: var(--primary-color);
+				font-weight: 700;
+			}
+		}
+
+		.tester-actions {
+			display: flex;
+			gap: 0.5rem;
+
+			button {
+				border-radius: var(--global-border-radius);
+				font-family: var(--font-body);
+				font-size: 0.85rem;
+				font-weight: 700;
+				padding: 0.55rem 1rem;
+			}
+
+			.tester-reset {
+				background: var(--primary-color);
+				border: 0;
+				color: var(--on-primary);
+			}
+
+			.tester-cancel {
+				background: none;
+				border: 1px solid var(--border);
+				color: var(--text-primary);
+			}
+		}
 
 		.support-group {
 			border-top: 1px solid var(--border);
@@ -461,6 +735,12 @@
 				}
 			}
 
+			.store-links {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0 1.5rem;
+			}
+
 			.text-button {
 				background: none;
 				border: 0;
@@ -480,10 +760,20 @@
 			flex-direction: column;
 			gap: 0.75rem;
 
-			a {
+			a,
+			.link-button {
 				color: var(--text-primary);
 				font-weight: 600;
 				text-decoration: none;
+			}
+
+			.link-button {
+				background: none;
+				border: 0;
+				font-family: var(--font-body);
+				font-size: inherit;
+				padding: 0;
+				text-align: left;
 			}
 		}
 

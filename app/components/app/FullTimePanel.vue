@@ -26,25 +26,61 @@
 				See result
 			</button>
 			<NuxtLink
-				v-if="grid"
-				to="/play/grid"
+				:to="next.to"
 				class="ft-btn"
 			>
 				<Icon
-					name="solar:widget-4-linear"
+					:name="next.icon"
 					size="1.1rem"
 				/>
-				Play The Grid
+				{{ next.label }}
 			</NuxtLink>
 		</div>
+		<!-- Where hint codes get posted. Not a reward for following (App Review 3.2.2) -->
+		<a
+			href="https://www.instagram.com/_footballdle/"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="ft-insta"
+		>
+			<Icon
+				name="ri:instagram-line"
+				size="1rem"
+			/>
+			<span>Free hint codes on Instagram <strong>@_footballdle</strong></span>
+		</a>
 	</section>
 </template>
 
 <script setup lang="ts">
+	import { computed, onMounted } from 'vue'
+	import { useTodayProgress } from '../../composables/useTodayProgress'
+	import { useGridStore } from '../../stores/grid'
+
 	// iOS app: shown under a finished game's board in place of the controls, so a
 	// finished game opens on your own result rather than the website's intro page
-	defineProps<{ summary: string; isWin: boolean; countdown?: string; grid?: boolean }>()
+	defineProps<{ summary: string; isWin: boolean; countdown?: string }>()
 	defineEmits<{ result: [] }>()
+
+	// What to play next: the next daily game not finished today, then this week's Grid
+	// if any of it is left, otherwise back to the Matchday
+	const progress = useTodayProgress()
+	const grid = useGridStore()
+	onMounted(() => {
+		progress.refresh()
+		grid.load()
+	})
+	const unfinished = (status: string) => status === 'new' || status === 'playing'
+	const next = computed(() => {
+		if (unfinished(progress.daily.value.status))
+			return { label: 'Play the Daily', to: '/play/daily?start=play', icon: 'solar:calendar-linear' }
+		if (unfinished(progress.scout.value.status))
+			return { label: 'Play Scout Report', to: '/play/scout-report?start=play', icon: 'solar:clipboard-list-linear' }
+		if (unfinished(progress.spot.value.status))
+			return { label: 'Play Spot the Baller', to: '/play/spot-the-baller?start=play', icon: 'solar:eye-linear' }
+		if (grid.ready && !grid.weekDone) return { label: 'Play The Grid', to: '/play/grid', icon: 'solar:widget-4-linear' }
+		return { label: 'Back to Matchday', to: '/', icon: 'solar:home-2-linear' }
+	})
 </script>
 
 <style scoped lang="scss">
@@ -100,6 +136,22 @@
 	.ft-actions {
 		display: flex;
 		gap: 0.5rem;
+	}
+
+	.ft-insta {
+		align-items: center;
+		align-self: center;
+		color: var(--text-secondary);
+		display: flex;
+		font-size: 0.82rem;
+		gap: 0.35rem;
+		min-height: 44px;
+		text-decoration: none;
+		margin-bottom: -0.5rem;
+
+		strong {
+			color: var(--text-primary);
+		}
 	}
 
 	.ft-btn {

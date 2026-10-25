@@ -12,8 +12,8 @@ interface PlayStreakState {
 	lastDate: string
 }
 
-// "Matchday streak": consecutive days on which at least one game (Daily, Scout,
-// Spot or Challenge) was finished, win or lose. The per-mode win streaks live in
+// "Matchday streak": consecutive days on which at least one game (Daily, Scout, Spot
+// or The Grid; stores/grid.ts marks its own) was finished, win or lose. The per-mode win streaks live in
 // modeStats; this one rewards turning up.
 export const usePlayStreakStore = defineStore('playStreak', () => {
 	const current = ref(0)

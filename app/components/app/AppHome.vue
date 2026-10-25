@@ -45,6 +45,18 @@
 						<span class="mode-state">{{ mode.state }}</span>
 					</li>
 				</ul>
+				<button
+					v-if="completedCount === 3"
+					type="button"
+					class="share-matchday"
+					@click="shareMatchday"
+				>
+					<Icon
+						name="solar:share-linear"
+						size="0.95rem"
+					/>
+					{{ matchdayCopied ? 'Copied!' : 'Share Matchday' }}
+				</button>
 			</div>
 		</section>
 
@@ -138,7 +150,7 @@
 				class="mode-card"
 			>
 				<Icon
-					name="solar:magnifer-linear"
+					name="solar:clipboard-list-linear"
 					class="bg-icon scout"
 					aria-hidden="true"
 				/>
@@ -235,6 +247,9 @@
 	import { getDisplayNumber, getAnswerForDay } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
 	import { useShare } from '../../composables/useShare'
+	import { SPOT_ROUNDS_PER_MATCH } from '../../composables/useSpotFootballers'
+	import { useScoutReportStore } from '../../stores/scoutReport'
+	import { useAccessibilityStore } from '../../stores/accessibility'
 	import { useHaptics } from '../../composables/useHaptics'
 
 	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
@@ -244,7 +259,7 @@
 	const playStreak = usePlayStreakStore()
 	const { daily, scout, spot, dailyLastGuess, dailyGuesses, dailyAnswer, scoutAnswer, spotResults, refresh } =
 		useTodayProgress()
-	const { onShare } = useShare()
+	const { onShare, getMatchdayShareText, shareText } = useShare()
 	const haptics = useHaptics()
 
 	const puzzleNumber = getDisplayNumber(getUKDateString())
@@ -340,6 +355,32 @@
 		}
 	}
 
+	// Once all three daily games are done: one message with every result
+	const matchdayCopied = ref(false)
+	async function shareMatchday() {
+		if (!dailyAnswer.value) return
+		haptics.select()
+		const scoutStore = useScoutReportStore()
+		scoutStore.loadState()
+		const text = getMatchdayShareText({
+			puzzle: puzzleNumber,
+			streak: playStreak.activeStreak,
+			daily: { guesses: dailyGuesses.value, answer: dailyAnswer.value.name, isWin: daily.value.status === 'won' },
+			scout: { results: scoutStore.guessResults, isWin: scout.value.status === 'won', maxGuesses: scoutStore.maxGuesses },
+			spot: {
+				results: spotResults.value,
+				score: spotResults.value.filter(Boolean).length,
+				rounds: SPOT_ROUNDS_PER_MATCH,
+				relaxed: useAccessibilityStore().relaxedTimer,
+			},
+			gridPoints: grid.ready ? grid.weekPoints : 0,
+		})
+		if (await shareText(text)) {
+			matchdayCopied.value = true
+			setTimeout(() => (matchdayCopied.value = false), 2000)
+		}
+	}
+
 	const heroCta = computed(
 		() => ({ new: 'Play now', playing: 'Continue', won: 'See result', lost: 'See result' })[daily.value.status],
 	)
@@ -385,6 +426,8 @@
 	.home-header {
 		align-items: flex-end;
 		display: flex;
+		// Large text (Settings > Accessibility): the pills drop under the title
+		flex-wrap: wrap;
 		gap: 0.5rem;
 		justify-content: space-between;
 
@@ -447,6 +490,22 @@
 			flex-direction: column;
 			gap: 0.5rem;
 			min-width: 0;
+		}
+
+		.share-matchday {
+			align-items: center;
+			align-self: flex-start;
+			background: color-mix(in srgb, var(--primary-color) 14%, transparent);
+			border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+			border-radius: 999px;
+			color: var(--primary-color);
+			display: inline-flex;
+			font-family: var(--font-body);
+			font-size: 0.8rem;
+			font-weight: 800;
+			gap: 0.35rem;
+			margin-top: 0.45rem;
+			padding: 0.35rem 0.8rem;
 		}
 
 		.rings-headline {
@@ -707,6 +766,9 @@
 	.daily-hero,
 	.mode-card,
 	.challenge-row {
+		// paint containment: WebKit can count the rotated .bg-icon past the card edge as
+		// scrollable width even with overflow: hidden
+		contain: paint;
 		isolation: isolate;
 		overflow: hidden;
 		position: relative;
@@ -796,9 +858,12 @@
 			opacity: 0.1;
 		}
 
+		// Pulled in from the corner so the whole eye shows, not just its middle
 		&.spot {
+			bottom: -0.6rem;
 			color: var(--tertiary-color);
 			opacity: 0.1;
+			right: -0.4rem;
 		}
 
 		&.challenge {

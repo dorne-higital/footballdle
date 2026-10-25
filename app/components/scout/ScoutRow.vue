@@ -1,29 +1,29 @@
 <template>
-	<!-- iOS app: a card per guess, with labelled attribute tiles -->
+	<!-- iOS app (1.3): one line per guess, four dots (club, nation, position, price); the dossier holds the detail -->
 	<div
 		v-if="$config.public.appShell"
-		:class="['scout-card', { solved }]"
+		:class="['scout-mini', { solved }]"
+		role="group"
+		:aria-label="spokenRow"
 	>
-		<div class="card-head">
-			<span class="guess-number">{{ index + 1 }}</span>
-			<span class="card-name">{{ result.name }}</span>
-			<Icon
-				v-if="solved"
-				name="solar:check-circle-bold"
-				size="1.1rem"
-				class="solved-icon"
-			/>
-		</div>
-		<div class="attrs">
-			<div
+		<span class="guess-number">{{ index + 1 }}</span>
+		<span class="mini-name">{{ result.name }}</span>
+		<span
+			v-if="result.price"
+			:class="['mini-price', result.price.state]"
+			aria-hidden="true"
+			>{{ result.price.value }}{{ result.price.arrow === 'up' ? ' ↑' : result.price.arrow === 'down' ? ' ↓' : '' }}</span
+		>
+		<span
+			class="dots"
+			aria-hidden="true"
+		>
+			<i
 				v-for="attr in attrs"
 				:key="attr.label"
-				:class="['attr', attr.state]"
-			>
-				<span class="attr-label">{{ attr.label }}</span>
-				<span class="attr-value">{{ attr.value }}</span>
-			</div>
-		</div>
+				:class="attr.state"
+			></i>
+		</span>
 	</div>
 
 	<div
@@ -31,15 +31,36 @@
 		class="scout-row"
 	>
 		<div class="cell name-cell">{{ result.name }}</div>
-		<div :class="['cell', 'chip', result.club.state]">{{ result.club.value }}</div>
-		<div :class="['cell', 'chip', result.nationality.state]">{{ result.nationality.value }}</div>
-		<div :class="['cell', 'chip', result.position.state]">{{ result.position.value }}</div>
+		<div
+			:class="['cell', 'chip', result.club.state]"
+			:aria-label="`Club: ${result.club.value}, ${SPOKEN[result.club.state]}`"
+		>
+			{{ result.club.value }}
+		</div>
+		<div
+			:class="['cell', 'chip', result.nationality.state]"
+			:aria-label="`Nation: ${result.nationality.value}, ${SPOKEN[result.nationality.state]}`"
+		>
+			{{ result.nationality.value }}
+		</div>
+		<div
+			:class="['cell', 'chip', result.position.state]"
+			:aria-label="`Position: ${result.position.value}, ${SPOKEN[result.position.state]}`"
+		>
+			{{ result.position.value }}
+		</div>
+		<div
+			:class="['cell', 'chip', result.price?.state ?? 'none']"
+			:aria-label="result.price ? `Fantasy price: ${result.price.value}, ${SPOKEN[result.price.state]}${ARROW_SPOKEN[result.price.arrow ?? 'none']}` : 'Fantasy price unknown'"
+		>
+			{{ result.price ? `${result.price.value}${result.price.arrow === 'up' ? ' ↑' : result.price.arrow === 'down' ? ' ↓' : ''}` : '–' }}
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { computed } from 'vue'
-	import type { ScoutGuessResult } from '../../stores/scoutReport'
+	import type { AttributeState, ScoutGuessResult } from '../../stores/scoutReport'
 
 	const props = withDefaults(
 		defineProps<{
@@ -53,32 +74,37 @@
 		{ label: 'Club', ...props.result.club },
 		{ label: 'Nation', ...props.result.nationality },
 		{ label: 'Position', ...props.result.position },
+		...(props.result.price ? [{ label: 'Fantasy price', ...props.result.price }] : []),
 	])
 
-	const solved = computed(() => attrs.value.every(a => a.state === 'correct'))
+	// Club, nation and position decide it; the price just follows the player
+	const solved = computed(() => attrs.value.slice(0, 3).every(a => a.state === 'correct'))
+
+	const ARROW_SPOKEN = { up: ', target costs more', down: ', target costs less', none: '' } as const
+	const spokenRow = computed(() => {
+		const parts = attrs.value.map(a => `${a.label} ${a.value}, ${SPOKEN[a.state]}${a.label === 'Fantasy price' ? ARROW_SPOKEN[a.arrow ?? 'none'] : ''}`)
+		return `Guess ${props.index + 1}: ${props.result.name}${solved.value ? ', solved' : ''}. ${parts.join('. ')}`
+	})
+
+	// VoiceOver: "Nation: France, close"
+	const SPOKEN: Record<AttributeState, string> = { correct: 'right', present: 'close', absent: 'wrong' }
 </script>
 
 <style scoped lang="scss">
-	.scout-card {
+	.scout-mini {
+		align-items: center;
 		animation: card-in 0.35s ease-out;
 		background: var(--bg-secondary);
 		border: 1px solid var(--border);
-		border-radius: 1.1rem;
+		border-radius: 0.8rem;
 		display: flex;
-		flex-direction: column;
 		flex-shrink: 0;
 		gap: 0.5rem;
-		padding: 0.6rem;
+		min-height: 2.5rem;
+		padding: 0.4rem 0.6rem;
 
 		&.solved {
 			border-color: color-mix(in srgb, var(--color-success) 60%, transparent);
-		}
-
-		.card-head {
-			align-items: center;
-			display: flex;
-			gap: 0.5rem;
-			padding: 0 0.15rem;
 		}
 
 		.guess-number {
@@ -88,97 +114,81 @@
 			color: var(--text-secondary);
 			display: flex;
 			flex-shrink: 0;
-			font-size: 0.7rem;
+			font-size: 0.68rem;
 			font-variant-numeric: tabular-nums;
 			font-weight: 800;
-			height: 1.35rem;
+			height: 1.3rem;
 			justify-content: center;
-			width: 1.35rem;
+			width: 1.3rem;
 		}
 
-		.card-name {
+		.mini-name {
 			flex: 1;
-			font-family: var(--font-display);
-			font-size: 0.95rem;
+			font-size: 0.85rem;
+			text-align: left;
+			font-weight: 700;
 			min-width: 0;
 			overflow: hidden;
-			text-align: left;
 			text-overflow: ellipsis;
 			text-transform: capitalize;
 			white-space: nowrap;
 		}
 
-		.solved-icon {
-			color: var(--color-success);
-		}
+		.mini-price {
+			color: var(--text-secondary);
+			flex-shrink: 0;
+			font-size: 0.72rem;
+			font-variant-numeric: tabular-nums;
+			font-weight: 700;
 
-		.attrs {
-			display: grid;
-			gap: 0.35rem;
-			grid-template-columns: 1.25fr 1fr 1fr;
-		}
-
-		.attr {
-			animation: chip-reveal 0.45s ease-in-out both;
-			border-radius: 0.75rem;
-			color: #fff;
-			display: flex;
-			flex-direction: column;
-			gap: 0.1rem;
-			justify-content: center;
-			min-height: 2.9rem;
-			min-width: 0;
-			padding: 0.35rem 0.5rem;
-
-			&:nth-child(2) {
-				animation-delay: 0.08s;
-			}
-
-			&:nth-child(3) {
-				animation-delay: 0.16s;
+			&.present {
+				color: var(--color-present);
 			}
 
 			&.correct {
-				background: var(--color-success);
-				color: var(--on-success);
-			}
-
-			&.present {
-				background: var(--color-present);
-				color: #1d1403;
-			}
-
-			&.absent {
-				background: color-mix(in srgb, var(--text-primary) 9%, transparent);
+				color: var(--color-success);
 			}
 		}
 
-		.attr-label {
-			font-size: 0.6rem;
-			font-weight: 800;
-			letter-spacing: 0.08em;
-			opacity: 0.7;
-			text-transform: uppercase;
-		}
+		.dots {
+			display: flex;
+			flex-shrink: 0;
+			gap: 0.2rem;
 
-		.attr-value {
-			display: -webkit-box;
-			font-size: 0.8rem;
-			font-weight: 700;
-			hyphens: none;
-			-webkit-line-clamp: 2;
-			line-clamp: 2;
-			line-height: 1.15;
-			overflow: hidden;
-			overflow-wrap: normal;
-			-webkit-box-orient: vertical;
+			i {
+				animation: chip-reveal 0.45s ease-in-out both;
+				background: color-mix(in srgb, var(--text-primary) 14%, transparent);
+				border-radius: 0.25rem;
+				height: 0.8rem;
+				width: 0.8rem;
+
+				&:nth-child(2) {
+					animation-delay: 0.08s;
+				}
+
+				&:nth-child(3) {
+					animation-delay: 0.16s;
+				}
+
+				&:nth-child(4) {
+					animation-delay: 0.24s;
+				}
+
+				&.correct {
+					background: var(--color-success);
+				}
+
+				&.present {
+					background: var(--color-present);
+				}
+			}
 		}
 	}
 
 	.scout-row {
 		display: grid;
 		gap: 0.4rem;
-		grid-template-columns: 1.1fr 1fr 1fr 1fr;
+		grid-template-columns: 1.1fr 1fr 1fr 1fr 0.8fr;
 		margin-bottom: 0.4rem;
 
 		.cell {
@@ -218,6 +228,11 @@
 
 			&.absent {
 				background: var(--color-absent);
+			}
+
+			&.none {
+				background: var(--bg-secondary);
+				color: var(--text-secondary);
 			}
 		}
 	}

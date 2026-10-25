@@ -1,27 +1,25 @@
 <template>
 	<div class="daily-page-wrapper">
-	<div :class="['daily-page', { 'is-intro': gameStore.showIntro && !challengeStore.isActive }]">
+	<div :class="['daily-page', { 'is-intro': gameStore.showIntro }]">
 		<!-- Intro / ready-to-play screen -->
 		<ModeIntroScreen
-			v-if="gameStore.showIntro && !challengeStore.isActive"
+			v-if="gameStore.showIntro"
 			mode-name="Daily"
 			mode-tagline="Guess the Premier League footballer"
 			:usp-tiles="dailyUspTiles"
 			:can-play="gameStore.canPlay"
 			:countdown="gameStore.countdown"
-			:challenge-unlocked="challengeStore.isUnlocked"
 			:has-incomplete-game="hasIncompleteGame"
 			:prev-answer-link="`/solution/${yesterdayISO}`"
 			:stats="statsStore.stats"
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
-			@start-challenge="handleStartChallenge"
 			@show-result="gameStore.showGameOverModal = true"
 		/>
 
 		<!-- Game Screen -->
 		<div
-			v-else-if="!challengeStore.isActive"
+			v-else
 			class="game-screen"
 		>
 			<ScoreboardStrip
@@ -99,7 +97,6 @@
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
-				:grid="true"
 				@result="gameStore.showGameOverModal = true"
 			/>
 			<Keyboard
@@ -113,29 +110,6 @@
 			/>
 		</div>
 
-		<!-- Challenge Screen -->
-		<div
-			v-else-if="challengeStore.isActive"
-			class="challenge-screen"
-		>
-			<ChallengeModal
-				:guesses="challengeStore.guesses"
-				:current-guess="challengeStore.currentGuess"
-				:max-guesses="challengeStore.maxGuesses"
-				:answer="challengeStore.currentAnswer"
-				:time-remaining="challengeStore.timeRemaining"
-				:time-formatted="challengeStore.timeFormatted"
-				:can-play="challengeStore.canPlay"
-				:is-paused="challengeStore.isPaused"
-				:game-over="challengeStore.gameOver"
-				:session-wins="challengeStore.sessionWins"
-				:error-message="challengeStore.errorMessage"
-				@key="handleChallengeKey"
-				@end-challenge="handleEndChallenge"
-				@toggle-pause="challengeStore.togglePause"
-				@play-again="challengeStore.startChallenge"
-			/>
-		</div>
 
 		<!-- Game Over Modal -->
 		<PitchCardModal
@@ -299,17 +273,6 @@
 								/>
 								<span>Daily</span>
 							</button>
-							<button
-								v-if="challengeStatsStore.stats.gamesPlayed > 0"
-								:class="['toggle-btn', { active: activeStatsTab === 'challenge' }]"
-								@click="handleStatsTabSwitch('challenge')"
-							>
-								<Icon
-									name="solar:alarm-play-bold"
-									size="1rem"
-								/>
-								<span>Challenge</span>
-							</button>
 						</div>
 					</div>
 
@@ -324,123 +287,11 @@
 							/>
 						</div>
 
-						<div :class="['stats-content', { active: activeStatsTab === 'challenge' }]">
-							<SeasonFormDashboard
-								:primary-stats="challengePrimaryStats"
-								:win-percentage="challengeStatsStore.winPercentage"
-								:distribution="challengeStatsStore.stats.guessDistribution"
-								:recent-form="challengeStatsStore.stats.recentForm"
-								:highlight-guess-count="lastChallengeGuessCount"
-							/>
-						</div>
 					</div>
 				</div>
 			</template>
 		</PitchCardModal>
 
-		<!-- Challenge Game Over Modal -->
-		<PitchCardModal
-			v-if="challengeStore.showGameOverModal"
-			:heading="challengeStore.isWin ? 'Challenge Complete!' : 'Time\'s Up!'"
-			:accent="challengeStore.isWin ? 'win' : 'loss'"
-			variant="small"
-			@close="challengeStore.closeGameOverModal"
-		>
-			<template #body>
-				<div class="challenge-game-over-section">
-					<h4 v-if="challengeStore.isWin">
-						You solved it in {{ 45 - challengeStore.timeRemaining }} seconds!
-					</h4>
-					<h4 v-else>Not this time</h4>
-					<p>
-						The answer was <strong class="answer">{{ challengeStore.currentAnswer }}</strong>
-					</p>
-
-					<div
-						v-if="challengeStore.guesses.length"
-						class="share-preview"
-					>
-						<p class="share-header">
-							Footballdle ⚽ Challenge{{
-								challengeStore.isWin ? ` · ${45 - challengeStore.timeRemaining}s` : ''
-							}}
-						</p>
-						<div class="share-emoji-grid">
-							<div
-								v-for="(guess, gi) in challengeStore.guesses"
-								:key="gi"
-								class="share-row"
-							>
-								<span
-									v-for="(char, ci) in guess.split('')"
-									:key="ci"
-									class="share-tile"
-									:class="tileStates(guess, challengeStore.currentAnswer)[ci]"
-								></span>
-							</div>
-						</div>
-					</div>
-
-					<div
-						v-if="challengeStore.guesses.length"
-						class="share-buttons"
-					>
-						<button
-							class="button primary"
-							@click="handleChallengeShare"
-						>
-							<Icon
-								:name="$config.public.isApp ? 'solar:share-linear' : 'solar:copy-linear'"
-								size="1rem"
-							/>
-							{{ $config.public.isApp ? 'Share' : shareToast ? 'Copied!' : 'Copy result' }}
-						</button>
-						<button
-							v-if="!$config.public.isApp"
-							class="btn-x"
-							@click="handleChallengeShareTwitter"
-						>
-							<Icon
-								name="ri:twitter-x-fill"
-								size="1rem"
-							/>
-							Share on X
-						</button>
-					</div>
-
-					<div class="challenge-buttons">
-						<button
-							type="button"
-							class="button full end-challenge-btn"
-							@click="handleEndChallenge"
-						>
-							End challenge
-						</button>
-
-						<button
-							class="button primary full"
-							@click="handleChallengePlayAgain"
-						>
-							Play Again
-						</button>
-					</div>
-					<a
-						v-if="!$config.public.isApp"
-						href="https://buymeacoffee.com/dhorne92E"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="coffee-nudge"
-						@click.prevent="handleBuyMeCoffee('challenge_over_modal')"
-					>
-						<Icon
-							name="uil:coffee"
-							size="0.9rem"
-						/>
-						Enjoying Footballdle? Buy me a coffee
-					</a>
-				</div>
-			</template>
-		</PitchCardModal>
 	</div>
 
 	<GameSidePanel
@@ -470,7 +321,6 @@
 	import { useGameStore } from '../../stores/game'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
-	import { useChallengeStore } from '../../stores/challenge'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
 	import FullTimePanel from '../../components/app/FullTimePanel.vue'
@@ -497,7 +347,6 @@
 	definePageMeta({ layout: 'play' })
 
 	const PitchCardModal = defineAsyncComponent(() => import('../../components/shared/PitchCardModal.vue'))
-	const ChallengeModal = defineAsyncComponent(() => import('../../components/ChallengeModal.vue'))
 
 
 	useHead({
@@ -564,9 +413,7 @@
 	const statsStore = useModeStatsStore('daily')
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
-	const challengeStatsStore = useModeStatsStore('challenge')
 	const modalsStore = useModalsStore()
-	const challengeStore = useChallengeStore()
 	const { onShare, onShareTwitter } = useShare()
 
 	const {
@@ -577,11 +424,6 @@
 		trackGuessSubmitted,
 		trackIntroButtonClick,
 		trackStatsTabSwitch,
-		trackChallengeStart,
-		trackChallengeWin,
-		trackChallengeLoss,
-		trackChallengeAbandon,
-		trackChallengePlayAgain,
 		trackShare,
 		trackModalOpen,
 		trackSessionTime,
@@ -604,7 +446,7 @@
 	const dailyUspTiles = [
 		{ icon: 'solar:calendar-linear', text: 'New player to guess every day' },
 		{ icon: 'solar:football-outline', text: `${playerMeta.season} Premier League players` },
-		{ icon: 'solar:magnifer-linear', text: 'Only players with 6 letter surnames' },
+		{ icon: 'solar:magnifer-linear', text: 'Five or six letter surnames' },
 		{ icon: 'solar:shield-warning-linear', text: 'Maximum 6 guesses' },
 	]
 
@@ -670,9 +512,6 @@
 	const hasIncompleteGame = computed(() => gameStore.guesses.length > 0 && !gameStore.gameOver)
 
 	const lastGuessCount = computed(() => (gameStore.isWin && gameStore.gameOver ? gameStore.guesses.length : 0))
-	const lastChallengeGuessCount = computed(() =>
-		challengeStore.isWin && challengeStore.gameOver ? challengeStore.guesses.length : 0,
-	)
 
 	const streakMessage = computed(() => {
 		const s = statsStore.stats.currentStreak
@@ -698,12 +537,6 @@
 		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
 	])
 
-	const challengePrimaryStats = computed(() => [
-		{ label: 'Challenges', value: challengeStatsStore.stats.gamesPlayed },
-		{ label: 'Wins', value: challengeStatsStore.stats.wins },
-		{ label: 'Best Streak', value: challengeStatsStore.stats.maxStreak },
-		{ label: 'Best Time', value: `${challengeStatsStore.stats.bestTime || 0}s` },
-	])
 
 	// ============================================================================
 	// LIFECYCLE HOOKS
@@ -716,29 +549,19 @@
 		gameStore.startCountdown()
 
 
-		challengeStore.loadChallengeState()
-		challengeStatsStore.loadStats()
-		// A challenge in progress shows straight away (not behind the intro) and its
-		// clock only runs while the screen is visible
-		challengeStore.resumeTimer()
-		document.addEventListener('visibilitychange', onChallengeVisibility)
-
 		sessionStartTime.value = Date.now()
 
 		// iOS app: the Matchday home links straight into play, skipping the intro screen
 		const start = useRoute().query.start
 		// The Grid replaced Challenge: old links and bookmarks go there
-		if (start === 'challenge' && isAppBuild) {
+		if (start === 'challenge') {
 			navigateTo('/play/grid', { replace: true })
 			return
 		}
-		if (gameStore.showIntro && !challengeStore.isActive) {
-			if (start === 'play' && gameStore.canPlay) handleStartGame()
-			else if (start === 'challenge' && challengeStore.isUnlocked) handleStartChallenge()
-		}
+		if (gameStore.showIntro && start === 'play' && gameStore.canPlay) handleStartGame()
 		// iOS app: a finished Daily opens on its board (no web intro), with the result
 		// sheet straight away when coming from the Matchday "See result" card
-		if (isAppBuild && gameStore.gameOver && !challengeStore.isActive) {
+		if (isAppBuild && gameStore.gameOver) {
 			gameStore.showIntro = false
 			if (start === 'result') gameStore.showGameOverModal = true
 		}
@@ -755,28 +578,14 @@
 
 	onUnmounted(() => {
 		gameStore.stopCountdown()
-		document.removeEventListener('visibilitychange', onChallengeVisibility)
-		challengeStore.pauseTimer()
 	})
 
-	function onChallengeVisibility() {
-		if (document.hidden) challengeStore.pauseTimer()
-		else challengeStore.resumeTimer()
-	}
 
 	// ============================================================================
 	// WATCHERS
 	// ============================================================================
 	// A new UK day is handled by plugins/day-rollover.client.ts (reloads the app)
 
-	watch(
-		() => gameStore.showGameOverModal,
-		(showModal) => {
-			if (showModal && gameStore.gameOver) {
-				challengeStore.unlockChallenge()
-			}
-		},
-	)
 
 	watch(
 		() => modalsStore.showStats,
@@ -808,24 +617,6 @@
 		trackShare('twitter')
 	}
 
-	async function handleChallengeShare() {
-		const timeUsed = 45 - challengeStore.timeRemaining
-		const label = challengeStore.isWin ? `Challenge (${timeUsed}s)` : 'Challenge'
-		const copied = await onShare(challengeStore.guesses, challengeStore.currentAnswer, challengeStore.isWin, label)
-		if (copied) {
-			shareToast.value = true
-			if (shareToastTimer) clearTimeout(shareToastTimer)
-			shareToastTimer = setTimeout(() => { shareToast.value = false }, 2000)
-		}
-		trackShare('copy_challenge')
-	}
-
-	function handleChallengeShareTwitter() {
-		const timeUsed = 45 - challengeStore.timeRemaining
-		const label = challengeStore.isWin ? `Challenge (${timeUsed}s)` : 'Challenge'
-		onShareTwitter(challengeStore.guesses, challengeStore.currentAnswer, challengeStore.isWin, label)
-		trackShare('twitter_challenge')
-	}
 
 	function handleKeyboardKey(key: string) {
 		const guessesBefore = gameStore.guesses.length
@@ -851,32 +642,8 @@
 		trackGameStart(statsStore.stats.gamesPlayed > 0)
 	}
 
-	function handleStartChallenge() {
-		trackIntroButtonClick('challenge_play')
-		challengeStore.startChallenge()
-		gameStore.showIntro = false
-		trackChallengeStart()
-	}
 
-	function handleEndChallenge() {
-		if (challengeStore.isActive && !challengeStore.gameOver && challengeStore.timeRemaining > 0) {
-			trackChallengeAbandon(45 - challengeStore.timeRemaining)
-		}
-		challengeStore.endChallenge()
-		// The app goes back to the finished board; the website to its intro
-		gameStore.showIntro = !isAppBuild
-	}
-
-	function handleChallengePlayAgain() {
-		challengeStore.startChallenge()
-		trackChallengePlayAgain()
-	}
-
-	function handleChallengeKey(key: string) {
-		challengeStore.onKeyboardKey(key)
-	}
-
-	function handleStatsTabSwitch(tab: 'daily' | 'challenge') {
+	function handleStatsTabSwitch(tab: 'daily') {
 		activeStatsTab.value = tab
 		trackStatsTabSwitch(tab)
 	}
@@ -920,8 +687,7 @@
 			overflow-y: auto;
 		}
 
-		.game-screen,
-		.challenge-screen {
+		.game-screen {
 			display: flex;
 			flex-direction: column;
 			height: 100%;
@@ -938,13 +704,6 @@
 				padding-top: 0.5rem;
 			}
 
-			.challenge-game {
-				display: flex;
-				flex: 1;
-				flex-direction: column;
-				min-height: 0;
-				overflow: hidden;
-			}
 		}
 	}
 
@@ -952,12 +711,10 @@
 		.daily-page:not(.is-intro) {
 			overflow-y: auto;
 
-			.game-screen,
-			.challenge-screen {
+			.game-screen {
 				overflow-y: auto;
 
-				.game-board,
-				.challenge-game {
+				.game-board {
 					flex: none;
 					min-height: auto;
 					overflow: visible;
@@ -1149,8 +906,7 @@
 	// ============================================================================
 	// GAME OVER MODAL
 	// ============================================================================
-	.game-over-section,
-	.challenge-game-over-section {
+	.game-over-section {
 		text-align: center;
 		width: 100%;
 
@@ -1179,12 +935,6 @@
 			gap: 0.4rem;
 			margin: 0 auto 0.75rem;
 			padding: 0.4rem 0.9rem;
-		}
-
-		.end-challenge-btn {
-			background: var(--bg-secondary);
-			border: 1px solid var(--border);
-			color: var(--text-primary);
 		}
 
 		.answer-details {
@@ -1407,15 +1157,4 @@
 		}
 	}
 
-	// ============================================================================
-	// CHALLENGE GAME OVER MODAL
-	// ============================================================================
-	.challenge-game-over-section {
-		.challenge-buttons {
-			display: flex;
-			gap: 1rem;
-			justify-content: center;
-			margin-top: 1rem;
-		}
-	}
 </style>

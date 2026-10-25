@@ -109,7 +109,6 @@
 				</button>
 			</PlaySurfaceFrame>
 			<FullTimePanel
-				grid
 				v-if="isAppBuild && spotStore.gameOver"
 				:summary="`${spotStore.score}/${spotStore.maxGuesses} · ${spotStore.scoreLabel}`"
 				:is-win="spotStore.isWin"
@@ -243,7 +242,7 @@
 <script setup lang="ts">
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
 	import { useSpotTheBallerStore, SPOT_TIER_LABELS } from '../../stores/spotTheBaller'
-	import { SPOT_ROUND_TIME } from '../../composables/useSpotFootballers'
+	import { useAccessibilityStore } from '../../stores/accessibility'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
@@ -300,6 +299,7 @@
 			spotStore.maxGuesses,
 			spotStore.puzzleNumber,
 			statsStore.stats.currentStreak,
+			useAccessibilityStore().relaxedTimer,
 		),
 	)
 	const dailyStatsStore = useModeStatsStore('daily')
@@ -328,7 +328,7 @@
 	// ============================================================================
 	// REACTIVE STATE
 	// ============================================================================
-	const roundTime = SPOT_ROUND_TIME
+	const roundTime = computed(() => spotStore.roundTime)
 
 	const roundDots = computed(() =>
 		Array.from({ length: spotStore.maxGuesses }, (_, i) => {
