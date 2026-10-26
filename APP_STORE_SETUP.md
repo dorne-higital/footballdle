@@ -113,10 +113,10 @@ App Store Connect → your app → **Monetization → In-App Purchases** → **+
 
 | Type | Reference name | Product ID | Suggested price |
 |---|---|---|---|
-| Non-Consumable | Footballdle Pro (unlimited hints) | `pro` | £14.99 |
+| Non-Consumable | Footballdle Pro (unlimited hints) | `pro` | £9.99 (from 26 Oct 2026; flash sales scheduled in App Store Connect) |
 | Consumable | 1 Hint | `fh1` | £0.99 |
-| Consumable | 5 Hints | `fh5` | £2.99 |
-| Consumable | 15 Hints | `fh15` | £7.99 |
+| Consumable | 5 Hints | `fh5` | £1.99 |
+| Consumable | 15 Hints | `fh15` | £4.99 |
 | Consumable | Small Tip | `fts` | £0.99 |
 | Consumable | Medium Tip | `ftm` | £2.99 |
 | Consumable | Large Tip | `ftl` | £3.99 |

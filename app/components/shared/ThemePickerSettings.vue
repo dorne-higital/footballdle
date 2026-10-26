@@ -1169,7 +1169,9 @@
 		gap: 0.5rem;
 		padding-bottom: 0.5rem;
 
-		.hero-card {
+		// .support-group too (for its button styles), so it has to beat that group's
+		// first-child rule, which drops the top border: a solid line all the way round
+		.hero-card.support-group {
 			background: color-mix(in srgb, var(--primary-color) 12%, var(--bg-secondary));
 			border: 1px solid color-mix(in srgb, var(--primary-color) 35%, var(--border));
 			border-radius: 1.1rem;
@@ -1177,10 +1179,6 @@
 			gap: 0.35rem;
 			justify-items: start;
 			padding: 1rem 1.1rem 1.1rem;
-
-			&:first-child {
-				padding-top: 1rem;
-			}
 
 			.hero-title {
 				align-items: center;
