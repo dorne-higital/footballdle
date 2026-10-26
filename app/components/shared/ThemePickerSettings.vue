@@ -622,6 +622,32 @@
 					>
 						{{ purchases.message }}
 					</p>
+
+					<!-- RevenueCat's ID for this install: support, and gifting Pro from the dashboard -->
+					<div
+						v-if="purchases.playerId"
+						class="player-id"
+					>
+						<span class="option-name">Your player ID</span>
+						<p>If you message us about purchases, include this so we can find you.</p>
+						<div class="player-id-row">
+							<code
+								ref="playerIdEl"
+								class="player-id-value"
+							>{{ purchases.playerId }}</code>
+							<button
+								type="button"
+								class="store-button"
+								@click="copyPlayerId"
+							>
+								<Icon
+									:name="copied ? 'solar:check-circle-linear' : 'solar:copy-linear'"
+									size="1rem"
+								/>
+								{{ copied ? 'Copied' : 'Copy' }}
+							</button>
+						</div>
+					</div>
 				</div>
 
 				<div
@@ -782,6 +808,24 @@
 		]
 		return tiles.filter((t): t is HelpTile => !!t)
 	})
+
+	// Copy the player ID; if the clipboard says no, select it so it can be copied by hand
+	const playerIdEl = ref<HTMLElement>()
+	const copied = ref(false)
+	async function copyPlayerId() {
+		try {
+			await navigator.clipboard.writeText(purchases.playerId)
+			copied.value = true
+			setTimeout(() => (copied.value = false), 2000)
+		} catch {
+			const el = playerIdEl.value
+			if (!el) return
+			const range = document.createRange()
+			range.selectNodeContents(el)
+			getSelection()?.removeAllRanges()
+			getSelection()?.addRange(range)
+		}
+	}
 
 	function resetHints() {
 		purchases.resetHintBank()
@@ -1417,6 +1461,47 @@
 
 		.menu-row:disabled {
 			opacity: 0.5;
+		}
+
+		.player-id {
+			display: grid;
+			gap: 0.2rem;
+			margin-top: 1.5rem;
+			width: 100%;
+
+			.option-name {
+				font-size: 0.95rem;
+				font-weight: 700;
+			}
+
+			p {
+				margin: 0 0 0.4rem;
+			}
+		}
+
+		.player-id-row {
+			align-items: center;
+			display: flex;
+			gap: 0.6rem;
+
+			.store-button {
+				flex-shrink: 0;
+				margin-top: 0;
+			}
+		}
+
+		.player-id-value {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 0.6rem;
+			color: var(--text-primary);
+			flex: 1;
+			font-size: 0.75rem;
+			min-width: 0;
+			overflow-wrap: anywhere;
+			padding: 0.5rem 0.65rem;
+			-webkit-user-select: all;
+			user-select: all;
 		}
 
 		// The page title already says Themes
