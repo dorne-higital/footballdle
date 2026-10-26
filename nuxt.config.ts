@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { APP_STORE_LIVE } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
@@ -67,6 +69,18 @@ export default defineNuxtConfig({
 	// Pre-render the sitemap so it works on static deployments too
 	routeRules: {
 		'/sitemap.xml': { prerender: true },
+	},
+
+	hooks: {
+		// The website serves the player list at /roster.json for the iOS app to download
+		// (utils/rosterSource.ts), straight from app/data, so it's always the deployed list
+		'nitro:build:public-assets'(nitro) {
+			if (isApp) return
+			const data = (file: string) => JSON.parse(readFileSync(join(__dirname, 'app/data', file), 'utf8'))
+			const dir = nitro.options.output.publicDir
+			mkdirSync(dir, { recursive: true })
+			writeFileSync(join(dir, 'roster.json'), JSON.stringify({ updated: data('meta.json').updated, players: data('players.json') }))
+		},
 	},
 
 	// Build optimizations + pre-render all solution pages so they exist as static HTML

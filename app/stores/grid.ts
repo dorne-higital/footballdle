@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { usePlayStreakStore } from './playStreak'
 import { computed, ref } from 'vue'
-import playersData from '../data/players.json'
+import { roster } from '../composables/useFootballers'
 import weeksData from '../data/grid-weeks.json'
 import practiceData from '../data/grid-practice.json'
 import {
@@ -20,7 +20,7 @@ const STATS_KEY = 'footballdle-grid-stats'
 export const GRID_WIN_SQUARES = 5
 const RECENT_PRACTICE = 30
 
-const players = playersData as GridPlayer[]
+const players = roster as unknown as GridPlayer[] // players.json carries the Grid's fields too
 const weeks = weeksData as { epoch: string; weeks: GridDeal[][] }
 let practicePool: ReturnType<typeof readPracticeGrids> | null = null
 

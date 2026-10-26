@@ -1,0 +1,55 @@
+name: Weekly player update
+
+# Every Tuesday: refresh the squads (transfers, Fantasy prices), extend the answer
+# schedule and freeze the new Scout briefs, then commit to main. Netlify deploys the
+# website from that push, and the iOS app downloads the new list from /roster.json at its
+# next launch (utils/rosterSource.ts), so no app update is needed.
+#
+# If the data source is down or the squads look wrong, yarn update-players stops before
+# writing anything, the tests guard the rest, and nothing is committed. GitHub emails the
+# repo owner when a run fails. Run it by hand from the Actions tab (Run workflow).
+
+on:
+    schedule:
+        - cron: '0 3 * * 2' # Tuesdays, 3am UTC
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: update-players
+    cancel-in-progress: false
+
+jobs:
+    update:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: main
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: yarn
+
+            - run: yarn install --frozen-lockfile
+
+            - name: Refresh players and schedule
+              run: yarn update-players
+
+            - name: Tests
+              run: yarn test
+
+            - name: Commit and push if anything changed
+              run: |
+                  if git diff --quiet -- app/data; then
+                      echo "No changes this week."
+                      exit 0
+                  fi
+                  git config user.name "footballdle-bot"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add app/data
+                  git commit -m "Weekly player update ($(date -u +%Y-%m-%d))"
+                  git push origin HEAD:main

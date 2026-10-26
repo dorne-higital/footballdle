@@ -587,6 +587,11 @@ async function main() {
 	const dailyPool = roster.filter(p => p.dailyKnown && (p.lastName.length === 5 || p.lastName.length === 6) && dailyEligible(p))
 
 	console.log(`\nClubs: ${[...new Set(roster.map(p => p.club))].sort().join(', ')}`)
+	// The weekly job (.github/workflows/update-players.yml) commits whatever this writes, so a
+	// bad week of source data must stop here: the league is 20 clubs and 500+ players
+	const clubCount = new Set(roster.map(p => p.club)).size
+	if (clubCount !== 20 || roster.length < 500 || known.length < 200)
+		throw new Error(`Squads look wrong (${clubCount} clubs, ${roster.length} players, ${known.length} known); nothing written`)
 	const challengePool = roster.filter(p => p.dailyKnown && p.lastName.length === 5)
 	console.log(
 		`Players: ${roster.length} (${known.length} Scout/Spot answers, ${dailyPool.length} Daily, ${challengePool.length} Challenge)`,
