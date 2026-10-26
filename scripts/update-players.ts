@@ -15,6 +15,7 @@
 //   dates are never rewritten, so today's answer, past solutions, and app builds already
 //   in people's hands all stay in sync. New players only become answers on new dates.
 
+import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -667,13 +668,20 @@ async function main() {
 	writeFileSync(SCHEDULE_PATH, `${JSON.stringify(schedule)}\n`)
 	if (newSeason) writeFileSync(CARDS_PATH, `${JSON.stringify(cardsFile, null, '\t')}\n`)
 	if (OFFLINE) {
+		freezeScoutBriefs()
 		console.log('\nWrote app/data/schedule.json (offline: players.json and meta.json untouched)')
 		return
 	}
 	writeFileSync(PLAYERS_PATH, `${JSON.stringify(roster, null, '\t')}\n`)
 	const meta = { season: `${season}/${String(season + 1).slice(2)}`, updated: new Date().toISOString().slice(0, 10) }
 	writeFileSync(META_PATH, `${JSON.stringify(meta, null, '\t')}\n`)
+	freezeScoutBriefs()
 	console.log('\nWrote app/data/players.json, schedule.json and meta.json')
+}
+
+// Each new Scout day's brief, frozen from the player list just written (scripts/freeze-scout-briefs.ts)
+function freezeScoutBriefs() {
+	execFileSync(join(ROOT, 'node_modules/.bin/vite-node'), [join(ROOT, 'scripts/freeze-scout-briefs.ts')], { cwd: ROOT, stdio: 'inherit' })
 }
 
 main().catch((error) => {

@@ -80,6 +80,12 @@ export function getScoutAnswerPlayerForDay(dateStr: string): Footballer | undefi
 	return getFullPlayerData(scoutFallbackPool[(((puzzle - 1) % len) + len) % len] ?? '')
 }
 
+/** The day's frozen Scout brief code, if the schedule has one */
+export function getScoutBriefCodeForDay(dateStr: string): string | undefined {
+	const scout = answerSchedule.scout
+	return scout.briefs?.[getPuzzleNumber(dateStr) - scout.start] || undefined
+}
+
 export function getScoutAnswerForDay(dateStr: string): string {
 	return getScoutAnswerPlayerForDay(dateStr)?.name ?? ''
 }

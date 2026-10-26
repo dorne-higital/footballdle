@@ -46,7 +46,8 @@ export const roster = players as RosterPlayer[]
 export const answerSchedule = schedule as {
 	epoch: string
 	daily: { start: number; answers: Snapshot[] }
-	scout: { start: number; answers: Snapshot[] }
+	/** briefs: each day's frozen Scout brief pair (utils/scoutClues.ts PAIR_CODES), '' if none */
+	scout: { start: number; answers: Snapshot[]; briefs?: string[] }
 	spot: { start: number; days: { target: Snapshot; options: string[] }[][] }
 }
 

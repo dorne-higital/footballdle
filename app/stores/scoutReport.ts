@@ -6,6 +6,7 @@ import { getDisplayNumber, getPositionGroup, getPuzzleNumber, type Footballer } 
 import {
 	getScoutAnswerForDay,
 	getScoutAnswerPlayerForDay,
+	getScoutBriefCodeForDay,
 	isValidFullFootballer,
 	getFullPlayerData,
 	searchFullFootballers,
@@ -204,7 +205,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	// The scout's brief: two facts about today's target, before any guess
 	const brief = computed(() => {
 		const player = getScoutAnswerPlayerForDay(todayStr)
-		return player ? scoutBrief(player) : null
+		return player ? scoutBrief(player, getScoutBriefCodeForDay(todayStr)) : null
 	})
 
 	// Everything learned so far, from the brief and every guess, for the dossier
