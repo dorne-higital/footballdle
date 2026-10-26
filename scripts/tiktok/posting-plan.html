@@ -1,0 +1,160 @@
+<title>Footballdle TikTok Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+/* Layout: brief and how-to, then the posting calendar as one card per day with copy buttons. Single dark look, the app's Floodlights palette. */
+:root {
+	--pitch: #07130d; --turf: #0d2117; --turf-2: #133024; --line: #1f4231;
+	--text: #f2fbf5; --muted: #93ab9d; --green: #2fe08a; --amber: #f5b638;
+	--display: 'Archivo Black', 'Arial Black', system-ui, sans-serif;
+	--body: 'Manrope', system-ui, -apple-system, sans-serif;
+	color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--pitch); color: var(--text); font: 15px/1.55 var(--body); }
+.wrap { max-width: 56rem; margin: 0 auto; padding: 2.25rem 16px 4rem; display: grid; gap: 1.75rem; }
+header { display: grid; gap: 0.6rem; }
+.eyebrow { color: var(--amber); font-size: 0.75rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+h1 { font: 400 clamp(2rem, 6vw, 2.9rem)/1.05 var(--display); margin: 0; text-wrap: balance; }
+h2 { font: 400 1.15rem var(--display); margin: 0; }
+header p { color: var(--muted); margin: 0; max-width: 62ch; }
+.how { background: var(--turf); border: 1px solid var(--line); border-radius: 1rem; padding: 1rem 1.15rem; display: grid; gap: 0.5rem; }
+.how ol, .how ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.35rem; color: var(--muted); font-size: 0.92rem; }
+.how li::marker { color: var(--green); font-weight: 800; }
+.how b { color: var(--text); }
+.filters { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.filter { background: transparent; border: 1px solid var(--line); border-radius: 99px; color: var(--muted); cursor: pointer; font: 700 0.85rem var(--body); padding: 0.45rem 0.85rem; }
+.filter[aria-checked="true"], .filter[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--pitch); }
+.list { display: grid; gap: 0.75rem; }
+.perday { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.perday-label { font-weight: 800; margin-right: 0.3rem; }
+.perday-sum { color: var(--muted); font-size: 0.88rem; margin-left: 0.4rem; }
+.day-head { font: 400 1.05rem var(--display); margin: 0.6rem 0 -0.2rem; color: var(--amber); }
+.when .time { color: var(--muted); font-size: 0.82rem; font-weight: 700; }
+.post { background: var(--turf); border: 1px solid var(--line); border-radius: 1rem; padding: 0.9rem 1rem; display: grid; grid-template-columns: 6.5rem 1fr; gap: 0.4rem 1rem; align-items: start; }
+.post.done { opacity: 0.45; }
+.when { display: grid; gap: 0.35rem; }
+.when b { font: 400 1rem var(--display); }
+.chip { border: 1px solid; border-radius: 6px; font: 800 0.62rem/1 var(--body); letter-spacing: 0.08em; padding: 0.3rem 0.45rem; text-transform: uppercase; justify-self: start; }
+.chip.daily { color: var(--green); } .chip.scout { color: var(--amber); } .chip.spot { color: #8fd3ff; } .chip.grid { color: #f2a0ff; }
+.body { display: grid; gap: 0.45rem; min-width: 0; }
+.file { font: 600 0.8rem ui-monospace, Menlo, monospace; color: var(--muted); overflow-wrap: anywhere; }
+.hook { font-weight: 800; }
+.cap.tags { color: var(--green); font-size: 0.82rem; }
+.cap { background: var(--pitch); border: 1px solid var(--line); border-radius: 0.6rem; padding: 0.6rem 0.75rem; font-size: 0.88rem; overflow-wrap: anywhere; margin: 0; white-space: pre-wrap; }
+.row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.btn { background: var(--turf-2); border: 1px solid var(--line); border-radius: 8px; color: var(--text); cursor: pointer; font: 700 0.78rem var(--body); padding: 0.4rem 0.7rem; min-height: 32px; }
+.btn.ok { background: var(--green); border-color: var(--green); color: var(--pitch); }
+label.posted { display: flex; gap: 0.35rem; align-items: center; color: var(--muted); font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+.btn:focus-visible, .filter:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+@media (width <= 520px) { .post { grid-template-columns: 1fr; } .when { grid-auto-flow: column; justify-content: start; align-items: center; gap: 0.6rem; } }
+</style>
+
+<div class="wrap">
+	<header>
+		<span class="eyebrow">Footballdle · Short videos</span>
+		<h1>__COUNT__ videos ready to post</h1>
+		<p>Made from the real app playing past puzzles. Every one is in this folder (__FOLDER__), sorted by game mode. Pick how many you'll post a day and the plan lays them out from tomorrow, with posting times and the modes mixed so the same one never runs back to back.</p>
+	</header>
+
+	<section class="how">
+		<h2>Posting one</h2>
+		<ol>
+			<li><b>Get the videos onto your phone:</b> AirDrop this batch's folder from your Mac to your iPhone (right-click the folder → Share → AirDrop). They land in Files or Photos.</li>
+			<li><b>In TikTok, tap + and pick that day's video.</b> The videos are silent on purpose: <b>add a trending sound</b> in TikTok's Sounds. Sound matters a lot for reach.</li>
+			<li><b>Copy the text and hashtags below and paste them in,</b> then post. Three to six hashtags is plenty; the general football ones bring reach, the mode ones bring the right people. Early evening (6 to 9pm UK) tends to do best for football.</li>
+			<li><b>Post the same video to Instagram Reels and YouTube Shorts.</b> Instagram lets you link the app in your bio straight away.</li>
+			<li><b>Reply to comments,</b> especially guesses and scores. Replies push a video to more people.</li>
+		</ol>
+		<ul>
+			<li>The end card says "Search Footballdle" on the App Store, because TikTok only allows a bio link after about 1,000 followers. Footballdle is the top result for that search.</li>
+			<li>Every video uses a puzzle that's already finished, never today's. Tick each one off as you post it (saved in this browser only).</li>
+		</ul>
+	</section>
+
+	<div class="perday" role="radiogroup" aria-label="Videos a day">
+		<span class="perday-label">Videos a day</span>
+		<button class="filter" type="button" role="radio" data-n="1" aria-checked="false">1</button>
+		<button class="filter" type="button" role="radio" data-n="2" aria-checked="false">2</button>
+		<button class="filter" type="button" role="radio" data-n="3" aria-checked="true">3</button>
+		<button class="filter" type="button" role="radio" data-n="4" aria-checked="false">4</button>
+		<span class="perday-sum" id="sum"></span>
+	</div>
+
+	<nav class="filters" aria-label="Show">
+		<button class="filter" type="button" data-f="all" aria-pressed="true">All</button>
+		<button class="filter" type="button" data-f="daily" aria-pressed="false">Daily</button>
+		<button class="filter" type="button" data-f="scout" aria-pressed="false">Scout Report</button>
+		<button class="filter" type="button" data-f="spot" aria-pressed="false">Spot the Baller</button>
+		<button class="filter" type="button" data-f="grid" aria-pressed="false">The Grid</button>
+		<button class="filter" type="button" data-f="todo" aria-pressed="false">Not posted yet</button>
+	</nav>
+
+	<div class="list" id="list"></div>
+</div>
+
+<script>
+const ROWS = __ROWS__
+const KEY = 'tiktok-posted-__FOLDER__'
+let posted = new Set()
+try { posted = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')) } catch {}
+const list = document.getElementById('list')
+function copy(btn, text, label) {
+	const done = () => { btn.textContent = 'Copied'; btn.classList.add('ok'); setTimeout(() => { btn.textContent = label; btn.classList.remove('ok') }, 1500) }
+	try { navigator.clipboard.writeText(text).then(done, () => { btn.textContent = 'Select and copy it' }) } catch { btn.textContent = 'Select and copy it' }
+}
+// Posting times for each number of videos a day (UK times that tend to work for football)
+const SLOTS = { 1: ['7pm'], 2: ['12:30pm', '7pm'], 3: ['8am', '12:30pm', '7pm'], 4: ['8am', '12:30pm', '5pm', '8:30pm'] }
+const START = new Date('__START__T12:00:00')
+let perDay = 3
+try { perDay = Number(localStorage.getItem('tiktok-per-day')) || 3 } catch {}
+const fmt = d => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
+
+function render() {
+	list.textContent = ''
+	const slots = SLOTS[perDay]
+	let lastDay = ''
+	ROWS.forEach((r, i) => {
+		const d = new Date(START); d.setDate(d.getDate() + Math.floor(i / perDay))
+		const day = fmt(d), time = slots[i % perDay]
+		if (perDay > 1 && day !== lastDay) { const h = document.createElement('h2'); h.className = 'day-head'; h.textContent = day; list.append(h); lastDay = day }
+		const el = document.createElement('article'); el.className = 'post'; el.dataset.mode = r.mode; el.dataset.file = r.file
+		if (posted.has(r.file)) el.classList.add('done')
+		const when = document.createElement('div'); when.className = 'when'
+		const b = document.createElement('b'); b.textContent = perDay > 1 ? time : day
+		const sub = document.createElement('span'); sub.className = 'time'; sub.textContent = perDay > 1 ? day : time
+		const chip = document.createElement('span'); chip.className = 'chip ' + r.mode; chip.textContent = r.modeName
+		when.append(b, sub, chip)
+		const body = document.createElement('div'); body.className = 'body'
+		const hook = document.createElement('div'); hook.className = 'hook'; hook.textContent = r.hook
+		const file = document.createElement('div'); file.className = 'file'; file.textContent = r.file + ' · ' + r.seconds + 's'
+		const full = r.text + '\n\n' + r.tags
+		const cap = document.createElement('pre'); cap.className = 'cap'; cap.textContent = r.text
+		const tags = document.createElement('pre'); tags.className = 'cap tags'; tags.textContent = r.tags
+		const row = document.createElement('div'); row.className = 'row'
+		const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'btn'; btn.textContent = 'Copy text + hashtags'
+		btn.onclick = () => copy(btn, full, 'Copy text + hashtags')
+		const btn2 = document.createElement('button'); btn2.type = 'button'; btn2.className = 'btn'; btn2.textContent = 'Copy hashtags'
+		btn2.onclick = () => copy(btn2, r.tags, 'Copy hashtags')
+		const lab = document.createElement('label'); lab.className = 'posted'
+		const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'p-' + r.file.replace(/\W/g, '-'); cb.checked = posted.has(r.file)
+		cb.onchange = () => { cb.checked ? posted.add(r.file) : posted.delete(r.file); el.classList.toggle('done', cb.checked); try { localStorage.setItem(KEY, JSON.stringify([...posted])) } catch {} }
+		lab.append(cb, document.createTextNode('Posted'))
+		row.append(btn, btn2, lab)
+		body.append(hook, file, cap, tags, row)
+		el.append(when, body); list.append(el)
+	})
+	const end = new Date(START); end.setDate(end.getDate() + Math.ceil(ROWS.length / perDay) - 1)
+	document.getElementById('sum').textContent = `${ROWS.length} videos last until ${fmt(end)}`
+	document.querySelectorAll('[data-n]').forEach(b => b.setAttribute('aria-checked', String(Number(b.dataset.n) === perDay)))
+}
+document.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { perDay = Number(b.dataset.n); try { localStorage.setItem('tiktok-per-day', String(perDay)) } catch {}; render() })
+render()
+
+const filters = [...document.querySelectorAll('.filters .filter')]
+filters.forEach(f => f.onclick = () => {
+	filters.forEach(x => x.setAttribute('aria-pressed', String(x === f)))
+	document.querySelectorAll('.day-head').forEach(h => { h.hidden = f.dataset.f !== 'all' })
+	document.querySelectorAll('.post').forEach(p => { const k = f.dataset.f; p.hidden = k === 'all' ? false : k === 'todo' ? p.classList.contains('done') : p.dataset.mode !== k })
+})
+</script>

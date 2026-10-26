@@ -1,0 +1,87 @@
+{
+	"css": "html.app-shell body{padding-top:62px!important;padding-bottom:0!important} html.app-shell .play-layout{height:calc(100dvh - 62px)!important} html.app-shell .app-tab-bar{bottom:30px!important} html.app-shell .game-screen>.keyboard{padding-bottom:30px!important} html.app-shell .base-modal .modal.modal:not(.fullscreen){padding-bottom:34px!important}",
+	"storage": {
+		"footballdle-stats-daily": {
+			"gamesPlayed": 74,
+			"wins": 68,
+			"losses": 6,
+			"currentStreak": 24,
+			"maxStreak": 31,
+			"lastPlayedDate": "14/03/2026",
+			"guessDistribution": {
+				"1": 2,
+				"2": 9,
+				"3": 23,
+				"4": 19,
+				"5": 11,
+				"6": 4
+			},
+			"recentForm": [
+				true,
+				true,
+				true,
+				false,
+				true,
+				true,
+				true,
+				true,
+				true,
+				true
+			]
+		},
+		"footballdle-stats-scout": {
+			"gamesPlayed": 41,
+			"wins": 35,
+			"losses": 6,
+			"currentStreak": 9,
+			"maxStreak": 14,
+			"lastPlayedDate": "13/03/2026",
+			"guessDistribution": {
+				"1": 0,
+				"2": 3,
+				"3": 10,
+				"4": 12,
+				"5": 7,
+				"6": 3
+			},
+			"recentForm": [
+				true,
+				true,
+				true,
+				true,
+				true
+			]
+		},
+		"footballdle-stats-spotball": {
+			"gamesPlayed": 30,
+			"wins": 30,
+			"losses": 0,
+			"currentStreak": 6,
+			"maxStreak": 11,
+			"lastPlayedDate": "13/03/2026",
+			"guessDistribution": {
+				"1": 0,
+				"2": 0,
+				"3": 0,
+				"4": 0,
+				"5": 0,
+				"6": 0
+			},
+			"recentForm": [
+				true,
+				true,
+				true
+			]
+		},
+		"footballdle-grid-stats": {
+			"gamesPlayed": 9,
+			"wins": 8,
+			"perfectGrids": 1,
+			"practicePlayed": 4,
+			"bestPracticePoints": 900,
+			"weeks": []
+		},
+		"footballdle-hint-bank": "3",
+		"footballdle-welcome-seen": "1"
+	}
+}
