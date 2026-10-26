@@ -2,8 +2,8 @@ name: Weekly player update
 
 # Every Tuesday: refresh the squads (transfers, Fantasy prices), extend the answer
 # schedule and freeze the new Scout briefs, then commit to main. Netlify deploys the
-# website from that push, and the iOS app downloads the new list from /roster.json at its
-# next launch (utils/rosterSource.ts), so no app update is needed.
+# website from that push, and the iOS app downloads the new list from /players.json at its
+# next launch (utils/playerList.ts), so no app update is needed.
 #
 # If the data source is down or the squads look wrong, yarn update-players stops before
 # writing anything, the tests guard the rest, and nothing is committed. GitHub emails the

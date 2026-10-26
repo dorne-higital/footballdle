@@ -1,6 +1,6 @@
 import { Capacitor } from '@capacitor/core'
-import { rosterUpdated } from '../composables/useFootballers'
-import { readRosterFile, ROSTER_KEY, ROSTER_URL } from '../utils/rosterSource'
+import { playersUpdated } from '../composables/useFootballers'
+import { readPlayerList, PLAYER_LIST_KEY, PLAYER_LIST_URL } from '../utils/playerList'
 
 // iOS app: after launch, quietly fetches the website's latest player list (refreshed every
 // week by .github/workflows/update-players.yml) and saves it when it's newer than the one
@@ -13,11 +13,11 @@ export default defineNuxtPlugin((nuxtApp) => {
 		const controller = new AbortController()
 		const timer = setTimeout(() => controller.abort(), 15000)
 		try {
-			const res = await fetch(ROSTER_URL, { cache: 'no-store', signal: controller.signal })
+			const res = await fetch(PLAYER_LIST_URL, { cache: 'no-store', signal: controller.signal })
 			if (!res.ok) return
-			const file = readRosterFile(await res.json())
-			if (!file || file.updated <= rosterUpdated) return
-			localStorage.setItem(ROSTER_KEY, JSON.stringify(file))
+			const file = readPlayerList(await res.json())
+			if (!file || file.updated <= playersUpdated) return
+			localStorage.setItem(PLAYER_LIST_KEY, JSON.stringify(file))
 		} catch {
 			// Try again next launch
 		} finally {

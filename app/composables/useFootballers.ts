@@ -27,7 +27,7 @@ import { Capacitor } from '@capacitor/core'
 import players from '../data/players.json'
 import schedule from '../data/schedule.json'
 import meta from '../data/meta.json'
-import { pickRoster } from '../utils/rosterSource'
+import { pickPlayerList } from '../utils/playerList'
 import { getUKDateString } from '../utils/dateStreak'
 
 const EPOCH = '01/01/2026' // DD/MM/YYYY — Puzzle #1 launch date
@@ -45,11 +45,11 @@ export interface RosterPlayer extends Footballer {
 /** [name, club, nationality, position], frozen as the player was on the day */
 export type Snapshot = [string, string, string, string]
 
-// In the iOS app, a newer list downloaded from the website wins (utils/rosterSource.ts)
-const rosterSource = pickRoster(players as RosterPlayer[], meta.updated, Capacitor.isNativePlatform())
-export const roster = rosterSource.players
+// In the iOS app, a newer list downloaded from the website wins (utils/playerList.ts)
+const playerList = pickPlayerList(players as RosterPlayer[], meta.updated, Capacitor.isNativePlatform())
+export const roster = playerList.players
 /** When the list in use was made (YYYY-MM-DD) */
-export const rosterUpdated = rosterSource.updated
+export const playersUpdated = playerList.updated
 export const answerSchedule = schedule as {
 	epoch: string
 	daily: { start: number; answers: Snapshot[] }

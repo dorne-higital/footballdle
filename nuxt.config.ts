@@ -72,14 +72,14 @@ export default defineNuxtConfig({
 	},
 
 	hooks: {
-		// The website serves the player list at /roster.json for the iOS app to download
-		// (utils/rosterSource.ts), straight from app/data, so it's always the deployed list
+		// The website serves the player list at /players.json for the iOS app to download
+		// (utils/playerList.ts), straight from app/data, so it's always the deployed list
 		'nitro:build:public-assets'(nitro) {
 			if (isApp) return
 			const data = (file: string) => JSON.parse(readFileSync(join(__dirname, 'app/data', file), 'utf8'))
 			const dir = nitro.options.output.publicDir
 			mkdirSync(dir, { recursive: true })
-			writeFileSync(join(dir, 'roster.json'), JSON.stringify({ updated: data('meta.json').updated, players: data('players.json') }))
+			writeFileSync(join(dir, 'players.json'), JSON.stringify({ updated: data('meta.json').updated, players: data('players.json') }))
 		},
 	},
 
