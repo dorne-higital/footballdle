@@ -13,7 +13,9 @@ set -u
 HERE=${0:a:h}
 ROOT=${HERE:h:h}
 WORK=$ROOT/.tiktok
+# A new folder each run, so a second batch on the same day can't overwrite the first
 DEST="$HOME/Desktop/Footballdle TikToks/batch-$(date +%Y-%m-%d)"
+n=2; while [[ -e "$DEST" ]]; do DEST="$HOME/Desktop/Footballdle TikToks/batch-$(date +%Y-%m-%d)-$n"; n=$((n + 1)); done
 cd $ROOT
 
 mkdir -p $WORK/raw "$DEST"
@@ -52,7 +54,9 @@ import json, os
 used = set(json.load(open('$HERE/used.json')))
 caps = {c['id'] for c in json.load(open('$WORK/captions.json'))}
 plan = json.load(open('$WORK/plan.json'))
-used |= {v['item']['key'] for v in plan if v['id'] in caps and os.path.exists(os.path.join("$DEST", v['mode'], v['id'] + '.mp4'))}
+done = [v for v in plan if v['id'] in caps and os.path.exists(os.path.join("$DEST", v['mode'], v['id'] + '.mp4'))]
+used |= {v['item']['key'] for v in done}
+used |= {f"who:{v['mode']}:{(v['item'].get('word') or v['item']['name']).lower()}" for v in done if v['mode'] in ('daily', 'scout')}
 json.dump(sorted(used), open('$HERE/used.json', 'w'), indent='\t')
 EOF
 echo "Done: $made videos in $DEST"

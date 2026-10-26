@@ -21,7 +21,7 @@ def run(cfg):
 
 def daily(x):
     _, ds, fake = day(x['puzzle'])
-    words = [g['word'] for g in x['guesses']] + [x['word']]
+    words = x['guesses'] + [x['word']]
     shots = []
     for n in range(len(words) + 1):
         s = dict(STORE); s['footballdle-game'] = {'date': ds, 'guesses': words[:n], 'gameOver': n == len(words), 'isWin': n == len(words), 'purchasedHints': 0}
