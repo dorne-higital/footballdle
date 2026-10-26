@@ -4,3 +4,8 @@
   Access-Control-Allow-Origin: *
   Access-Control-Expose-Headers: Date
   Cache-Control: no-cache
+
+# The iOS app downloads the latest player list from here (utils/playerList.ts)
+/players.json
+  Access-Control-Allow-Origin: *
+  Cache-Control: no-cache

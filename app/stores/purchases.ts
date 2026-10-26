@@ -67,6 +67,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	const isPro = ref(readCachedPro())
 	const ownedThemes = ref<string[]>(readOwnedThemes())
 	const products = ref<PurchasesStoreProduct[]>([])
+	// This install's RevenueCat customer ID, shown in Settings and sent with feedback, so Dan
+	// can find someone in the RevenueCat dashboard (support, or granting them Pro)
+	const playerId = ref('')
 	const busy = ref(false)
 	const message = ref('')
 	// A streak reward to celebrate on the Daily result sheet (separate from shop
@@ -297,6 +300,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			const { Purchases } = await getSdk()
 			await Purchases.configure({ apiKey })
 			await Purchases.addCustomerInfoUpdateListener(applyCustomerInfo)
+			Purchases.getAppUserID()
+				.then(({ appUserID }) => (playerId.value = appUserID))
+				.catch(() => {})
 			// Pro status arrives on its own; products don't wait for it
 			Purchases.getCustomerInfo()
 				.then(({ customerInfo }) => applyCustomerInfo(customerInfo))
@@ -438,6 +444,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		isPro,
 		ownedThemes,
 		products,
+		playerId,
 		busy,
 		message,
 		rewardNote,

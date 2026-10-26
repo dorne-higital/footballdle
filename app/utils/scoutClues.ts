@@ -132,20 +132,38 @@ const POSITION_NOUNS: Record<PositionGroup, string> = {
 // "an African", but "a European" (it starts with a "you" sound)
 const article = (word: string) => (/^[aeiou]/i.test(word) && !/^eu/i.test(word) ? 'an' : 'a')
 
-export function scoutBrief(answer: Footballer): ScoutBrief | null {
-	const facts = {
-		continent: continentOf(answer.nationality) ?? undefined,
-		position: getPositionGroup(answer.position),
-		region: regionOf(answer.club) ?? undefined,
-	}
+// Frozen briefs: schedule.json stores each day's pair as a two-letter code, so every
+// copy of the game (whatever player list it has) shows the same brief that day
+const PAIR_CODES: Record<string, [BriefFact, BriefFact]> = { rc: ['region', 'continent'], rp: ['region', 'position'], cp: ['continent', 'position'] }
+export const briefCode = (pair: BriefFact[]) =>
+	Object.keys(PAIR_CODES).find(k => PAIR_CODES[k]!.every(f => pair.includes(f))) ?? ''
+
+const briefFacts = (answer: Footballer) => ({
+	continent: continentOf(answer.nationality) ?? undefined,
+	position: getPositionGroup(answer.position),
+	region: regionOf(answer.club) ?? undefined,
+})
+
+/** The pair of facts that leaves about BRIEF_TARGET players fitting, from this player list */
+export function pickBriefPair(answer: Footballer): [BriefFact, BriefFact] | null {
+	const facts = briefFacts(answer)
 	let best: { pair: [BriefFact, BriefFact]; fit: number } | null = null
 	for (const pair of PAIRS) {
 		if (pair.some(f => facts[f] === undefined)) continue
 		const fit = briefPool.filter(p => pair.every(f => p[f] === facts[f])).length
 		if (!best || Math.abs(fit - BRIEF_TARGET) < Math.abs(best.fit - BRIEF_TARGET)) best = { pair, fit }
 	}
-	if (!best) return null
-	const has = (f: BriefFact) => best!.pair.includes(f)
+	return best?.pair ?? null
+}
+
+/** Today's brief: the frozen pair from the schedule when there is one, else worked out here */
+export function scoutBrief(answer: Footballer, frozen?: string): ScoutBrief | null {
+	const facts = briefFacts(answer)
+	const fixed = frozen ? PAIR_CODES[frozen] : undefined
+	const pair = fixed && fixed.every(f => facts[f] !== undefined) ? fixed : pickBriefPair(answer)
+	if (!pair) return null
+	const best = { pair }
+	const has = (f: BriefFact) => best.pair.includes(f)
 	const position = POSITION_NOUNS[facts.position]
 	const adjective = facts.continent ? CONTINENTS[facts.continent].adjective : ''
 	const place = facts.region ? REGION_NAMES[facts.region].phrase : ''

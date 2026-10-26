@@ -120,6 +120,13 @@
 					{{ error }}
 				</p>
 
+				<p
+					v-if="purchases.playerId"
+					class="player-id-note"
+				>
+					Your player ID is sent with this, so we can find your purchases if you need help.
+				</p>
+
 				<button
 					type="submit"
 					class="send-btn"
@@ -136,6 +143,7 @@
 
 <script setup lang="ts">
 	import { ref } from 'vue'
+	import { usePurchasesStore } from '../stores/purchases'
 
 	// Web3Forms delivers the message to the owner's inbox. The access key is meant to
 	// sit in client code: it only lets people send to that inbox and never reveals it.
@@ -168,6 +176,7 @@
 	const botcheck = ref(false)
 	const sending = ref(false)
 	const sent = ref(false)
+	const purchases = usePurchasesStore()
 	const error = ref('')
 
 	async function send() {
@@ -189,6 +198,8 @@
 					message: message.value || '(no message)',
 					...(email.value && { email: email.value, replyto: email.value }),
 					platform: config.public.isApp ? 'iOS app' : 'Website',
+					// So a support message can be matched to the person in RevenueCat
+					...(purchases.playerId && { player_id: purchases.playerId }),
 					device: navigator.userAgent,
 				}),
 			})
@@ -224,6 +235,12 @@
 
 <style scoped lang="scss">
 	@use '../../assets/static-page';
+
+	.player-id-note {
+		color: var(--text-secondary);
+		font-size: 0.8rem;
+		margin: 0;
+	}
 
 	.feedback-form {
 		display: flex;

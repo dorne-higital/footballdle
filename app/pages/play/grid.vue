@@ -237,7 +237,7 @@
 
 <script setup lang="ts">
 	import { computed, onMounted, ref, watch } from 'vue'
-	import playersData from '../../data/players.json'
+	import { roster } from '../../composables/useFootballers'
 	import GridBoard from '../../components/grid/GridBoard.vue'
 	import ScoutAutocomplete from '../../components/scout/ScoutAutocomplete.vue'
 	import ShareResultButton from '../../components/shared/ShareResultButton.vue'
@@ -257,7 +257,7 @@
 	const purchases = usePurchasesStore()
 	const haptics = useHaptics()
 	const route = useRoute()
-	const players = playersData as GridPlayer[]
+	const players = roster as unknown as GridPlayer[] // players.json carries the Grid's fields too
 	const confirmFinish = ref(false)
 	const showHintShop = useState('hint-shop-open', () => false)
 

@@ -15,6 +15,7 @@
 //   dates are never rewritten, so today's answer, past solutions, and app builds already
 //   in people's hands all stay in sync. New players only become answers on new dates.
 
+import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -586,6 +587,11 @@ async function main() {
 	const dailyPool = roster.filter(p => p.dailyKnown && (p.lastName.length === 5 || p.lastName.length === 6) && dailyEligible(p))
 
 	console.log(`\nClubs: ${[...new Set(roster.map(p => p.club))].sort().join(', ')}`)
+	// The weekly job (.github/workflows/update-players.yml) commits whatever this writes, so a
+	// bad week of source data must stop here: the league is 20 clubs and 500+ players
+	const clubCount = new Set(roster.map(p => p.club)).size
+	if (clubCount !== 20 || roster.length < 500 || known.length < 200)
+		throw new Error(`Squads look wrong (${clubCount} clubs, ${roster.length} players, ${known.length} known); nothing written`)
 	const challengePool = roster.filter(p => p.dailyKnown && p.lastName.length === 5)
 	console.log(
 		`Players: ${roster.length} (${known.length} Scout/Spot answers, ${dailyPool.length} Daily, ${challengePool.length} Challenge)`,
@@ -667,13 +673,20 @@ async function main() {
 	writeFileSync(SCHEDULE_PATH, `${JSON.stringify(schedule)}\n`)
 	if (newSeason) writeFileSync(CARDS_PATH, `${JSON.stringify(cardsFile, null, '\t')}\n`)
 	if (OFFLINE) {
+		freezeScoutBriefs()
 		console.log('\nWrote app/data/schedule.json (offline: players.json and meta.json untouched)')
 		return
 	}
 	writeFileSync(PLAYERS_PATH, `${JSON.stringify(roster, null, '\t')}\n`)
 	const meta = { season: `${season}/${String(season + 1).slice(2)}`, updated: new Date().toISOString().slice(0, 10) }
 	writeFileSync(META_PATH, `${JSON.stringify(meta, null, '\t')}\n`)
+	freezeScoutBriefs()
 	console.log('\nWrote app/data/players.json, schedule.json and meta.json')
+}
+
+// Each new Scout day's brief, frozen from the player list just written (scripts/freeze-scout-briefs.ts)
+function freezeScoutBriefs() {
+	execFileSync(join(ROOT, 'node_modules/.bin/vite-node'), [join(ROOT, 'scripts/freeze-scout-briefs.ts')], { cwd: ROOT, stdio: 'inherit' })
 }
 
 main().catch((error) => {

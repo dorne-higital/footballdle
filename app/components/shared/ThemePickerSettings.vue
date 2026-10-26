@@ -149,6 +149,10 @@
 							size="1rem"
 						/>
 						Footballdle Pro
+						<span
+							v-if="saleOf(purchases.proProduct)"
+							class="sale-chip"
+						>Sale, ends soon</span>
 					</span>
 					<p>
 						Unlimited hints in the Daily and Scout Report, plus every theme, for good. One-off purchase, no subscription.
@@ -163,7 +167,12 @@
 						:disabled="purchases.busy"
 						@click="purchases.buyPro()"
 					>
-						Get Pro · {{ purchases.proProduct.priceString }}
+						Get Pro ·
+						<s
+							v-if="saleOf(purchases.proProduct)"
+							class="was-price"
+						>{{ saleOf(purchases.proProduct)?.was }}</s>
+						{{ purchases.proProduct.priceString }}
 					</button>
 					<button
 						v-else-if="purchases.loadingProducts"
@@ -613,6 +622,32 @@
 					>
 						{{ purchases.message }}
 					</p>
+
+					<!-- RevenueCat's ID for this install: support, and gifting Pro from the dashboard -->
+					<div
+						v-if="purchases.playerId"
+						class="player-id"
+					>
+						<span class="option-name">Your player ID</span>
+						<p>If you message us about purchases, include this so we can find you.</p>
+						<div class="player-id-row">
+							<code
+								ref="playerIdEl"
+								class="player-id-value"
+							>{{ purchases.playerId }}</code>
+							<button
+								type="button"
+								class="store-button"
+								@click="copyPlayerId"
+							>
+								<Icon
+									:name="copied ? 'solar:check-circle-linear' : 'solar:copy-linear'"
+									size="1rem"
+								/>
+								{{ copied ? 'Copied' : 'Copy' }}
+							</button>
+						</div>
+					</div>
 				</div>
 
 				<div
@@ -663,6 +698,7 @@
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 	import { useAppearanceStore } from '../../stores/appearance'
 	import { getTheme } from '../../utils/themes'
+	import { useSale } from '../../composables/useSale'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
@@ -743,6 +779,7 @@
 	}
 
 	const appearance = useAppearanceStore()
+	const saleOf = useSale()
 	const themeSummary = computed(() =>
 		appearance.appearance === 'system' && !appearance.theme
 			? 'Match iPhone'
@@ -771,6 +808,24 @@
 		]
 		return tiles.filter((t): t is HelpTile => !!t)
 	})
+
+	// Copy the player ID; if the clipboard says no, select it so it can be copied by hand
+	const playerIdEl = ref<HTMLElement>()
+	const copied = ref(false)
+	async function copyPlayerId() {
+		try {
+			await navigator.clipboard.writeText(purchases.playerId)
+			copied.value = true
+			setTimeout(() => (copied.value = false), 2000)
+		} catch {
+			const el = playerIdEl.value
+			if (!el) return
+			const range = document.createRange()
+			range.selectNodeContents(el)
+			getSelection()?.removeAllRanges()
+			getSelection()?.addRange(range)
+		}
+	}
 
 	function resetHints() {
 		purchases.resetHintBank()
@@ -1169,7 +1224,9 @@
 		gap: 0.5rem;
 		padding-bottom: 0.5rem;
 
-		.hero-card {
+		// .support-group too (for its button styles), so it has to beat that group's
+		// first-child rule, which drops the top border: a solid line all the way round
+		.hero-card.support-group {
 			background: color-mix(in srgb, var(--primary-color) 12%, var(--bg-secondary));
 			border: 1px solid color-mix(in srgb, var(--primary-color) 35%, var(--border));
 			border-radius: 1.1rem;
@@ -1178,14 +1235,11 @@
 			justify-items: start;
 			padding: 1rem 1.1rem 1.1rem;
 
-			&:first-child {
-				padding-top: 1rem;
-			}
-
 			.hero-title {
 				align-items: center;
 				color: var(--text-primary);
 				display: flex;
+				flex-wrap: wrap;
 				font-family: var(--font-display);
 				font-size: 1.05rem;
 				gap: 0.4rem;
@@ -1199,6 +1253,23 @@
 
 			.store-button {
 				margin-top: 0.4rem;
+			}
+
+			.was-price {
+				font-weight: 600;
+				opacity: 0.7;
+			}
+
+			// Flash sale (utils/sale.ts): only shown while the App Store price really is lower
+			.sale-chip {
+				background: var(--tertiary-color);
+				border-radius: 999px;
+				color: var(--on-present, #fff);
+				font-family: var(--font-body);
+				font-size: 0.68rem;
+				font-weight: 800;
+				letter-spacing: 0.04em;
+				padding: 0.2rem 0.5rem;
 			}
 		}
 
@@ -1390,6 +1461,47 @@
 
 		.menu-row:disabled {
 			opacity: 0.5;
+		}
+
+		.player-id {
+			display: grid;
+			gap: 0.2rem;
+			margin-top: 1.5rem;
+			width: 100%;
+
+			.option-name {
+				font-size: 0.95rem;
+				font-weight: 700;
+			}
+
+			p {
+				margin: 0 0 0.4rem;
+			}
+		}
+
+		.player-id-row {
+			align-items: center;
+			display: flex;
+			gap: 0.6rem;
+
+			.store-button {
+				flex-shrink: 0;
+				margin-top: 0;
+			}
+		}
+
+		.player-id-value {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 0.6rem;
+			color: var(--text-primary);
+			flex: 1;
+			font-size: 0.75rem;
+			min-width: 0;
+			overflow-wrap: anywhere;
+			padding: 0.5rem 0.65rem;
+			-webkit-user-select: all;
+			user-select: all;
 		}
 
 		// The page title already says Themes

@@ -1,5 +1,54 @@
 {
 	"minBuild": 0,
 	"message": "A new version of Footballdle is out, with Player Cards and 5-letter days. Update to keep your puzzles in step with everyone else.",
-	"storeUrl": "https://apps.apple.com/app/id6819602707"
+	"storeUrl": "https://apps.apple.com/app/id6819602707",
+	"sale": {
+		"until": "2026-11-09T00:00:00Z",
+		"regular": {
+			"pro": {
+				"AED": 39.99,
+				"AUD": 14.99,
+				"BRL": 59.9,
+				"CAD": 12.99,
+				"CHF": 9,
+				"CNY": 68,
+				"COP": 49900,
+				"CZK": 249,
+				"DKK": 89,
+				"EGP": 499.99,
+				"EUR": 9.99,
+				"GBP": 9.99,
+				"HKD": 88,
+				"HUF": 4490,
+				"IDR": 199000,
+				"ILS": 29.9,
+				"INR": 999,
+				"JPY": 1500,
+				"KRW": 17000,
+				"KZT": 5990,
+				"MXN": 199,
+				"MYR": 49.9,
+				"NGN": 14900,
+				"NOK": 129,
+				"NZD": 19.99,
+				"PEN": 44.9,
+				"PHP": 599,
+				"PKR": 2900,
+				"PLN": 49.99,
+				"QAR": 39.99,
+				"RON": 49.99,
+				"RUB": 899,
+				"SAR": 39.99,
+				"SEK": 129,
+				"SGD": 14.98,
+				"THB": 399,
+				"TRY": 499.99,
+				"TWD": 320,
+				"TZS": 29900,
+				"USD": 9.99,
+				"VND": 299000,
+				"ZAR": 199.99
+			}
+		}
+	}
 }
