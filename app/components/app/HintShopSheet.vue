@@ -141,8 +141,20 @@
 					:disabled="purchases.busy"
 					@click="buyHints(pack)"
 				>
-					<span class="pack-name">{{ pack.count === 1 ? '1 hint' : `${pack.count} hints` }}</span>
-					<span class="pack-price">{{ pack.product.priceString }}</span>
+					<span class="pack-name">
+						{{ pack.count === 1 ? '1 hint' : `${pack.count} hints` }}
+						<span
+							v-if="saleOf(pack.product)"
+							class="sale-chip"
+						>Sale, ends soon</span>
+					</span>
+					<span class="pack-prices">
+						<s
+							v-if="saleOf(pack.product)"
+							class="was-price"
+						>{{ saleOf(pack.product)?.was }}</s>
+						<span class="pack-price">{{ pack.product.priceString }}</span>
+					</span>
 				</button>
 				<button
 					v-if="purchases.proProduct && !purchases.isPro"
@@ -157,8 +169,18 @@
 							size="1rem"
 						/>
 						Pro: unlimited hints
+						<span
+							v-if="saleOf(purchases.proProduct)"
+							class="sale-chip"
+						>Sale, ends soon</span>
 					</span>
-					<span class="pack-price">{{ purchases.proProduct.priceString }}</span>
+					<span class="pack-prices">
+						<s
+							v-if="saleOf(purchases.proProduct)"
+							class="was-price"
+						>{{ saleOf(purchases.proProduct)?.was }}</s>
+						<span class="pack-price">{{ purchases.proProduct.priceString }}</span>
+					</span>
 				</button>
 				<p
 					v-if="purchases.message"
@@ -181,6 +203,7 @@
 	import { useGridStore } from '../../stores/grid'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
+	import { useSale } from '../../composables/useSale'
 
 	// The hint shop (on the website: how to earn hints, and a link to the app), opened from the hint pill or the Daily's hint button on
 	// any screen. It only reveals a clue when you're actually mid-Daily; anywhere else
@@ -189,6 +212,7 @@
 
 	const open = useState('hint-shop-open', () => false)
 	const purchases = usePurchasesStore()
+	const saleOf = useSale()
 	const gameStore = useGameStore()
 	const progress = useTodayProgress()
 	const route = useRoute()
@@ -384,9 +408,24 @@
 			.pack-name {
 				align-items: center;
 				display: flex;
+				flex-wrap: wrap;
 				font-size: 1rem;
 				font-weight: 800;
 				gap: 0.4rem;
+				text-align: left;
+			}
+
+			.pack-prices {
+				align-items: center;
+				display: flex;
+				flex-shrink: 0;
+				gap: 0.45rem;
+			}
+
+			.was-price {
+				color: var(--text-secondary);
+				font-size: 0.85rem;
+				font-weight: 700;
 			}
 
 			.pack-price {
@@ -397,6 +436,18 @@
 				font-weight: 800;
 				padding: 0.35rem 0.8rem;
 			}
+		}
+
+		// Flash sale (utils/sale.ts): only shown while the App Store price really is lower
+		.sale-chip {
+			background: var(--tertiary-color);
+			border-radius: 999px;
+			color: var(--on-present, #fff);
+			font-size: 0.68rem;
+			font-weight: 800;
+			letter-spacing: 0.04em;
+			padding: 0.2rem 0.5rem;
+			white-space: nowrap;
 		}
 
 		.hint-shop-message {

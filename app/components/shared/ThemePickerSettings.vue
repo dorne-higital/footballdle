@@ -149,6 +149,10 @@
 							size="1rem"
 						/>
 						Footballdle Pro
+						<span
+							v-if="saleOf(purchases.proProduct)"
+							class="sale-chip"
+						>Sale, ends soon</span>
 					</span>
 					<p>
 						Unlimited hints in the Daily and Scout Report, plus every theme, for good. One-off purchase, no subscription.
@@ -163,7 +167,12 @@
 						:disabled="purchases.busy"
 						@click="purchases.buyPro()"
 					>
-						Get Pro · {{ purchases.proProduct.priceString }}
+						Get Pro ·
+						<s
+							v-if="saleOf(purchases.proProduct)"
+							class="was-price"
+						>{{ saleOf(purchases.proProduct)?.was }}</s>
+						{{ purchases.proProduct.priceString }}
 					</button>
 					<button
 						v-else-if="purchases.loadingProducts"
@@ -663,6 +672,7 @@
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 	import { useAppearanceStore } from '../../stores/appearance'
 	import { getTheme } from '../../utils/themes'
+	import { useSale } from '../../composables/useSale'
 
 	// Tip products come in order small, medium, large (TIP_PRODUCT_IDS)
 	const TIP_SIZES = ['Small', 'Medium', 'Large']
@@ -743,6 +753,7 @@
 	}
 
 	const appearance = useAppearanceStore()
+	const saleOf = useSale()
 	const themeSummary = computed(() =>
 		appearance.appearance === 'system' && !appearance.theme
 			? 'Match iPhone'
@@ -1184,6 +1195,7 @@
 				align-items: center;
 				color: var(--text-primary);
 				display: flex;
+				flex-wrap: wrap;
 				font-family: var(--font-display);
 				font-size: 1.05rem;
 				gap: 0.4rem;
@@ -1197,6 +1209,23 @@
 
 			.store-button {
 				margin-top: 0.4rem;
+			}
+
+			.was-price {
+				font-weight: 600;
+				opacity: 0.7;
+			}
+
+			// Flash sale (utils/sale.ts): only shown while the App Store price really is lower
+			.sale-chip {
+				background: var(--tertiary-color);
+				border-radius: 999px;
+				color: var(--on-present, #fff);
+				font-family: var(--font-body);
+				font-size: 0.68rem;
+				font-weight: 800;
+				letter-spacing: 0.04em;
+				padding: 0.2rem 0.5rem;
 			}
 		}
 
