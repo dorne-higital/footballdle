@@ -9,7 +9,8 @@ const HERE = new URL('.', import.meta.url).pathname
 const K = join(HERE, '../../.tiktok')
 const OUT = process.argv[2]
 const only = process.argv[3]
-const plan = JSON.parse(readFileSync(join(K, 'plan.json'), 'utf8'))
+// PLAN=<file> records a hand-made list instead; an item with its own `job` skips job()
+const plan = JSON.parse(readFileSync(process.env.PLAN || join(K, 'plan.json'), 'utf8'))
 // .tiktok is served here, with render.html copied in by run.sh
 const ORIGIN = 'http://127.0.0.1:4290'
 const sleep = ms => new Promise(r => setTimeout(r, ms))
@@ -64,17 +65,17 @@ const captions = []
 for (const v of plan) {
 	if (only && !v.id.startsWith(only)) continue
 	const dir = join(K, 'frames', v.id)
-	if (!existsSync(dir)) { console.log('no frames for', v.id); continue }
+	if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
 	const n = readdirSync(dir).filter(f => f.endsWith('.png')).length
 	const frames = Array.from({ length: n }, (_, i) => `${ORIGIN}/frames/${v.id}/${i}.png`)
-	const j = job(v, frames)
+	const j = v.job ? { kicker: 'FOOTBALLDLE', ...v.job, frames } : job(v, frames)
 	const res = await send('Runtime.evaluate', { expression: `makeVideo(${JSON.stringify(j)})`, awaitPromise: true, returnByValue: true })
 	const val = res.result?.result?.value
 	if (!val) { console.log('failed', v.id, JSON.stringify(res.result).slice(0, 300)); continue }
-	mkdirSync(join(OUT, v.mode), { recursive: true })
-	const file = join(OUT, v.mode, `${v.id}.mp4`)
+	mkdirSync(OUT, { recursive: true })
+	const file = join(OUT, `${v.id}.mp4`)
 	writeFileSync(file, Buffer.from(val.data, 'base64'))
-	captions.push({ id: v.id, mode: v.mode, file: `${v.mode}/${v.id}.mp4`, seconds: Math.round(val.seconds), hook: j.hook, caption: CAPTION[v.mode](v.item) })
+	captions.push({ id: v.id, mode: v.mode, file: `${v.id}.mp4`, seconds: Math.round(val.seconds), hook: j.hook, caption: v.caption || CAPTION[v.mode](v.item) })
 	console.log('made', v.id, val.type, Math.round(val.data.length * 0.75 / 1024) + 'KB', Math.round(val.seconds) + 's')
 }
 // Merge into captions.json, so videos made one at a time all end up in the plan
