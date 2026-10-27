@@ -21,7 +21,7 @@
 		"lastName": "pedro",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 7621,
+		"pop": 7601,
 		"webName": "João Pedro",
 		"cost": 79,
 		"fplType": 4,
@@ -35,7 +35,7 @@
 		"lastName": "calafiori",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 5869,
+		"pop": 5849,
 		"webName": "Calafiori",
 		"cost": 60,
 		"fplType": 2,
@@ -105,7 +105,7 @@
 		"lastName": "cherki",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 4307,
+		"pop": 4297,
 		"webName": "Cherki",
 		"cost": 80,
 		"fplType": 3,
@@ -135,7 +135,7 @@
 		"dailyKnown": true,
 		"pop": 3277,
 		"webName": "Gvardiol",
-		"cost": 58,
+		"cost": 57,
 		"fplType": 2,
 		"minutes": 577
 	},
@@ -147,7 +147,7 @@
 		"lastName": "fernandes",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 3100,
+		"pop": 3090,
 		"webName": "B.Fernandes",
 		"cost": 117,
 		"fplType": 3,
@@ -175,7 +175,7 @@
 		"lastName": "magalhaes",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2950,
+		"pop": 2960,
 		"webName": "Gabriel",
 		"cost": 79,
 		"fplType": 2,
@@ -189,7 +189,7 @@
 		"lastName": "mbeumo",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2890,
+		"pop": 2880,
 		"webName": "Mbeumo",
 		"cost": 79,
 		"fplType": 3,
@@ -203,7 +203,7 @@
 		"lastName": "lewin",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2833,
+		"pop": 2823,
 		"webName": "Calvert-Lewin",
 		"cost": 61,
 		"fplType": 4,
@@ -252,20 +252,6 @@
 		"minutes": 551
 	},
 	{
-		"name": "martin ødegaard",
-		"club": "Arsenal",
-		"nationality": "Norway",
-		"position": "Midfielder",
-		"lastName": "odegaard",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 2426,
-		"webName": "Ødegaard",
-		"cost": 68,
-		"fplType": 3,
-		"minutes": 646
-	},
-	{
 		"name": "marcus tavernier",
 		"club": "Bournemouth",
 		"nationality": "England",
@@ -273,11 +259,25 @@
 		"lastName": "tavernier",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2420,
+		"pop": 2450,
 		"webName": "Tavernier",
-		"cost": 63,
+		"cost": 64,
 		"fplType": 3,
 		"minutes": 660
+	},
+	{
+		"name": "martin ødegaard",
+		"club": "Arsenal",
+		"nationality": "Norway",
+		"position": "Midfielder",
+		"lastName": "odegaard",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 2416,
+		"webName": "Ødegaard",
+		"cost": 67,
+		"fplType": 3,
+		"minutes": 646
 	},
 	{
 		"name": "marc guéhi",
@@ -336,20 +336,6 @@
 		"minutes": 720
 	},
 	{
-		"name": "kevin schade",
-		"club": "Brentford",
-		"nationality": "Germany",
-		"position": "Midfielder",
-		"lastName": "schade",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 2114,
-		"webName": "Schade",
-		"cost": 62,
-		"fplType": 3,
-		"minutes": 604
-	},
-	{
 		"name": "alexander isak",
 		"club": "Liverpool",
 		"nationality": "Sweden",
@@ -357,11 +343,25 @@
 		"lastName": "isak",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 2097,
+		"pop": 2107,
 		"webName": "Isak",
 		"cost": 90,
 		"fplType": 4,
 		"minutes": 567
+	},
+	{
+		"name": "kevin schade",
+		"club": "Brentford",
+		"nationality": "Germany",
+		"position": "Midfielder",
+		"lastName": "schade",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 2104,
+		"webName": "Schade",
+		"cost": 62,
+		"fplType": 3,
+		"minutes": 604
 	},
 	{
 		"name": "semi ajayi",
@@ -420,20 +420,6 @@
 		"minutes": 630
 	},
 	{
-		"name": "yoane wissa",
-		"club": "Newcastle",
-		"nationality": "Congo DR",
-		"position": "Forward",
-		"lastName": "wissa",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 1791,
-		"webName": "Wissa",
-		"cost": 61,
-		"fplType": 4,
-		"minutes": 621
-	},
-	{
 		"name": "issa diop",
 		"club": "Ipswich Town",
 		"nationality": "France",
@@ -448,6 +434,20 @@
 		"minutes": 720
 	},
 	{
+		"name": "yoane wissa",
+		"club": "Newcastle",
+		"nationality": "Congo DR",
+		"position": "Forward",
+		"lastName": "wissa",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 1781,
+		"webName": "Wissa",
+		"cost": 60,
+		"fplType": 4,
+		"minutes": 621
+	},
+	{
 		"name": "jayden bogle",
 		"club": "Leeds United",
 		"nationality": "England",
@@ -457,7 +457,7 @@
 		"dailyKnown": true,
 		"pop": 1740,
 		"webName": "Bogle",
-		"cost": 47,
+		"cost": 48,
 		"fplType": 2,
 		"minutes": 630
 	},
@@ -497,7 +497,7 @@
 		"lastName": "kostoulas",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 1602,
+		"pop": 1592,
 		"webName": "Kostoulas",
 		"cost": 58,
 		"fplType": 4,
@@ -555,7 +555,7 @@
 		"dailyKnown": true,
 		"pop": 1530,
 		"webName": "Lammens",
-		"cost": 49,
+		"cost": 48,
 		"fplType": 1,
 		"minutes": 720
 	},
@@ -581,11 +581,25 @@
 		"lastName": "saka",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 1476,
+		"pop": 1466,
 		"webName": "Saka",
 		"cost": 95,
 		"fplType": 3,
 		"minutes": 596
+	},
+	{
+		"name": "jan paul van hecke",
+		"club": "Tottenham",
+		"nationality": "Netherlands",
+		"position": "Defender",
+		"lastName": "hecke",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 1460,
+		"webName": "Van Hecke",
+		"cost": 49,
+		"fplType": 2,
+		"minutes": 720
 	},
 	{
 		"name": "harvey barnes",
@@ -600,20 +614,6 @@
 		"cost": 61,
 		"fplType": 3,
 		"minutes": 706
-	},
-	{
-		"name": "jan paul van hecke",
-		"club": "Tottenham",
-		"nationality": "Netherlands",
-		"position": "Defender",
-		"lastName": "hecke",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 1450,
-		"webName": "Van Hecke",
-		"cost": 49,
-		"fplType": 2,
-		"minutes": 720
 	},
 	{
 		"name": "leif davis",
@@ -658,20 +658,6 @@
 		"minutes": 682
 	},
 	{
-		"name": "evanilson",
-		"club": "Bournemouth",
-		"nationality": "Brazil",
-		"position": "Forward",
-		"lastName": "evanilson",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 1398,
-		"webName": "Evanilson",
-		"cost": 62,
-		"fplType": 4,
-		"minutes": 678
-	},
-	{
 		"name": "nicolas jackson",
 		"club": "Aston Villa",
 		"nationality": "Senegal",
@@ -679,11 +665,25 @@
 		"lastName": "jackson",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 1387,
+		"pop": 1417,
 		"webName": "N.Jackson",
 		"cost": 67,
 		"fplType": 4,
 		"minutes": 547
+	},
+	{
+		"name": "evanilson",
+		"club": "Bournemouth",
+		"nationality": "Brazil",
+		"position": "Forward",
+		"lastName": "evanilson",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 1408,
+		"webName": "Evanilson",
+		"cost": 62,
+		"fplType": 4,
+		"minutes": 678
 	},
 	{
 		"name": "milan van ewijk",
@@ -947,7 +947,7 @@
 		"dailyKnown": true,
 		"pop": 1148,
 		"webName": "O'Reilly",
-		"cost": 63,
+		"cost": 62,
 		"fplType": 2,
 		"minutes": 288
 	},
@@ -1106,6 +1106,20 @@
 		"minutes": 720
 	},
 	{
+		"name": "adrien truffert",
+		"club": "Bournemouth",
+		"nationality": "France",
+		"position": "Defender",
+		"lastName": "truffert",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 1003,
+		"webName": "Truffert",
+		"cost": 54,
+		"fplType": 2,
+		"minutes": 713
+	},
+	{
 		"name": "pedro neto",
 		"club": "Chelsea",
 		"nationality": "Portugal",
@@ -1132,20 +1146,6 @@
 		"cost": 53,
 		"fplType": 2,
 		"minutes": 527
-	},
-	{
-		"name": "adrien truffert",
-		"club": "Bournemouth",
-		"nationality": "France",
-		"position": "Defender",
-		"lastName": "truffert",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 993,
-		"webName": "Truffert",
-		"cost": 54,
-		"fplType": 2,
-		"minutes": 713
 	},
 	{
 		"name": "elliot anderson",
@@ -1232,18 +1232,18 @@
 		"minutes": 634
 	},
 	{
-		"name": "murillo",
-		"club": "Nottingham Forest",
-		"nationality": "Brazil",
+		"name": "james justin",
+		"club": "Leeds United",
+		"nationality": "England",
 		"position": "Defender",
-		"lastName": "murillo",
+		"lastName": "justin",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 939,
-		"webName": "Murillo",
-		"cost": 55,
+		"pop": 938,
+		"webName": "Justin",
+		"cost": 45,
 		"fplType": 2,
-		"minutes": 719
+		"minutes": 708
 	},
 	{
 		"name": "robin roefs",
@@ -1260,18 +1260,18 @@
 		"minutes": 720
 	},
 	{
-		"name": "james justin",
-		"club": "Leeds United",
-		"nationality": "England",
+		"name": "murillo",
+		"club": "Nottingham Forest",
+		"nationality": "Brazil",
 		"position": "Defender",
-		"lastName": "justin",
+		"lastName": "murillo",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 928,
-		"webName": "Justin",
-		"cost": 45,
+		"pop": 929,
+		"webName": "Murillo",
+		"cost": 55,
 		"fplType": 2,
-		"minutes": 708
+		"minutes": 719
 	},
 	{
 		"name": "mickey van de ven",
@@ -1302,6 +1302,20 @@
 		"minutes": 720
 	},
 	{
+		"name": "zion suzuki",
+		"club": "Aston Villa",
+		"nationality": "Japan",
+		"position": "Goalkeeper",
+		"lastName": "suzuki",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 890,
+		"webName": "Suzuki",
+		"cost": 50,
+		"fplType": 1,
+		"minutes": 630
+	},
+	{
 		"name": "sandro tonali",
 		"club": "Tottenham",
 		"nationality": "Italy",
@@ -1330,18 +1344,18 @@
 		"minutes": 524
 	},
 	{
-		"name": "zion suzuki",
-		"club": "Aston Villa",
-		"nationality": "Japan",
-		"position": "Goalkeeper",
-		"lastName": "suzuki",
+		"name": "rayan",
+		"club": "Bournemouth",
+		"nationality": "Brazil",
+		"position": "Midfielder",
+		"lastName": "rayan",
 		"known": true,
 		"dailyKnown": true,
-		"pop": 880,
-		"webName": "Suzuki",
-		"cost": 50,
-		"fplType": 1,
-		"minutes": 630
+		"pop": 882,
+		"webName": "Rayan",
+		"cost": 63,
+		"fplType": 3,
+		"minutes": 702
 	},
 	{
 		"name": "luke shaw",
@@ -1370,20 +1384,6 @@
 		"cost": 40,
 		"fplType": 2,
 		"minutes": 593
-	},
-	{
-		"name": "rayan",
-		"club": "Bournemouth",
-		"nationality": "Brazil",
-		"position": "Midfielder",
-		"lastName": "rayan",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 872,
-		"webName": "Rayan",
-		"cost": 63,
-		"fplType": 3,
-		"minutes": 702
 	},
 	{
 		"name": "enzo fernández",
@@ -1498,6 +1498,20 @@
 		"minutes": 720
 	},
 	{
+		"name": "james hill",
+		"club": "Bournemouth",
+		"nationality": "England",
+		"position": "Defender",
+		"lastName": "hill",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 850,
+		"webName": "Hill",
+		"cost": 55,
+		"fplType": 2,
+		"minutes": 720
+	},
+	{
 		"name": "lukáš horníček",
 		"club": "Newcastle",
 		"nationality": "Czech Republic",
@@ -1510,6 +1524,20 @@
 		"cost": 50,
 		"fplType": 1,
 		"minutes": 720
+	},
+	{
+		"name": "ronald araújo",
+		"club": "Liverpool",
+		"nationality": "Uruguay",
+		"position": "Defender",
+		"lastName": "araujo",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 843,
+		"webName": "Araujo",
+		"cost": 54,
+		"fplType": 2,
+		"minutes": 493
 	},
 	{
 		"name": "milos kerkez",
@@ -1538,34 +1566,6 @@
 		"cost": 45,
 		"fplType": 2,
 		"minutes": 720
-	},
-	{
-		"name": "james hill",
-		"club": "Bournemouth",
-		"nationality": "England",
-		"position": "Defender",
-		"lastName": "hill",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 840,
-		"webName": "Hill",
-		"cost": 55,
-		"fplType": 2,
-		"minutes": 720
-	},
-	{
-		"name": "ronald araújo",
-		"club": "Liverpool",
-		"nationality": "Uruguay",
-		"position": "Defender",
-		"lastName": "araujo",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 833,
-		"webName": "Araujo",
-		"cost": 54,
-		"fplType": 2,
-		"minutes": 493
 	},
 	{
 		"name": "nobel mendy",
@@ -2109,7 +2109,7 @@
 		"dailyKnown": true,
 		"pop": 686,
 		"webName": "Scott",
-		"cost": 60,
+		"cost": 59,
 		"fplType": 3,
 		"minutes": 446
 	},
@@ -3033,7 +3033,7 @@
 		"dailyKnown": true,
 		"pop": 449,
 		"webName": "Meunier",
-		"cost": 45,
+		"cost": 44,
 		"fplType": 2,
 		"minutes": 429
 	},
@@ -3066,6 +3066,20 @@
 		"minutes": 426
 	},
 	{
+		"name": "mohammed kudus",
+		"club": "Tottenham",
+		"nationality": "Ghana",
+		"position": "Midfielder",
+		"lastName": "kudus",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 442,
+		"webName": "Kudus",
+		"cost": 65,
+		"fplType": 3,
+		"minutes": 362
+	},
+	{
 		"name": "nikola milenković",
 		"club": "Nottingham Forest",
 		"nationality": "Serbia",
@@ -3078,20 +3092,6 @@
 		"cost": 54,
 		"fplType": 2,
 		"minutes": 360
-	},
-	{
-		"name": "mohammed kudus",
-		"club": "Tottenham",
-		"nationality": "Ghana",
-		"position": "Midfielder",
-		"lastName": "kudus",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 432,
-		"webName": "Kudus",
-		"cost": 65,
-		"fplType": 3,
-		"minutes": 362
 	},
 	{
 		"name": "ryan gravenberch",
@@ -3276,20 +3276,6 @@
 		"minutes": 388
 	},
 	{
-		"name": "igor jesus",
-		"club": "Nottingham Forest",
-		"nationality": "Brazil",
-		"position": "Forward",
-		"lastName": "jesus",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 387,
-		"webName": "Igor Jesus",
-		"cost": 57,
-		"fplType": 4,
-		"minutes": 257
-	},
-	{
 		"name": "kevin danso",
 		"club": "Sunderland",
 		"nationality": "Austria",
@@ -3372,6 +3358,20 @@
 		"cost": 45,
 		"fplType": 3,
 		"minutes": 297
+	},
+	{
+		"name": "igor jesus",
+		"club": "Nottingham Forest",
+		"nationality": "Brazil",
+		"position": "Forward",
+		"lastName": "jesus",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 377,
+		"webName": "Igor Jesus",
+		"cost": 57,
+		"fplType": 4,
+		"minutes": 257
 	},
 	{
 		"name": "joão gomes",
@@ -3794,20 +3794,6 @@
 		"minutes": 260
 	},
 	{
-		"name": "cristhian mosquera",
-		"club": "Arsenal",
-		"nationality": "Spain",
-		"position": "Defender",
-		"lastName": "mosquera",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 298,
-		"webName": "Mosquera",
-		"cost": 52,
-		"fplType": 2,
-		"minutes": 168
-	},
-	{
 		"name": "romeo lavia",
 		"club": "Chelsea",
 		"nationality": "Belgium",
@@ -3848,6 +3834,20 @@
 		"cost": 45,
 		"fplType": 2,
 		"minutes": 273
+	},
+	{
+		"name": "cristhian mosquera",
+		"club": "Arsenal",
+		"nationality": "Spain",
+		"position": "Defender",
+		"lastName": "mosquera",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 288,
+		"webName": "Mosquera",
+		"cost": 52,
+		"fplType": 2,
+		"minutes": 168
 	},
 	{
 		"name": "noni madueke",
@@ -4354,20 +4354,6 @@
 		"minutes": 76
 	},
 	{
-		"name": "ellis simms",
-		"club": "Coventry City",
-		"nationality": "England",
-		"position": "Forward",
-		"lastName": "simms",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 186,
-		"webName": "Simms",
-		"cost": 49,
-		"fplType": 4,
-		"minutes": 116
-	},
-	{
 		"name": "hayden hackney",
 		"club": "Everton",
 		"nationality": "England",
@@ -4436,6 +4422,20 @@
 		"cost": 53,
 		"fplType": 4,
 		"minutes": 140
+	},
+	{
+		"name": "ellis simms",
+		"club": "Coventry City",
+		"nationality": "England",
+		"position": "Forward",
+		"lastName": "simms",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 176,
+		"webName": "Simms",
+		"cost": 49,
+		"fplType": 4,
+		"minutes": 116
 	},
 	{
 		"name": "ayden heaven",
@@ -5656,20 +5656,6 @@
 		"minutes": 70
 	},
 	{
-		"name": "kaye furo",
-		"club": "Brentford",
-		"nationality": "Belgium",
-		"position": "Forward",
-		"lastName": "furo",
-		"known": true,
-		"dailyKnown": true,
-		"pop": 70,
-		"webName": "Furo",
-		"cost": 45,
-		"fplType": 4,
-		"minutes": 0
-	},
-	{
 		"name": "michael zetterer",
 		"club": "Leeds United",
 		"nationality": "Germany",
@@ -5779,6 +5765,20 @@
 		"webName": "Button",
 		"cost": 40,
 		"fplType": 1,
+		"minutes": 0
+	},
+	{
+		"name": "kaye furo",
+		"club": "Brentford",
+		"nationality": "Belgium",
+		"position": "Forward",
+		"lastName": "furo",
+		"known": true,
+		"dailyKnown": true,
+		"pop": 60,
+		"webName": "Furo",
+		"cost": 45,
+		"fplType": 4,
 		"minutes": 0
 	},
 	{
@@ -6939,7 +6939,7 @@
 		"dailyKnown": false,
 		"pop": 10,
 		"webName": "Graham",
-		"cost": 45,
+		"cost": 44,
 		"fplType": 3,
 		"minutes": 0
 	},
