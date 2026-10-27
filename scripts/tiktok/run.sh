@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Makes a batch of short videos (TikTok, Reels, Shorts) of the real app playing past
-# puzzles, one at a time into ~/Desktop/Footballdle TikToks/batch-<date>/<mode>/.
+# puzzles, one at a time into ~/Desktop/Footballdle TikToks/batch-<date>/ (one flat folder).
 #
 #   yarn tiktok                   14 Daily, 10 Scout Report, 10 Spot the Baller, 10 Grid
 #   yarn tiktok 6 4 4 4           your own numbers, in that order
@@ -39,12 +39,10 @@ rm -rf $WORK/frames $WORK/captions.json
 IDS=($(python3 -c "import json; print(' '.join(v['id'] for v in json.load(open('$WORK/plan.json'))))"))
 made=0
 for id in $IDS; do
-	mode=${id%-*}
 	python3 $HERE/capture.py $id >/dev/null || { echo "  couldn't capture $id, skipped"; continue }
 	node $HERE/make-videos.mjs $WORK/raw $id >/dev/null || { echo "  couldn't record $id, skipped"; continue }
-	mkdir -p "$DEST/$mode"
-	avconvert --preset PresetHighestQuality --source $WORK/raw/$mode/$id.mp4 --output "$DEST/$mode/$id.mp4" --replace >/dev/null 2>&1 \
-		&& { made=$((made + 1)); echo "  ready: $mode/$id.mp4 ($made of ${#IDS})" }
+	avconvert --preset PresetHighestQuality --source $WORK/raw/$id.mp4 --output "$DEST/$id.mp4" --replace >/dev/null 2>&1 \
+		&& { made=$((made + 1)); echo "  ready: $id.mp4 ($made of ${#IDS})" }
 done
 
 python3 $HERE/posting-plan.py "$DEST" >/dev/null
@@ -54,7 +52,7 @@ import json, os
 used = set(json.load(open('$HERE/used.json')))
 caps = {c['id'] for c in json.load(open('$WORK/captions.json'))}
 plan = json.load(open('$WORK/plan.json'))
-done = [v for v in plan if v['id'] in caps and os.path.exists(os.path.join("$DEST", v['mode'], v['id'] + '.mp4'))]
+done = [v for v in plan if v['id'] in caps and os.path.exists(os.path.join("$DEST", v['id'] + '.mp4'))]
 used |= {v['item']['key'] for v in done}
 used |= {f"who:{v['mode']}:{(v['item'].get('word') or v['item']['name']).lower()}" for v in done if v['mode'] in ('daily', 'scout')}
 json.dump(sorted(used), open('$HERE/used.json', 'w'), indent='\t')

@@ -36,7 +36,8 @@ header p { color: var(--muted); margin: 0; max-width: 62ch; }
 .when { display: grid; gap: 0.35rem; }
 .when b { font: 400 1rem var(--display); }
 .chip { border: 1px solid; border-radius: 6px; font: 800 0.62rem/1 var(--body); letter-spacing: 0.08em; padding: 0.3rem 0.45rem; text-transform: uppercase; justify-self: start; }
-.chip.daily { color: var(--green); } .chip.scout { color: var(--amber); } .chip.spot { color: #8fd3ff; } .chip.grid { color: #f2a0ff; }
+.note { color: var(--amber); font-weight: 800; font-size: 0.88rem; }
+.chip { color: #f2a0ff; } .chip.daily { color: var(--green); } .chip.scout { color: var(--amber); } .chip.spot { color: #8fd3ff; } .chip.grid { color: #f2a0ff; }
 .body { display: grid; gap: 0.45rem; min-width: 0; }
 .file { font: 600 0.8rem ui-monospace, Menlo, monospace; color: var(--muted); overflow-wrap: anywhere; }
 .hook { font-weight: 800; }
@@ -54,7 +55,7 @@ label.posted { display: flex; gap: 0.35rem; align-items: center; color: var(--mu
 	<header>
 		<span class="eyebrow">Footballdle · Short videos</span>
 		<h1>__COUNT__ videos ready to post</h1>
-		<p>Made from the real app playing past puzzles. Every one is in this folder (__FOLDER__), sorted by game mode. Pick how many you'll post a day and the plan lays them out from tomorrow, with posting times and the modes mixed so the same one never runs back to back.</p>
+		<p>Made from the real app playing past puzzles. Every one is in this folder (__FOLDER__). Pick how many you'll post a day and the plan lays them out from tomorrow, with posting times and the modes mixed so the same one never runs back to back.</p>
 	</header>
 
 	<section class="how">
@@ -83,10 +84,6 @@ label.posted { display: flex; gap: 0.35rem; align-items: center; color: var(--mu
 
 	<nav class="filters" aria-label="Show">
 		<button class="filter" type="button" data-f="all" aria-pressed="true">All</button>
-		<button class="filter" type="button" data-f="daily" aria-pressed="false">Daily</button>
-		<button class="filter" type="button" data-f="scout" aria-pressed="false">Scout Report</button>
-		<button class="filter" type="button" data-f="spot" aria-pressed="false">Spot the Baller</button>
-		<button class="filter" type="button" data-f="grid" aria-pressed="false">The Grid</button>
 		<button class="filter" type="button" data-f="todo" aria-pressed="false">Not posted yet</button>
 	</nav>
 
@@ -141,7 +138,8 @@ function render() {
 		cb.onchange = () => { cb.checked ? posted.add(r.file) : posted.delete(r.file); el.classList.toggle('done', cb.checked); try { localStorage.setItem(KEY, JSON.stringify([...posted])) } catch {} }
 		lab.append(cb, document.createTextNode('Posted'))
 		row.append(btn, btn2, lab)
-		body.append(hook, file, cap, tags, row)
+		const note = document.createElement('div'); note.className = 'note'; note.textContent = r.note || ''
+		body.append(hook, file, ...(r.note ? [note] : []), cap, tags, row)
 		el.append(when, body); list.append(el)
 	})
 	const end = new Date(START); end.setDate(end.getDate() + Math.ceil(ROWS.length / perDay) - 1)
@@ -151,6 +149,12 @@ function render() {
 document.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { perDay = Number(b.dataset.n); try { localStorage.setItem('tiktok-per-day', String(perDay)) } catch {}; render() })
 render()
 
+// One filter per kind of video in this batch
+const nav = document.querySelector('.filters'), todo = nav.querySelector('[data-f="todo"]')
+for (const [mode, name] of new Map(ROWS.map(r => [r.mode, r.modeName]))) {
+	const b = document.createElement('button'); b.type = 'button'; b.className = 'filter'; b.dataset.f = mode; b.setAttribute('aria-pressed', 'false'); b.textContent = name
+	nav.insertBefore(b, todo)
+}
 const filters = [...document.querySelectorAll('.filters .filter')]
 filters.forEach(f => f.onclick = () => {
 	filters.forEach(x => x.setAttribute('aria-pressed', String(x === f)))

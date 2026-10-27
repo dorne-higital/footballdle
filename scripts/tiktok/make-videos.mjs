@@ -66,9 +66,14 @@ for (const v of plan) {
 	if (only && !v.id.startsWith(only)) continue
 	const dir = join(K, 'frames', v.id)
 	if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-	const n = readdirSync(dir).filter(f => f.endsWith('.png')).length
-	const frames = Array.from({ length: n }, (_, i) => `${ORIGIN}/frames/${v.id}/${i}.png`)
-	const j = v.job ? { kicker: 'FOOTBALLDLE', ...v.job, frames } : job(v, frames)
+	const names = readdirSync(dir).filter(f => f.endsWith('.png'))
+	const frames = Array.from({ length: names.length }, (_, i) => `${ORIGIN}/frames/${v.id}/${i}.png`)
+	// A hand-made job names its frames (0, d1, p2…): look each one up by file name
+	const at = f => names.indexOf(`${f}.png`)
+	const j = v.job
+		? { kicker: 'FOOTBALLDLE', ...v.job, frames: names.map(f => `${ORIGIN}/frames/${v.id}/${f}`), scenes: v.job.scenes.map(sc => sc.frame == null ? sc : { ...sc, frame: at(sc.frame) }) }
+		: job(v, frames)
+	if (v.job && j.scenes.some(sc => sc.frame === -1)) { console.log('missing frame for', v.id); continue }
 	const res = await send('Runtime.evaluate', { expression: `makeVideo(${JSON.stringify(j)})`, awaitPromise: true, returnByValue: true })
 	const val = res.result?.result?.value
 	if (!val) { console.log('failed', v.id, JSON.stringify(res.result).slice(0, 300)); continue }

@@ -39,8 +39,11 @@ for (let p = today - 1; p >= Math.max(dl.start, today - 120); p--) {
 	const pick = (lo: number, hi: number, k: number) => { const xs = ranked.filter(o => o.n >= lo && o.n <= hi); return xs.length ? xs[(p * 7919 + k * 31) % xs.length]!.w : null }
 	const guesses = [pick(0, 1, 1), pick(2, 3, 2), pick(4, 7, 3)].filter(Boolean) as string[]
 	if (guesses.length < 3) continue
+	// Six stone-cold guesses (barely a letter right) for the worst-guesses videos
+	const coldPool = ranked.filter(o => o.n <= 1)
+	const cold = [...Array(6).keys()].map(k => coldPool[(p * 104729 + k * 7907) % Math.max(1, coldPool.length)]?.w).filter((w, i, a) => w && a.indexOf(w) === i) as string[]
 	const full = roster.find(x => strip(x.lastName) === word && x.club === f.club)
-	daily.push({ key: `daily:${p}`, puzzle: p, name: title(full?.name ?? f.name), pop: full?.pop ?? 0, word, guesses })
+	daily.push({ key: `daily:${p}`, puzzle: p, name: title(full?.name ?? f.name), pop: full?.pop ?? 0, word, guesses, cold })
 }
 
 // ---------------------------------------------------------------- Scout Report
