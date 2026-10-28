@@ -419,7 +419,8 @@
 		gap: 1rem;
 		margin: 0 auto;
 		max-width: 480px;
-		padding: 0.5rem 0.25rem 7rem;
+		// Clears the tab bar (0.5 + 4.25rem) and its fade (2.25rem) with room to spare
+		padding: 0.5rem 0.25rem 7.75rem;
 		width: 100%;
 	}
 

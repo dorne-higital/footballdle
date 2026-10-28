@@ -1,4 +1,9 @@
 <template>
+	<!-- Content fades out above the bar instead of sliding under it -->
+	<div
+		class="app-tab-fade"
+		aria-hidden="true"
+	></div>
 	<nav
 		class="app-tab-bar"
 		aria-label="Main"
@@ -30,6 +35,19 @@
 	const active = computed(() => tabFor(route.path))
 </script>
 <style scoped lang="scss">
+	// Under the bar and 2.25rem above it: solid to the bar's middle, then clear.
+	// pointer-events: none so taps reach the content behind
+	.app-tab-fade {
+		background: linear-gradient(to top, var(--bg-primary) calc(env(safe-area-inset-bottom) + 2.5rem), transparent);
+		bottom: 0;
+		height: calc(env(safe-area-inset-bottom) + 7rem);
+		left: 0;
+		pointer-events: none;
+		position: fixed;
+		right: 0;
+		z-index: 49;
+	}
+
 	.app-tab-bar {
 		align-items: center;
 		backdrop-filter: blur(18px) saturate(1.4);

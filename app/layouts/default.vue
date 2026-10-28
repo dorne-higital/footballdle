@@ -23,8 +23,8 @@
 </script>
 
 <style scoped lang="scss">
-	// Room to scroll the last item clear of the floating tab bar
+	// Room to scroll the last item clear of the floating tab bar and its fade (AppTabBar.vue)
 	.has-tab-bar {
-		padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+		padding-bottom: calc(env(safe-area-inset-bottom) + 6.75rem);
 	}
 </style>
