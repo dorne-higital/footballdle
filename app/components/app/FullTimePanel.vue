@@ -41,8 +41,7 @@
 				size="1rem"
 			/>
 			<span
-				>Today's replay is unlocked: <strong>{{ catchUp }} {{ catchUp === 1 ? 'card' : 'cards' }}</strong> to catch
-				up</span
+				>Replay unlocked · <strong>{{ catchUp }} {{ catchUp === 1 ? 'card' : 'cards' }}</strong> to catch up</span
 			>
 		</NuxtLink>
 		<div class="ft-actions">
