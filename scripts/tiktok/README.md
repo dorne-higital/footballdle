@@ -52,4 +52,11 @@ Each video varies its accent colours, theme and phone-or-full-screen look. `form
 | `render.html`, `make-videos.mjs` | Animates the screens and records the MP4 |
 | `posting-plan.py`, `posting-plan.html` | The posting plan page |
 
-The videos are silent on purpose: add a trending sound in TikTok when posting.
+## Built for TikTok
+
+- **The first frame is the hook.** The opening words are on screen from frame 1 (no fade-in), because that moment decides whether someone scrolls past. It's also the frame TikTok picks as the cover.
+- **Safe zones.** TikTok, Reels and Shorts draw their own top bar, button column (right) and caption (bottom) over every video. `SAFE` in `render.html` keeps key words between y 330 and 1500: countdown pill, end card, speedrun clock and the full-screen words all sit above the caption, and the countdown ring sits in the strip left of the phone.
+- **Asking for comments.** During a countdown the headline becomes "Comment your guess before the reveal" (or the job's `countdownHook`), and every video with a reveal ends with "GOT IT? COMMENT BELOW" (or the job's `endNote`). Speedruns keep their own "comment your time" card.
+- **Checking a layout without recording:** give a job `stillAt: <seconds>` and `makeVideo` draws that moment and returns at once, for a screenshot.
+
+The videos are silent on purpose: add a sound in TikTok when posting. A Business account can only use TikTok's Commercial Music Library; your own voiceover is always allowed.

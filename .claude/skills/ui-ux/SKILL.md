@@ -60,7 +60,7 @@ Never claim that a design has been user-tested unless it actually has been. Neve
 
 ## The project
 - **Product:** Footballdle, a daily football guessing game (Daily, Scout Report, Spot the Baller, The Grid). Website: footballdle.co.uk.
-- **Platform:** the app (iOS and Android, Nuxt + Capacitor) comes first and the website second.
+- **Platform:** the iPhone app (Nuxt + Capacitor; Android and desktop play on the website) comes first and the website second.
 - **Target users:** TikTok and Instagram audiences (@_footballdle) for marketing work, and everyday players for product updates.
 - **Main design goals:** product improvements and marketing material. Marketing assets should push people to footballdle.co.uk/app. For copy and campaign strategy, work alongside the `marketing` skill.
 - **Ground truth for the existing design:** read the code before proposing anything. Themes and tokens are in `THEMES.md` and `assets/_theme.scss`, type is in `assets/_typography.scss`, accessibility is in `assets/_accessibility.scss`, and screens are under `app/`. Floodlights is the default theme. Greyscale exists for colour-blind players, so never rely on colour alone to show right, close or wrong.
