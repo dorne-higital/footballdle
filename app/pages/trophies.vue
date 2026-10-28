@@ -17,6 +17,56 @@
 			>
 				<span :style="{ width: `${(earnedCount / ACHIEVEMENTS.length) * 100}%` }"></span>
 			</div>
+			<p
+				v-if="earnedCount === ACHIEVEMENTS.length"
+				class="summary-done"
+			>
+				You've unlocked every trophy.
+			</p>
+		</section>
+
+		<!-- Something to aim for first, then what's been won, then the rest by mode -->
+		<section
+			v-if="shelves.nearly.length"
+			class="group"
+		>
+			<h2>{{ shelves.nearlyIsStart ? 'Where to start' : 'Nearly there' }}</h2>
+			<ul>
+				<TrophyRow
+					v-for="item in shelves.nearly"
+					:key="item.id"
+					:item="item"
+				/>
+			</ul>
+		</section>
+
+		<section
+			v-if="shelves.unlocked.length"
+			class="shelf"
+			aria-label="Unlocked trophies"
+		>
+			<h2>
+				Unlocked
+				<span>{{ shelves.unlocked.length }}</span>
+			</h2>
+			<ul>
+				<li
+					v-for="item in shelves.unlocked"
+					:key="item.id"
+					:aria-label="`${item.title}, ${item.points} points. ${item.earnedText}`"
+				>
+					<div aria-hidden="true">
+						<img
+							:src="`/achievements/${item.id}.jpg`"
+							alt=""
+							width="56"
+							height="56"
+							loading="lazy"
+						/>
+						<p>{{ item.title }}</p>
+					</div>
+				</li>
+			</ul>
 		</section>
 
 		<section
@@ -59,56 +109,27 @@
 			</div>
 		</section>
 
-		<section
-			v-for="group in groups"
+		<template
+			v-for="group in shelves.groups"
 			:key="group.title"
-			class="group"
 		>
-			<h2>
-				{{ group.title }}
-				<span>{{ group.earned }}/{{ group.items.length }}</span>
-			</h2>
-			<ul>
-				<li
-					v-for="item in group.items"
-					:key="item.id"
-					:class="['trophy', { earned: item.earned }]"
-				>
-					<div class="badge">
-						<img
-							v-if="!item.secret"
-							:src="`/achievements/${item.id}.jpg`"
-							alt=""
-							width="56"
-							height="56"
-							loading="lazy"
-						/>
-						<span
-							v-if="!item.earned"
-							class="lock"
-						>
-							<Icon
-								name="solar:lock-keyhole-minimalistic-bold"
-								size="0.8rem"
-							/>
-						</span>
-					</div>
-					<div class="trophy-text">
-						<p class="trophy-title">{{ item.secret ? 'Hidden trophy' : item.title }}</p>
-						<p class="trophy-goal">
-							{{ item.secret ? 'Keep playing to find out.' : item.earned ? item.earnedText : item.goal }}
-						</p>
-						<div
-							v-if="!item.earned && item.percent > 0"
-							class="bar small"
-						>
-							<span :style="{ width: `${item.percent}%` }"></span>
-						</div>
-					</div>
-					<span class="points">{{ item.points }}<small> pts</small></span>
-				</li>
-			</ul>
-		</section>
+			<section
+				v-if="group.items.length"
+				class="group"
+			>
+				<h2>
+					{{ group.title }}
+					<span>{{ group.earned }}/{{ group.total }}</span>
+				</h2>
+				<ul>
+					<TrophyRow
+						v-for="item in group.items"
+						:key="item.id"
+						:item="item"
+					/>
+				</ul>
+			</section>
+		</template>
 	</div>
 </template>
 
@@ -118,11 +139,12 @@
 	import { useGameCenter } from '../composables/useGameCenter'
 	import {
 		ACHIEVEMENTS,
-		ACHIEVEMENT_GROUPS,
 		TOTAL_ACHIEVEMENT_POINTS,
 		achievementProgress,
 		buildAchievementContext,
+		trophyShelves,
 	} from '../utils/achievements'
+	import TrophyRow from '../components/app/TrophyRow.vue'
 
 	// iOS app only: the website has no Game Center
 	if (!useRuntimeConfig().public.appShell) await navigateTo('/', { replace: true })
@@ -149,29 +171,9 @@
 		return achievementProgress(ctx)
 	})
 
-	const groups = computed(() =>
-		ACHIEVEMENT_GROUPS.map((group) => {
-			const items = group.achievements.map((a) => {
-				const percent = progress.value[a.id] ?? 0
-				const earned = percent >= 100
-				return {
-					id: a.id,
-					title: a.title,
-					goal: a.goal,
-					earnedText: a.earned,
-					points: a.points,
-					percent,
-					earned,
-					secret: !!a.hidden && !earned,
-				}
-			})
-			// Closest to unlocking first, so there's always something to aim for; earned ones after
-			items.sort((a, b) => Number(a.earned) - Number(b.earned) || (a.earned ? 0 : b.percent - a.percent))
-			return { title: group.title, items, earned: items.filter(i => i.earned).length }
-		}),
-	)
+	const shelves = computed(() => trophyShelves(progress.value))
 
-	const earned = computed(() => ACHIEVEMENTS.filter(a => (progress.value[a.id] ?? 0) >= 100))
+	const earned = computed(() => ACHIEVEMENTS.filter((a) => (progress.value[a.id] ?? 0) >= 100))
 	const earnedCount = computed(() => earned.value.length)
 	const earnedPoints = computed(() => earned.value.reduce((sum, a) => sum + a.points, 0))
 </script>
@@ -188,7 +190,8 @@
 
 	.summary-card,
 	.gc-card,
-	.group ul {
+	.group ul,
+	.shelf ul {
 		background: var(--bg-secondary);
 		border: 1px solid var(--border);
 		border-radius: 1.25rem;
@@ -231,11 +234,6 @@
 			border-radius: inherit;
 			display: block;
 			height: 100%;
-		}
-
-		&.small {
-			height: 0.3rem;
-			margin-top: 0.4rem;
 		}
 	}
 
@@ -280,7 +278,15 @@
 		}
 	}
 
-	.group {
+	.summary-done {
+		color: var(--tertiary-color);
+		font-size: 0.9rem;
+		font-weight: 700;
+		margin: 0;
+	}
+
+	.group,
+	.shelf {
 		h2 {
 			align-items: baseline;
 			display: flex;
@@ -303,89 +309,38 @@
 		}
 	}
 
-	.trophy {
-		align-items: center;
-		display: flex;
-		gap: 0.85rem;
-		padding: 0.65rem 1rem;
+	// Won trophies as a badge grid, four across (no sideways scroller)
+	.shelf ul {
+		display: grid;
+		gap: 0.75rem 0.25rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		list-style: none;
+		margin: 0;
+		padding: 0.9rem 0.5rem;
 
-		& + .trophy {
-			border-top: 1px solid var(--border);
-		}
-
-		.badge {
+		div {
 			align-items: center;
-			background: color-mix(in srgb, var(--text-primary) 6%, transparent);
-			border-radius: 50%;
 			display: flex;
-			flex-shrink: 0;
+			flex-direction: column;
+			gap: 0.35rem;
+		}
+
+		img {
+			border-radius: 50%;
 			height: 3.5rem;
-			justify-content: center;
-			position: relative;
 			width: 3.5rem;
-
-			img {
-				border-radius: 50%;
-				// Locked: the real badge, faded, so each one is recognisable
-				filter: grayscale(0.85);
-				height: 100%;
-				opacity: 0.4;
-				width: 100%;
-			}
-
-			.lock {
-				align-items: center;
-				background: var(--bg-primary);
-				border: 1px solid var(--border);
-				border-radius: 50%;
-				bottom: -0.2rem;
-				color: var(--text-primary);
-				display: flex;
-				height: 1.45rem;
-				justify-content: center;
-				position: absolute;
-				right: -0.2rem;
-				width: 1.45rem;
-			}
 		}
 
-		&.earned .badge img {
-			filter: none;
-			opacity: 1;
-		}
-
-		.trophy-text {
-			flex: 1;
-			min-width: 0;
-		}
-
-		.trophy-title {
-			font-weight: 800;
-			margin: 0;
-		}
-
-		.trophy-goal {
-			color: var(--text-secondary);
-			font-size: 0.85rem;
-			line-height: 1.3;
-			margin: 0.1rem 0 0;
-		}
-
-		.points {
-			color: var(--text-secondary);
-			font-size: 0.85rem;
-			font-variant-numeric: tabular-nums;
+		p {
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			display: -webkit-box;
+			font-size: 0.72rem;
 			font-weight: 700;
-			white-space: nowrap;
-
-			small {
-				font-size: 0.72rem;
-				font-weight: 600;
-			}
-		}
-
-		&.earned .points {
-			color: var(--tertiary-color);
+			line-height: 1.2;
+			margin: 0;
+			overflow: hidden;
+			text-align: center;
 		}
 	}
 </style>
