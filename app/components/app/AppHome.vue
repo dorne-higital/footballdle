@@ -515,6 +515,7 @@
 				aspect-ratio: 1;
 				border-radius: 0.65rem;
 				flex: 0 1 2.6rem;
+				position: relative;
 
 				&.correct {
 					background: var(--color-success);
@@ -523,6 +524,18 @@
 
 				&.present {
 					background: var(--color-present);
+
+					// Close carries a dot, as on the board
+					&::after {
+						background: var(--on-present);
+						border-radius: 50%;
+						content: '';
+						height: 0.35rem;
+						position: absolute;
+						right: 0.3rem;
+						top: 0.3rem;
+						width: 0.35rem;
+					}
 				}
 
 				&.absent {

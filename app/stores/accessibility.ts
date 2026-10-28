@@ -17,7 +17,7 @@ const TEXT_SIZE_KEY = 'footballdle-text-size'
 const RELAXED_KEY = 'footballdle-relaxed-timer'
 
 export const useAccessibilityStore = defineStore('accessibility', () => {
-	/** Orange and blue tiles with a marker on right letters, instead of green and amber */
+	/** Orange and blue tiles instead of green and amber (close letters carry a dot in every theme) */
 	const highContrast = ref(false)
 	const haptics = ref(true)
 	const textSize = ref<TextSize>('default')

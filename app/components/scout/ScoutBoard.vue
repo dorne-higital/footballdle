@@ -76,7 +76,7 @@
 					:class="{ used: n <= results.length }"
 				></span>
 			</div>
-			<p class="legend"><i class="amber"></i> Close: same region, continent or line, within £1m</p>
+			<p class="legend"><i class="close-mark"></i> Close: same region, continent or line, within £1m</p>
 		</div>
 		<p
 			v-else
@@ -218,9 +218,9 @@
 			gap: 0.35rem;
 			margin: 0;
 
-			.amber {
+			.close-mark {
 				background: var(--color-present);
-				border-radius: 0.2rem;
+				border-radius: 50%;
 				display: inline-block;
 				height: 0.6rem;
 				width: 0.6rem;

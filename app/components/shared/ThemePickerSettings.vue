@@ -505,7 +505,7 @@
 					<div class="reminder-head">
 						<div>
 							<span class="option-name">High-contrast tiles</span>
-							<p>Orange for right and blue for close, with a dot on right letters. Works with every theme.</p>
+							<p>Orange for right and blue for close. Works with every theme.</p>
 						</div>
 						<button
 							type="button"

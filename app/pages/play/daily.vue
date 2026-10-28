@@ -996,6 +996,7 @@
 			border: 1px solid var(--border);
 			border-radius: 2px;
 			height: 14px;
+			position: relative;
 			width: 14px;
 
 			&.correct {
@@ -1006,6 +1007,18 @@
 			&.present {
 				background: var(--color-present);
 				border-color: var(--color-present);
+
+				// Close carries a dot, as on the board
+				&::after {
+					background: var(--on-present);
+					border-radius: 50%;
+					content: '';
+					height: 4px;
+					inset: 0;
+					margin: auto;
+					position: absolute;
+					width: 4px;
+				}
 			}
 
 			&.absent {

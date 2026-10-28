@@ -415,8 +415,10 @@
 				background: var(--color-success);
 			}
 
+			// Round for close, square for right, as in the game
 			&.present {
 				background: var(--color-present);
+				border-radius: 50%;
 			}
 
 			&.absent {

@@ -228,6 +228,7 @@
 				font-weight: 600;
 				height: clamp(40px, 7vh, 58px);
 				justify-content: center;
+				position: relative;
 				transition:
 					background 0.1s,
 					color 0.1s,
@@ -284,6 +285,18 @@
 					background: var(--color-present);
 					border-color: var(--color-present);
 					color: var(--on-present, #fff);
+
+					// Close keys get the board's corner dot
+					&::after {
+						background: currentColor;
+						border-radius: 50%;
+						content: '';
+						height: 0.3rem;
+						position: absolute;
+						right: 0.25rem;
+						top: 0.25rem;
+						width: 0.3rem;
+					}
 				}
 
 				&.absent {
