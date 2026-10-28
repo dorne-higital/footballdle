@@ -1,7 +1,7 @@
 <template>
 	<button
 		type="button"
-		:class="['hint-pill', { pulse }]"
+		:class="['hint-pill', { pulse, compact }]"
 		:aria-label="purchases.isPro ? 'Unlimited hints' : `${purchases.hintBank} hints. Get more`"
 		@click="openShop"
 	>
@@ -11,7 +11,7 @@
 		/>
 		{{ purchases.isPro ? '∞' : purchases.hintBank }}
 		<Icon
-			v-if="!purchases.isPro"
+			v-if="!purchases.isPro && !compact"
 			name="solar:add-circle-bold"
 			size="0.95rem"
 			class="plus"
@@ -24,7 +24,9 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useHaptics } from '../../composables/useHaptics'
 
-	// Hint bank shown on screen; tapping opens the hint shop
+	// Hint bank shown on screen; tapping opens the hint shop. Compact drops the + when a
+	// "Use" button sits beside it (AppTopBar on Scout Report)
+	withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 	const purchases = usePurchasesStore()
 	const haptics = useHaptics()
 	const showHintShop = useState('hint-shop-open', () => false)
@@ -71,6 +73,10 @@
 
 		.plus {
 			opacity: 0.7;
+		}
+
+		&.compact {
+			padding-right: 0.65rem;
 		}
 
 		&.pulse {

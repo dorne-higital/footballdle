@@ -312,7 +312,7 @@ html.app-shell {
 		padding-bottom: 0.75rem;
 	}
 
-	// Scout: guess slots fill the space, search box sits at the bottom
+	// Scout: the guesses so far fill the space, search box sits at the bottom
 	.scout-board {
 		flex: 1;
 		min-height: 0;
@@ -340,7 +340,7 @@ html.app-shell {
 	// search field, drop the extras
 	&.keyboard-open {
 		.scout-page .scoreboard-strip,
-		.scout-board .app-footer,
+		.scout-board .board-meta,
 		.scout-dossier .brief,
 		.scout-dossier .price-explainer {
 			display: none;

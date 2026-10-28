@@ -41,11 +41,8 @@
 				/>
 			</PlaySurfaceFrame>
 			<AppHintBar
-				v-if="$config.public.appShell && !scoutStore.gameOver"
+				v-if="$config.public.appShell && !scoutStore.gameOver && scoutStore.hints.length"
 				:hints="scoutStore.hints"
-				:can-purchase="scoutStore.canPurchaseHint"
-				:next-clue-name="scoutStore.nextClueName"
-				@unlock="scoutStore.unlockHint()"
 			/>
 			<FullTimePanel
 				v-if="$config.public.appShell && scoutStore.gameOver"
