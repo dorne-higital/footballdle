@@ -24,3 +24,5 @@ logs
 !.env.example
 output.ts
 challengeplayers.ts
+# Short-video kit work files (scripts/tiktok)
+.tiktok

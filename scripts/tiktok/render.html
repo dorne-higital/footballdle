@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Manrope:wght@600;700;800&display=swap">
+<style>html,body{margin:0;background:#07130d}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// Footballdle short videos: real app screens in a phone frame on a floodlit pitch, with
+// a hook, a countdown before the answer and an end card. makeVideo(job) records one MP4.
+const W = 1080, H = 1920, FPS = 30
+const C = { glow: '47,224,138', pitch: '#07130d', green: '#2fe08a', amber: '#f5b638', text: '#f2fbf5', muted: '#93ab9d', card: '#0c1f15' }
+// The logo and end card always use the brand colours, whatever a video's accents are
+const BRAND = { ...C }
+const cv = document.getElementById('c'), ctx = cv.getContext('2d')
+const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3)
+const clamp01 = t => Math.max(0, Math.min(1, t))
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r) }
+function spaced(px) { if ('letterSpacing' in ctx) ctx.letterSpacing = px + 'px' }
+
+function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src }) }
+
+function background(t) {
+	ctx.fillStyle = C.pitch; ctx.fillRect(0, 0, W, H)
+	const g = ctx.createRadialGradient(W / 2, 260, 0, W / 2, 260, 1300)
+	g.addColorStop(0, `rgba(${C.glow},0.22)`); g.addColorStop(1, `rgba(${C.glow},0)`)
+	ctx.fillStyle = g; ctx.fillRect(0, 0, W, H)
+	ctx.fillStyle = 'rgba(255,255,255,0.02)'
+	const s = 120, drift = (t * 12) % (s * 2)
+	for (let x = -s * 2 + drift; x < W; x += s * 2) ctx.fillRect(x, 0, s, H)
+}
+
+// The F in the centre circle (the app icon's mark)
+function mark(cx, cy, radius) {
+	const r = radius * 0.8
+	ctx.strokeStyle = BRAND.green; ctx.lineWidth = radius * 0.11; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke()
+	const k = (r * 0.93) / 330; ctx.fillStyle = BRAND.text
+	const bar = (x, y, w, h) => { rr(cx + (x - 512) * k, cy + (y - 512) * k, w * k, h * k, 16 * k); ctx.fill() }
+	bar(350, 236, 128, 552); bar(350, 236, 380, 122); bar(350, 452, 316, 114)
+}
+
+// Wrapped, centred display text
+function headline(text, y, size, color = C.text, maxW = 940) {
+	ctx.font = `400 ${size}px "Archivo Black"`; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; spaced(0)
+	const words = text.split(' '), lines = []; let line = ''
+	for (const w of words) { const t = line ? line + ' ' + w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w } else line = t }
+	lines.push(line)
+	ctx.fillStyle = color
+	lines.forEach((l, i) => ctx.fillText(l, W / 2, y + i * size * 1.12))
+	return lines.length
+}
+function pill(text, cx, cy, bg, fg, size = 40) {
+	ctx.font = `800 ${size}px Manrope`; spaced(1)
+	const w = ctx.measureText(text).width + size * 1.6, h = size * 1.9
+	ctx.fillStyle = bg; rr(cx - w / 2, cy - h / 2, w, h, h / 2); ctx.fill()
+	ctx.fillStyle = fg; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, cx, cy + 2)
+	spaced(0); ctx.textBaseline = 'alphabetic'
+}
+
+// Phone: the app screenshot (status-bar gap cropped) in a rounded frame
+const PHONE = { w: 640, top: 430 }
+function phone(img, alpha, zoom, lift) {
+	const crop = 124, sw = img.width, sh = img.height - crop
+	const w = PHONE.w * zoom, h = w * sh / sw
+	const x = (W - w) / 2, y = PHONE.top - lift
+	ctx.save(); ctx.globalAlpha = alpha
+	ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 20
+	ctx.fillStyle = '#000'; rr(x - 16, y - 16, w + 32, h + 32, 70); ctx.fill()
+	ctx.shadowColor = 'transparent'
+	ctx.save(); rr(x, y, w, h, 56); ctx.clip()
+	ctx.drawImage(img, 0, crop, sw, sh, x, y, w, h)
+	ctx.restore()
+	ctx.strokeStyle = 'rgba(47,224,138,0.35)'; ctx.lineWidth = 3; rr(x - 16, y - 16, w + 32, h + 32, 70); ctx.stroke()
+	ctx.restore()
+	return { x, y, k: w / sw, crop }
+}
+
+// The screenshot filling the screen (status-bar gap cropped), optionally zoomed towards a
+// point: zoom { s, x, y } with x, y as fractions of the screenshot
+function full(img, alpha, z) {
+	const crop = 124, sw = img.width, sh = img.height - crop
+	const k = (H / sh) * (z?.s || 1)
+	const w = sw * k, h = sh * k
+	const fx = z?.x ?? 0.5, fy = z?.y ?? 0.5
+	let x = W / 2 - fx * w, y = H / 2 - fy * h
+	if (!z?.s || z.s <= 1) { x = (W - w) / 2; y = 0 }
+	x = Math.min(Math.max(x, Math.min(0, W - w)), Math.max(0, (W - w) / 2)); y = Math.min(0, Math.max(y, H - h))
+	ctx.save(); ctx.globalAlpha = alpha
+	ctx.drawImage(img, 0, crop, sw, sh, x, y, w, h)
+	ctx.restore()
+	return { x, y, k, crop }
+}
+
+// A pulsing box on the phone around [x, y, w, h] in screenshot pixels
+function box(ph, b, t) {
+	const pulse = 0.5 + 0.5 * Math.sin(t * 6)
+	ctx.save(); ctx.strokeStyle = C.amber; ctx.lineWidth = 8 + 4 * pulse
+	ctx.shadowColor = C.amber; ctx.shadowBlur = 30 * pulse
+	rr(ph.x + b[0] * ph.k - 10, ph.y + (b[1] - ph.crop) * ph.k - 10, b[2] * ph.k + 20, b[3] * ph.k + 20, 28); ctx.stroke()
+	ctx.restore()
+}
+
+// A full-screen text card instead of the phone: { kicker, title, code?, sub? }
+function card(c, p, t) {
+	const a = ease(p * 4)
+	ctx.save(); ctx.globalAlpha = a
+	const top = c.code ? 560 : c.big ? 470 : 640
+	ctx.font = '800 38px Manrope'; ctx.fillStyle = C.amber; ctx.textAlign = 'center'; spaced(8)
+	ctx.fillText(c.kicker || '', W / 2, top); spaced(0)
+	// A giant number from the text, popping in
+	if (c.big) {
+		const pop = 0.6 + 0.4 * ease(clamp01(p * 5)), size = c.big.length > 5 ? 200 : 260
+		ctx.save(); ctx.translate(W / 2, top + 60 + size * 0.8); ctx.scale(pop, pop)
+		ctx.font = `400 ${size}px "Archivo Black"`; ctx.fillStyle = C.green; ctx.textAlign = 'center'
+		ctx.shadowColor = C.green; ctx.shadowBlur = 40; ctx.fillText(c.big, 0, 0); ctx.restore()
+	}
+	const lines = headline(c.title, c.code ? 680 : c.big ? top + 160 + (c.big.length > 5 ? 200 : 260) : 780, c.size || 104, C.text, 900)
+	if (c.code) {
+		const pop = 0.85 + 0.15 * ease(clamp01((p - 0.1) * 5)), y = 680 + lines * 116 + 170
+		ctx.save(); ctx.translate(W / 2, y); ctx.scale(pop, pop)
+		ctx.setLineDash([26, 18]); ctx.strokeStyle = C.amber; ctx.lineWidth = 8
+		ctx.fillStyle = 'rgba(245,182,56,0.12)'; rr(-400, -130, 800, 260, 40); ctx.fill(); ctx.stroke(); ctx.setLineDash([])
+		ctx.font = '400 150px "Archivo Black"'; ctx.fillStyle = C.amber; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; spaced(6)
+		ctx.fillText(c.code, 0, 8); spaced(0); ctx.textBaseline = 'alphabetic'
+		ctx.restore()
+	}
+	if (c.sub) {
+		const y = c.code ? 680 + lines * 116 + 420 : 780 + lines * 116 + 60
+		ctx.font = '700 46px Manrope'; ctx.fillStyle = C.muted; ctx.textAlign = 'center'
+		c.sub.split('\n').forEach((l, i) => ctx.fillText(l, W / 2, y + i * 64))
+	}
+	ctx.restore()
+}
+
+function endCard(p, note) {
+	const a = ease(p * 2)
+	ctx.save(); ctx.globalAlpha = a
+	ctx.fillStyle = 'rgba(7,19,13,0.98)'; ctx.fillRect(0, 0, W, H)
+	mark(W / 2, 760, 200 * (0.9 + 0.1 * a))
+	headline('Footballdle', 1130, 120)
+	ctx.font = '700 46px Manrope'; ctx.fillStyle = BRAND.muted; ctx.textAlign = 'center'
+	ctx.fillText('A new footballer to find every day', W / 2, 1220)
+	pill('FREE ON THE APP STORE', W / 2, 1390, BRAND.green, BRAND.pitch, 44)
+	ctx.font = '700 40px Manrope'; ctx.fillStyle = BRAND.text; ctx.textAlign = 'center'
+	ctx.fillText('Search “Footballdle”', W / 2, 1500)
+	if (note) { ctx.font = '800 44px Manrope'; ctx.fillStyle = BRAND.amber; spaced(3); ctx.fillText(note, W / 2, 1640); spaced(0) }
+	ctx.restore()
+}
+
+// A job is a list of scenes: { frame, hold, hook?, countdown?, reveal?, ring? }
+async function makeVideo(job) {
+	await document.fonts.load('400 80px "Archivo Black"'); await document.fonts.load('800 40px Manrope'); await document.fonts.load('700 40px Manrope')
+	const imgs = await Promise.all((job.frames || []).map(loadImg))
+	// job.palette swaps the accent colours for this video only
+	const saved = { ...C }; Object.assign(C, job.palette || {})
+	const scenes = []; let t0 = 0
+	for (const s of job.scenes) { scenes.push({ ...s, start: t0 }); t0 += s.hold }
+	const END = 2.6, total = t0 + END
+	const XF = 0.28
+
+	const stream = cv.captureStream(FPS)
+	const type = ['video/mp4;codecs=avc1.640028', 'video/mp4'].find(t => MediaRecorder.isTypeSupported(t))
+	const rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 7_000_000 })
+	const chunks = []; rec.ondataavailable = e => e.data.size && chunks.push(e.data)
+	const done = new Promise(r => (rec.onstop = r))
+
+	function draw(t) {
+		background(t)
+		const i = Math.max(0, scenes.findLastIndex(s => t >= s.start))
+		const s = scenes[i], p = (t - s.start) / s.hold
+		// Hook / caption area above the phone
+		if (s.card) {
+			card(s.card, p, t)
+			if (t > t0) endCard((t - t0) / END, job.endNote)
+			return
+		}
+		const hook = s.reveal || s.hook || job.hook
+		const isReveal = !!s.reveal
+		const prev = i > 0 && scenes[i - 1].frame != null ? scenes[i - 1] : null
+		const xf = prev ? ease((t - s.start) / XF) : 1
+		let ph
+		if (job.full) {
+			// Full screen: the app first, the words in a dark band at the bottom
+			const zp = ease(clamp01((t - s.start) / 0.6)), z = s.zoom ? { ...s.zoom, s: 1 + (s.zoom.s - 1) * zp } : null
+			if (prev && xf < 1) full(imgs[prev.frame], 1, prev.zoom)
+			ph = full(imgs[s.frame], xf, z)
+			const band = ctx.createLinearGradient(0, H - 560, 0, H)
+			band.addColorStop(0, 'rgba(0,0,0,0)'); band.addColorStop(0.35, 'rgba(0,0,0,0.78)'); band.addColorStop(1, 'rgba(0,0,0,0.92)')
+			ctx.fillStyle = band; ctx.fillRect(0, H - 560, W, 560)
+		}
+		const kickY = job.full ? H - 380 : 150, hookY = job.full ? H - 290 : 250
+		ctx.save(); ctx.globalAlpha = ease((t - s.start) / 0.35) * (i === 0 ? ease(t / 0.5) : 1)
+		if (isReveal) { ctx.font = '800 34px Manrope'; ctx.fillStyle = C.green; ctx.textAlign = 'center'; spaced(6); ctx.fillText(job.revealLabel || 'IT WAS', W / 2, kickY); spaced(0) }
+		else { ctx.font = '800 34px Manrope'; ctx.fillStyle = C.amber; ctx.textAlign = 'center'; spaced(6); ctx.fillText(s.kicker || job.kicker, W / 2, kickY); spaced(0) }
+		headline(hook, hookY, hook.length > 34 ? 66 : 80, isReveal ? C.green : C.text)
+		ctx.restore()
+		if (!job.full) {
+			// Phone, crossfading between frames
+			const zoom = 1 + 0.025 * clamp01(t / total)
+			if (prev && xf < 1) phone(imgs[prev.frame], 1, zoom, 0)
+			ph = phone(imgs[s.frame], xf, zoom, 0)
+		}
+		if (s.box && xf >= 1) box(ph, s.box, t)
+		if (isReveal) { const g = 1 - clamp01((t - s.start) / 0.6); if (g > 0) { ctx.fillStyle = `rgba(47,224,138,${0.25 * g})`; ctx.fillRect(0, 0, W, H) } }
+		// Countdown before the answer
+		if (s.countdown) {
+			const left = Math.ceil(s.hold - (t - s.start))
+			const label = left > 0 ? (job.countdownText || 'ANSWER IN') + ' ' + left : ''
+			if (label) pill(label, W / 2, job.full ? H - 90 : H - 150, C.amber, C.pitch, 46)
+		}
+		if (s.ring) {
+			const q = clamp01(p)
+			ctx.save(); if (job.full) ctx.translate(W - 130 - W / 2, 150 - (H - 160))
+			ctx.lineWidth = 16; ctx.strokeStyle = 'rgba(245,182,56,0.25)'; ctx.beginPath(); ctx.arc(W / 2, H - 160, 60, 0, Math.PI * 2); ctx.stroke()
+			ctx.strokeStyle = C.amber; ctx.beginPath(); ctx.arc(W / 2, H - 160, 60, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * (1 - q)); ctx.stroke()
+			ctx.font = '400 54px "Archivo Black"'; ctx.fillStyle = C.text; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+			ctx.fillText(String(Math.ceil(s.hold * (1 - q))), W / 2, H - 156); ctx.textBaseline = 'alphabetic'
+			ctx.restore()
+		}
+		// Speedrun clock: runs from the first scene to job.timerStop seconds
+		if (job.timer) {
+			const t1 = job.timerStart || 0, secs = Math.max(0, Math.min(t, job.timerStop ?? t0) - t1)
+			const txt = secs.toFixed(2) + 's'
+			ctx.save(); ctx.font = '400 64px "Archivo Black"'; const tw = ctx.measureText(txt).width
+			const y = job.full ? 120 : H - 140
+			ctx.fillStyle = t >= (job.timerStop ?? t0) ? C.green : 'rgba(0,0,0,0.6)'; rr(W / 2 - tw / 2 - 40, y - 60, tw + 80, 110, 55); ctx.fill()
+			ctx.fillStyle = t >= (job.timerStop ?? t0) ? C.pitch : C.text; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, W / 2, y + 2)
+			ctx.restore()
+		}
+		if (t > t0) endCard((t - t0) / END, job.endNote)
+	}
+
+	draw(0)
+	rec.start(250)
+	const startAt = performance.now()
+	await new Promise(resolve => {
+		function tick() {
+			const t = (performance.now() - startAt) / 1000
+			draw(Math.min(t, total))
+			if (t >= total) return resolve()
+			requestAnimationFrame(tick)
+		}
+		requestAnimationFrame(tick)
+	})
+	await new Promise(r => setTimeout(r, 300))
+	rec.stop(); await done
+	Object.assign(C, saved)
+	const blob = new Blob(chunks, { type: 'video/mp4' })
+	const buf = new Uint8Array(await blob.arrayBuffer())
+	let bin = ''; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000))
+	return { type, seconds: total, data: btoa(bin) }
+}
+window.makeVideo = makeVideo
+</script>
+</body>
+</html>
