@@ -12,6 +12,15 @@ export interface ModeProgress {
 	progress: number
 	/** Short status line, e.g. "Guess 3 of 6" */
 	label: string
+	/** Once finished, the result in a few characters, e.g. "3/6", "X/6" or "7/10" */
+	score?: string
+}
+
+export type ModeKey = 'daily' | 'scout' | 'spot'
+
+/** The game to play next on Matchday, in play order, or null once all three are finished */
+export function nextToPlay(modes: Record<ModeKey, Pick<ModeProgress, 'status'>>): ModeKey | null {
+	return (['daily', 'scout', 'spot'] as const).find(k => modes[k].status === 'new' || modes[k].status === 'playing') ?? null
 }
 
 const MAX_GUESSES = 6
@@ -29,8 +38,8 @@ function guessProgress(saved: any, noun = 'guess'): ModeProgress {
 	const count: number = saved?.guesses?.length ?? 0
 	if (saved?.gameOver) {
 		return saved.isWin
-			? { status: 'won', progress: 1, label: `Solved in ${count}` }
-			: { status: 'lost', progress: 1, label: 'Missed it today' }
+			? { status: 'won', progress: 1, label: `Solved in ${count}`, score: `${count}/${MAX_GUESSES}` }
+			: { status: 'lost', progress: 1, label: 'Missed it today', score: `X/${MAX_GUESSES}` }
 	}
 	if (count > 0) {
 		return { status: 'playing', progress: count / MAX_GUESSES, label: `${noun} ${count + 1} of ${MAX_GUESSES}` }
@@ -88,7 +97,12 @@ export function useTodayProgress() {
 		const savedSpot = readSaved('footballdle-spot')
 		spotResults.value = savedSpot?.gameOver ? (savedSpot.roundResults ?? []).map((r: any) => !!r?.correct) : []
 		if (savedSpot?.gameOver) {
-			spot.value = { status: 'won', progress: 1, label: `Scored ${savedSpot.score ?? 0}` }
+			spot.value = {
+				status: 'won',
+				progress: 1,
+				label: `Scored ${savedSpot.score ?? 0}`,
+				score: `${spotResults.value.filter(Boolean).length}/${SPOT_ROUNDS_PER_MATCH}`,
+			}
 		} else if (savedSpot && (savedSpot.roundIndex ?? 0) > 0) {
 			const round = savedSpot.roundIndex
 			spot.value = {
