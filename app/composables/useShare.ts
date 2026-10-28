@@ -32,6 +32,8 @@ const emoji = (state: TileState) => (highContrast() ? HIGH_CONTRAST_EMOJI : EMOJ
  *  from the website, the website itself */
 export const SHARE_LINK = Capacitor.isNativePlatform() ? 'footballdle.co.uk/app' : 'footballdle.co.uk'
 const streakLine = (streak?: number) => (streak && streak > 1 ? ` 🔥 ${streak} day streak` : '')
+// The Matchday streak (any game, any result) has no flame: that means a mode's win streak
+const matchdayStreakLine = (streak?: number) => (streak && streak > 1 ? ` · ${streak} day Matchday streak` : '')
 
 export function useShare() {
 	function getShareText(guesses: string[], answer: string, isWin: boolean, label: string, streak?: number): string {
@@ -70,7 +72,7 @@ export function useShare() {
 		const dailyRows = m.daily.guesses.map(g => tileStates(g, m.daily.answer).map(emoji).join('')).join('\n')
 		const scoutRows = m.scout.results.map(scoutRow).join('\n')
 		const lines = [
-			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${streakLine(m.streak)}`,
+			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${matchdayStreakLine(m.streak)}`,
 			'',
 			`⚽ Daily ${m.daily.isWin ? m.daily.guesses.length : 'X'}/6`,
 			dailyRows,

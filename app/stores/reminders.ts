@@ -82,7 +82,7 @@ export const useRemindersStore = defineStore('reminders', () => {
 				const streak = i === 0 ? playStreak.activeStreak : i === 1 && playedToday ? playStreak.current : 0
 				notifications.push({
 					id: FIRST_ID + i,
-					title: streak >= 2 ? `🔥 ${streak}-day streak on the line` : 'Footballdle',
+					title: streak >= 2 ? `${streak}-day Matchday streak on the line` : 'Footballdle',
 					body:
 						streak >= 2
 							? "Play any game today to keep your Matchday streak going."

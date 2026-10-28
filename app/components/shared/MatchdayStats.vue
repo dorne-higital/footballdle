@@ -7,6 +7,10 @@
 		>
 			<div class="streak-top">
 				<p class="streak-count">
+					<MatchdayRingIcon
+						size="1.4rem"
+						class="streak-ring"
+					/>
 					<strong>{{ playStreak.activeStreak }}</strong>
 					<span>day Matchday streak</span>
 				</p>
@@ -131,6 +135,7 @@
 	import { readSavedObject } from '../../utils/storage'
 	import { getUKDateString, streakWeek, type StreakDayState } from '../../utils/dateStreak'
 	import SeasonFormDashboard from './SeasonFormDashboard.vue'
+	import MatchdayRingIcon from './MatchdayRingIcon.vue'
 	import { useGridStore } from '../../stores/grid'
 
 	// The one Stats view (tab and sheet): Matchday streak, then the same breakdown for
@@ -157,8 +162,8 @@
 	const basics = (id: Exclude<ModeId, 'grid'>) => [
 		{ label: 'Games', value: stores[id].stats.gamesPlayed },
 		{ label: 'Wins', value: stores[id].stats.wins },
-		{ label: 'Streak', value: stores[id].stats.currentStreak },
-		{ label: 'Max Streak', value: stores[id].stats.maxStreak },
+		{ label: 'Win streak', value: stores[id].stats.currentStreak },
+		{ label: 'Best streak', value: stores[id].stats.maxStreak },
 	]
 
 	const modes = computed(() =>
@@ -310,6 +315,12 @@
 			display: flex;
 			gap: 0.75rem;
 			justify-content: space-between;
+		}
+
+		// The Matchday streak's own icon, where its name is spelled out
+		.streak-ring {
+			color: var(--tertiary-color);
+			align-self: center;
 		}
 
 		.streak-count {

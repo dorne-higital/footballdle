@@ -23,6 +23,7 @@
 		>
 			<ScoreboardStrip
 				mode-label="Spot the Baller"
+				streak-label="Spot"
 				:round-progress="spotStore.roundProgress"
 				:streak="statsStore.stats.currentStreak"
 			/>
@@ -368,8 +369,8 @@
 	const spotPrimaryStats = computed(() => [
 		{ label: 'Games', value: statsStore.stats.gamesPlayed },
 		{ label: 'Wins', value: statsStore.stats.wins },
-		{ label: 'Streak', value: statsStore.stats.currentStreak },
-		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
+		{ label: 'Win streak', value: statsStore.stats.currentStreak },
+		{ label: 'Best streak', value: statsStore.stats.maxStreak },
 	])
 
 	const spotScoreHistogram = computed(() =>

@@ -23,6 +23,7 @@
 		>
 			<ScoreboardStrip
 				mode-label="Scout Report"
+				streak-label="Scout"
 				:puzzle-number="scoutStore.puzzleNumber"
 				:streak="statsStore.stats.currentStreak"
 			/>
@@ -322,8 +323,8 @@
 	const scoutPrimaryStats = computed(() => [
 		{ label: 'Games', value: statsStore.stats.gamesPlayed },
 		{ label: 'Wins', value: statsStore.stats.wins },
-		{ label: 'Streak', value: statsStore.stats.currentStreak },
-		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
+		{ label: 'Win streak', value: statsStore.stats.currentStreak },
+		{ label: 'Best streak', value: statsStore.stats.maxStreak },
 	])
 
 	// ============================================================================

@@ -27,7 +27,7 @@
 					name="solar:fire-bold"
 					size="1rem"
 				/>
-				<span><span class="streak-num">{{ stats.currentStreak }}</span> day streak</span>
+				<span><span class="streak-num">{{ stats.currentStreak }}</span> day win streak</span>
 			</div>
 
 			<div

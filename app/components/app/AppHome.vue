@@ -7,16 +7,7 @@
 			</div>
 			<div class="header-pills">
 				<HintPill />
-				<span
-					:class="['streak-pill', { cold: !playStreak.playedToday }]"
-					:aria-label="`${playStreak.activeStreak} day Matchday streak`"
-				>
-					<Icon
-						name="solar:fire-bold"
-						size="1.05rem"
-					/>
-					{{ playStreak.activeStreak }}
-				</span>
+				<MatchdayStreakPill />
 			</div>
 		</header>
 
@@ -242,6 +233,7 @@
 	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
+	import MatchdayStreakPill from '../shared/MatchdayStreakPill.vue'
 	import { useGridStore } from '../../stores/grid'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
 	import { getDisplayNumber, getAnswerForDay } from '../../composables/useFootballers'
@@ -456,25 +448,7 @@
 		gap: 0.5rem;
 	}
 
-	.streak-pill {
-		height: 2.5rem;
-		align-items: center;
-		background: color-mix(in srgb, var(--tertiary-color) 15%, transparent);
-		border-radius: 999px;
-		color: var(--tertiary-color);
-		display: inline-flex;
-		font-size: 1rem;
-		font-variant-numeric: tabular-nums;
-		font-weight: 800;
-		gap: 0.35rem;
-		padding: 0 0.8rem;
-	}
 
-	// Not played yet today: the streak is at risk, so the flame dims
-	.streak-pill.cold {
-		filter: grayscale(0.6);
-		opacity: 0.75;
-	}
 
 	.rings-card {
 		align-items: center;
