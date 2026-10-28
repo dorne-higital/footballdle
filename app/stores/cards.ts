@@ -87,6 +87,13 @@ export function lastDayOf(season: Season, id: string): number {
 	return last
 }
 
+/** The day a season puzzle falls on (noon UTC, so it formats the same everywhere) */
+export function seasonDay(season: Season, puzzle: number): Date {
+	const d = new Date(`${season.start}T12:00:00Z`)
+	d.setUTCDate(d.getUTCDate() + puzzle - season.startPuzzle)
+	return d
+}
+
 export const useCardsStore = defineStore('cards', () => {
 	const { appShell } = useRuntimeConfig().public
 	const saved = ref<SavedCards>({ v: 1, cards: {}, sets: {}, played: {} })
@@ -293,5 +300,16 @@ export const useCardsStore = defineStore('cards', () => {
 		return new Set(Object.keys(season.cards).filter(id => !owned.has(id) && lastDayOf(season, id) < today))
 	}
 
-	return { saved, lastAward, lastMiss, totalOwned, missedIds, collectReplay, load, finishDaily, mergeBackup, clubProgress, ownedIds, seasons }
+	/** Missed cards, oldest first: club and the day each got away (its last scheduled day).
+	 *  Never the player: the Cards tab shows these face down */
+	function missedCards(label: string) {
+		const season = seasons[label]
+		if (!season) return []
+		return [...missedIds(label)]
+			.map(id => ({ id, club: season.cards[id]!.club, puzzle: lastDayOf(season, id) }))
+			.sort((a, b) => a.puzzle - b.puzzle || a.id.localeCompare(b.id))
+			.map(m => ({ ...m, date: seasonDay(season, m.puzzle) }))
+	}
+
+	return { saved, lastAward, lastMiss, totalOwned, missedIds, missedCards, collectReplay, load, finishDaily, mergeBackup, clubProgress, ownedIds, seasons }
 })

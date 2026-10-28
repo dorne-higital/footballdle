@@ -12,7 +12,91 @@
 			<p>Win the Daily to collect each player's card. Finish a club's set for free hints.</p>
 		</section>
 
-		<template v-else>
+		<!-- Never collected a card: what collecting is, not a checklist of 0/7s -->
+		<section
+			v-else-if="firstCard"
+			class="first-card"
+			aria-labelledby="first-card-title"
+		>
+			<p class="eyebrow">Player Cards</p>
+			<h2 id="first-card-title">Start your collection</h2>
+			<p class="lead">
+				{{ totalCards }} players, {{ clubs.length }} clubs, one card a day. Win the Daily to collect that day's player.
+			</p>
+			<PlayerCard
+				:card="SAMPLE_CARD"
+				:club="SAMPLE_CARD.club"
+				foil
+				size="lg"
+				class="sample"
+				aria-label="Sample shiny Player Card"
+			/>
+			<ul class="perks">
+				<li>
+					<Icon
+						name="solar:stars-linear"
+						size="1.2rem"
+						aria-hidden="true"
+					/>
+					<span>Win in 2 guesses or fewer and it's shiny.</span>
+				</li>
+				<li>
+					<Icon
+						name="solar:shield-star-linear"
+						size="1.2rem"
+						aria-hidden="true"
+					/>
+					<span>Finish a club's set for up to {{ maxSetHints }} hints.</span>
+				</li>
+				<li>
+					<Icon
+						name="solar:restart-linear"
+						size="1.2rem"
+						aria-hidden="true"
+					/>
+					<span>
+						Missed a day? Replay it later for a hint, free with Pro.
+						<span
+							v-if="missed.length"
+							class="perk-note"
+							>{{ missed.length }} {{ missed.length === 1 ? 'card' : 'cards' }} to catch up on so far.</span
+						>
+					</span>
+				</li>
+			</ul>
+			<NuxtLink
+				v-if="current.state === 'live' && today?.state !== 'lost'"
+				to="/play/daily?start=play"
+				class="today-play"
+			>
+				Play today's Daily
+				<Icon
+					name="solar:alt-arrow-right-linear"
+					size="1rem"
+				/>
+			</NuxtLink>
+			<NuxtLink
+				v-else-if="today?.state === 'lost' && chosen && !replay.blocker"
+				:to="`/cards/replay/${chosen.id}`"
+				class="today-play"
+				>Replay a missed card · {{ replayCost }}</NuxtLink
+			>
+			<p
+				v-else-if="today?.state === 'lost'"
+				class="season-note"
+			>
+				Today's card got away. Win tomorrow's Daily for your first card.
+				<template v-if="missed.length && replay.blocker"><br />{{ replay.blocker }}</template>
+			</p>
+			<p
+				v-else-if="current.state === 'upcoming'"
+				class="season-note"
+			>
+				Kicks off {{ startLabel }}. Win the Daily from then to collect every club.
+			</p>
+		</section>
+
+		<template v-else-if="ready">
 			<!-- Today's card: face down until the Daily is won (option B, "collection first") -->
 			<section
 				v-if="today"
@@ -27,7 +111,8 @@
 					</template>
 					<template v-else-if="today.state === 'lost'">
 						<h2>Missed today</h2>
-						<p>You can replay it from tomorrow, for a hint.</p>
+						<p v-if="today.comesBack">It comes round again later in the season.</p>
+						<p v-else>You can replay it from tomorrow, for a hint.</p>
 					</template>
 					<template v-else>
 						<h2>Win the Daily to collect it</h2>
@@ -63,6 +148,68 @@
 				>
 					?
 				</div>
+			</section>
+
+			<!-- Missed cards, oldest first: face down with a dashed edge, the club and the day.
+			     One replay a day, once today's Daily is finished -->
+			<section
+				v-if="missed.length"
+				id="missed"
+				ref="missedRow"
+				class="missed-row"
+				aria-labelledby="missed-title"
+			>
+				<h3
+					id="missed-title"
+					class="section-title"
+				>
+					Missed <span>{{ missed.length }}</span>
+				</h3>
+				<ul
+					class="shelf"
+					aria-label="Missed cards, oldest first"
+				>
+					<li
+						v-for="m in missedShown"
+						:key="m.id"
+					>
+						<button
+							type="button"
+							:class="['missed-pick', { on: chosen?.id === m.id }]"
+							:aria-pressed="chosen?.id === m.id"
+							:aria-label="`Missed ${m.club} card, ${dayLabelLong(m.date)}`"
+							:disabled="!!replay.state && replay.state.id !== m.id"
+							@click="picked = m.id"
+						>
+							<PlayerCard
+								:club="m.club"
+								missed
+								size="sm"
+								aria-hidden="true"
+							/>
+							<span class="missed-date">{{ dayLabel(m.date) }}</span>
+						</button>
+					</li>
+					<li
+						v-if="missed.length > missedShown.length"
+						class="missed-more"
+					>
+						and {{ missed.length - missedShown.length }} more
+					</li>
+				</ul>
+				<NuxtLink
+					v-if="!replay.blocker && chosen"
+					:to="`/cards/replay/${chosen.id}`"
+					class="today-play replay-go"
+					:aria-label="replayAria"
+					>{{ replayLabel }}</NuxtLink
+				>
+				<p
+					v-else
+					class="season-note"
+				>
+					{{ replay.blocker }}
+				</p>
 			</section>
 
 			<section class="season-line">
@@ -133,6 +280,11 @@
 							<span class="club-text">
 								<strong>{{ club.name }}</strong>
 								<span class="club-bar"><span :style="{ width: `${(club.have / club.size) * 100}%` }"></span></span>
+								<span
+									v-if="club.missed"
+									class="club-missed"
+									>{{ club.missed }} missed</span
+								>
 							</span>
 							<span class="club-count">{{ club.have }}/{{ club.size }}</span>
 						</NuxtLink>
@@ -178,13 +330,18 @@
 					>
 						<NuxtLink
 							:to="clubLink(club.name)"
-							:aria-label="`${club.name}, 0 of ${club.size} cards`"
+							:aria-label="`${club.name}, 0 of ${club.size} cards${club.missed ? `, ${club.missed} missed` : ''}`"
 						>
 							<ClubCrest
 								:club="club.name"
 								class="crest"
 							/>
 							<span>0/{{ club.size }}</span>
+							<span
+								v-if="club.missed"
+								class="crest-missed"
+								>{{ club.missed }} missed</span
+							>
 						</NuxtLink>
 					</li>
 				</ul>
@@ -194,11 +351,14 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue'
+	import { computed, onMounted, ref } from 'vue'
 	import PlayerCard from '../../components/cards/PlayerCard.vue'
-	import { cardForDay, currentSeason, useCardsStore } from '../../stores/cards'
+	import { cardForDay, currentSeason, lastDayOf, useCardsStore } from '../../stores/cards'
+	import { useReplayStore } from '../../stores/replay'
+	import { usePurchasesStore } from '../../stores/purchases'
+	import { getPuzzleNumber } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
-	import { clubStyle } from '../../utils/clubs'
+	import { SAMPLE_CARD, clubStyle } from '../../utils/clubs'
 	import ClubCrest from '../../components/cards/ClubCrest.vue'
 
 	// iOS app only: the website has no hint bank, so no cards
@@ -206,7 +366,22 @@
 	useHead({ title: 'Cards' })
 
 	const cards = useCardsStore()
-	onMounted(() => cards.load())
+	const replay = useReplayStore()
+	const purchases = usePurchasesStore()
+	const route = useRoute()
+	const missedRow = ref<HTMLElement | null>(null)
+	// Saved cards load on the client: wait, or a collector sees the first-card screen flash
+	const ready = ref(false)
+	onMounted(() => {
+		cards.load()
+		replay.load()
+		ready.value = true
+		// From the full-time panel's "Today's replay is unlocked" line
+		if (route.hash === '#missed') {
+			const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+			requestAnimationFrame(() => missedRow.value?.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' }))
+		}
+	})
 
 	const current = currentSeason()
 	const seasonTitle = current ? `${current.label.replace('-', '/')} season` : ''
@@ -215,11 +390,13 @@
 	const clubs = computed(() => {
 		if (!current) return []
 		const owned = cards.ownedIds(current.label)
+		const missedSet = cards.missedIds(current.label)
 		return Object.entries(current.season.clubs)
 			.map(([name, set]) => {
 				const have = set.members.filter(m => owned.has(m)).length
+				const missed = set.members.filter(m => missedSet.has(m)).length
 				const style = clubStyle(name)
-				return { name, ...style, size: set.size, hints: set.hints, have, done: !!cards.saved.sets[`${current.label}|${name}`] }
+				return { name, ...style, size: set.size, hints: set.hints, have, missed, done: !!cards.saved.sets[`${current.label}|${name}`] }
 			})
 			// Closest to finishing first, finished sets last
 			.sort((a, b) => Number(a.done) - Number(b.done) || b.have / b.size - a.have / a.size || a.name.localeCompare(b.name))
@@ -247,8 +424,36 @@
 		if (!day || !current || day.season !== current.label) return null
 		const owned = cards.saved.cards[dateStr]
 		const state = owned ? 'won' : cards.saved.played[dateStr] ? 'lost' : 'new'
-		return { state, owned, info: day.card, club: day.card.club }
+		// A card on more than one day can only be replayed after its last one
+		const comesBack = lastDayOf(current.season, day.id) > getPuzzleNumber(dateStr)
+		return { state, owned, info: day.card, club: day.card.club, comesBack }
 	})
+
+	// Missed cards: the shelf draws the 30 oldest (each is a full card), the count says how many
+	const MISSED_SHOWN = 30
+	const missed = computed(() => (current ? cards.missedCards(current.label) : []))
+	const missedShown = computed(() => missed.value.slice(0, MISSED_SHOWN))
+	const picked = ref<string | null>(null)
+	// One replay a day: a replay already started today is the only one the button offers
+	const chosen = computed(() => missed.value.find(m => m.id === (replay.state?.id ?? picked.value)) ?? missed.value[0])
+	const dayLabel = (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+	const dayLabelLong = (d: Date) =>
+		d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
+	const replayCost = computed(() => (purchases.isPro ? 'free with Pro' : '1 hint'))
+	const replayLabel = computed(() =>
+		replay.state || !chosen.value
+			? 'Carry on your replay'
+			: `Replay ${shortClub(chosen.value.club)} · ${dayLabel(chosen.value.date)} · ${replayCost.value}`,
+	)
+	const replayAria = computed(() =>
+		replay.state || !chosen.value
+			? 'Carry on your replay'
+			: `Replay the ${chosen.value.club} card from ${dayLabelLong(chosen.value.date)}, ${replayCost.value}`,
+	)
+
+	// Never collected a card (any season; a card awaiting its date check counts)
+	const firstCard = computed(() => ready.value && !!current && current.state !== 'over' && cards.totalOwned === 0)
+	const maxSetHints = computed(() => Math.max(0, ...clubs.value.map(c => c.hints)))
 
 	const ownedCount = computed(() => clubs.value.reduce((n, c) => n + c.have, 0))
 	const totalCards = computed(() => clubs.value.reduce((n, c) => n + c.size, 0))
@@ -266,6 +471,7 @@
 	}
 
 	.intro-card,
+	.first-card,
 	.today-card,
 	.season-line {
 		background: var(--bg-secondary);
@@ -289,6 +495,85 @@
 		p {
 			color: var(--text-secondary);
 			margin: 0;
+		}
+	}
+
+	.first-card {
+		align-items: center;
+		gap: 0.6rem;
+		text-align: center;
+
+		.eyebrow {
+			color: var(--primary-color);
+			font-size: 0.72rem;
+			font-weight: 800;
+			letter-spacing: 0.14em;
+			margin: 0;
+			text-transform: uppercase;
+		}
+
+		h2 {
+			font-family: var(--font-display);
+			font-size: 1.5rem;
+			margin: 0;
+		}
+
+		.lead {
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			margin: 0 0 0.2rem;
+		}
+
+		.today-play {
+			align-self: center;
+			font-size: 0.95rem;
+			padding: 0.65rem 1.2rem;
+		}
+
+		.season-note {
+			text-align: center;
+		}
+	}
+
+	.perks {
+		display: grid;
+		gap: 0.55rem;
+		list-style: none;
+		margin: 0.6rem 0 0;
+		padding: 0;
+		text-align: left;
+
+		li {
+			align-items: flex-start;
+			color: var(--text-secondary);
+			display: flex;
+			font-size: 0.9rem;
+			gap: 0.6rem;
+			line-height: 1.35;
+		}
+
+		.iconify,
+		svg {
+			color: var(--primary-color);
+			flex-shrink: 0;
+		}
+
+		.perk-note {
+			color: var(--text-primary);
+			display: block;
+			font-weight: 700;
+			margin-top: 0.15rem;
+		}
+	}
+
+	// A smaller sample than a real card, so the button clears the tab bar on a phone
+	.first-card .player-card.lg {
+		width: 168px;
+	}
+
+	@media (max-height: 700px) {
+		.first-card .player-card.lg {
+			width: 140px;
 		}
 	}
 
@@ -542,5 +827,75 @@
 
 	.club-count {
 		font-weight: 800;
+	}
+
+	.missed-row {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+
+		.shelf li {
+			display: flex;
+		}
+	}
+
+	.missed-pick {
+		background: none;
+		border: 0;
+		border-radius: 14px;
+		color: inherit;
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		font: inherit;
+		gap: 0.3rem;
+		min-height: 44px;
+		padding: 2px;
+		width: 100%;
+
+		// Selected is a solid ring; missed itself is the card's dashed edge
+		&.on {
+			outline: 2px solid var(--primary-color);
+			outline-offset: 2px;
+		}
+
+		&:disabled {
+			cursor: default;
+			opacity: 0.45;
+		}
+	}
+
+	.missed-date {
+		color: var(--text-secondary);
+		font-size: 0.72rem;
+		font-weight: 800;
+		text-align: center;
+	}
+
+	.missed-more {
+		align-items: center;
+		color: var(--text-secondary);
+		font-size: 0.8rem;
+		font-weight: 700;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.replay-go {
+		align-self: stretch;
+		justify-content: center;
+		margin-top: 0;
+		min-height: 44px;
+	}
+
+	.club-missed,
+	.crest-missed {
+		color: var(--text-secondary);
+		font-size: 0.72rem;
+		font-weight: 700;
+	}
+
+	.club-missed {
+		margin-top: 0.25rem;
 	}
 </style>

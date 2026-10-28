@@ -42,7 +42,10 @@ export const useReplayStore = defineStore('replay', () => {
 		} catch {}
 	}
 
+	// cards.saved.played is reactive (finishDaily sets it on every finished Daily), so the
+	// blocker clears as soon as the Daily ends; the saved game covers a store not loaded yet
 	const dailyFinished = () => {
+		if (useCardsStore().saved.played[today]) return true
 		const g = readSavedObject('footballdle-game')
 		return g?.date === today && !!g.gameOver
 	}

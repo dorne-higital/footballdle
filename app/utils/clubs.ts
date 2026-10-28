@@ -1,3 +1,4 @@
+import type { CardInfo } from '../stores/cards'
 // Card and crest styling per club: a home-shirt colour, readable text on it, and a
 // three-letter code. Clubs not listed (e.g. after promotion) get a neutral style.
 //
@@ -65,6 +66,18 @@ const CLUBS: Record<string, ClubStyle> = {
 	'Nottingham Forest': { code: 'NFO', bg: '#dd0000', fg: '#ffffff' },
 	'Sunderland': { code: 'SUN', bg: '#eb172b', fg: '#ffffff' },
 	'Tottenham': { code: 'TOT', bg: '#132257', fg: '#ffffff' },
+	// The Cards tab's sample card (not a real club)
+	'Footballdle': { code: 'FDL', bg: '#24352d', fg: '#eaf5ee' },
+}
+
+// The Cards tab's sample, before a player's first card: a made-up player at a made-up
+// club, so it never names a real card or hints at today's club
+export const SAMPLE_CARD: CardInfo = {
+	name: 'Sample Player',
+	surname: 'sample',
+	club: 'Footballdle',
+	nationality: 'England',
+	position: 'Forward',
 }
 
 export function clubStyle(club: string): ClubStyle {

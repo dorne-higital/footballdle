@@ -30,6 +30,21 @@
 			aria-live="polite"
 			>{{ copied ? 'Result copied' : '' }}</span
 		>
+		<!-- Daily only: once it's done, today's replay of a missed card is open -->
+		<NuxtLink
+			v-if="replayLine && catchUp"
+			to="/cards#missed"
+			class="ft-replay"
+		>
+			<Icon
+				name="solar:card-2-linear"
+				size="1rem"
+			/>
+			<span
+				>Today's replay is unlocked: <strong>{{ catchUp }} {{ catchUp === 1 ? 'card' : 'cards' }}</strong> to catch
+				up</span
+			>
+		</NuxtLink>
 		<div class="ft-actions">
 			<button
 				type="button"
@@ -75,11 +90,19 @@
 	import { useShare } from '../../composables/useShare'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { useGridStore } from '../../stores/grid'
+	import { currentSeason, useCardsStore } from '../../stores/cards'
+	import { useReplayStore } from '../../stores/replay'
 
 	// The app and the website's app look: shown under a finished game's board in place of
 	// the controls, so a finished game opens on your own result rather than the intro page.
 	// Share first, the result sheet second. The app opens the share sheet; the website copies
-	const props = defineProps<{ summary: string; isWin: boolean; countdown?: string; shareText: string }>()
+	const props = defineProps<{
+		summary: string
+		isWin: boolean
+		countdown?: string
+		shareText: string
+		replayLine?: boolean
+	}>()
 	const emit = defineEmits<{ result: []; shared: [] }>()
 
 	const isApp = !!useRuntimeConfig().public.isApp
@@ -104,9 +127,20 @@
 	// if any of it is left, otherwise back to the Matchday
 	const progress = useTodayProgress()
 	const grid = useGridStore()
+	const cards = useCardsStore()
+	const replay = useReplayStore()
 	onMounted(() => {
 		progress.refresh()
 		grid.load()
+		if (props.replayLine) {
+			cards.load()
+			replay.load()
+		}
+	})
+	// Missed cards to catch up on, once today's replay can start (a hint in the bank, or Pro)
+	const catchUp = computed(() => {
+		const season = props.replayLine ? currentSeason() : null
+		return season && !replay.blocker && !replay.state ? cards.missedIds(season.label).size : 0
 	})
 	const unfinished = (status: string) => status === 'new' || status === 'playing'
 	const next = computed(() => {
@@ -193,6 +227,7 @@
 		width: 1px;
 	}
 
+	.ft-replay,
 	.ft-insta {
 		align-items: center;
 		align-self: center;
@@ -207,6 +242,12 @@
 		strong {
 			color: var(--text-primary);
 		}
+	}
+
+	// Sits above the buttons, so it lines up with the text above it
+	.ft-replay {
+		align-self: flex-start;
+		margin-bottom: 0;
 	}
 
 	.ft-btn {

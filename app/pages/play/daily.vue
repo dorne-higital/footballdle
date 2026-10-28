@@ -98,6 +98,7 @@
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
 				:share-text="dailyShareText"
+				replay-line
 				@result="gameStore.showGameOverModal = true"
 				@shared="trackShare('daily_ft')"
 			/>
