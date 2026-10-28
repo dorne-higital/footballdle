@@ -13,10 +13,27 @@
 		>
 			New puzzles in <strong>{{ countdown }}</strong>
 		</p>
+		<!-- Share first: every share carries the footballdle.co.uk/app link -->
+		<button
+			type="button"
+			class="ft-btn primary ft-share"
+			@click="share"
+		>
+			<Icon
+				:name="isApp ? 'solar:share-linear' : 'solar:copy-linear'"
+				size="1.1rem"
+			/>
+			{{ isApp ? 'Share' : copied ? 'Copied!' : 'Copy result' }}
+		</button>
+		<span
+			class="ft-status"
+			aria-live="polite"
+			>{{ copied ? 'Result copied' : '' }}</span
+		>
 		<div class="ft-actions">
 			<button
 				type="button"
-				class="ft-btn primary"
+				class="ft-btn"
 				@click="$emit('result')"
 			>
 				<Icon
@@ -53,14 +70,35 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 	import { useTodayProgress } from '../../composables/useTodayProgress'
+	import { useShare } from '../../composables/useShare'
+	import { useHaptics } from '../../composables/useHaptics'
 	import { useGridStore } from '../../stores/grid'
 
-	// iOS app: shown under a finished game's board in place of the controls, so a
-	// finished game opens on your own result rather than the website's intro page
-	defineProps<{ summary: string; isWin: boolean; countdown?: string }>()
-	defineEmits<{ result: [] }>()
+	// The app and the website's app look: shown under a finished game's board in place of
+	// the controls, so a finished game opens on your own result rather than the intro page.
+	// Share first, the result sheet second. The app opens the share sheet; the website copies
+	const props = defineProps<{ summary: string; isWin: boolean; countdown?: string; shareText: string }>()
+	const emit = defineEmits<{ result: []; shared: [] }>()
+
+	const isApp = !!useRuntimeConfig().public.isApp
+	const { shareText: sendShare } = useShare()
+	const haptics = useHaptics()
+	const copied = ref(false)
+	let timer: ReturnType<typeof setTimeout> | null = null
+	async function share() {
+		haptics.select()
+		emit('shared')
+		if (await sendShare(props.shareText)) {
+			copied.value = true
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => (copied.value = false), 2000)
+		}
+	}
+	onBeforeUnmount(() => {
+		if (timer) clearTimeout(timer)
+	})
 
 	// What to play next: the next daily game not finished today, then this week's Grid
 	// if any of it is left, otherwise back to the Matchday
@@ -94,6 +132,7 @@
 		gap: 0.6rem;
 		margin: 0.6rem 0.5rem 0;
 		padding: 0.9rem 1rem;
+		position: relative;
 		text-align: left;
 	}
 
@@ -136,6 +175,22 @@
 	.ft-actions {
 		display: flex;
 		gap: 0.5rem;
+	}
+
+	// Its own full-width row, so the two buttons below keep room for "Play Spot the Baller"
+	.ft-share {
+		flex: none;
+		width: 100%;
+	}
+
+	// Read out by VoiceOver when the website copies the result; not shown
+	.ft-status {
+		clip: rect(0 0 0 0);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
 	}
 
 	.ft-insta {

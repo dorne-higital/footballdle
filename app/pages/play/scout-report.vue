@@ -51,7 +51,9 @@
 				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
 				:is-win="scoutStore.isWin"
 				:countdown="scoutStore.countdown"
+				:share-text="shareText"
 				@result="scoutStore.showGameOverModal = true"
+				@shared="trackShare('scout_ft')"
 			/>
 		</div>
 

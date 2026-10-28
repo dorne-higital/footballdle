@@ -113,7 +113,9 @@
 				:summary="`${spotStore.score}/${spotStore.maxGuesses} · ${spotStore.scoreLabel}`"
 				:is-win="spotStore.isWin"
 				:countdown="spotStore.countdown"
+				:share-text="shareText"
 				@result="spotStore.showGameOverModal = true"
+				@shared="trackShare('spot_ft')"
 			/>
 		</div>
 

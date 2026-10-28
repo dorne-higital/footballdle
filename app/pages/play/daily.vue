@@ -97,7 +97,9 @@
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
+				:share-text="dailyShareText"
 				@result="gameStore.showGameOverModal = true"
+				@shared="trackShare('daily_ft')"
 			/>
 			<Keyboard
 				v-else
@@ -414,7 +416,11 @@
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
 	const modalsStore = useModalsStore()
-	const { onShare, onShareTwitter } = useShare()
+	const { onShare, onShareTwitter, getShareText } = useShare()
+	// The same text the result sheet shares, for the full-time panel's Share button
+	const dailyShareText = computed(() =>
+		getShareText(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr, statsStore.stats.currentStreak),
+	)
 
 	const {
 		trackGameStart,
