@@ -51,6 +51,14 @@ export default defineEventHandler((event) => {
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`,
+		// The game pages (pages/games/[mode].vue)
+		...['guess-the-footballer', 'football-grid-game', 'guess-the-player-by-price', 'name-the-player'].map(
+			(g) => `  <url>
+    <loc>${BASE_URL}/games/${g}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`,
+		),
 		`  <url>
     <loc>${BASE_URL}/answers</loc>
     <changefreq>daily</changefreq>

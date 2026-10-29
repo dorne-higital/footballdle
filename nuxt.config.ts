@@ -14,6 +14,9 @@ const appShell = isApp || process.env.WEB_SHELL !== 'old'
 // Applies the saved theme before first paint to avoid a light-mode flash
 const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
 
+// The game pages (pages/games/[mode].vue)
+const GAME_PAGES = ['guess-the-footballer', 'football-grid-game', 'guess-the-player-by-price', 'name-the-player']
+
 function getSolutionRoutes(): string[] {
 	const routes: string[] = []
 	const cursor = new Date(2026, 0, 1) // epoch: 1 Jan 2026
@@ -88,7 +91,7 @@ export default defineNuxtConfig({
 		compressPublicAssets: !isApp,
 		minify: true,
 		prerender: {
-			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', '/app', '/answers', ...getSolutionRoutes()],
+			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', '/app', '/answers', ...GAME_PAGES.map(g => `/games/${g}`), ...getSolutionRoutes()],
 		},
 
 	},
