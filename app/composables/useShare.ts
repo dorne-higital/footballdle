@@ -1,5 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { Share } from '@capacitor/share'
+import { Directory, Filesystem } from '@capacitor/filesystem'
+import { drawShareCard } from '../utils/shareCard'
 import type { ScoutGuessResult } from '../stores/scoutReport'
 
 export type TileState = 'correct' | 'present' | 'absent'
@@ -88,12 +90,32 @@ export function useShare() {
 		return lines.join('\n')
 	}
 
-	/** iOS app: the native share sheet (returns false, nothing was copied). Website:
-	 *  copies to the clipboard and returns true for a "Copied!" toast. */
+	/** iOS app: the native share sheet, with the result's share card attached when it
+	 *  has one (utils/shareCard.ts); returns false, nothing was copied. Website: phones get
+	 *  the share sheet with the card where the browser can share pictures; otherwise the
+	 *  text is copied and it returns true for a "Copied!" toast. */
 	async function shareText(text: string): Promise<boolean> {
 		if (Capacitor.isNativePlatform()) {
-			await Share.share({ text }).catch(() => {})
+			let files: string[] | undefined
+			try {
+				const png = await drawShareCard(text)
+				if (png) files = [(await Filesystem.writeFile({ path: 'footballdle-share.png', data: png, directory: Directory.Cache })).uri]
+			} catch {}
+			await Share.share(files ? { text, files } : { text }).catch(() => {})
 			return false
+		}
+		if (window.matchMedia?.('(pointer: coarse)').matches && navigator.canShare) {
+			try {
+				const png = await drawShareCard(text)
+				if (png) {
+					const bytes = Uint8Array.from(atob(png), c => c.charCodeAt(0))
+					const file = new File([bytes], 'footballdle.png', { type: 'image/png' })
+					if (navigator.canShare({ files: [file] })) {
+						await navigator.share({ text, files: [file] }).catch(() => {})
+						return false
+					}
+				}
+			} catch {}
 		}
 		try {
 			await navigator.clipboard.writeText(text)
