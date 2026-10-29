@@ -88,7 +88,7 @@ export default defineNuxtConfig({
 		compressPublicAssets: !isApp,
 		minify: true,
 		prerender: {
-			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', '/app', ...getSolutionRoutes()],
+			routes: isApp ? [] : ['/play/daily', '/play/scout-report', '/play/spot-the-baller', '/play/grid', '/app', '/answers', ...getSolutionRoutes()],
 		},
 
 	},

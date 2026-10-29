@@ -92,7 +92,15 @@
 				v-if="recentPuzzles.length"
 				class="recent-section"
 			>
-				<p class="recent-title">Recent answers</p>
+				<p class="recent-title">
+					Recent answers ·
+					<NuxtLink
+						to="/answers"
+						title="Every past Footballdle answer"
+						class="all-link"
+						>see them all</NuxtLink
+					>
+				</p>
 				<div class="recent-grid">
 					<NuxtLink
 						v-for="p in recentPuzzles"
@@ -409,6 +417,10 @@
 
 	.recent-section {
 		text-align: left;
+
+		.all-link {
+			color: var(--primary-color);
+		}
 
 		.recent-title {
 			color: var(--text-secondary);

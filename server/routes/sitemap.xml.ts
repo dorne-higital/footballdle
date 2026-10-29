@@ -16,13 +16,14 @@ export default defineEventHandler((event) => {
 	const solutionUrls: string[] = []
 	const cursor = new Date(EPOCH)
 
-	while (cursor <= today) {
+	// Up to yesterday: today's answer page doesn't exist until midnight
+	while (cursor < today) {
 		const iso = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}-${String(cursor.getDate()).padStart(2, '0')}`
 		solutionUrls.push(iso)
 		cursor.setDate(cursor.getDate() + 1)
 	}
 
-	const todayISO = solutionUrls[solutionUrls.length - 1]
+	const latestISO = solutionUrls[solutionUrls.length - 1]
 
 	const urlEntries = [
 		`  <url>
@@ -51,6 +52,11 @@ export default defineEventHandler((event) => {
     <priority>0.9</priority>
   </url>`,
 		`  <url>
+    <loc>${BASE_URL}/answers</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>`,
+		`  <url>
     <loc>${BASE_URL}/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -65,11 +71,11 @@ export default defineEventHandler((event) => {
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>`,
-		// Today's solution is highest priority — freshest content
-		todayISO
+		// Yesterday's answer is the freshest, so it ranks highest
+		latestISO
 			? `  <url>
-    <loc>${BASE_URL}/solution/${todayISO}</loc>
-    <lastmod>${todayISO}</lastmod>
+    <loc>${BASE_URL}/solution/${latestISO}</loc>
+    <lastmod>${latestISO}</lastmod>
     <changefreq>never</changefreq>
     <priority>0.9</priority>
   </url>`

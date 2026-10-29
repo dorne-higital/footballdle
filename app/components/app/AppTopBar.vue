@@ -77,6 +77,7 @@
 		'/how-to-play': 'How to play',
 		'/privacy-policy': 'Privacy',
 		'/about': 'About',
+		'/answers': 'Answers',
 		'/feedback': 'Feedback',
 		'/cards': 'Cards',
 		'/trophies': 'Trophies',
