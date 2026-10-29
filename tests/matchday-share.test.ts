@@ -17,7 +17,7 @@ describe('Share Matchday', () => {
 		})
 		expect(text).toBe(
 			[
-				'Footballdle Matchday #294 🔥 24 day streak',
+				'Footballdle Matchday #294 · 24 day Matchday streak',
 				'',
 				'⚽ Daily 2/6',
 				'⬛🟨⬛⬛🟨⬛',

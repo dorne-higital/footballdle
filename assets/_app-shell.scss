@@ -47,6 +47,15 @@ html.app-shell {
 	--fl-blue: #6ea8ff;
 	--fl-red: #ff8a80;
 	--fl-glow: rgb(47 224 138 / 16%);
+
+	// One colour per game, for where you are (never for right, close or wrong: tiles keep
+	// --color-success / --color-present). Spot isn't amber (close) and The Grid isn't red
+	// (a miss) or gold (hints)
+	--game-daily: #2fe08a;
+	--game-scout: #6ea8ff;
+	--game-spot: #b49bff;
+	--game-grid: #f47fd2;
+	--on-game: #04130b;
 	--fl-key: #1e3329;
 	--fl-key-pressed: #2a4437;
 	--fl-grabber: rgb(255 255 255 / 22%);
@@ -241,6 +250,12 @@ html.app-shell.app-light {
 	--fl-blue: #2f6fd6;
 	--fl-red: #c9483d;
 	--fl-glow: rgb(34 179 107 / 18%);
+
+	--game-daily: #128d53;
+	--game-scout: #2f6fd6;
+	--game-spot: #6a4fd6;
+	--game-grid: #c0368f;
+	--on-game: #ffffff;
 	--fl-key: #dbe5df;
 	--fl-key-pressed: #c6d5cc;
 	--fl-grabber: rgb(16 35 26 / 18%);
@@ -312,7 +327,7 @@ html.app-shell {
 		padding-bottom: 0.75rem;
 	}
 
-	// Scout: guess slots fill the space, search box sits at the bottom
+	// Scout: the guesses so far fill the space, search box sits at the bottom
 	.scout-board {
 		flex: 1;
 		min-height: 0;
@@ -340,7 +355,7 @@ html.app-shell {
 	// search field, drop the extras
 	&.keyboard-open {
 		.scout-page .scoreboard-strip,
-		.scout-board .app-footer,
+		.scout-board .board-meta,
 		.scout-dossier .brief,
 		.scout-dossier .price-explainer {
 			display: none;
@@ -389,4 +404,26 @@ html.app-shell:not(.app-web) {
 	*::-webkit-scrollbar {
 		display: none;
 	}
+}
+
+// Game colours: a dot before the game's name in the top bar (the layout sets --game)
+html.app-shell .play-layout[data-game] .app-top-bar .bar-title::before {
+	background: var(--game);
+	border-radius: 50%;
+	content: '';
+	display: inline-block;
+	height: 0.55rem;
+	margin-right: 0.45rem;
+	vertical-align: 0.15em;
+	width: 0.55rem;
+}
+
+// Greyscale: shades instead of colours (names and icons say which game it is), still
+// different enough to tell the three rings apart
+html.app-shell.app-greyscale {
+	--game-daily: #1c1c1c;
+	--game-scout: #4d4d4d;
+	--game-spot: #767676;
+	--game-grid: #4d4d4d;
+	--on-game: #ffffff;
 }

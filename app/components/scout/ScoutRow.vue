@@ -1,5 +1,5 @@
 <template>
-	<!-- iOS app (1.3): one line per guess, four dots (club, nation, position, price); the dossier holds the detail -->
+	<!-- iOS app (1.3): one line per guess, four marks (C N P £: square for right, round for close); the dossier holds the detail -->
 	<div
 		v-if="$config.public.appShell"
 		:class="['scout-mini', { solved }]"
@@ -22,7 +22,8 @@
 				v-for="attr in attrs"
 				:key="attr.label"
 				:class="attr.state"
-			></i>
+				>{{ attr.short }}</i
+			>
 		</span>
 	</div>
 
@@ -71,10 +72,10 @@
 	)
 
 	const attrs = computed(() => [
-		{ label: 'Club', ...props.result.club },
-		{ label: 'Nation', ...props.result.nationality },
-		{ label: 'Position', ...props.result.position },
-		...(props.result.price ? [{ label: 'Fantasy price', ...props.result.price }] : []),
+		{ label: 'Club', short: 'C', ...props.result.club },
+		{ label: 'Nation', short: 'N', ...props.result.nationality },
+		{ label: 'Position', short: 'P', ...props.result.position },
+		...(props.result.price ? [{ label: 'Fantasy price', short: '£', ...props.result.price }] : []),
 	])
 
 	// Club, nation and position decide it; the price just follows the player
@@ -156,11 +157,19 @@
 			gap: 0.2rem;
 
 			i {
+				align-items: center;
 				animation: chip-reveal 0.45s ease-in-out both;
 				background: color-mix(in srgb, var(--text-primary) 14%, transparent);
 				border-radius: 0.25rem;
-				height: 0.8rem;
-				width: 0.8rem;
+				color: var(--text-secondary);
+				display: flex;
+				font-size: 0.55rem;
+				font-style: normal;
+				font-weight: 800;
+				height: 1rem;
+				justify-content: center;
+				line-height: 1;
+				width: 1rem;
 
 				&:nth-child(2) {
 					animation-delay: 0.08s;
@@ -176,10 +185,14 @@
 
 				&.correct {
 					background: var(--color-success);
+					color: var(--on-success);
 				}
 
+				// Close is round, so it doesn't differ from right by colour alone
 				&.present {
 					background: var(--color-present);
+					border-radius: 50%;
+					color: var(--on-present);
 				}
 			}
 		}
@@ -224,6 +237,19 @@
 
 			&.present {
 				background: var(--color-present);
+				position: relative;
+
+				// Close chips get the board's corner dot
+				&::after {
+					background: currentColor;
+					border-radius: 50%;
+					content: '';
+					height: 0.3rem;
+					position: absolute;
+					right: 0.25rem;
+					top: 0.25rem;
+					width: 0.3rem;
+				}
 			}
 
 			&.absent {

@@ -17,16 +17,7 @@
 
 		<div class="rail-pills">
 			<HintPill />
-			<span
-				:class="['streak-pill', { cold: !playStreak.playedToday }]"
-				:aria-label="`${playStreak.activeStreak} day Matchday streak`"
-			>
-				<Icon
-					name="solar:fire-bold"
-					size="1.05rem"
-				/>
-				{{ playStreak.activeStreak }}
-			</span>
+			<MatchdayStreakPill />
 		</div>
 
 		<nav
@@ -79,12 +70,11 @@
 <script setup lang="ts">
 	import { computed } from 'vue'
 	import HintPill from './HintPill.vue'
-	import { usePlayStreakStore } from '../../stores/playStreak'
+	import MatchdayStreakPill from '../shared/MatchdayStreakPill.vue'
 	import { APP_TABS, tabFor } from '../../utils/appTabs'
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 
 	const route = useRoute()
-	const playStreak = usePlayStreakStore()
 	// Games and other screens above the tabs belong to Play
 	const active = computed(() => tabFor(route.path) ?? '/')
 </script>
@@ -134,25 +124,7 @@
 		padding: 0 0.4rem;
 	}
 
-	.streak-pill {
-		align-items: center;
-		background: color-mix(in srgb, var(--tertiary-color) 15%, transparent);
-		border-radius: 999px;
-		color: var(--tertiary-color);
-		display: inline-flex;
-		font-size: 1rem;
-		font-variant-numeric: tabular-nums;
-		font-weight: 800;
-		gap: 0.35rem;
-		height: 2.5rem;
-		padding: 0 0.8rem;
-	}
 
-	// Not played yet today: the streak is at risk, so the flame dims
-	.streak-pill.cold {
-		filter: grayscale(0.6);
-		opacity: 0.75;
-	}
 
 	.rail-nav {
 		display: flex;

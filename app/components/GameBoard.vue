@@ -208,6 +208,7 @@
 				line-height: clamp(2.2rem, 5.5vh, 2.8rem);
 				margin: 0 0.1rem;
 				perspective: 1000px;
+				position: relative;
 				transform-style: preserve-3d;
 				transition:
 					background 0.2s,
@@ -235,6 +236,22 @@
 
 				&.present {
 					animation: present-reveal 0.6s ease-in-out forwards;
+
+					// Close: a dot in the corner too, so right and close don't differ by colour alone.
+					// It fades in with the flip so it can't give a letter away early
+					&::after {
+						animation: close-cue-in 0.6s ease-in-out forwards;
+						animation-delay: inherit;
+						background: currentColor;
+						border-radius: 50%;
+						content: '';
+						height: 0.35rem;
+						opacity: 0;
+						position: absolute;
+						right: 0.3rem;
+						top: 0.3rem;
+						width: 0.35rem;
+					}
 				}
 
 				&.absent {
@@ -254,6 +271,7 @@
 			.letter.animate,
 			.letter.correct,
 			.letter.present,
+			.letter.present::after,
 			.letter.absent {
 				animation-delay: 0s !important;
 				animation-duration: 0.01s;
@@ -350,6 +368,17 @@
 			border-color: var(--color-present);
 			color: var(--on-present, #fff);
 			transform: rotateX(0deg) scale(1);
+		}
+	}
+
+	@keyframes close-cue-in {
+		0%,
+		50% {
+			opacity: 0;
+		}
+
+		100% {
+			opacity: 1;
 		}
 	}
 

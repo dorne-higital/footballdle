@@ -21,7 +21,19 @@
 			v-if="!isTab"
 			class="bar-actions"
 		>
-			<HintPill v-if="takesHints" />
+			<!-- Scout Report: [bulb 3 | Use] reads as one control, so the title keeps its room -->
+			<div
+				v-if="takesHints"
+				:class="['hint-group', { joined: offersHint }]"
+			>
+				<HintPill :compact="offersHint" />
+				<HintUseButton
+					v-if="offersHint"
+					:can-purchase="scout.canPurchaseHint"
+					:next-clue-name="scout.nextClueName"
+					@unlock="scout.unlockHint()"
+				/>
+			</div>
 			<button
 				type="button"
 				class="bar-btn"
@@ -51,6 +63,8 @@
 <script setup lang="ts">
 	import { computed } from 'vue'
 	import HintPill from './HintPill.vue'
+	import HintUseButton from './HintUseButton.vue'
+	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useModalsStore } from '../../stores/modals'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { tabFor } from '../../utils/appTabs'
@@ -74,10 +88,18 @@
 	const modalsStore = useModalsStore()
 	const haptics = useHaptics()
 
+	// Scout Report: the "Use a hint" button sits beside the hint count (not on the intro or once it's over)
+	const scout = useScoutReportStore()
+	const offersHint = computed(
+		() => route.path.startsWith('/play/scout-report') && !scout.showIntro && scout.canPurchaseHint,
+	)
+
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
 		if (path.startsWith('/cards/replay')) return 'Replay'
 		if (path.startsWith('/cards/')) return 'Cards'
+		// "Scout Report" won't fit beside the joined hint control on a 375pt screen
+		if (offersHint.value) return 'Scout'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
 	})
 
@@ -110,7 +132,7 @@
 		position: relative;
 		z-index: 2;
 
-		// Game pages: back, title, then up to three buttons. The title takes what's left
+		// Game pages: back, title, then the hint control and two buttons. The title takes what's left
 		// and truncates, so the buttons never spill off a 390pt screen
 		&.game {
 			grid-template-columns: auto minmax(0, 1fr) auto;
@@ -144,6 +166,24 @@
 		display: flex;
 		gap: 0.5rem;
 		justify-content: flex-end;
+	}
+
+	.hint-group {
+		display: flex;
+
+		// One control: square the inner corners and draw a hairline between the halves
+		&.joined {
+			> :first-child {
+				border-bottom-right-radius: 0;
+				border-top-right-radius: 0;
+			}
+
+			> :last-child {
+				border-bottom-left-radius: 0;
+				border-left: 1px solid var(--border);
+				border-top-left-radius: 0;
+			}
+		}
 	}
 
 	.bar-btn {

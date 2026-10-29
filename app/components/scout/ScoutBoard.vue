@@ -15,6 +15,20 @@
 		>
 			<b>Scout's brief:</b> “{{ brief.text }}”
 		</p>
+		<!-- iOS app: how many guesses are left and what close means, above the guesses -->
+		<div
+			v-if="$config.public.appShell && !gameOver"
+			class="board-meta"
+		>
+			<p class="guesses-count">{{ guessesLeft }}</p>
+			<p class="legend">
+				<i
+					class="close-mark"
+					aria-hidden="true"
+				></i>
+				Close: same region, continent or line, within £1m
+			</p>
+		</div>
 		<div
 			v-if="results.length && !$config.public.appShell"
 			class="board-header"
@@ -36,18 +50,6 @@
 				:result="result"
 				:index="i"
 			/>
-			<!-- iOS app: slim placeholders for the guesses still to come -->
-			<template v-if="$config.public.appShell && !gameOver">
-				<div
-					v-for="n in maxGuesses - results.length"
-					:key="`empty-${n}`"
-					class="empty-card"
-					aria-hidden="true"
-				>
-					<span class="guess-number">{{ results.length + n }}</span>
-					{{ n === 1 ? (results.length ? 'Search for your next signing' : 'Make your first signing') : `Guess ${results.length + n}` }}
-				</div>
-			</template>
 		</div>
 
 		<p
@@ -62,24 +64,8 @@
 			@guess="$emit('guess', $event)"
 		/>
 
-		<div
-			v-if="$config.public.appShell"
-			class="app-footer"
-		>
-			<div
-				class="guess-dots"
-				:aria-label="`${maxGuesses - results.length} guesses left`"
-			>
-				<span
-					v-for="n in maxGuesses"
-					:key="n"
-					:class="{ used: n <= results.length }"
-				></span>
-			</div>
-			<p class="legend"><i class="amber"></i> Close: same region, continent or line, within £1m</p>
-		</div>
 		<p
-			v-else
+			v-if="!$config.public.appShell"
 			class="guesses-left"
 		>
 			{{ maxGuesses - results.length }} guesses left
@@ -88,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-	import { nextTick, ref, watch } from 'vue'
+	import { computed, nextTick, ref, watch } from 'vue'
 	import ScoutRow from './ScoutRow.vue'
 	import ScoutAutocomplete from './ScoutAutocomplete.vue'
 	import ScoutDossier from './ScoutDossier.vue'
@@ -106,6 +92,11 @@
 	}>()
 
 	defineEmits<{ guess: [name: string] }>()
+
+	const guessesLeft = computed(() => {
+		const n = props.maxGuesses - props.results.length
+		return `${n} ${n === 1 ? 'guess' : 'guesses'} left`
+	})
 
 	// Keep the newest guess in view when the list is taller than the screen
 	const rowsEl = ref<HTMLElement | null>(null)
@@ -148,82 +139,41 @@
 			overflow-y: auto;
 		}
 
-		.empty-row {
-			display: grid;
-			gap: 0.4rem;
-			grid-template-columns: 1.1fr 1fr 1fr 1fr;
-			margin-bottom: 0.4rem;
-
-			span {
-				border: 1.5px dashed var(--border);
-				border-radius: calc(var(--global-border-radius) - 4px);
-				min-height: 2.6rem;
-			}
-		}
-
-		.empty-card {
-			align-items: center;
-			border: 1px dashed var(--border);
-			border-radius: 1.1rem;
-			color: var(--text-secondary);
+		.board-meta {
 			display: flex;
-			flex-shrink: 0;
-			font-size: 0.8rem;
-			gap: 0.5rem;
-			min-height: 2.75rem;
-			padding: 0 0.75rem;
-
-			.guess-number {
-				align-items: center;
-				border: 1px solid var(--border);
-				border-radius: 50%;
-				display: flex;
-				font-size: 0.7rem;
-				font-weight: 800;
-				height: 1.35rem;
-				justify-content: center;
-				width: 1.35rem;
-			}
-		}
-
-		.app-footer {
-			align-items: center;
-			display: flex;
-			justify-content: space-between;
-			margin-top: 0.6rem;
+			flex-direction: column;
+			gap: 0.15rem;
+			margin: 0 0 0.5rem;
 			padding: 0 0.25rem;
+			text-align: left;
 		}
 
-		.guess-dots {
-			display: flex;
-			gap: 0.3rem;
-
-			span {
-				background: var(--pitchcard-accent-win, var(--color-success));
-				border-radius: 50%;
-				height: 0.5rem;
-				width: 0.5rem;
-
-				&.used {
-					background: color-mix(in srgb, var(--text-primary) 18%, transparent);
-				}
-			}
+		.guesses-count {
+			color: var(--text-primary);
+			font-size: 0.8125rem;
+			font-variant-numeric: tabular-nums;
+			font-weight: 700;
+			margin: 0;
 		}
 
 		.legend {
 			align-items: center;
 			color: var(--text-secondary);
 			display: flex;
-			font-size: 0.7rem;
+			font-size: 0.8125rem;
 			gap: 0.35rem;
+			line-height: 1.3;
 			margin: 0;
+			text-wrap: balance;
 
-			.amber {
+			// Round, like the close marks on each guess
+			.close-mark {
 				background: var(--color-present);
-				border-radius: 0.2rem;
+				border-radius: 50%;
 				display: inline-block;
-				height: 0.6rem;
-				width: 0.6rem;
+				flex-shrink: 0;
+				height: 0.75rem;
+				width: 0.75rem;
 			}
 		}
 

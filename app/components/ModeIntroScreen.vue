@@ -27,7 +27,7 @@
 					name="solar:fire-bold"
 					size="1rem"
 				/>
-				<span><span class="streak-num">{{ stats.currentStreak }}</span> day streak</span>
+				<span><span class="streak-num">{{ stats.currentStreak }}</span> day win streak</span>
 			</div>
 
 			<div
@@ -184,7 +184,7 @@
 		// "Pitch marking" watermark — a center-circle + halfway line echoing
 		// the board's own grid, set very low-opacity behind the content.
 		.arc-watermark {
-			border: 2px solid var(--primary-color);
+			border: 2px solid var(--game, var(--primary-color));
 			border-radius: 50%;
 			height: 420px;
 			opacity: 0.06;
@@ -196,7 +196,7 @@
 			z-index: 0;
 
 			&::after {
-				border-left: 2px solid var(--primary-color);
+				border-left: 2px solid var(--game, var(--primary-color));
 				bottom: 0;
 				content: '';
 				left: 50%;
@@ -267,7 +267,7 @@
 			.arc-rule {
 				border: none;
 				border-radius: 0 0 999px 999px;
-				border-top: 3px solid var(--primary-color);
+				border-top: 3px solid var(--game, var(--primary-color));
 				height: 0;
 				margin: 0 0 1.25rem;
 				opacity: 0.5;

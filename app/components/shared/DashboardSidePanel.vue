@@ -70,7 +70,7 @@
 				</span>
 				<span class="streak-info">
 					<span class="num">{{ streak }}</span>
-					<span class="cap">day streak</span>
+					<span class="cap">day win streak</span>
 				</span>
 			</div>
 

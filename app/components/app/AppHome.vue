@@ -7,62 +7,16 @@
 			</div>
 			<div class="header-pills">
 				<HintPill />
-				<span
-					:class="['streak-pill', { cold: !playStreak.playedToday }]"
-					:aria-label="`${playStreak.activeStreak} day Matchday streak`"
-				>
-					<Icon
-						name="solar:fire-bold"
-						size="1.05rem"
-					/>
-					{{ playStreak.activeStreak }}
-				</span>
+				<MatchdayStreakPill />
 			</div>
 		</header>
 
-		<section
-			class="rings-card"
-			aria-label="Today's progress"
-		>
-			<ActivityRings
-				:rings="rings"
-				:size="88"
-				:stroke="10"
-				label="Today's progress across Daily, Scout Report and Spot the Baller"
-			/>
-			<div class="rings-summary">
-				<p class="rings-headline">{{ completedCount }}/3 today</p>
-				<ul>
-					<li
-						v-for="mode in ringModes"
-						:key="mode.name"
-					>
-						<span
-							class="dot"
-							:style="{ background: mode.color }"
-						></span>
-						<span class="mode-name">{{ mode.name }}</span>
-						<span class="mode-state">{{ mode.state }}</span>
-					</li>
-				</ul>
-				<button
-					v-if="completedCount === 3"
-					type="button"
-					class="share-matchday"
-					@click="shareMatchday"
-				>
-					<Icon
-						name="solar:share-linear"
-						size="0.95rem"
-					/>
-					{{ matchdayCopied ? 'Copied!' : 'Share Matchday' }}
-				</button>
-			</div>
-		</section>
-
+		<!-- The big card is always the next game to play: the Daily first, then Scout Report,
+		     then Spot the Baller (the same order as the full-time panel's next-game button) -->
 		<NuxtLink
-			:to="{ path: '/play/daily', query: { start: daily.status === 'new' || daily.status === 'playing' ? 'play' : 'result' } }"
-			class="daily-hero"
+			v-if="nextKey === 'daily'"
+			:to="{ path: '/play/daily', query: { start: 'play' } }"
+			class="daily-hero hero"
 		>
 			<Icon
 				name="solar:calendar-linear"
@@ -80,7 +34,7 @@
 						name="solar:card-2-bold"
 						size="0.85rem"
 					/>
-					{{ cardWon ? 'Card collected' : dailyFinished ? 'Card missed' : 'Win today\'s card' }}
+					Win today's card
 				</span>
 				<span
 					v-else
@@ -88,22 +42,7 @@
 					>Premier League</span
 				>
 			</div>
-			<!-- Full time: the answer spelled out, green if you got it, red if not -->
 			<div
-				v-if="dailyFinished && dailyAnswer"
-				:class="['tile-preview', 'answer-tiles', daily.status]"
-				:aria-label="`The answer was ${dailyAnswer.name}`"
-			>
-				<span
-					v-for="(letter, i) in dailyAnswer.name.toUpperCase().split('')"
-					:key="i"
-					class="tile"
-					:style="{ animationDelay: `${i * 60}ms` }"
-					>{{ letter }}</span
-				>
-			</div>
-			<div
-				v-else
 				class="tile-preview"
 				aria-hidden="true"
 			>
@@ -117,86 +56,140 @@
 				<h2>{{ heroTitle }}</h2>
 				<p>{{ heroSubtitle }}</p>
 			</div>
-			<div
-				v-if="dailyFinished"
-				class="fulltime-row"
-			>
-				<span class="next-player">
-					New puzzles in
-					<strong>{{ countdown }}</strong>
-				</span>
-				<button
-					type="button"
-					class="share-btn"
-					@click.prevent.stop="shareDaily"
-				>
-					<Icon
-						name="solar:share-linear"
-						size="1.1rem"
-					/>
-					{{ shareCopied ? 'Copied!' : 'Share' }}
-				</button>
-			</div>
-			<span
-				v-else
-				class="hero-cta"
-				>{{ heroCta }}</span
-			>
+			<span class="hero-cta">{{ heroCta }}</span>
 		</NuxtLink>
 
-		<div class="mode-grid">
-			<NuxtLink
-				:to="{ path: '/play/scout-report', query: { start: scout.status === 'won' || scout.status === 'lost' ? 'result' : 'play' } }"
-				class="mode-card"
+		<NuxtLink
+			v-else-if="nextMode"
+			:to="{ path: nextMode.path, query: { start: 'play' } }"
+			:class="['hero', 'next-hero', nextMode.key]"
+			:aria-label="`Next up: ${nextMode.name}. ${nextMode.cta}`"
+		>
+			<Icon
+				:name="nextMode.icon"
+				:class="['bg-icon', 'big', nextMode.key]"
+				aria-hidden="true"
+			/>
+			<div class="hero-top">
+				<span class="eyebrow">Next up{{ puzzleNumber ? ` · #${puzzleNumber}` : '' }}</span>
+				<span
+					v-if="nextMode.playing"
+					class="league"
+					>In progress</span
+				>
+			</div>
+			<div class="hero-copy">
+				<h2>{{ nextMode.name }}</h2>
+				<p>{{ nextMode.hook }}</p>
+			</div>
+			<span class="hero-cta">{{ nextMode.cta }}</span>
+		</NuxtLink>
+
+		<section
+			v-else
+			class="hero done-hero"
+			aria-label="Matchday finished"
+		>
+			<span class="eyebrow">Matchday{{ puzzleNumber ? ` · #${puzzleNumber}` : '' }}</span>
+			<div class="hero-copy">
+				<h2>That's Matchday done</h2>
+				<p>
+					All three played. New puzzles in
+					<strong class="countdown">{{ countdown }}</strong>
+				</p>
+			</div>
+			<button
+				type="button"
+				class="share-btn"
+				@click="shareMatchday"
 			>
 				<Icon
-					name="solar:clipboard-list-linear"
-					class="bg-icon scout"
-					aria-hidden="true"
+					name="solar:share-linear"
+					size="1.1rem"
 				/>
-				<span class="mode-text">
-					<strong>Scout Report</strong>
-					<span
-						v-if="scoutAnswer"
-						:class="['answer-line', scout.status]"
+				{{ matchdayCopied ? 'Copied!' : 'Share Matchday' }}
+			</button>
+			<NuxtLink
+				v-if="grid.ready && !grid.weekDone"
+				to="/play/grid"
+				class="hero-secondary"
+				>Play The Grid</NuxtLink
+			>
+		</section>
+
+		<!-- Today's three games, each shown once: the rings, then a row for every game not in the big card -->
+		<section
+			class="today-strip"
+			aria-label="Today's games"
+		>
+			<div class="strip-head">
+				<ActivityRings
+					:rings="rings"
+					:size="56"
+					:stroke="7"
+					:label="`${completedCount} of 3 games done today`"
+				/>
+				<p class="strip-headline">{{ completedCount }}/3 today</p>
+			</div>
+			<ul>
+				<li
+					v-for="row in stripRows"
+					:key="row.key"
+				>
+					<NuxtLink
+						:to="{ path: row.path, query: { start: row.done ? 'result' : 'play' } }"
+						class="strip-row"
+						:aria-label="row.spoken"
 					>
-						<Icon
-							:name="scout.status === 'won' ? 'solar:check-circle-bold' : 'solar:close-circle-bold'"
-							size="0.95rem"
-						/>
-						{{ scoutAnswer }}
-					</span>
-					<span>{{ scout.label }}</span>
-				</span>
-			</NuxtLink>
-			<NuxtLink
-				:to="{ path: '/play/spot-the-baller', query: { start: spot.status === 'won' || spot.status === 'lost' ? 'result' : 'play' } }"
-				class="mode-card"
-			>
-				<Icon
-					name="solar:eye-linear"
-					class="bg-icon spot"
-					aria-hidden="true"
-				/>
-				<span class="mode-text">
-					<strong>Spot the Baller</strong>
-					<template v-if="spotResults.length">
-						<span class="spot-score">{{ spotResults.filter(Boolean).length }}/{{ spotResults.length }}</span>
 						<span
-							class="spot-dots"
-							aria-hidden="true"
-						>
-							<i
-								v-for="(hit, i) in spotResults"
-								:key="i"
-								:class="{ hit }"
-							></i>
+							class="dot"
+							:style="{ background: row.color }"
+						></span>
+						<span class="strip-text">
+							<strong>{{ row.name }}</strong>
+							<span
+								v-if="row.answer"
+								:class="['answer-line', row.status]"
+							>
+								<Icon
+									:name="row.status === 'won' ? 'solar:check-circle-bold' : 'solar:close-circle-bold'"
+									size="0.9rem"
+								/>
+								{{ row.answer }}
+							</span>
+							<span
+								v-else-if="row.key === 'spot' && spotResults.length"
+								class="spot-dots"
+								aria-hidden="true"
+							>
+								<i
+									v-for="(hit, n) in spotResults"
+									:key="n"
+									:class="{ hit }"
+								></i>
+							</span>
+							<span
+								v-if="row.key === 'daily' && cardDay && row.done"
+								:class="['card-chip', 'small', { got: cardWon }]"
+							>
+								<Icon
+									name="solar:card-2-bold"
+									size="0.75rem"
+								/>
+								{{ cardWon ? 'Card collected' : 'Card missed' }}
+							</span>
 						</span>
-					</template>
-					<span v-else>{{ spot.label }}</span>
-				</span>
-			</NuxtLink>
-		</div>
+						<span :class="['strip-score', { todo: !row.done }]">{{ row.score }}</span>
+						<Icon
+							name="solar:alt-arrow-right-linear"
+							class="chevron"
+							size="1rem"
+							aria-hidden="true"
+						/>
+					</NuxtLink>
+				</li>
+			</ul>
+		</section>
 
 		<NuxtLink
 			to="/play/grid"
@@ -222,7 +215,7 @@
 		<FactCard />
 
 		<div
-			v-if="!dailyFinished"
+			v-if="nextKey"
 			class="kickoff"
 		>
 			<span>New puzzles in</span>
@@ -242,8 +235,9 @@
 	import FactCard from './FactCard.vue'
 	import { useModeStatsStore } from '../../stores/modeStats'
 	import { usePlayStreakStore } from '../../stores/playStreak'
+	import MatchdayStreakPill from '../shared/MatchdayStreakPill.vue'
 	import { useGridStore } from '../../stores/grid'
-	import { useTodayProgress } from '../../composables/useTodayProgress'
+	import { nextToPlay, useTodayProgress, type ModeKey } from '../../composables/useTodayProgress'
 	import { getDisplayNumber, getAnswerForDay } from '../../composables/useFootballers'
 	import { getUKDateString } from '../../utils/dateStreak'
 	import { useShare } from '../../composables/useShare'
@@ -252,7 +246,8 @@
 	import { useAccessibilityStore } from '../../stores/accessibility'
 	import { useHaptics } from '../../composables/useHaptics'
 
-	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
+	// Each game's colour (assets/_app-shell.scss), so themes and Greyscale can change them
+	const RING_COLORS = { daily: 'var(--game-daily)', scout: 'var(--game-scout)', spot: 'var(--game-spot)' }
 
 	const dailyStats = useModeStatsStore('daily')
 	// Days in a row with at least one game finished, win or lose
@@ -285,17 +280,64 @@
 		{ progress: spot.value.progress, color: RING_COLORS.spot },
 	])
 
-	const stateText = (status: string) =>
-		({ new: 'To play', playing: 'In progress', won: 'Done', lost: 'Done' })[status] ?? ''
-
-	const ringModes = computed(() => [
-		{ name: 'Daily', color: RING_COLORS.daily, state: stateText(daily.value.status) },
-		{ name: 'Scout', color: RING_COLORS.scout, state: stateText(scout.value.status) },
-		{ name: 'Spot', color: RING_COLORS.spot, state: stateText(spot.value.status) },
-	])
-
 	const completedCount = computed(
 		() => [daily.value, scout.value, spot.value].filter(m => m.status === 'won' || m.status === 'lost').length,
+	)
+
+	// The big card shows the next game to play; the strip below lists the other two
+	const nextKey = computed(() => nextToPlay({ daily: daily.value, scout: scout.value, spot: spot.value }))
+
+	const MODES: Record<ModeKey, { name: string; path: string; icon: string; color: string; hook: string }> = {
+		daily: {
+			name: 'Daily',
+			path: '/play/daily',
+			icon: 'solar:calendar-linear',
+			color: RING_COLORS.daily,
+			hook: '',
+		},
+		scout: {
+			name: 'Scout Report',
+			path: '/play/scout-report',
+			icon: 'solar:clipboard-list-linear',
+			color: RING_COLORS.scout,
+			hook: "Start with a scout's brief. Every guess shows club, nation, position and price clues.",
+		},
+		spot: {
+			name: 'Spot the Baller',
+			path: '/play/spot-the-baller',
+			icon: 'solar:eye-linear',
+			color: RING_COLORS.spot,
+			hook: '10 quick rounds. Pick the right name before the clock runs out.',
+		},
+	}
+
+	const progressOf = (key: ModeKey) => ({ daily: daily.value, scout: scout.value, spot: spot.value })[key]
+
+	const nextMode = computed(() => {
+		const key = nextKey.value
+		if (!key || key === 'daily') return null
+		const playing = progressOf(key).status === 'playing'
+		return { key, ...MODES[key], playing, cta: playing ? 'Continue' : 'Play now' }
+	})
+
+	const stripRows = computed(() =>
+		(['daily', 'scout', 'spot'] as const)
+			.filter(key => key !== nextKey.value)
+			.map(key => {
+				const p = progressOf(key)
+				const done = p.status === 'won' || p.status === 'lost'
+				const answer = !done ? '' : key === 'daily' ? (dailyAnswer.value?.name ?? '') : key === 'scout' ? scoutAnswer.value : ''
+				const score = done ? (p.score ?? 'Done') : p.status === 'playing' ? 'In progress' : 'To play'
+				return {
+					key,
+					...MODES[key],
+					status: p.status,
+					done,
+					answer,
+					score,
+					spoken: `${MODES[key].name}: ${done ? `${p.label}${answer ? `, ${answer}` : ''}` : score}`,
+				}
+			}),
 	)
 
 	// Player Cards: is today a card day, and has its card been won?
@@ -309,23 +351,12 @@
 		dailyLastGuess.value.length ? dailyLastGuess.value : Array(wordLength).fill('empty'),
 	)
 
-	const dailyFinished = computed(() => daily.value.status === 'won' || daily.value.status === 'lost')
-
 	const heroTitle = computed(
 		() =>
 			({
 				new: "Guess today's player",
 				playing: 'Back in the game',
-				won: `Solved in ${dailyGuesses.value.length}/6`,
-				lost: 'Missed it today',
-			})[daily.value.status],
-	)
-
-	// Finished: who it was, as club · position · nation
-	const playerSummary = computed(() =>
-		dailyAnswer.value
-			? [dailyAnswer.value.club, dailyAnswer.value.position, dailyAnswer.value.nationality].join(' · ')
-			: '',
+			})[daily.value.status as 'new' | 'playing'],
 	)
 
 	const heroSubtitle = computed(
@@ -333,27 +364,8 @@
 			({
 				new: `${wordLength === 5 ? 'Five' : 'Six'} letters. Six tries. One player a day.`,
 				playing: `You're on ${daily.value.label.toLowerCase()}.`,
-				won: playerSummary.value,
-				lost: playerSummary.value,
-			})[daily.value.status],
+			})[daily.value.status as 'new' | 'playing'],
 	)
-
-	const shareCopied = ref(false)
-	async function shareDaily() {
-		if (!dailyAnswer.value) return
-		haptics.select()
-		const copied = await onShare(
-			dailyGuesses.value,
-			dailyAnswer.value.name,
-			daily.value.status === 'won',
-			puzzleNumber ? `#${puzzleNumber}` : getUKDateString(),
-			dailyStats.stats.currentStreak,
-		)
-		if (copied) {
-			shareCopied.value = true
-			setTimeout(() => (shareCopied.value = false), 2000)
-		}
-	}
 
 	// Once all three daily games are done: one message with every result
 	const matchdayCopied = ref(false)
@@ -382,7 +394,7 @@
 	}
 
 	const heroCta = computed(
-		() => ({ new: 'Play now', playing: 'Continue', won: 'See result', lost: 'See result' })[daily.value.status],
+		() => (daily.value.status === 'playing' ? 'Continue' : 'Play now'),
 	)
 
 	// Countdown to the next UK midnight, when every mode resets
@@ -419,7 +431,8 @@
 		gap: 1rem;
 		margin: 0 auto;
 		max-width: 480px;
-		padding: 0.5rem 0.25rem 7rem;
+		// Clears the tab bar (0.5 + 4.25rem) and its fade (2.25rem) with room to spare
+		padding: 0.5rem 0.25rem 7.75rem;
 		width: 100%;
 	}
 
@@ -455,100 +468,10 @@
 		gap: 0.5rem;
 	}
 
-	.streak-pill {
-		height: 2.5rem;
-		align-items: center;
-		background: color-mix(in srgb, var(--tertiary-color) 15%, transparent);
-		border-radius: 999px;
-		color: var(--tertiary-color);
-		display: inline-flex;
-		font-size: 1rem;
-		font-variant-numeric: tabular-nums;
-		font-weight: 800;
-		gap: 0.35rem;
-		padding: 0 0.8rem;
-	}
 
-	// Not played yet today: the streak is at risk, so the flame dims
-	.streak-pill.cold {
-		filter: grayscale(0.6);
-		opacity: 0.75;
-	}
 
-	.rings-card {
-		align-items: center;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
-		border-radius: 1.5rem;
-		display: flex;
-		gap: 1rem;
-		padding: 0.8rem 1rem;
-
-		.rings-summary {
-			display: flex;
-			flex: 1;
-			flex-direction: column;
-			gap: 0.5rem;
-			min-width: 0;
-		}
-
-		.share-matchday {
-			align-items: center;
-			align-self: flex-start;
-			background: color-mix(in srgb, var(--primary-color) 14%, transparent);
-			border: 1px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
-			border-radius: 999px;
-			color: var(--primary-color);
-			display: inline-flex;
-			font-family: var(--font-body);
-			font-size: 0.8rem;
-			font-weight: 800;
-			gap: 0.35rem;
-			margin-top: 0.45rem;
-			padding: 0.35rem 0.8rem;
-		}
-
-		.rings-headline {
-			font-family: var(--font-display);
-			font-size: 1.5rem;
-			line-height: 1;
-			margin: 0;
-		}
-
-		ul {
-			display: flex;
-			flex-direction: column;
-			gap: 0.3rem;
-			list-style: none;
-			margin: 0;
-			padding: 0;
-		}
-
-		li {
-			align-items: center;
-			display: flex;
-			font-size: 0.85rem;
-			gap: 0.5rem;
-		}
-
-		.dot {
-			border-radius: 50%;
-			flex-shrink: 0;
-			height: 0.55rem;
-			width: 0.55rem;
-		}
-
-		.mode-name {
-			font-weight: 700;
-		}
-
-		.mode-state {
-			color: var(--text-secondary);
-			margin-left: auto;
-		}
-	}
-
-	.daily-hero {
+	// The big card: the next game to play, or Matchday done
+	.hero {
 		background: linear-gradient(160deg, var(--fl-raised) 0%, var(--bg-secondary) 100%);
 		border: 1px solid color-mix(in srgb, var(--primary-color) 30%, transparent);
 		border-radius: 1.75rem;
@@ -593,6 +516,7 @@
 				aspect-ratio: 1;
 				border-radius: 0.65rem;
 				flex: 0 1 2.6rem;
+				position: relative;
 
 				&.correct {
 					background: var(--color-success);
@@ -601,6 +525,18 @@
 
 				&.present {
 					background: var(--color-present);
+
+					// Close carries a dot, as on the board
+					&::after {
+						background: var(--on-present);
+						border-radius: 50%;
+						content: '';
+						height: 0.35rem;
+						position: absolute;
+						right: 0.3rem;
+						top: 0.3rem;
+						width: 0.35rem;
+					}
 				}
 
 				&.absent {
@@ -628,50 +564,6 @@
 			}
 		}
 
-		.answer-tiles .tile {
-			align-items: center;
-			animation: tile-flip 0.45s ease both;
-			color: var(--on-success);
-			display: flex;
-			font-family: var(--font-display);
-			font-size: 1.25rem;
-			justify-content: center;
-		}
-
-		.answer-tiles.won .tile {
-			background: var(--color-success);
-			box-shadow: 0 0 16px color-mix(in srgb, var(--color-success) 45%, transparent);
-		}
-
-		.answer-tiles.lost .tile {
-			background: color-mix(in srgb, var(--fl-red) 85%, transparent);
-			color: #2a0a07;
-		}
-
-		.fulltime-row {
-			align-items: center;
-			display: flex;
-			gap: 0.75rem;
-			justify-content: space-between;
-		}
-
-		.next-player {
-			color: var(--text-secondary);
-			display: flex;
-			flex-direction: column;
-			font-size: 0.75rem;
-			font-weight: 700;
-			letter-spacing: 0.04em;
-
-			strong {
-				color: var(--text-primary);
-				font-family: var(--font-display);
-				font-size: 1.2rem;
-				font-variant-numeric: tabular-nums;
-				letter-spacing: 0;
-			}
-		}
-
 		.share-btn {
 			align-items: center;
 			background: var(--primary-color);
@@ -684,7 +576,8 @@
 			font-size: 1rem;
 			font-weight: 800;
 			gap: 0.45rem;
-			height: 3rem;
+			height: 3.25rem;
+			justify-content: center;
 			padding: 0 1.3rem;
 
 			&:active {
@@ -702,6 +595,150 @@
 			font-weight: 800;
 			height: 3.25rem;
 			justify-content: center;
+		}
+
+		.countdown {
+			color: var(--text-primary);
+			font-family: var(--font-display);
+			font-variant-numeric: tabular-nums;
+			letter-spacing: 0.04em;
+		}
+
+		.hero-secondary {
+			align-self: center;
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			font-weight: 800;
+			padding: 0.25rem 0.75rem;
+			text-decoration: underline;
+			text-underline-offset: 0.2em;
+		}
+	}
+
+	// Scout Report and Spot the Baller take the game's own colour, button included
+	.next-hero {
+		&.scout {
+			--game: var(--game-scout);
+		}
+
+		&.spot {
+			--game: var(--game-spot);
+		}
+
+		border-color: color-mix(in srgb, var(--game) 40%, transparent);
+		box-shadow: 0 24px 48px -26px color-mix(in srgb, var(--game) 55%, transparent);
+
+		.eyebrow {
+			color: var(--game);
+		}
+
+		.hero-cta {
+			background: var(--game);
+			color: var(--on-game);
+		}
+
+		.hero-copy {
+			margin-top: 2.5rem;
+		}
+	}
+
+	.done-hero .hero-copy {
+		margin-top: 0.25rem;
+	}
+
+	// Today's three games in one list: rings and count, then a row per game not in the big card
+	.today-strip {
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: 1.4rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		padding: 0.8rem 0.9rem 0.45rem;
+
+		.strip-head {
+			align-items: center;
+			display: flex;
+			gap: 0.75rem;
+		}
+
+		.strip-headline {
+			font-family: var(--font-display);
+			font-size: 1.35rem;
+			line-height: 1;
+			margin: 0;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		li + li {
+			border-top: 1px solid var(--border);
+		}
+
+		.strip-row {
+			align-items: center;
+			color: var(--text-primary);
+			display: flex;
+			gap: 0.65rem;
+			min-height: 3.25rem;
+			padding: 0.5rem 0.1rem;
+			text-decoration: none;
+
+			&:active {
+				opacity: 0.7;
+			}
+		}
+
+		.dot {
+			border-radius: 50%;
+			flex-shrink: 0;
+			height: 0.6rem;
+			width: 0.6rem;
+		}
+
+		.strip-text {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 0.15rem;
+			min-width: 0;
+
+			strong {
+				font-size: 0.95rem;
+				font-weight: 800;
+			}
+
+			.answer-line {
+				font-size: 0.82rem;
+			}
+		}
+
+		.card-chip.small {
+			align-self: flex-start;
+			font-size: 0.68rem;
+			padding: 0.15rem 0.5rem;
+		}
+
+		.strip-score {
+			font-family: var(--font-display);
+			font-size: 1.1rem;
+			font-variant-numeric: tabular-nums;
+
+			&.todo {
+				color: var(--text-secondary);
+				font-family: var(--font-body);
+				font-size: 0.82rem;
+				font-weight: 700;
+			}
+		}
+
+		.chevron {
+			color: var(--text-secondary);
+			flex-shrink: 0;
 		}
 	}
 
@@ -722,12 +759,6 @@
 		}
 	}
 
-	.spot-score {
-		color: var(--text-primary) !important;
-		font-family: var(--font-display);
-		font-size: 1.15rem !important;
-	}
-
 	.spot-dots {
 		display: flex;
 		gap: 0.2rem;
@@ -745,26 +776,7 @@
 		}
 	}
 
-	@keyframes tile-flip {
-		from {
-			opacity: 0;
-			transform: rotateX(90deg);
-		}
-
-		to {
-			opacity: 1;
-			transform: rotateX(0);
-		}
-	}
-
-	.mode-grid {
-		display: grid;
-		gap: 0.75rem;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	.daily-hero,
-	.mode-card,
+	.hero,
 	.challenge-row {
 		// paint containment: WebKit can count the rotated .bg-icon past the card edge as
 		// scrollable width even with overflow: hidden
@@ -779,7 +791,6 @@
 		}
 	}
 
-	.mode-card,
 	.challenge-row {
 		background: var(--bg-secondary);
 		border: 1px solid var(--border);
@@ -791,14 +802,6 @@
 		&:active {
 			transform: scale(0.97);
 		}
-	}
-
-	.mode-card {
-		border-radius: 1.4rem;
-		flex-direction: column;
-		justify-content: flex-end;
-		min-height: 7.5rem;
-		padding: 1rem;
 	}
 
 	.challenge-row {
@@ -827,6 +830,9 @@
 			color: var(--text-secondary);
 			margin-left: auto;
 		}
+
+		// The Grid's colour as a stripe down the left, like the Today strip's dots
+		border-left: 4px solid var(--game-grid);
 	}
 
 	// Oversized mode icon sitting behind the card's text
@@ -842,7 +848,7 @@
 		z-index: 0;
 
 		&.daily {
-			color: var(--primary-color);
+			color: var(--game-daily);
 			font-size: 11rem;
 			height: 11rem;
 			opacity: 0.07;
@@ -854,26 +860,37 @@
 
 		// Kept faint so they read as texture behind the text, not as smudges
 		&.scout {
-			color: var(--fl-blue);
+			color: var(--game-scout);
 			opacity: 0.1;
 		}
 
 		// Pulled in from the corner so the whole eye shows, not just its middle
 		&.spot {
 			bottom: -0.6rem;
-			color: var(--tertiary-color);
-			opacity: 0.1;
+			color: var(--game-spot);
+			opacity: 0.12;
 			right: -0.4rem;
 		}
 
 		&.challenge {
 			bottom: -1.6rem;
-			color: var(--fl-red);
+			color: var(--game-grid);
 			font-size: 5.5rem;
 			height: 5.5rem;
-			opacity: 0.1;
+			opacity: 0.16;
 			right: 2.25rem;
 			width: 5.5rem;
+		}
+
+		// Next-up card (last, so it beats .scout and .spot): the mode's icon at the Daily card's size
+		&.big {
+			bottom: auto;
+			font-size: 11rem;
+			height: 11rem;
+			opacity: 0.08;
+			right: -3rem;
+			top: 1.5rem;
+			width: 11rem;
 		}
 	}
 
@@ -913,14 +930,14 @@
 		}
 	}
 
-	// Short phones (iPhone SE): keep all four modes above the tab bar on first view
+	// Short phones (iPhone SE): keep the strip above the tab bar on first view
 	@media (height <= 700px) {
-		.tile-preview:not(.answer-tiles) {
+		.tile-preview {
 			display: none;
 		}
 
-		.mode-card {
-			min-height: 5.5rem;
+		.next-hero .hero-copy {
+			margin-top: 0.5rem;
 		}
 	}
 

@@ -8,31 +8,41 @@
 				><span class="sb-num"> &middot; {{ roundProgress }}</span></template
 			>
 		</span>
+		<!-- Named, because on phones the mode name on the left is hidden -->
 		<span
 			v-if="streak > 0"
 			class="sb-right"
+			role="img"
+			:aria-label="modeStreakSpoken(streakLabel || modeLabel, streak)"
 		>
 			<Icon
 				name="solar:fire-bold"
 				size="0.85rem"
 			/>
+			<span class="sb-streak-label">{{ streakLabel || modeLabel }} streak</span>
 			<span class="sb-streak-num">{{ streak }}</span>
 		</span>
 	</div>
 </template>
 
 <script setup lang="ts">
+	import { modeStreakSpoken } from '../../utils/streakLabels'
+
+	// streak is the mode's win streak (the flame); streakLabel is a short name for it
+	// ("Scout" for Scout Report), defaulting to the mode name
 	withDefaults(
 		defineProps<{
 			modeLabel: string
 			puzzleNumber?: number | string
 			roundProgress?: string
 			streak?: number
+			streakLabel?: string
 		}>(),
 		{
 			puzzleNumber: '',
 			roundProgress: '',
 			streak: 0,
+			streakLabel: '',
 		},
 	)
 </script>
@@ -71,10 +81,18 @@
 
 		.sb-right {
 			align-items: center;
-			color: var(--scoreboard-accent);
+			color: var(--game, var(--scoreboard-accent));
 			display: inline-flex;
 			flex-shrink: 0;
 			gap: 0.3rem;
+		}
+
+		.sb-streak-label {
+			font-family: var(--font-display);
+			font-size: 0.62rem;
+			font-weight: 700;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
 		}
 
 		.sb-streak-num {

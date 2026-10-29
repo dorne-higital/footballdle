@@ -23,6 +23,7 @@
 		>
 			<ScoreboardStrip
 				mode-label="Scout Report"
+				streak-label="Scout"
 				:puzzle-number="scoutStore.puzzleNumber"
 				:streak="statsStore.stats.currentStreak"
 			/>
@@ -40,18 +41,17 @@
 				/>
 			</PlaySurfaceFrame>
 			<AppHintBar
-				v-if="$config.public.appShell && !scoutStore.gameOver"
+				v-if="$config.public.appShell && !scoutStore.gameOver && scoutStore.hints.length"
 				:hints="scoutStore.hints"
-				:can-purchase="scoutStore.canPurchaseHint"
-				:next-clue-name="scoutStore.nextClueName"
-				@unlock="scoutStore.unlockHint()"
 			/>
 			<FullTimePanel
 				v-if="$config.public.appShell && scoutStore.gameOver"
 				:summary="scoutStore.isWin ? `Found in ${scoutStore.guesses.length}/${scoutStore.maxGuesses}` : `Missed it: ${scoutStore.answer}`"
 				:is-win="scoutStore.isWin"
 				:countdown="scoutStore.countdown"
+				:share-text="shareText"
 				@result="scoutStore.showGameOverModal = true"
+				@shared="trackShare('scout_ft')"
 			/>
 		</div>
 
@@ -320,8 +320,8 @@
 	const scoutPrimaryStats = computed(() => [
 		{ label: 'Games', value: statsStore.stats.gamesPlayed },
 		{ label: 'Wins', value: statsStore.stats.wins },
-		{ label: 'Streak', value: statsStore.stats.currentStreak },
-		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
+		{ label: 'Win streak', value: statsStore.stats.currentStreak },
+		{ label: 'Best streak', value: statsStore.stats.maxStreak },
 	])
 
 	// ============================================================================
@@ -412,8 +412,10 @@
 				background: var(--color-success);
 			}
 
+			// Round for close, square for right, as in the game
 			&.present {
 				background: var(--color-present);
+				border-radius: 50%;
 			}
 
 			&.absent {

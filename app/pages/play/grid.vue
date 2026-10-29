@@ -394,7 +394,7 @@
 	}
 
 	.eyebrow {
-		color: var(--primary-color);
+		color: var(--game, var(--primary-color));
 		font-size: 0.72rem;
 		font-weight: 800;
 		letter-spacing: 0.14em;

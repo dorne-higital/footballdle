@@ -139,6 +139,82 @@ export const ACHIEVEMENT_GROUPS = [
 
 export const TOTAL_ACHIEVEMENT_POINTS = ACHIEVEMENTS.reduce((sum, a) => sum + a.points, 0)
 
+// Shown under "Where to start" when nothing has progress yet: the first win in each mode
+export const STARTER_TROPHIES = [
+	'fd_daily_first_win',
+	'fd_scout_first_win',
+	'fd_spot_first_win',
+	'fd_challenge_first_win',
+	'fd_cards_first',
+]
+
+export interface TrophyItem {
+	id: string
+	title: string
+	goal: string
+	earnedText: string
+	points: number
+	percent: number
+	earned: boolean
+	/** A hidden trophy not yet earned: no badge, title or goal */
+	secret: boolean
+}
+
+/**
+ * The Trophies screen, top to bottom: up to three trophies to aim for next, the ones
+ * already won, then everything else still locked, by mode. Only count-based trophies
+ * report a percentage between 0 and 100, so only those can be "nearly there"
+ */
+export function trophyShelves(progress: Record<string, number>) {
+	const items = ACHIEVEMENTS.map((a): TrophyItem => {
+		const percent = progress[a.id] ?? 0
+		const earned = percent >= 100
+		return {
+			id: a.id,
+			title: a.title,
+			goal: a.goal,
+			earnedText: a.earned,
+			points: a.points,
+			percent,
+			earned,
+			secret: !!a.hidden && !earned,
+		}
+	})
+	const byId = new Map(items.map(i => [i.id, i]))
+	const order = new Map(items.map((i, n) => [i.id, n]))
+
+	// Closest first; ties (progress is floored, so 1/10 and 6/60 are both 10%) go to the
+	// cheaper trophy, then list order, so the pick is the same every time
+	const nearly = items
+		.filter(i => !i.earned && !i.secret && i.percent > 0)
+		.sort((a, b) => b.percent - a.percent || a.points - b.points || order.get(a.id)! - order.get(b.id)!)
+		.slice(0, 3)
+	for (const id of STARTER_TROPHIES) {
+		if (nearly.length >= 3) break
+		const item = byId.get(id)
+		if (item && !item.earned && !nearly.includes(item)) nearly.push(item)
+	}
+	const nearlyIsStart = nearly.length > 0 && nearly.every(i => i.percent === 0)
+
+	const unlocked = items
+		.filter(i => i.earned)
+		.sort((a, b) => b.points - a.points || order.get(a.id)! - order.get(b.id)!)
+
+	const picked = new Set(nearly.map(i => i.id))
+	const groups = ACHIEVEMENT_GROUPS.map(group => {
+		const all = group.achievements.map(a => byId.get(a.id)!)
+		return {
+			title: group.title,
+			// Locked only (the won ones are on the shelf), closest to unlocking first
+			items: all.filter(i => !i.earned && !picked.has(i.id)).sort((a, b) => b.percent - a.percent),
+			earned: all.filter(i => i.earned).length,
+			total: all.length,
+		}
+	})
+
+	return { nearly, nearlyIsStart, unlocked, groups }
+}
+
 /** Context from the mode stats plus the extras the stats stores don't track */
 export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' | 'scout' | 'spot' | 'challenge'>): AchievementContext {
 	const grid: AchievementContext['grid'] = { gamesPlayed: 0, wins: 0, perfectGrids: 0, perfectWeek: false }

@@ -7,6 +7,10 @@
 		>
 			<div class="streak-top">
 				<p class="streak-count">
+					<MatchdayRingIcon
+						size="1.4rem"
+						class="streak-ring"
+					/>
 					<strong>{{ playStreak.activeStreak }}</strong>
 					<span>day Matchday streak</span>
 				</p>
@@ -58,8 +62,13 @@
 				role="tab"
 				:aria-selected="selected === m.id"
 				:class="{ active: selected === m.id }"
+				:style="{ '--game': `var(--game-${m.game})` }"
 				@click="selected = m.id"
 			>
+				<span
+					class="game-dot"
+					aria-hidden="true"
+				></span>
 				{{ m.label }}
 			</button>
 		</div>
@@ -131,6 +140,7 @@
 	import { readSavedObject } from '../../utils/storage'
 	import { getUKDateString, streakWeek, type StreakDayState } from '../../utils/dateStreak'
 	import SeasonFormDashboard from './SeasonFormDashboard.vue'
+	import MatchdayRingIcon from './MatchdayRingIcon.vue'
 	import { useGridStore } from '../../stores/grid'
 
 	// The one Stats view (tab and sheet): Matchday streak, then the same breakdown for
@@ -157,16 +167,16 @@
 	const basics = (id: Exclude<ModeId, 'grid'>) => [
 		{ label: 'Games', value: stores[id].stats.gamesPlayed },
 		{ label: 'Wins', value: stores[id].stats.wins },
-		{ label: 'Streak', value: stores[id].stats.currentStreak },
-		{ label: 'Max Streak', value: stores[id].stats.maxStreak },
+		{ label: 'Win streak', value: stores[id].stats.currentStreak },
+		{ label: 'Best streak', value: stores[id].stats.maxStreak },
 	]
 
 	const modes = computed(() =>
 		[
-			{ id: 'daily' as const, label: 'Daily', primary: basics('daily') },
-			{ id: 'scout' as const, label: 'Scout', primary: basics('scout') },
-			{ id: 'spotball' as const, label: 'Spot', primary: basics('spotball') },
-			{ id: 'grid' as const, label: 'Grid', primary: [] },
+			{ id: 'daily' as const, game: 'daily', label: 'Daily', primary: basics('daily') },
+			{ id: 'scout' as const, game: 'scout', label: 'Scout', primary: basics('scout') },
+			{ id: 'spotball' as const, game: 'spot', label: 'Spot', primary: basics('spotball') },
+			{ id: 'grid' as const, game: 'grid', label: 'Grid', primary: [] },
 		].map(m => ({ ...m, store: m.id === 'grid' ? null : stores[m.id] })),
 	)
 
@@ -312,6 +322,12 @@
 			justify-content: space-between;
 		}
 
+		// The Matchday streak's own icon, where its name is spelled out
+		.streak-ring {
+			color: var(--tertiary-color);
+			align-self: center;
+		}
+
 		.streak-count {
 			align-items: baseline;
 			display: flex;
@@ -423,19 +439,35 @@
 		padding: 0.2rem;
 
 		button {
+			align-items: center;
 			background: none;
 			border: 0;
 			border-radius: 0.7rem;
 			color: var(--text-secondary);
 			cursor: pointer;
+			display: flex;
 			font: inherit;
 			font-size: 0.85rem;
 			font-weight: 700;
+			gap: 0.35rem;
+			justify-content: center;
 			min-height: 40px;
 
+			// Each game's own colour (assets/_app-shell.scss); the selected one fills with it
+			.game-dot {
+				background: var(--game);
+				border-radius: 50%;
+				height: 0.45rem;
+				width: 0.45rem;
+			}
+
 			&.active {
-				background: var(--primary-color);
-				color: var(--on-primary);
+				background: var(--game);
+				color: var(--on-game);
+
+				.game-dot {
+					display: none;
+				}
 			}
 		}
 	}

@@ -18,7 +18,13 @@
 				></span>
 			</div>
 
+			<MatchdayRingIcon
+				v-if="current.ring"
+				size="3rem"
+				class="welcome-icon"
+			/>
 			<Icon
+				v-else
 				:name="current.icon"
 				size="3rem"
 				class="welcome-icon"
@@ -70,6 +76,7 @@
 <script setup lang="ts">
 	import { computed, onMounted, ref } from 'vue'
 	import { useRemindersStore } from '../../stores/reminders'
+	import MatchdayRingIcon from '../shared/MatchdayRingIcon.vue'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { readSavedObject } from '../../utils/storage'
@@ -77,14 +84,16 @@
 	// iOS app: a short welcome on first launch. Anyone who has already played (an
 	// update from an earlier version) never sees it.
 	const SEEN_KEY = 'footballdle-welcome-seen'
-	const STEPS = [
+	const STEPS: { icon: string; ring?: boolean; title: string; text: string }[] = [
 		{
 			icon: 'solar:calendar-linear',
 			title: 'Three games a day',
 			text: 'The Daily, Scout Report and Spot the Baller each get a new Premier League player at midnight UK time. Same puzzles for everyone.',
 		},
 		{
-			icon: 'solar:fire-bold',
+			// The Matchday streak's ring, not the flame (that's a mode's win streak)
+			icon: '',
+			ring: true,
 			title: 'Keep your streak going',
 			text: 'Finish any game to keep your Matchday streak alive. Every Saturday, five new grids drop in The Grid.',
 		},

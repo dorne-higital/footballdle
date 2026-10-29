@@ -262,7 +262,7 @@
 		}
 
 		.round-label {
-			color: var(--color-success);
+			color: var(--game, var(--color-success));
 			font-size: 0.7rem;
 			font-weight: 800;
 			letter-spacing: 0.12em;
@@ -291,13 +291,13 @@
 
 			.ring-track {
 				fill: none;
-				stroke: color-mix(in srgb, var(--color-success) 16%, transparent);
+				stroke: color-mix(in srgb, var(--game, var(--color-success)) 16%, transparent);
 				stroke-width: 12;
 			}
 
 			.ring-arc {
 				fill: none;
-				stroke: var(--color-success);
+				stroke: var(--game, var(--color-success));
 				stroke-linecap: round;
 				stroke-width: 12;
 				transition:

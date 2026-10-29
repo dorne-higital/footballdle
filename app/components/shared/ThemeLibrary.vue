@@ -351,7 +351,7 @@
 		background: var(--bg-secondary);
 		border: 1.5px solid var(--primary-color);
 		border-radius: 18px;
-		// Clear of the floating tab bar
+		// Clear of the floating tab bar, and above its fade (AppTabBar.vue)
 		bottom: calc(env(safe-area-inset-bottom) + 5.4rem);
 		box-shadow: 0 12px 30px -12px var(--fl-shadow);
 		display: flex;
@@ -359,7 +359,7 @@
 		gap: 0.5rem;
 		padding: 0.9rem;
 		position: sticky;
-		z-index: 2;
+		z-index: 51;
 
 		p {
 			margin: 0;

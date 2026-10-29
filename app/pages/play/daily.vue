@@ -97,7 +97,10 @@
 				:summary="gameStore.isWin ? `Solved in ${gameStore.guesses.length}/6` : `Missed it: ${gameStore.answer}`"
 				:is-win="gameStore.isWin"
 				:countdown="gameStore.countdown"
+				:share-text="dailyShareText"
+				replay-line
 				@result="gameStore.showGameOverModal = true"
+				@shared="trackShare('daily_ft')"
 			/>
 			<Keyboard
 				v-else
@@ -414,7 +417,11 @@
 	const scoutStatsStore = useModeStatsStore('scout')
 	const spotballStatsStore = useModeStatsStore('spotball')
 	const modalsStore = useModalsStore()
-	const { onShare, onShareTwitter } = useShare()
+	const { onShare, onShareTwitter, getShareText } = useShare()
+	// The same text the result sheet shares, for the full-time panel's Share button
+	const dailyShareText = computed(() =>
+		getShareText(gameStore.guesses, gameStore.answer, gameStore.isWin, gameStore.puzzleNumber ? `#${gameStore.puzzleNumber}` : gameStore.todayStr, statsStore.stats.currentStreak),
+	)
 
 	const {
 		trackGameStart,
@@ -533,8 +540,8 @@
 	const dailyPrimaryStats = computed(() => [
 		{ label: 'Games', value: statsStore.stats.gamesPlayed },
 		{ label: 'Wins', value: statsStore.stats.wins },
-		{ label: 'Streak', value: statsStore.stats.currentStreak },
-		{ label: 'Max Streak', value: statsStore.stats.maxStreak },
+		{ label: 'Win streak', value: statsStore.stats.currentStreak },
+		{ label: 'Best streak', value: statsStore.stats.maxStreak },
 	])
 
 
@@ -990,6 +997,7 @@
 			border: 1px solid var(--border);
 			border-radius: 2px;
 			height: 14px;
+			position: relative;
 			width: 14px;
 
 			&.correct {
@@ -1000,6 +1008,18 @@
 			&.present {
 				background: var(--color-present);
 				border-color: var(--color-present);
+
+				// Close carries a dot, as on the board
+				&::after {
+					background: var(--on-present);
+					border-radius: 50%;
+					content: '';
+					height: 4px;
+					inset: 0;
+					margin: auto;
+					position: absolute;
+					width: 4px;
+				}
 			}
 
 			&.absent {

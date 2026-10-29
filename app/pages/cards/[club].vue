@@ -32,6 +32,7 @@
 						:card="slot.owned ? slot.card : null"
 						:club="clubName"
 						:foil="slot.foil"
+						:missed="slot.missed"
 						size="sm"
 					/>
 					<NuxtLink
@@ -49,8 +50,8 @@
 			</ul>
 
 			<p class="footnote">
-				Cards you haven't collected stay face down. Missed one? Once its day has passed you can replay it here for a
-				hint, one a day after you've finished the Daily.
+				Cards you haven't collected stay face down. Dashed ones are missed: their day has passed, so you can replay
+				them for a hint, one a day after you've finished the Daily.
 				<template v-if="replayBlocker"><br /><strong>{{ replayBlocker }}</strong></template>
 			</p>
 		</template>

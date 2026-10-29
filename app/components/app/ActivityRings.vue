@@ -16,7 +16,7 @@
 				:cy="center"
 				:r="ring.r"
 				fill="none"
-				:stroke="ring.color"
+				:style="{ stroke: ring.color }"
 				stroke-opacity="0.18"
 				:stroke-width="stroke"
 			/>
@@ -27,7 +27,7 @@
 				:cy="center"
 				:r="ring.r"
 				fill="none"
-				:stroke="ring.color"
+				:style="{ stroke: ring.color }"
 				:stroke-width="stroke"
 				stroke-linecap="round"
 				:stroke-dasharray="`${ring.length} ${ring.circumference}`"

@@ -39,21 +39,21 @@
 				<div class="colour-row">
 					<span class="tile correct">A</span>
 					<p>
-						<strong>Green</strong> — this letter is in the answer <em>and</em> in exactly the right
+						<strong>Green</strong>: this letter is in the answer <em>and</em> in exactly the right
 						position. Keep it there.
 					</p>
 				</div>
 				<div class="colour-row">
 					<span class="tile present">G</span>
 					<p>
-						<strong>Yellow</strong> — this letter is in the answer but in the <em>wrong</em> position.
+						<strong>Yellow, with a dot</strong>: this letter is in the answer but in the <em>wrong</em> position.
 						Try it somewhere else.
 					</p>
 				</div>
 				<div class="colour-row">
 					<span class="tile absent">N</span>
 					<p>
-						<strong>Grey</strong> — this letter does not appear in the answer at all. Cross it off the
+						<strong>Grey</strong>: this letter does not appear in the answer at all. Cross it off the
 						keyboard.
 					</p>
 				</div>
@@ -72,7 +72,7 @@
 				<li>Each guess must be a real Premier League player from the {{ season }} season whose surname is as long as that day's board (five or six letters).</li>
 				<li>You have a maximum of six guesses per day.</li>
 				<li>Letters can appear more than once in an answer — yellow/green hints reflect each instance separately.</li>
-				<li>The on-screen keyboard tracks which letters you have used: green, yellow, and grey keys update after every guess.</li>
+				<li>The on-screen keyboard tracks which letters you have used: green, yellow (with a dot) and grey keys update after every guess.</li>
 				<li v-if="!$config.public.isApp">You can also type on a physical keyboard — press Enter to submit and Backspace to delete.</li>
 			</ul>
 
@@ -107,7 +107,7 @@
 				<p>
 					Guess any Premier League player in six tries. Each day starts with a scout's brief: two facts about
 					the target, like "We're after an African midfielder". Each guess then compares with the target's club,
-					nation, position and fantasy price: green is a match, amber is close (a club in the same part of the
+					nation, position and fantasy price: green and square is a match, amber and round is close (a club in the same part of the
 					country, a nation from the same continent, the next line on the pitch, or within £1m), grey is a miss.
 					The arrow on the price shows whether the target costs more or less. The dossier at the top keeps
 					track of everything you've learned.
@@ -271,6 +271,18 @@
 
 		&.present {
 			background: var(--color-present);
+			position: relative;
+
+			&::after {
+				background: currentColor;
+				border-radius: 50%;
+				content: '';
+				height: 0.3rem;
+				position: absolute;
+				right: 0.3rem;
+				top: 0.3rem;
+				width: 0.3rem;
+			}
 		}
 
 		&.absent {

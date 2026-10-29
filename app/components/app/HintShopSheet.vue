@@ -8,12 +8,25 @@
 	>
 		<template #body>
 			<div class="hint-shop">
-				<p class="hint-shop-intro">
-					Each hint reveals a clue in the Daily (club, nationality, position, then the surname's first letters)
-					or Scout Report (continent, nation, position and name initials, in a different order each day), up
-					to five per game, or the first letter of an answer for a square in The Grid. Hints you don't use stay
-					in the bank.
-				</p>
+				<ul
+					class="hint-games"
+					aria-label="What a hint shows"
+				>
+					<li
+						v-for="game in HINT_GAMES"
+						:key="game.name"
+					>
+						<Icon
+							:name="game.icon"
+							size="1.1rem"
+							class="game-icon"
+							aria-hidden="true"
+						/>
+						<span
+							><strong>{{ game.name }}:</strong> {{ game.clues }}</span
+						>
+					</li>
+				</ul>
 				<p
 					v-if="purchases.isPro || purchases.hintBank > 0"
 					class="hint-shop-intro hint-shop-balance"
@@ -205,8 +218,17 @@
 	import { APP_STORE_LIVE, APP_STORE_URL } from '../../utils/appStore'
 	import { useSale } from '../../composables/useSale'
 
-	// The hint shop (on the website: how to earn hints, and a link to the app), opened from the hint pill or the Daily's hint button on
-	// any screen. It only reveals a clue when you're actually mid-Daily; anywhere else
+	// What one hint shows in each game, in the order the games give them (stores/game.ts,
+	// stores/scoutReport.ts, stores/grid.ts). Keep in step if a game's hints change
+	const HINT_GAMES = [
+		{ name: 'Daily', icon: 'solar:calendar-linear', clues: 'club, nation, position, then letters' },
+		{ name: 'Scout Report', icon: 'solar:clipboard-list-linear', clues: 'continent, position and first letters' },
+		{ name: 'The Grid', icon: 'solar:widget-4-linear', clues: "a square's first letter" },
+	]
+
+	// The hint shop (on the website: how to earn hints, and a link to the app), opened from the
+	// hint pill or the Daily's hint button on any screen. It opens on one short row per game saying
+	// what a hint shows there. It only reveals a clue when you're actually mid-Daily; anywhere else
 	// hints go to the bank and it says where they can be used.
 	const PitchCardModal = defineAsyncComponent(() => import('../shared/PitchCardModal.vue'))
 
@@ -325,11 +347,34 @@
 			}
 		}
 
-		.hint-shop-reason {
-			display: block;
-			font-size: 0.75rem;
-			margin-top: 0.35rem;
-			opacity: 0.7;
+		.hint-games {
+			display: flex;
+			flex-direction: column;
+			gap: 0.45rem;
+			list-style: none;
+			margin: 0 0 0.25rem;
+			padding: 0;
+
+			li {
+				// flex-start so a wrapped second line sits under the text, not the icon
+				align-items: flex-start;
+				color: var(--text-secondary);
+				display: flex;
+				font-size: 0.9rem;
+				gap: 0.55rem;
+				line-height: 1.35;
+			}
+
+			strong {
+				color: var(--text-primary);
+				font-weight: 800;
+			}
+
+			.game-icon {
+				color: var(--primary-color);
+				flex-shrink: 0;
+				margin-top: 0.1rem;
+			}
 		}
 
 		.hint-shop-balance {

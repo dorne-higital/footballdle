@@ -1,8 +1,8 @@
 <template>
 	<div
-		:class="['player-card', size, { foil, hidden: !card }]"
+		:class="['player-card', size, { foil, hidden: !card, missed: !card && missed }]"
 		:style="{ '--club-bg': style.bg, '--club-fg': style.fg }"
-		:aria-label="card ? `${card.name}, ${card.club}${foil ? ', shiny' : ''}` : 'Card not collected yet'"
+		:aria-label="card ? `${card.name}, ${card.club}${foil ? ', shiny' : ''}` : missed ? 'Missed card' : 'Card not collected yet'"
 		role="img"
 	>
 		<div class="band">
@@ -54,8 +54,16 @@
 	// One Player Card: club band, the surname as tiles, name and details. Without a card
 	// it's the face-down silhouette of one not collected yet (never named).
 	const props = withDefaults(
-		defineProps<{ card?: CardInfo | null; club: string; foil?: boolean; number?: number | null; size?: 'lg' | 'sm' }>(),
-		{ card: null, foil: false, number: null, size: 'lg' },
+		defineProps<{
+			card?: CardInfo | null
+			club: string
+			foil?: boolean
+			number?: number | null
+			size?: 'lg' | 'sm'
+			/** Face down and its day has passed: replayable */
+			missed?: boolean
+		}>(),
+		{ card: null, foil: false, number: null, size: 'lg', missed: false },
 	)
 	const style = computed(() => clubStyle(props.club))
 </script>
@@ -96,6 +104,12 @@
 				color-mix(in srgb, var(--club-bg) 12%, var(--bg-secondary)) 7px 14px
 			);
 			box-shadow: none;
+		}
+
+		// Missed (its day has passed): a dashed edge, so it reads apart from cards still to
+		// come in Greyscale and high contrast too, not by colour alone
+		&.missed {
+			border: 2px dashed var(--text-secondary);
 		}
 	}
 

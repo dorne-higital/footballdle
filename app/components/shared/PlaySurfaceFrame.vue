@@ -13,6 +13,8 @@
 		background:
 			repeating-linear-gradient(100deg, var(--turf-stripe) 0 64px, var(--turf-base) 64px 128px);
 		border: 2px solid var(--touchline-color);
+		// The game's colour along the top edge, so you know where you are
+		border-top-color: color-mix(in srgb, var(--game, var(--touchline-color)) 55%, transparent);
 		border-radius: var(--global-border-radius);
 		display: flex;
 		flex: 1;

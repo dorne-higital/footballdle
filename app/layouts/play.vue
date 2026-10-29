@@ -1,5 +1,9 @@
 <template>
-	<div :class="['play-layout', { 'has-tab-bar': showTabBar }]">
+	<div
+		:class="['play-layout', { 'has-tab-bar': showTabBar }]"
+		:data-game="game ?? undefined"
+		:style="game ? { '--game': `var(--game-${game})` } : undefined"
+	>
 		<DesktopRail v-if="$config.public.appShell && !$config.public.isApp" />
 		<template v-if="$config.public.appShell">
 			<AppTopBar v-if="!showTabBar" />
@@ -33,6 +37,14 @@
 
 	// iOS app: tab bar on the Matchday home, back-button top bar inside games
 	const showTabBar = computed(() => appShell && route.path.replace(/\/+$/, '') === '')
+	// Each game's own colour, as --game, for its top bar dot, streak strip and frame
+	const GAMES: Record<string, string> = {
+		'/play/daily': 'daily',
+		'/play/scout-report': 'scout',
+		'/play/spot-the-baller': 'spot',
+		'/play/grid': 'grid',
+	}
+	const game = computed(() => (appShell ? (GAMES[route.path.replace(/\/+$/, '')] ?? null) : null))
 </script>
 
 <style scoped lang="scss">
