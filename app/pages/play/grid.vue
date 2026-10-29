@@ -62,6 +62,7 @@
 				<ShareResultButton
 					v-if="grid.weekSolved > 0"
 					:text="weekShareText"
+					@shared="track('share', { mode: 'grid', where: 'week' })"
 				/>
 				<button
 					type="button"
@@ -204,7 +205,10 @@
 				</p>
 				<p class="result-sub">{{ grid.solvedCount(grid.current) }} of 9 squares{{ grid.currentPoints === 900 ? ', a perfect grid!' : '' }}</p>
 				<div class="result-actions">
-					<ShareResultButton :text="gridShareText" />
+					<ShareResultButton
+						:text="gridShareText"
+						@shared="track('share', { mode: 'grid', where: 'result' })"
+					/>
 					<button
 						v-if="grid.active === 'practice'"
 						type="button"
@@ -236,6 +240,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import { computed, onMounted, ref, watch } from 'vue'
 	import { roster } from '../../composables/useFootballers'
 	import GridBoard from '../../components/grid/GridBoard.vue'
@@ -262,6 +267,7 @@
 	const showHintShop = useState('hint-shop-open', () => false)
 
 	onMounted(() => {
+		trackScreen('grid')
 		grid.load()
 		if (route.query.grid === 'practice') grid.open('practice')
 	})

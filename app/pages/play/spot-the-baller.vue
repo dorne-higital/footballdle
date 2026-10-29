@@ -116,7 +116,7 @@
 				:countdown="spotStore.countdown"
 				:share-text="shareText"
 				@result="spotStore.showGameOverModal = true"
-				@shared="trackShare('spot_ft')"
+				@shared="trackShare('spot_ft'), track('share', { mode: 'spot', where: 'full_time' })"
 			/>
 		</div>
 
@@ -157,7 +157,7 @@
 						</div>
 						<ShareResultButton
 							:text="shareText"
-							@shared="trackShare('spot')"
+							@shared="trackShare('spot'), track('share', { mode: 'spot', where: 'result' })"
 						/>
 					</div>
 				</div>
@@ -243,6 +243,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
 	import { useSpotTheBallerStore, SPOT_TIER_LABELS } from '../../stores/spotTheBaller'
 	import { useAccessibilityStore } from '../../stores/accessibility'
@@ -384,6 +385,7 @@
 	// LIFECYCLE
 	// ============================================================================
 	onMounted(() => {
+		trackScreen('spot')
 		statsStore.loadStats()
 		dailyStatsStore.loadStats()
 		scoutStatsStore.loadStats()

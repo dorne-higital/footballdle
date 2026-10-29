@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 
-vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => false } }))
+vi.mock('@capacitor/core', () => ({ Capacitor: { isNativePlatform: () => false }, registerPlugin: () => ({}) }))
 vi.mock('@capacitor/status-bar', () => ({ StatusBar: { setStyle: async () => {} }, Style: { Light: 'LIGHT', Dark: 'DARK' } }))
 
 // Just enough of the browser for the store: storage, the root element and matchMedia

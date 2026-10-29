@@ -227,6 +227,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import { computed, onMounted, onUnmounted, ref } from 'vue'
 	import ActivityRings from './ActivityRings.vue'
 	import WelcomeSheet from './WelcomeSheet.vue'
@@ -387,6 +388,7 @@
 			},
 			gridPoints: grid.ready ? grid.weekPoints : 0,
 		})
+		track('share', { mode: 'matchday', where: 'matchday' })
 		if (await shareText(text)) {
 			matchdayCopied.value = true
 			setTimeout(() => (matchdayCopied.value = false), 2000)
@@ -413,6 +415,7 @@
 	}
 
 	onMounted(() => {
+		trackScreen('matchday')
 		dailyStats.loadStats()
 		refresh()
 		tick()

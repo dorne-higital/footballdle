@@ -51,7 +51,7 @@
 				:countdown="scoutStore.countdown"
 				:share-text="shareText"
 				@result="scoutStore.showGameOverModal = true"
-				@shared="trackShare('scout_ft')"
+				@shared="trackShare('scout_ft'), track('share', { mode: 'scout', where: 'full_time' })"
 			/>
 		</div>
 
@@ -99,7 +99,7 @@
 						</div>
 						<ShareResultButton
 							:text="shareText"
-							@shared="trackShare('scout')"
+							@shared="trackShare('scout'), track('share', { mode: 'scout', where: 'result' })"
 						/>
 					</div>
 				</div>
@@ -186,6 +186,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useModeStatsStore } from '../../stores/modeStats'
@@ -328,6 +329,7 @@
 	// LIFECYCLE
 	// ============================================================================
 	onMounted(() => {
+		trackScreen('scout')
 		statsStore.loadStats()
 		dailyStatsStore.loadStats()
 		spotballStatsStore.loadStats()

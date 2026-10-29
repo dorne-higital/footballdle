@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { computed, ref } from 'vue'
 import { isValidFootballer } from '../composables/useFootballers'
 import { getUKDateString } from '../utils/dateStreak'
@@ -108,6 +109,7 @@ export const useReplayStore = defineStore('replay', () => {
 		} else if (s.guesses.length >= MAX_GUESSES) {
 			s.over = true
 		}
+		if (s.over) track('card.replay', { result: s.win ? 'won' : 'lost', guesses: String(s.guesses.length) })
 		save()
 	}
 

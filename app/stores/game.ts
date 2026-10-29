@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { nextUKMidnight } from '../utils/dateStreak'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
@@ -92,6 +93,7 @@ export const useGameStore = defineStore('game', () => {
 
 	function unlockHint() {
 		purchasedHints.value++
+		track('hint.used', { mode: 'daily' })
 		haptics.tap()
 		saveState()
 		// Remembered for the "Tactical Review" Game Center achievement
@@ -137,6 +139,9 @@ export const useGameStore = defineStore('game', () => {
 		}
 		// Player Cards: before the save, so a card is never missed (loadState backfills too)
 		if (gameOver.value) useCardsStore().finishDaily(todayStr, isWin.value, guesses.value.length)
+		if (gameOver.value) {
+			track('game.finished', { mode: 'daily', result: isWin.value ? 'won' : 'lost', guesses: String(guesses.value.length) })
+		}
 		currentGuess.value = ''
 		saveState()
 	}

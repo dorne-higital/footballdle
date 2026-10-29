@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { usePlayStreakStore } from './playStreak'
 import { computed, ref } from 'vue'
 import { roster } from '../composables/useFootballers'
@@ -216,6 +217,7 @@ export const useGridStore = defineStore('grid', () => {
 		if (!answer) return false
 		const square = g.squares[i]!
 		square.hinted = true
+		track('hint.used', { mode: 'grid' })
 		square.hintLetter = shownSurname(answer.name).charAt(0).toUpperCase()
 		try {
 			// Remembered for the hint trophy, like the other modes
@@ -231,6 +233,8 @@ export const useGridStore = defineStore('grid', () => {
 		if (!g || g.done) return
 		g.done = true
 		record(g, active.value === 'practice')
+		// A grid has no win or loss: the points out of 900 say how it went
+		track('game.finished', { mode: 'grid', kind: active.value === 'practice' ? 'practice' : 'weekly', score: String(gridPoints(g.squares)) })
 		// Finishing any grid, weekly or practice, keeps the Matchday streak going (the week
 		// rolling over records unfinished grids too, but that isn't playing today)
 		usePlayStreakStore().markPlayed()

@@ -134,6 +134,7 @@
 </template>
 
 <script setup lang="ts">
+	import { trackScreen } from '../utils/appGlance'
 	import { computed, onMounted } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
 	import { useGameCenter } from '../composables/useGameCenter'
@@ -158,6 +159,7 @@
 	const gameCenter = useGameCenter()
 
 	onMounted(() => {
+		trackScreen('trophies')
 		for (const store of [daily, scout, spotball, challenge]) store.loadStats()
 	})
 
