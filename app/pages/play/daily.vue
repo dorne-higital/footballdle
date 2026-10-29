@@ -100,7 +100,7 @@
 				:share-text="dailyShareText"
 				replay-line
 				@result="gameStore.showGameOverModal = true"
-				@shared="trackShare('daily_ft')"
+				@shared="trackShare('daily_ft'), track('share', { mode: 'daily', where: 'full_time' })"
 			/>
 			<Keyboard
 				v-else
@@ -319,6 +319,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
@@ -549,6 +550,7 @@
 	// LIFECYCLE HOOKS
 	// ============================================================================
 	onMounted(() => {
+		trackScreen('daily')
 		statsStore.loadStats()
 		scoutStatsStore.loadStats()
 		spotballStatsStore.loadStats()
@@ -616,6 +618,7 @@
 			shareToastTimer = setTimeout(() => { shareToast.value = false }, 2000)
 		}
 		trackShare('copy')
+		track('share', { mode: 'daily', where: 'result' })
 	}
 
 	function handleShareTwitter() {

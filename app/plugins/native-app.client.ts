@@ -15,6 +15,9 @@ import { useGridStore } from '../stores/grid'
 import { useCardsStore } from '../stores/cards'
 import { useAccessibilityStore } from '../stores/accessibility'
 import { ACHIEVEMENTS, achievementProgress, buildAchievementContext } from '../utils/achievements'
+import { nextToPlay, useTodayProgress } from '../composables/useTodayProgress'
+import { getUKDateString } from '../utils/dateStreak'
+import { track } from '../utils/appGlance'
 
 // Progress already sent to Game Center, so only changes are reported
 const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
@@ -70,6 +73,24 @@ export default defineNuxtPlugin((nuxtApp) => {
 			},
 		)
 	}
+
+	// AppGlance: all three daily games done, once a day (any order, win or lose)
+	const today = useTodayProgress()
+	watch(
+		() => [daily, scout, spotball].map(s => s.stats.gamesPlayed).join(),
+		() => {
+			today.refresh()
+			if (nextToPlay({ daily: today.daily.value, scout: today.scout.value, spot: today.spot.value })) return
+			const key = 'footballdle-glance-matchday'
+			try {
+				if (localStorage.getItem(key) === getUKDateString()) return
+				localStorage.setItem(key, getUKDateString())
+			} catch {
+				return
+			}
+			track('matchday.completed')
+		},
+	)
 
 	// Rating prompt (see REVIEW_STREAKS). Changes in the first few seconds are a fresh
 	// install catching up from iCloud, not a moment to ask

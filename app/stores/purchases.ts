@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { setUserProperties, track } from '../utils/appGlance'
 import { ref, computed, toRaw } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import type { CustomerInfo, MakePurchaseResult, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
@@ -258,6 +259,8 @@ export const usePurchasesStore = defineStore('purchases', () => {
 
 	function applyCustomerInfo(info: CustomerInfo) {
 		isPro.value = !!info.entitlements.active[PRO_ENTITLEMENT]
+		// Lets the AppGlance dashboard filter Pro players from free ones
+		setUserProperties({ plan: isPro.value ? 'pro' : 'free' })
 		try {
 			localStorage.setItem(PRO_CACHE_KEY, isPro.value ? '1' : '0')
 		} catch {}
@@ -361,6 +364,8 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			const plainProduct = JSON.parse(JSON.stringify(toRaw(product))) as PurchasesStoreProduct
 			const result = await Purchases.purchaseStoreProduct({ product: plainProduct })
 			applyCustomerInfo(result.customerInfo)
+			// Every paid thing comes through here: hint packs, Pro, themes and tips
+			track('purchase', { product: product.identifier })
 			return result
 		} catch (error: any) {
 			const cancelled = error?.code === '1' || error?.userCancelled
@@ -415,6 +420,9 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		message.value = ''
 		try {
 			const { Purchases } = await getSdk()
+			// Apple doesn't say whether a code worked, only that its sheet opened
+			// (App Store Connect counts redemptions per code)
+			track('code.sheet_opened')
 			await Purchases.presentCodeRedemptionSheet()
 		} catch {
 			message.value = 'Couldn\'t open the code sheet. You can also redeem in the App Store: tap your picture, then Redeem Gift Card or Code.'

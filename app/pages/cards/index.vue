@@ -351,6 +351,7 @@
 </template>
 
 <script setup lang="ts">
+	import { trackScreen } from '../../utils/appGlance'
 	import { computed, onMounted, ref } from 'vue'
 	import PlayerCard from '../../components/cards/PlayerCard.vue'
 	import { cardForDay, currentSeason, lastDayOf, useCardsStore } from '../../stores/cards'
@@ -373,6 +374,7 @@
 	// Saved cards load on the client: wait, or a collector sees the first-card screen flash
 	const ready = ref(false)
 	onMounted(() => {
+		trackScreen('cards')
 		cards.load()
 		replay.load()
 		ready.value = true

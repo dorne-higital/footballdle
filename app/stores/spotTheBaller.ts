@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { getSpotRoundsForDay, SPOT_RELAXED_ROUND_TIME, SPOT_ROUNDS_PER_MATCH, SPOT_ROUND_TIME, type SpotRound } from '../composables/useSpotFootballers'
@@ -164,6 +165,7 @@ export const useSpotTheBallerStore = defineStore('spotTheBaller', () => {
 		isWin.value = score.value >= WIN_THRESHOLD
 		showGameOverModal.value = true
 		statsStore.updateStats(isWin.value, undefined, todayStr)
+		track('game.finished', { mode: 'spot', result: isWin.value ? 'won' : 'lost', score: String(score.value) })
 		const tierKey = String(scoreTier.value)
 		tierHistogram.value[tierKey] = (tierHistogram.value[tierKey] || 0) + 1
 		saveTierHistogram()

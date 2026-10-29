@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { ref, computed, watch } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import { StatusBar, Style } from '@capacitor/status-bar'
@@ -76,6 +77,7 @@ export const useAppearanceStore = defineStore('appearance', () => {
 	/** Floodlights / Light / Match iPhone */
 	function set(value: Appearance) {
 		appearance.value = value
+		track('theme.changed', { theme: value === 'light' ? 'light' : value === 'dark' ? 'floodlights' : 'match_iphone' })
 		theme.value = null
 		preview.value = null
 		save()
@@ -96,6 +98,7 @@ export const useAppearanceStore = defineStore('appearance', () => {
 		preview.value = null
 		save()
 		apply()
+		track('theme.changed', { theme: id })
 	}
 
 	function endPreview() {

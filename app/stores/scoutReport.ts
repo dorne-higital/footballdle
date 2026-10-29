@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { track } from '../utils/appGlance'
 import { readSavedObject } from '../utils/storage'
 import { ref, computed } from 'vue'
 import { useHaptics } from '../composables/useHaptics'
@@ -287,6 +288,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 		}
 		// Full time has its own buzz (native-app plugin), so only mid-game guesses tap
 		if (!gameOver.value) haptics.tap()
+		else track('game.finished', { mode: 'scout', result: isWin.value ? 'won' : 'lost', guesses: String(guesses.value.length) })
 		saveState()
 	}
 
@@ -421,6 +423,7 @@ export const useScoutReportStore = defineStore('scoutReport', () => {
 	function unlockHint() {
 		if (!canPurchaseHint.value) return
 		purchasedHints.value++
+		track('hint.used', { mode: 'scout' })
 		haptics.tap()
 		saveState()
 		// Remembered for the "Tactical Review" Game Center achievement

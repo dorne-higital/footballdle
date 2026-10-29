@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AppGlance
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -7,7 +8,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // AppGlance analytics, as early as possible. Debug builds send too (tagged debug,
+        // shown under All, never Live) and log to the console; TestFlight and App Store
+        // builds send anyway. The key is write-only, so it's safe in the binary
+        #if DEBUG
+        AppGlance.configure(apiKey: "glance_live_4d5519cb7126411aa8fc1cfda5ec13461ed3a7b8507a4964a17bceea02b9c7af", debug: true)
+        #else
+        AppGlance.configure(apiKey: "glance_live_4d5519cb7126411aa8fc1cfda5ec13461ed3a7b8507a4964a17bceea02b9c7af")
+        #endif
         return true
     }
 

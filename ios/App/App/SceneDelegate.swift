@@ -1,5 +1,6 @@
 import UIKit
 import Capacitor
+import AppGlance
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -13,6 +14,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
 
         SceneDelegateProxy.shared.scene(scene, willConnectTo: session, options: connectionOptions)
+    }
+
+    // AppGlance sessions ("active right now", installs, retention): the app is UIKit, so
+    // there's no SwiftUI root view for .trackAppLifecycle()
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        AppGlance.setActive(true)
+    }
+
+    func sceneWillResignActive(_ scene: UIScene) {
+        AppGlance.setActive(false)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

@@ -209,6 +209,7 @@
 </template>
 
 <script setup lang="ts">
+	import { track, trackScreen } from '../../utils/appGlance'
 	import { computed, defineAsyncComponent, watch } from 'vue'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useGameStore } from '../../stores/game'
@@ -266,6 +267,8 @@
 
 	watch(open, (isOpen) => {
 		if (isOpen) {
+			trackScreen('hint_shop')
+			track('paywall.viewed', { where: 'hint_shop' })
 			progress.refresh()
 			// Products may not have loaded at launch (offline, or the store was slow)
 			if (!purchases.hintPacks.length) purchases.init()

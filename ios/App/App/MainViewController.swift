@@ -5,6 +5,7 @@ class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(GameCenterPlugin())
         bridge?.registerPluginInstance(ICloudBackupPlugin())
+        bridge?.registerPluginInstance(AppGlancePlugin())
 
         // No white flash at launch: an opaque web view with nothing drawn yet paints white,
         // so keep it see-through over the app's own dark green (Capacitor keeps whatever
