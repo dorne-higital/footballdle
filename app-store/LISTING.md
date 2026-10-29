@@ -3,6 +3,13 @@
 Copy-paste into App Store Connect → your app → the version page / App Information.
 Character counts are checked against Apple's limits.
 
+**For 1.3** (from the growth review, 29 Oct 2026). Paste these once the 1.3 version exists in App
+Store Connect; they all go through review with that version:
+- the new keyword field (below)
+- in-app purchase display names, and three promoted purchases (see In-app purchases)
+- an English (U.S.) localisation (see English (U.S.))
+- the app preview video and a 7th screenshot, the share card (see App preview and Screenshots)
+
 ## App name (30)
 
 ```
@@ -30,8 +37,11 @@ New: The Grid. Five fresh grids every Saturday, plus 16 themes to make Footballd
 Comma-separated, no spaces. Words already in the name and subtitle are indexed anyway, so they aren't repeated here.
 
 ```
-football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,scout,club,league,team,squad,brain
+football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,grid,cards,club,league,squad,scout
 ```
+
+1.3: "team" and "brain" out, "grid" and "cards" in (99 characters). "football" stays: Apple matches whole
+words, so "Footballdle" in the name doesn't cover it.
 
 ## Description (4000)
 
@@ -89,6 +99,32 @@ Also new:
 • Lots of polish and fixes
 ```
 
+## In-app purchases (1.3)
+
+App Store Connect → In-App Purchases → each one → App Store Localization. Display name 30, description 45.
+
+| Product | Display name | Description |
+|---|---|---|
+| footballdle_pro | Footballdle Pro | Unlimited hints and every theme, for good |
+| footballdle_hint_1 | 1 Hint | One hint for any game mode |
+| footballdle_hint_5 | 5 Hints | Five hints to use whenever you like |
+| footballdle_hint_15 | 15 Hints | Fifteen hints to use whenever you like |
+
+Promote Footballdle Pro, 5 Hints and the tip jar (each one → Promotional image → "Promote in-app
+purchase"), so their names and prices show on the listing. Images (1024 × 1024): `promoted/`.
+
+## English (U.S.) (1.3)
+
+App Information → Localizable information → add English (U.S.). Name and description as above.
+
+- Subtitle (29): `Guess the soccer player daily`
+- Keywords (96): `sports,athlete,striker,goalkeeper,defender,midfielder,team,transfer,fantasy,brain,guesser,riddle`
+
+## App preview (1.3)
+
+`preview/app-preview-6.9.mp4`: 886 × 1920, under 30 seconds, real play only (a Daily won, the Grid
+filling, a round of Spot the Baller). Upload it in the iPhone 6.9" slot, before the screenshots.
+
 ## Other fields
 
 | Field | Value |
@@ -105,6 +141,7 @@ Also new:
 
 Version 1.2: six per display slot, in this order:
 `captioned/01-guess.png`, `02-matchday.png`, `03-grid.png`, `04-themes.png`, `05-streak.png`, `06-trophies.png`.
+1.3 adds `07-share.png`, the share card.
 
 | Slot | Folder | Size |
 |---|---|---|
