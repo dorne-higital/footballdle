@@ -55,6 +55,8 @@ export const useAppearanceStore = defineStore('appearance', () => {
 		for (const name of THEME_VARIABLE_NAMES) root.style.removeProperty(name)
 		const t = activeTheme.value
 		root.classList.toggle('app-themed', !!t)
+		// Greyscale drops the game colours too (assets/_app-shell.scss)
+		root.classList.toggle('app-greyscale', t?.id === 'greyscale')
 		if (t) for (const [name, value] of Object.entries(themeVariables(t))) root.style.setProperty(name, value)
 		root.style.colorScheme = isLight.value ? 'light' : 'dark'
 		// Style.Light = dark status bar text, for light backgrounds

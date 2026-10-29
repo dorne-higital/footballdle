@@ -246,7 +246,8 @@
 	import { useAccessibilityStore } from '../../stores/accessibility'
 	import { useHaptics } from '../../composables/useHaptics'
 
-	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
+	// Each game's colour (assets/_app-shell.scss), so themes and Greyscale can change them
+	const RING_COLORS = { daily: 'var(--game-daily)', scout: 'var(--game-scout)', spot: 'var(--game-spot)' }
 
 	const dailyStats = useModeStatsStore('daily')
 	// Days in a row with at least one game finished, win or lose
@@ -614,24 +615,26 @@
 		}
 	}
 
-	// Scout Report and Spot the Baller take the mode's own colour
+	// Scout Report and Spot the Baller take the game's own colour, button included
 	.next-hero {
 		&.scout {
-			border-color: color-mix(in srgb, var(--fl-blue) 35%, transparent);
-			box-shadow: 0 24px 48px -26px color-mix(in srgb, var(--fl-blue) 55%, transparent);
-
-			.eyebrow {
-				color: var(--fl-blue);
-			}
+			--game: var(--game-scout);
 		}
 
 		&.spot {
-			border-color: color-mix(in srgb, var(--tertiary-color) 35%, transparent);
-			box-shadow: 0 24px 48px -26px color-mix(in srgb, var(--tertiary-color) 55%, transparent);
+			--game: var(--game-spot);
+		}
 
-			.eyebrow {
-				color: var(--tertiary-color);
-			}
+		border-color: color-mix(in srgb, var(--game) 40%, transparent);
+		box-shadow: 0 24px 48px -26px color-mix(in srgb, var(--game) 55%, transparent);
+
+		.eyebrow {
+			color: var(--game);
+		}
+
+		.hero-cta {
+			background: var(--game);
+			color: var(--on-game);
 		}
 
 		.hero-copy {
@@ -827,6 +830,9 @@
 			color: var(--text-secondary);
 			margin-left: auto;
 		}
+
+		// The Grid's colour as a stripe down the left, like the Today strip's dots
+		border-left: 4px solid var(--game-grid);
 	}
 
 	// Oversized mode icon sitting behind the card's text
@@ -842,7 +848,7 @@
 		z-index: 0;
 
 		&.daily {
-			color: var(--primary-color);
+			color: var(--game-daily);
 			font-size: 11rem;
 			height: 11rem;
 			opacity: 0.07;
@@ -854,24 +860,24 @@
 
 		// Kept faint so they read as texture behind the text, not as smudges
 		&.scout {
-			color: var(--fl-blue);
+			color: var(--game-scout);
 			opacity: 0.1;
 		}
 
 		// Pulled in from the corner so the whole eye shows, not just its middle
 		&.spot {
 			bottom: -0.6rem;
-			color: var(--tertiary-color);
-			opacity: 0.1;
+			color: var(--game-spot);
+			opacity: 0.12;
 			right: -0.4rem;
 		}
 
 		&.challenge {
 			bottom: -1.6rem;
-			color: var(--fl-red);
+			color: var(--game-grid);
 			font-size: 5.5rem;
 			height: 5.5rem;
-			opacity: 0.1;
+			opacity: 0.16;
 			right: 2.25rem;
 			width: 5.5rem;
 		}

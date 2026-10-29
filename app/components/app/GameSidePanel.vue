@@ -102,7 +102,7 @@
 		{ revision: 0 },
 	)
 
-	const RING_COLORS = { daily: '#2FE08A', scout: '#6EA8FF', spot: '#F2B84B' }
+	const RING_COLORS = { daily: 'var(--game-daily)', scout: 'var(--game-scout)', spot: 'var(--game-spot)' }
 	const progress = useTodayProgress()
 	const stats = useModeStatsStore(props.mode)
 	const title = computed(() => ({ daily: 'Daily', scout: 'Scout Report', spotball: 'Spot the Baller' })[props.mode])

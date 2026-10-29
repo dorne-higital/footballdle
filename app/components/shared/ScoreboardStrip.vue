@@ -81,7 +81,7 @@
 
 		.sb-right {
 			align-items: center;
-			color: var(--scoreboard-accent);
+			color: var(--game, var(--scoreboard-accent));
 			display: inline-flex;
 			flex-shrink: 0;
 			gap: 0.3rem;
