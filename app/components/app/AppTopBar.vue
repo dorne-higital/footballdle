@@ -149,11 +149,6 @@
 			.bar-actions {
 				gap: 0.4rem;
 			}
-
-			.bar-btn {
-				height: 2.6rem;
-				width: 2.6rem;
-			}
 		}
 	}
 
@@ -172,6 +167,11 @@
 
 	.hint-group {
 		display: flex;
+
+		// Same 44pt tap height as the bar buttons
+		> :deep(*) {
+			height: 2.75rem;
+		}
 
 		// One control: square the inner corners and draw a hairline between the halves
 		&.joined {
