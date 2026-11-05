@@ -142,6 +142,10 @@
 					Each mode keeps its own winning streak. Your Matchday streak on the home screen counts the days in a
 					row you've finished at least one game, win or lose.
 				</p>
+				<p>
+					Every 7 days of Matchday streak earns a Streak Shield (you can hold 2, or 3 with Pro). Miss a single day
+					and a shield covers it, so your streak carries on. Shields don't count towards the Matchday trophies.
+				</p>
 			</template>
 
 			<h2>Frequently asked questions</h2>
