@@ -155,7 +155,7 @@
 						>Sale, ends soon</span>
 					</span>
 					<p>
-						Unlimited hints in the Daily, Scout Report and The Grid, every theme and free card replays, for good. One-off purchase, no subscription.
+						Unlimited hints, every theme, the full puzzle archive and free card replays, for good. One-off purchase, no subscription.
 						<template v-if="purchases.hintBank > 0">
 							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
 						</template>

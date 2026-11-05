@@ -99,6 +99,7 @@
 		const path = route.path.replace(/\/+$/, '') || '/'
 		if (path.startsWith('/cards/replay')) return 'Replay'
 		if (path.startsWith('/cards/')) return 'Cards'
+		if (path.startsWith('/archive')) return 'Archive'
 		// "Scout Report" won't fit beside the joined hint control on a 375pt screen
 		if (offersHint.value) return 'Scout'
 		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')

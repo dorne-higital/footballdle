@@ -39,6 +39,7 @@ describe('AppGlance', () => {
 				'share',
 				'matchday.completed',
 				'reminder.answered',
+				'archive.finished',
 			]),
 		)
 	})

@@ -44,6 +44,17 @@
 					</li>
 					<li>
 						<Icon
+							name="solar:calendar-bold"
+							size="1.25rem"
+							class="perk-icon"
+						/>
+						<span>
+							<b>The full puzzle archive</b>
+							Play any past Daily since #1, free. Without Pro it's the last week, a hint each.
+						</span>
+					</li>
+					<li>
+						<Icon
 							name="solar:card-bold"
 							size="1.25rem"
 							class="perk-icon"

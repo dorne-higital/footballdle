@@ -105,7 +105,7 @@ App Store Connect → In-App Purchases → each one → App Store Localization. 
 
 | Product | Display name | Description |
 |---|---|---|
-| footballdle_pro | Footballdle Pro | Unlimited hints and every theme, for good |
+| footballdle_pro | Footballdle Pro | Unlimited hints, every theme and the archive |
 | footballdle_hint_1 | 1 Hint | One hint for any game mode |
 | footballdle_hint_5 | 5 Hints | Five hints to use whenever you like |
 | footballdle_hint_15 | 15 Hints | Fifteen hints to use whenever you like |
