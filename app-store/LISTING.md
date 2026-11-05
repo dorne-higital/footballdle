@@ -125,6 +125,45 @@ App Information → Localizable information → add English (U.S.). Name and des
 `preview/app-preview-6.9.mp4`: 886 × 1920, under 30 seconds, real play only (a Daily won, the Grid
 filling, a round of Spot the Baller). Upload it in the iPhone 6.9" slot, before the screenshots.
 
+## Custom Product Pages (1.3, K10)
+
+App Store Connect › your app › Custom Product Pages › +. Each one is your listing with its
+own screenshots, preview and promotional text, for people arriving from a particular link.
+Once a page is approved it gets an ID: put it in `PRODUCT_PAGES` in `app/utils/appStore.ts`,
+and links like footballdle.co.uk/app?for=grid open it (the website's Grid page already
+uses that link).
+
+**Grid** (key `grid`), for people coming from Grid shares and the Grid page:
+- Screenshots in this order: `03-grid`, `01-guess`, `02-matchday`, `07-share`, `05-streak`, `06-trophies`
+- Promotional text (156):
+  `Five new Grids every Saturday, the same for everyone. Name a player for each club and country, 100 points a square. Plus a new footballer to find every day.`
+
+**Themes** (key `themes`), for theme-led posts:
+- Screenshots in this order: `04-themes`, `01-guess`, `02-matchday`, `03-grid`, `07-share`, `06-trophies`
+  (and `raw/10-themed-daily.png` if you add a captioned version)
+- Promotional text (151):
+  `Make Footballdle yours: 16 themes, from Retro 90s and Tactics Chalkboard to six bold colours. Try any of them on before you buy. Pro unlocks every one.`
+
+The subtitle can't be A/B tested (Product Page Optimization only tests the icon, screenshots
+and preview), so "Football quiz: daily & grid" stays an idea for a later version.
+
+## Promoted purchases and Pro offer codes (1.3, M8)
+
+1. **Promote** Pro, 5 Hints and the tip jar: each in-app purchase › App Store Promotion ›
+   upload the image from `promoted/` › tick "Promote". Then Featuring › Promoted In-App
+   Purchases to set the order (Pro first). They go live with the next approved version.
+2. **What happens when someone taps one on the App Store:** the app opens and RevenueCat
+   starts the purchase. Pro or the hints arrive through the same customer-info listener as
+   any purchase, so no extra code was needed. Test it on TestFlight before release:
+   Settings › Developer › promoted purchase testing, or the itms-services test URL in
+   Apple's "Testing promoted in-app purchases" guide.
+3. **Pro offer codes** (for podcasts, creators and press): In-App Purchases › Footballdle Pro
+   › Offer Codes › create an offer (free, or a lower price), then either one custom code
+   (like PRO-PODCAST, a set number of redemptions) or a batch of one-time codes. Players
+   redeem in Settings › Purchases & codes › Redeem a code, which is already in the app.
+   Apple allows one redemption per Apple Account per offer, so make a separate offer for
+   anything you want to count on its own.
+
 ## Other fields
 
 | Field | Value |

@@ -32,3 +32,12 @@ describe('what the themes are worth on their own', () => {
 		expect(themesWorth([p('a', 0.99), p('b', 0.99, 'USD'), p('c', 2.99)], themes)).toBe('')
 	})
 })
+
+describe('Custom Product Page links', async () => {
+	const { appStoreUrlFor, APP_STORE_URL, PRODUCT_PAGES } = await import('../app/utils/appStore')
+	it('uses the normal page until an ID is filled in', () => {
+		expect(appStoreUrlFor('grid')).toBe(PRODUCT_PAGES.grid ? `${APP_STORE_URL}?ppid=${PRODUCT_PAGES.grid}` : APP_STORE_URL)
+		expect(appStoreUrlFor(null)).toBe(APP_STORE_URL)
+		expect(appStoreUrlFor('nonsense')).toBe(APP_STORE_URL)
+	})
+})

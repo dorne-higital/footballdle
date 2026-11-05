@@ -30,7 +30,7 @@
 					>Play {{ game.name }}</NuxtLink
 				>
 				<NuxtLink
-					to="/app"
+					:to="slug === 'football-grid-game' ? '/app?for=grid' : '/app'"
 					class="cta secondary"
 					title="Footballdle for iPhone"
 					>Get the iPhone app</NuxtLink

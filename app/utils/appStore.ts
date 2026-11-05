@@ -6,6 +6,19 @@
 export const APP_STORE_LIVE = true
 export const APP_STORE_URL = 'https://apps.apple.com/app/id6819602707'
 
+// Custom Product Pages (1.3, K10): App Store Connect › Custom Product Pages gives each one an
+// ID. Fill it in here and links like footballdle.co.uk/app?for=grid open that page; empty
+// means the normal page.
+export const PRODUCT_PAGES: Record<string, string> = {
+	grid: '',
+	themes: '',
+}
+/** The App Store link, on a Custom Product Page when one is set up for this key */
+export function appStoreUrlFor(key?: string | null) {
+	const ppid = key ? PRODUCT_PAGES[key] : ''
+	return ppid ? `${APP_STORE_URL}?ppid=${encodeURIComponent(ppid)}` : APP_STORE_URL
+}
+
 export const PRO_ENTITLEMENT = 'pro'
 
 // App Store Connect "Product ID" values (permanent once created). The

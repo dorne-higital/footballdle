@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 	import { onMounted } from 'vue'
-	import { APP_STORE_LIVE, APP_STORE_URL } from '../utils/appStore'
+	import { APP_STORE_LIVE, APP_STORE_URL, appStoreUrlFor } from '../utils/appStore'
 	import { useAnalytics } from '../composables/useAnalytics'
 
 	// footballdle.co.uk/app: the link in shares from the iPhone app. iPhones and iPads go
@@ -56,7 +56,8 @@
 		const isApple = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
 		if (isApple) {
 			trackGetApp('redirect')
-			window.location.replace(APP_STORE_URL)
+			// ?for=grid (or another PRODUCT_PAGES key) opens a matching Custom Product Page
+			window.location.replace(appStoreUrlFor(new URLSearchParams(location.search).get('for')))
 		}
 	})
 </script>
