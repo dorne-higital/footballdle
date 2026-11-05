@@ -15,7 +15,31 @@
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
 			@show-result="gameStore.showGameOverModal = true"
-		/>
+		>
+			<template
+				v-if="!$config.public.isApp"
+				#about
+			>
+				<SeoIntro
+					heading="Premier League Wordle: guess today's footballer"
+					:links="[
+						{ to: '/answers', label: 'Past answers' },
+						{ to: '/how-to-play', label: 'How to play' },
+						{ to: '/app', label: 'Get the iPhone app' },
+					]"
+				>
+					<p>
+						Footballdle's Daily is a Wordle for Premier League fans. There's one hidden footballer a day, the
+						same for everyone. Guess their surname in six tries: green letters are in the right place, yellow
+						ones are in the name somewhere else.
+					</p>
+					<p>
+						Every answer is a current 2026/27 Premier League player, and a new one drops at midnight UK
+						time. Stuck? Hints reveal their club, nationality and position.
+					</p>
+				</SeoIntro>
+			</template>
+		</ModeIntroScreen>
 
 		<!-- Game Screen -->
 		<div
@@ -334,6 +358,7 @@
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
+	import SeoIntro from '../../components/shared/SeoIntro.vue'
 	import GameBoard from '../../components/GameBoard.vue'
 	import Keyboard from '../../components/Keyboard.vue'
 	import PlaySurfaceFrame from '../../components/shared/PlaySurfaceFrame.vue'
@@ -391,7 +416,7 @@
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
 					'@type': 'WebApplication',
 					name: 'Footballdle',

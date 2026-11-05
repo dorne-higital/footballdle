@@ -1,6 +1,27 @@
 <template>
 	<div class="hub-page">
 		<AppHome v-if="$config.public.appShell" />
+		<SeoIntro
+			v-if="!$config.public.isApp"
+			level="h1"
+			heading="Footballdle: free daily Premier League football games"
+			:links="[
+				{ to: '/play/daily', label: 'Guess the footballer' },
+				{ to: '/play/scout-report', label: 'Scout Report' },
+				{ to: '/play/spot-the-baller', label: 'Spot the Baller' },
+				{ to: '/play/grid', label: 'The Grid' },
+				{ to: '/answers', label: 'Past answers' },
+				{ to: '/app', label: 'iPhone app' },
+			]"
+		>
+			<p>
+				Footballdle is a set of free football guessing games built on the current Premier League player list.
+				Guess today's hidden footballer in six tries, Wordle-style. Work out a player from his scouting report and
+				fantasy price, pick the right name against the clock in Spot the Baller, and fill five new football
+				grids every Saturday.
+			</p>
+			<p>New puzzles arrive at midnight UK time, the same for everyone. No account and no ads.</p>
+		</SeoIntro>
 		<template v-else>
 			<ModeSelectHub
 				:daily-streak="statsStore.stats.currentStreak"
@@ -17,6 +38,7 @@
 
 <script setup lang="ts">
 	import { pageUrl } from '../utils/siteUrl'
+	import SeoIntro from '../components/shared/SeoIntro.vue'
 	import { onMounted, computed } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
 	import { useHead } from 'nuxt/app'

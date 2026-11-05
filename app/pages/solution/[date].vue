@@ -227,7 +227,7 @@
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
 					'@type': 'FAQPage',
 					mainEntity: [
