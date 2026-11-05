@@ -27,6 +27,8 @@ export interface ShareCardData {
 	/** Played with high-contrast tiles (orange and blue) */
 	highContrast: boolean
 	sections: CardSection[]
+	/** Matchday only: the commentary's verdict ("Clinical"), the card's headline */
+	verdict?: string
 }
 
 const TILES: Record<string, CardTile> = { '🟩': 'g', '🟧': 'g', '🟨': 'a', '🟦': 'a', '⬛': 'x' }
@@ -64,7 +66,8 @@ export function parseShareText(text: string): ShareCardData | null {
 			else if ((m = first.match(/^🧩 Grid Week ([\d,]+) \/ ([\d,]+)/))) sections.push({ mode: 'grid', score: m[1]!, note: `of ${m[2]} points` })
 		}
 		if (!sections.length) return null
-		return { kind: 'matchday', number: numberOf(head), streak: Number(head.match(/(\d+) day Matchday streak/)?.[1]) || undefined, highContrast, sections }
+		const verdict = text.match(/^📣 ([^:\n]+):/mu)?.[1]
+		return { kind: 'matchday', number: numberOf(head), streak: Number(head.match(/(\d+) day Matchday streak/)?.[1]) || undefined, highContrast, sections, verdict }
 	}
 
 	const second = lines[1] ?? ''
@@ -314,8 +317,12 @@ function drawMatchday(ctx: CanvasRenderingContext2D, d: ShareCardData) {
 	ctx.fillText(`MATCHDAY${d.number ? ` ${d.number}` : ''}`, X, 330)
 	ctx.letterSpacing = '0px'
 	ctx.fillStyle = C.text
-	ctx.font = `400 108px ${HEAD}`
-	ctx.fillText('All three done', X - 4, 438)
+	// The commentary's verdict ("Clinical"), shrunk to fit the width
+	const headline = d.verdict ?? 'All three done'
+	let size = 108
+	ctx.font = `400 ${size}px ${HEAD}`
+	while (size > 60 && ctx.measureText(headline).width > CW) ctx.font = `400 ${(size -= 4)}px ${HEAD}`
+	ctx.fillText(headline, X - 4, 438)
 
 	// Each game's panel: label and score on the left, its board on the right. Tiles shrink
 	// until every panel fits above the streak, however many guesses there were
