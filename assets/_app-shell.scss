@@ -4,8 +4,11 @@
 // `html.app-shell` outranks the `.dark` / `.greyscale` / `.theme-pastel` theme classes.
 
 html.app-shell {
-	--font-display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
-	--font-body: 'Manrope', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+	// The "… Fallback: Arial" faces are @nuxt/fonts' size-matched stand-ins, so text doesn't
+	// jump when the real font arrives (layout shift, search plan L3). The module only adds
+	// them to plain font-family rules, not to custom properties like these
+	--font-display: 'Archivo Black', 'Archivo Black Fallback: Arial', 'Arial Black', Impact, sans-serif;
+	--font-body: 'Manrope', 'Manrope Fallback: Arial', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
 
 	--text-primary: #eaf5ee;
 	--text-secondary: #8fa89a;

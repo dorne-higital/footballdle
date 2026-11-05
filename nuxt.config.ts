@@ -63,8 +63,9 @@ export default defineNuxtConfig({
 		families: [
 			{ name: 'Jost', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
 			{ name: 'Inter', provider: 'fontsource', weights: [200, 400, 500, 700], display: 'swap' },
-			// iOS app "Floodlights" look (assets/_app-shell.scss)
-			{ name: 'Archivo Black', provider: 'fontsource', weights: [400], display: 'swap' },
+			// iOS app "Floodlights" look (assets/_app-shell.scss). Archivo Black is preloaded:
+			// it sets the big headings, the largest text on most screens
+			{ name: 'Archivo Black', provider: 'fontsource', weights: [400], display: 'swap', preload: true },
 			{ name: 'Manrope', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
 			// Theme Library headings (utils/themes.ts). Only set from script, so declared
 			// globally to be bundled; each file loads only when its theme is on
