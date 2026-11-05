@@ -243,24 +243,6 @@
 					/>
 					Yesterday's answer
 				</NuxtLink>
-				<a
-					v-if="!$config.public.isApp"
-					href="https://buymeacoffee.com/dhorne92E"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="coffee-nudge"
-					@click.prevent="handleBuyMeCoffee('game_over_modal')"
-				>
-					<Icon
-						name="uil:coffee"
-						size="0.9rem"
-					/>
-					{{
-						statsStore.stats.currentStreak >= 3
-							? `${statsStore.stats.currentStreak} day streak — buy me a coffee?`
-							: 'Enjoying Footballdle? Buy me a coffee'
-					}}
-				</a>
 			</template>
 		</PitchCardModal>
 
@@ -274,7 +256,7 @@
 			@close="modalsStore.closeSettings"
 		>
 			<template #body>
-				<ThemePickerSettings @buy-coffee="handleBuyMeCoffee" />
+				<ThemePickerSettings />
 			</template>
 		</PitchCardModal>
 
@@ -337,13 +319,11 @@
 		:streak="statsStore.stats.currentStreak"
 		:win-percentage="statsStore.winPercentage"
 		:recent-form="statsStore.stats.recentForm"
-		@buy-coffee="handleBuyMeCoffee"
 	/>
 	</div>
 </template>
 
 <script setup lang="ts">
-	import { openBuyMeCoffee } from '../../utils/buyMeCoffee'
 	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import playerMeta from '../../data/meta.json'
@@ -462,13 +442,7 @@
 		trackShare,
 		trackModalOpen,
 		trackSessionTime,
-		trackBuyMeCoffee,
 	} = useAnalytics()
-
-	function handleBuyMeCoffee(location: string) {
-		trackBuyMeCoffee(location)
-		openBuyMeCoffee()
-	}
 
 	// ============================================================================
 	// REACTIVE STATE
@@ -905,7 +879,7 @@
 	}
 
 	// ============================================================================
-	// SHARED COFFEE NUDGE
+	// YESTERDAY'S ANSWER LINK
 	// ============================================================================
 	.yesterday-link {
 		align-items: center;
@@ -922,20 +896,6 @@
 		}
 	}
 
-	.coffee-nudge {
-		align-items: center;
-		color: var(--text-secondary);
-		display: inline-flex;
-		font-size: 0.8rem;
-		gap: 0.35rem;
-		margin-top: 0.75rem;
-		text-decoration: none;
-		transition: color 0.2s;
-
-		&:hover {
-			color: var(--primary-color);
-		}
-	}
 
 	// ============================================================================
 	// GAME OVER MODAL
@@ -1203,5 +1163,4 @@
 			}
 		}
 	}
-
 </style>

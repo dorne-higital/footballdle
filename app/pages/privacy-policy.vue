@@ -84,12 +84,6 @@
 				device; clearing your browser data removes it.
 			</p>
 
-			<h2>Third-party links</h2>
-			<p>
-				Our site may contain links to third-party websites including Buy Me a Coffee and Ko-fi. These sites have
-				their own privacy policies and we have no responsibility for their content or practices.
-			</p>
-
 			<h2>Your rights (UK GDPR)</h2>
 			<p>
 				As a UK resident you have the right to access, correct, or request deletion of any personal data held

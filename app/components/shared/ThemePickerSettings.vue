@@ -70,27 +70,6 @@
 			</div>
 		</div>
 
-		<div
-			v-if="!$config.public.isApp"
-			class="setting-group support-group"
-		>
-			<label>Support Footballdle</label>
-			<p>Enjoying the game? Help keep it free.</p>
-			<a
-				href="https://buymeacoffee.com/dhorne92E"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="coffee-button"
-				@click.prevent="$emit('buy-coffee', 'settings_modal')"
-			>
-				<Icon
-					name="uil:coffee"
-					size="1rem"
-				/>
-				Buy me a <span class="accent">coffee</span>
-			</a>
-		</div>
-
 		<!-- App look (iPhone app and website): a one-screen menu like iPhone Settings, with
 		     the long parts (themes, accessibility, purchases, tips) on their own pages -->
 		<div
@@ -379,25 +358,6 @@
 							/>
 						</button>
 					</template>
-					<a
-						v-else
-						href="https://buymeacoffee.com/dhorne92E"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="menu-row"
-						@click.prevent="$emit('buy-coffee', 'settings_modal')"
-					>
-						<span class="row-icon"><Icon
-							name="uil:coffee"
-							size="1.05rem"
-						/></span>
-						<span class="row-label">Buy me a coffee</span>
-						<Icon
-							name="solar:alt-arrow-right-linear"
-							size="1rem"
-							class="chevron"
-						/>
-					</a>
 				</div>
 
 				<h3 class="group-label">Help</h3>
@@ -852,7 +812,6 @@
 		resetDone.value = true
 	}
 
-	defineEmits(['buy-coffee'])
 </script>
 
 <style scoped lang="scss">
@@ -958,7 +917,6 @@
 				padding-top: 0.5rem;
 			}
 
-			.coffee-button,
 			.store-button {
 				align-items: center;
 				background: var(--text-primary);

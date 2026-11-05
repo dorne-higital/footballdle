@@ -41,21 +41,6 @@
 		</NuxtLink>
 
 		<div class="icons">
-			<a
-				v-if="!$config.public.isApp"
-				href="https://buymeacoffee.com/dhorne92E"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="icon-btn"
-				aria-label="Buy me a coffee"
-				@click.prevent="handleBuyCoffee"
-			>
-				<Icon
-					name="uil:coffee"
-					size="1.15em"
-				/>
-			</a>
-
 			<button
 				v-if="gameCenter.isAvailable"
 				type="button"
@@ -109,22 +94,16 @@
 </template>
 
 <script setup lang="ts">
-	import { openBuyMeCoffee } from '../../utils/buyMeCoffee'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useGameCenter } from '../../composables/useGameCenter'
 
 	const modalsStore = useModalsStore()
 	const gameCenter = useGameCenter()
-	const { trackInfoModal, trackSettingsModal, trackStatsModal, trackHomeClick, trackBuyMeCoffee } = useAnalytics()
+	const { trackInfoModal, trackSettingsModal, trackStatsModal, trackHomeClick } = useAnalytics()
 
 	function handleHomeClick() {
 		trackHomeClick('app_header')
-	}
-
-	function handleBuyCoffee() {
-		trackBuyMeCoffee('app_header')
-		openBuyMeCoffee()
 	}
 
 	function handleSettings() {

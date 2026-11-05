@@ -4,8 +4,7 @@ import { join } from 'node:path'
 import { APP_STORE_LIVE, APP_STORE_URL } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
-// a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
-// (Apple rejects external tip links, and AdSense doesn't run in native apps).
+// a client-only SPA with no Google Analytics (the app uses AppGlance).
 const isApp = process.env.APP_TARGET === 'ios'
 // The app's look (layouts, Matchday home, tab bar, Floodlights theme), on the app and the
 // website alike. WEB_SHELL=old builds the website's previous look, as a fallback

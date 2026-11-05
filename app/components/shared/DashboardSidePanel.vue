@@ -96,21 +96,6 @@
 			</template>
 		</div>
 
-
-		<a
-			v-if="!$config.public.isApp"
-			href="https://buymeacoffee.com/dhorne92E"
-			target="_blank"
-			rel="noopener noreferrer"
-			class="side-coffee"
-			@click.prevent="$emit('buy-coffee', 'sidebar')"
-		>
-			<Icon
-				name="uil:coffee"
-				size="1rem"
-			/>
-			Buy me a <span class="accent">coffee</span>
-		</a>
 	</aside>
 </template>
 
@@ -137,7 +122,6 @@
 		},
 	)
 
-	defineEmits(['buy-coffee'])
 </script>
 
 <style scoped lang="scss">
@@ -361,30 +345,6 @@
 				&.loss {
 					background: var(--color-absent);
 				}
-			}
-		}
-
-		.side-coffee {
-			align-items: center;
-			background: var(--secondary-color);
-			border-radius: var(--global-border-radius);
-			color: var(--bg-secondary);
-			display: flex;
-			font-size: 0.85rem;
-			font-weight: 700;
-			gap: 0.5rem;
-			justify-content: center;
-			padding: 0.75rem;
-			text-decoration: none;
-			transition: all 0.2s;
-
-			.accent {
-				color: var(--tertiary-color);
-			}
-
-			&:hover {
-				box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--secondary-color) 45%, transparent);
-				transform: translateY(-2px);
 			}
 		}
 	}
