@@ -179,6 +179,9 @@
 	}
 	function handlePhysicalKey(e: KeyboardEvent) {
 		if (disabledRef.value) return
+		// Leave shortcuts (Cmd+R, Ctrl+C) and other text fields alone
+		if (e.metaKey || e.ctrlKey || e.altKey) return
+		if (e.target instanceof Element && e.target.closest('input, textarea, [contenteditable="true"]')) return
 		if (e.key === 'Enter') {
 			emit('key', 'ENTER')
 		} else if (e.key === 'Backspace') {
