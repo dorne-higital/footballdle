@@ -70,8 +70,11 @@ html.app-shell {
 	font-synthesis: none;
 	overscroll-behavior: none;
 
+	// One body font in every theme (Manrope, the Floodlights font). Body text used to fall
+	// through to the old look's Inter (assets/_typography.scss); themes only change headings
 	body {
 		background: var(--bg-primary);
+		font-family: var(--font-body);
 		overscroll-behavior: none;
 	}
 
