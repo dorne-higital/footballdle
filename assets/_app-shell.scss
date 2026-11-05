@@ -271,6 +271,15 @@ html.app-shell.app-light {
 	color-scheme: light;
 }
 
+// Static pages (About, How to play, Privacy, answers): headings in the display face, set tight.
+// Archivo Black has one weight, so no faux bold
+html.app-shell :is(.static-main, .solution-main, .answers-page) :is(h1, h2, h3) {
+	font-family: var(--font-display);
+	font-weight: 400;
+	line-height: 1.1;
+	text-wrap: balance;
+}
+
 // Page change: a short iOS-style slide
 .app-slide-enter-active,
 .app-slide-leave-active {

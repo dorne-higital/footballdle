@@ -28,7 +28,7 @@
 				<span class="puzzle-date">{{ formattedDate }}</span>
 			</div>
 
-			<h1 class="solution-heading">Footballdle Answer — {{ formattedDate }}</h1>
+			<h1 class="solution-heading">Footballdle answer: {{ shortDate }}</h1>
 
 			<div class="answer-card">
 				<span
@@ -227,6 +227,14 @@
 	const formattedDate = parsedDate.toLocaleDateString('en-GB', {
 		day: 'numeric',
 		month: 'long',
+		year: 'numeric',
+		timeZone: 'Europe/London',
+	})
+
+	// "15 Oct 2026" keeps the heading to two short lines on a phone
+	const shortDate = parsedDate.toLocaleDateString('en-GB', {
+		day: 'numeric',
+		month: 'short',
 		year: 'numeric',
 		timeZone: 'Europe/London',
 	})
