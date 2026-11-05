@@ -165,6 +165,26 @@ If you created the provisioning profile **before** ticking Game Center on the Bu
 
 ---
 
+## Shop copy from RevenueCat (1.3)
+
+The hint shop and the Pro sheet read the current RevenueCat Offering's metadata, so a sale
+banner or a "Best value" tag can change without an app update (`app/utils/offering.ts`).
+Products still load by ID, so this is optional: with no Offering the shop looks as before.
+
+1. RevenueCat › Product catalog › Offerings › make one called `default` and mark it Current.
+   Add the products as packages (Pro as a Lifetime package; the hint packs as custom ones).
+2. On the Offering, open Metadata and paste JSON like:
+
+   ```json
+   { "banner": "Weekend sale: Pro £6.99", "badges": { "fh15": "Best value" } }
+   ```
+
+   `banner` (80 characters at most) shows at the top of the hint shop and the Pro sheet.
+   `badges` tags a product by its App Store product ID (20 characters at most), unless that
+   product's sale label is showing. Leave `banner` out when there's no sale.
+3. RevenueCat › Charts is the revenue dashboard: revenue, conversion to paying, and sales
+   by product. Check it weekly.
+
 ## "Do I need a database?"
 
 **No.** Not for the current plan:

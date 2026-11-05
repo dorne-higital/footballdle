@@ -117,10 +117,12 @@
 </template>
 
 <script setup lang="ts">
-	import { watch } from 'vue'
+	import { defineAsyncComponent, watch } from 'vue'
 	import { track } from '../../utils/appGlance'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { useSale } from '../../composables/useSale'
+
+	const PitchCardModal = defineAsyncComponent(() => import('../shared/PitchCardModal.vue'))
 
 	// One place that says what Pro includes (1.3, plan M1). Opened from the hint shop's Pro
 	// row, Settings and the Theme Library, so Pro is described the same way everywhere.
@@ -207,7 +209,7 @@
 		}
 	}
 
-	.perk-icon {
+	.perks :deep(.perk-icon) {
 		color: var(--primary-color);
 		margin-top: 0.1rem;
 	}
