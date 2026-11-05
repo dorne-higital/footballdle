@@ -1,6 +1,6 @@
 :root {
-	--font-display: 'Jost', 'Futura', 'Century Gothic', 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
-	--font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--font-display: 'Jost', 'Jost Fallback: Arial', 'Futura', 'Century Gothic', 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+	--font-body: 'Inter', 'Inter Fallback: Arial', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	--font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
 
 	--text-primary: #182019;
@@ -230,6 +230,3 @@ select {
 	touch-action: manipulation;
 }
 
-#bmc-wbtn {
-	display: none !important;
-}

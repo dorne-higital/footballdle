@@ -8,11 +8,32 @@
 			{{ summary }}
 		</p>
 		<p
-			v-if="countdown"
+			v-if="countdown && isApp"
 			class="ft-next"
 		>
 			New puzzles in <strong>{{ countdown }}</strong>
 		</p>
+		<!-- Website: most players come from search on a computer, so ask them back by name and
+		     offer the bookmark shortcut (search plan M4, 'come back tomorrow' only) -->
+		<div
+			v-else-if="countdown"
+			class="ft-tomorrow"
+		>
+			<p class="ft-tomorrow-title">Come back tomorrow</p>
+			<p class="ft-next">
+				New puzzles in <strong>{{ countdown }}</strong>, the same for everyone.
+			</p>
+			<p
+				v-if="bookmarkKeys"
+				class="ft-bookmark"
+			>
+				<Icon
+					name="solar:bookmark-linear"
+					size="0.95rem"
+				/>
+				Press <kbd>{{ bookmarkKeys }}</kbd> to bookmark Footballdle
+			</p>
+		</div>
 		<!-- Share first: every share carries the footballdle.co.uk/app link -->
 		<button
 			type="button"
@@ -136,6 +157,14 @@
 	const emit = defineEmits<{ result: []; shared: [] }>()
 
 	const isApp = !!useRuntimeConfig().public.isApp
+
+	// Website on a computer (mouse or trackpad): the bookmark shortcut for this keyboard. Set
+	// after mount so the server's HTML and the first paint agree
+	const bookmarkKeys = ref('')
+	onMounted(() => {
+		if (isApp || !window.matchMedia?.('(pointer: fine)').matches) return
+		bookmarkKeys.value = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) ? '⌘ D' : 'Ctrl + D'
+	})
 
 	// Daily reminder offer: at the REMINDER_HOURS slot nearest to when they're playing now
 	const reminders = useRemindersStore()
@@ -289,6 +318,44 @@
 		strong {
 			color: var(--text-primary);
 			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	.ft-tomorrow {
+		background: color-mix(in srgb, var(--primary-color) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--primary-color) 22%, transparent);
+		border-radius: var(--global-border-radius);
+		display: grid;
+		gap: 0.3rem;
+		padding: 0.75rem 1rem;
+		text-align: center;
+
+		.ft-tomorrow-title {
+			color: var(--text-primary);
+			font-family: var(--font-display);
+			font-size: 1.05rem;
+			margin: 0;
+		}
+
+		.ft-bookmark {
+			align-items: center;
+			color: var(--text-secondary);
+			display: inline-flex;
+			font-size: 0.8rem;
+			gap: 0.35rem;
+			justify-content: center;
+			margin: 0.15rem 0 0;
+		}
+
+		kbd {
+			background: var(--bg-primary);
+			border: 1px solid var(--border);
+			border-radius: 6px;
+			color: var(--text-primary);
+			font-family: inherit;
+			font-size: 0.75rem;
+			font-weight: 700;
+			padding: 0.1rem 0.4rem;
 		}
 	}
 

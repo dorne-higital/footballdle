@@ -57,6 +57,7 @@
 
 	.seo-title {
 		color: var(--text-primary);
+		font-family: var(--font-body);
 		font-size: 1rem;
 		font-weight: 800;
 		line-height: 1.3;

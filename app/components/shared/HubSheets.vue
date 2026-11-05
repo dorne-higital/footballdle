@@ -9,7 +9,7 @@
 			@close="modalsStore.closeSettings"
 		>
 			<template #body>
-				<ThemePickerSettings @buy-coffee="handleBuyMeCoffee" />
+				<ThemePickerSettings />
 			</template>
 		</PitchCardModal>
 
@@ -31,7 +31,6 @@
 <script setup lang="ts">
 	import { defineAsyncComponent } from 'vue'
 	import { useModalsStore } from '../../stores/modals'
-	import { useAnalytics } from '../../composables/useAnalytics'
 	import ThemePickerSettings from './ThemePickerSettings.vue'
 	import MatchdayStats from './MatchdayStats.vue'
 
@@ -40,13 +39,6 @@
 	const PitchCardModal = defineAsyncComponent(() => import('./PitchCardModal.vue'))
 
 	const modalsStore = useModalsStore()
-	const { trackBuyMeCoffee } = useAnalytics()
-
-	function handleBuyMeCoffee(location: string) {
-		trackBuyMeCoffee(location)
-		const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
-		btn?.click()
-	}
 </script>
 
 <style scoped lang="scss">

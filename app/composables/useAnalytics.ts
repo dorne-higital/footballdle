@@ -148,15 +148,6 @@ export const useAnalytics = () => {
 		}
 	}
 
-	const trackBuyMeCoffee = (location: string) => {
-		if (import.meta.client) {
-			event('buy_me_coffee_click', {
-				event_category: 'monetisation',
-				event_label: location,
-			})
-		}
-	}
-
 	/** footballdle.co.uk/app: an iPhone sent to the App Store, or the App Store button tapped */
 	const trackGetApp = (action: 'redirect' | 'store_click') => {
 		if (import.meta.client) {
@@ -181,6 +172,5 @@ export const useAnalytics = () => {
 		trackStatsModal,
 		trackHomeClick,
 		trackSessionTime,
-		trackBuyMeCoffee,
 	}
 }

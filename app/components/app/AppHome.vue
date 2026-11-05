@@ -540,6 +540,16 @@
 		display: flex;
 		gap: 0.5rem;
 	}
+	// Website on a phone: the pills always take their own line. With the real heading font
+	// they wrap there anyway, but the narrower stand-in font fitted them beside the title
+	// first, so the whole page jumped down when Archivo Black arrived (layout shift, search
+	// plan L3). The app bundles its fonts, so it never jumps
+	@media (width < 440px) {
+		:global(html.app-web .header-pills) {
+			flex-basis: 100%;
+		}
+	}
+
 
 
 

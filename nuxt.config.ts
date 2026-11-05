@@ -4,8 +4,7 @@ import { join } from 'node:path'
 import { APP_STORE_LIVE, APP_STORE_URL } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
-// a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
-// (Apple rejects external tip links, and AdSense doesn't run in native apps).
+// a client-only SPA with no Google Analytics (the app uses AppGlance).
 const isApp = process.env.APP_TARGET === 'ios'
 // The app's look (layouts, Matchday home, tab bar, Floodlights theme), on the app and the
 // website alike. WEB_SHELL=old builds the website's previous look, as a fallback
@@ -56,20 +55,28 @@ export default defineNuxtConfig({
 	},
 
 	fonts: {
+		// Fontsource, not the Google provider: the same Google fonts, but only as woff2 split
+		// by unicode-range. The Google provider also adds a full .woff copy of every face (for
+		// very old Safari), declared last, so browsers downloaded those (2 x 137 KB of Inter on
+		// every page; search plan L3)
 		families: [
-			{ name: 'Jost', provider: 'google', weights: [500, 600, 700, 800], display: 'swap', preload: true },
-			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
-			// iOS app "Floodlights" look (assets/_app-shell.scss)
-			{ name: 'Archivo Black', provider: 'google', weights: [400], display: 'swap' },
-			{ name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800], display: 'swap' },
+			{ name: 'Jost', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
+			// The old look's body font; now only the share-card images (utils/shareCard.ts) use it
+			{ name: 'Inter', provider: 'fontsource', weights: [200, 400, 500, 700], display: 'swap' },
+			// iOS app "Floodlights" look (assets/_app-shell.scss). Archivo Black is preloaded:
+			// it sets the big headings, the largest text on most screens
+			{ name: 'Archivo Black', provider: 'fontsource', weights: [400], display: 'swap', preload: true },
+			{ name: 'Manrope', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
 			// Theme Library headings (utils/themes.ts). Only set from script, so declared
 			// globally to be bundled; each file loads only when its theme is on
-			{ name: 'Bungee', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Permanent Marker', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Abril Fatface', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Alfa Slab One', provider: 'google', weights: [400], display: 'swap', global: true },
+			{ name: 'Bungee', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Permanent Marker', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Abril Fatface', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Alfa Slab One', provider: 'fontsource', weights: [400], display: 'swap', global: true },
 		],
 		defaults: {
+			// English, plus accented names (latin-ext); italics stay (only fetched where used)
+			subsets: ['latin', 'latin-ext'],
 			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },
 		},
 	},
@@ -196,18 +203,6 @@ export default defineNuxtConfig({
 				// on an earlier visit (useAnalyticsConsent.ts keeps the choice)
 				{
 					innerHTML: analyticsBootScript,
-				},
-				{
-					src: 'https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js',
-					'data-name': 'BMC-Widget',
-					'data-cfasync': 'false',
-					'data-id': 'dhorne92E',
-					'data-description': 'Support me on Buy me a coffee!',
-					'data-color': '#FF5F5F',
-					'data-position': 'Right',
-					'data-x_margin': '18',
-					'data-y_margin': '18',
-					defer: true,
 				},
 			],
 		},

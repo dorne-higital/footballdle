@@ -90,8 +90,7 @@
 			<p>
 				Footballdle was built and is maintained by Dan, a developer and football fan based in the UK. It
 				started as a personal project and remains one — there's no team, no VC funding, and no grand
-				monetisation plan. The site is supported by the occasional coffee, and the iPhone app by optional
-				hints, Pro and the tip jar. All of it is genuinely appreciated and helps cover hosting costs.
+				monetisation plan. The iPhone app is supported by optional hints, Pro and the tip jar. All of it is genuinely appreciated and helps cover hosting costs.
 			</p>
 			<p>
 				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer" title="Nuxt.js framework">Nuxt</a>
