@@ -86,19 +86,24 @@
 				genuinely gets better every time someone flags something.
 			</p>
 
-			<h2>Who made it</h2>
+			<h2>Where it came from</h2>
 			<p>
-				Footballdle was built and is maintained by Dan, a developer and football fan based in the UK. It
-				started as a personal project and remains one — there's no team, no VC funding, and no grand
-				monetisation plan. The iPhone app is supported by optional hints, Pro and the tip jar. All of it is genuinely appreciated and helps cover hosting costs.
+				Footballdle started as a side project for fans who wanted a daily football puzzle, and it still runs
+				the same way: no ads, no accounts, no investors.
+			</p>
+			<p>
+				The iPhone app's optional hints, Pro and tip jar keep it going, and the player list is refreshed
+				every week of the season.
 			</p>
 			<p>
 				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer" title="Nuxt.js framework">Nuxt</a>
 				and <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer" title="Vue.js framework">Vue</a>, deployed on
-				<a href="https://vercel.com" target="_blank" rel="noopener noreferrer" title="Vercel hosting">Vercel</a>. Player data
-				comes from the
+				<a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer" title="Netlify hosting">Netlify</a>. The player
+				list comes from the official
+				<a href="https://fantasy.premierleague.com" target="_blank" rel="noopener noreferrer" title="Fantasy Premier League">Fantasy Premier League</a>
+				data and the
 				<a href="https://www.football-data.org" target="_blank" rel="noopener noreferrer" title="football-data.org API">football-data.org</a>
-				API.
+				API, refreshed every week.
 			</p>
 
 			<h2>Inspiration and credit</h2>
