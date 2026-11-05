@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted, ref } from 'vue'
+	import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 	import { useRemindersStore } from '../../stores/reminders'
 	import MatchdayRingIcon from '../shared/MatchdayRingIcon.vue'
 	import { usePurchasesStore } from '../../stores/purchases'
@@ -104,7 +104,8 @@
 		},
 	]
 
-	const open = ref(false)
+	// Shared so the website's consent bar waits until the welcome is closed
+	const open = useState('welcome-open', () => false)
 	const step = ref(0)
 	const current = computed(() => STEPS[step.value]!)
 	const isLast = computed(() => step.value === STEPS.length - 1)
@@ -129,6 +130,9 @@
 		}
 		reminders.load()
 		open.value = true
+	})
+	onBeforeUnmount(() => {
+		open.value = false
 	})
 
 	async function remind() {

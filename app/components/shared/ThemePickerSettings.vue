@@ -321,9 +321,10 @@
 					</button>
 				</div>
 
-				<h3 class="group-label">More</h3>
-				<div class="menu-list">
-					<template v-if="$config.public.isApp">
+				<!-- Purchases and the Tip Jar are app-only; the website has no More rows -->
+				<template v-if="$config.public.isApp">
+					<h3 class="group-label">More</h3>
+					<div class="menu-list">
 						<button
 							type="button"
 							class="menu-row"
@@ -357,8 +358,8 @@
 								class="chevron"
 							/>
 						</button>
-					</template>
-				</div>
+					</div>
+				</template>
 
 				<h3 class="group-label">Help</h3>
 				<div :class="['help-tiles', { pairs: helpTiles.length % 3 !== 0 }]">
