@@ -61,13 +61,14 @@
 </template>
 
 <script setup lang="ts">
-	import { computed } from 'vue'
+	import { computed, onMounted, ref } from 'vue'
 	import HintPill from './HintPill.vue'
 	import HintUseButton from './HintUseButton.vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import { useModalsStore } from '../../stores/modals'
 	import { useHaptics } from '../../composables/useHaptics'
 	import { tabFor } from '../../utils/appTabs'
+	import { getUKDateString, wasYesterday } from '../../utils/dateStreak'
 
 	const TITLES: Record<string, string> = {
 		'/play/daily': 'Daily',
@@ -95,6 +96,24 @@
 		() => route.path.startsWith('/play/scout-report') && !scout.showIntro && scout.canPurchaseHint,
 	)
 
+	// Answer pages are prerendered, so "today" is only known once the page is running
+	const ukToday = ref('')
+	onMounted(() => (ukToday.value = getUKDateString()))
+
+	// "Yesterday's answer" only when it is; any other day shows its date
+	function answerTitle(path: string): string {
+		const [y, m, d] = (path.split('/')[2] ?? '').split('-').map(Number)
+		if (!y || !m || !d) return 'Answer'
+		const dateStr = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`
+		if (ukToday.value && wasYesterday(dateStr, ukToday.value)) return "Yesterday's answer"
+		const day = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
+			day: 'numeric',
+			month: 'short',
+			timeZone: 'UTC',
+		})
+		return `Answer · ${day}`
+	}
+
 	const title = computed(() => {
 		const path = route.path.replace(/\/+$/, '') || '/'
 		if (path.startsWith('/cards/replay')) return 'Replay'
@@ -102,7 +121,7 @@
 		if (path.startsWith('/archive')) return 'Archive'
 		// "Scout Report" won't fit beside the joined hint control on a 375pt screen
 		if (offersHint.value) return 'Scout'
-		return path.startsWith('/solution') ? "Yesterday's answer" : (TITLES[path] ?? 'Footballdle')
+		return path.startsWith('/solution') ? answerTitle(path) : (TITLES[path] ?? 'Footballdle')
 	})
 
 	// Games that use the shared hint bank
