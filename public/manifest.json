@@ -1,11 +1,11 @@
 {
 	"name": "Footballdle",
 	"short_name": "Footballdle",
-	"description": "Daily Premier League footballer guessing game. Guess the surname in 6 tries.",
+	"description": "Free daily Premier League football games: guess the footballer, Scout Report, Spot the Baller and the weekly Grid.",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#f8fafc",
-	"theme_color": "#dc2626",
+	"background_color": "#07130d",
+	"theme_color": "#07130d",
 	"orientation": "portrait",
 	"icons": [
 		{

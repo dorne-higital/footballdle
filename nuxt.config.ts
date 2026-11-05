@@ -138,7 +138,7 @@ export default defineNuxtConfig({
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
 			meta: [
-				{ name: 'theme-color', content: '#dc2626' },
+				{ name: 'theme-color', content: '#07130d' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
