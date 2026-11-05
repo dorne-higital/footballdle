@@ -106,7 +106,7 @@ App Store Connect → In-App Purchases → each one → App Store Localization. 
 | Product | Display name | Description |
 |---|---|---|
 | footballdle_pro | Footballdle Pro | Unlimited hints, every theme and the archive |
-| footballdle_hint_1 | 1 Hint | One hint for any game mode |
+| footballdle_hint_1 | 1 Hint | One hint for the Daily, Scout Report or Grid |
 | footballdle_hint_5 | 5 Hints | Five hints to use whenever you like |
 | footballdle_hint_15 | 15 Hints | Fifteen hints to use whenever you like |
 
@@ -117,12 +117,16 @@ purchase"), so their names and prices show on the listing. Images (1024 × 1024)
 
 App Information → Localizable information → add English (U.S.). Name and description as above.
 
+Not added yet: App Store Connect refuses the name "Footballdle" for English (U.S.) because
+another developer's app already uses it there. It needs a different U.S. name (for example
+`Footballdle: Daily Soccer Quiz`), or skip the U.S. localisation (U.S. users then see English (U.K.)).
+
 - Subtitle (29): `Guess the soccer player daily`
 - Keywords (96): `sports,athlete,striker,goalkeeper,defender,midfielder,team,transfer,fantasy,brain,guesser,riddle`
 
 ## App preview (1.3)
 
-`preview/app-preview-6.9.mp4`: 886 × 1920, under 30 seconds, real play only (a Daily won, the Grid
+`preview/app-preview-6.9.mp4`: 886 × 1920, under 30 seconds, constant 30fps (App Store Connect rejects a variable frame rate), real play only (a Daily won, the Grid
 filling, a round of Spot the Baller). Upload it in the iPhone 6.9" slot, before the screenshots.
 
 ## Custom Product Pages (1.3, K10)
