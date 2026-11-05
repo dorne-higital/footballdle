@@ -170,7 +170,8 @@
 	// Worked out on the device, since the website's HTML is rendered elsewhere.
 	const resetTime = ref('midnight UK')
 	onMounted(() => (resetTime.value = nextPuzzleTimeLabel()))
-	const kickoffLabel = computed(() => `${puzzleNumber ? `No. ${puzzleNumber} · ` : ''}New puzzle at ${resetTime.value}`)
+	// Short enough to sit beside the chip on a 375pt screen; wraps under it if it can't
+	const kickoffLabel = computed(() => `${puzzleNumber ? `#${puzzleNumber} · ` : ''}New at ${resetTime.value}`)
 
 	defineEmits(['start-game', 'show-result'])
 </script>
@@ -223,10 +224,11 @@
 			.eyebrow-row {
 				align-items: baseline;
 				display: flex;
+				flex-wrap: wrap;
 				gap: 0.5rem;
 				justify-content: space-between;
 				margin-bottom: 0.4rem;
-				white-space: nowrap;
+				row-gap: 0.35rem;
 
 				.eyebrow {
 					background: color-mix(in srgb, var(--primary-color) 14%, transparent);
@@ -238,6 +240,7 @@
 					letter-spacing: 0.14em;
 					padding: 0.25rem 0.6rem;
 					text-transform: uppercase;
+					white-space: nowrap;
 				}
 
 				.match-no {
