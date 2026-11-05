@@ -77,6 +77,9 @@ export default defineNuxtConfig({
 	// Pre-render the sitemap so it works on static deployments too
 	routeRules: {
 		'/sitemap.xml': { prerender: true },
+		// The old World Cup page (gone, but still in Google with 181 impressions): send it home
+		'/worldcup': { redirect: { to: '/', statusCode: 301 } },
+		'/worldcup/': { redirect: { to: '/', statusCode: 301 } },
 	},
 
 	hooks: {
