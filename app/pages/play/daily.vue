@@ -329,7 +329,7 @@
 	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
-	import { useModeStatsStore } from '../../stores/modeStats'
+	import { SKIP_INTRO_AFTER, useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
@@ -565,7 +565,9 @@
 			navigateTo('/play/grid', { replace: true })
 			return
 		}
-		if (gameStore.showIntro && start === 'play' && gameStore.canPlay) handleStartGame()
+		// Regulars skip the intro however they arrive; new players still get it
+		const knowsGame = statsStore.stats.gamesPlayed >= SKIP_INTRO_AFTER
+		if (gameStore.showIntro && (start === 'play' || knowsGame) && gameStore.canPlay) handleStartGame()
 		// iOS app: a finished Daily opens on its board (no web intro), with the result
 		// sheet straight away when coming from the Matchday "See result" card
 		if (isAppBuild && gameStore.gameOver) {

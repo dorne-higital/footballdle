@@ -171,7 +171,7 @@
 	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
-	import { useModeStatsStore } from '../../stores/modeStats'
+	import { SKIP_INTRO_AFTER, useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
@@ -313,7 +313,9 @@
 		// iOS app: the Matchday home links straight into play, skipping the intro screen,
 		// and a finished game opens on its board (result sheet too from "See result")
 		const start = useRoute().query.start
-		if (start === 'play' && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
+		// Regulars skip the intro however they arrive; new players still get it
+		const knowsGame = statsStore.stats.gamesPlayed >= SKIP_INTRO_AFTER
+		if ((start === 'play' || knowsGame) && scoutStore.showIntro && !scoutStore.gameOver) handleStartGame()
 		if (useRuntimeConfig().public.appShell && scoutStore.gameOver) {
 			scoutStore.showIntro = false
 			if (start === 'result') scoutStore.showGameOverModal = true
