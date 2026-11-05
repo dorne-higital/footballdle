@@ -111,8 +111,9 @@ const MODE: Record<CardMode, { name: string; colour: string }> = {
 	spot: { name: 'Spot the Baller', colour: '#b49bff' },
 	grid: { name: 'The Grid', colour: '#f47fd2' },
 }
-const HEAD = "Jost, Futura, 'Avenir Next', sans-serif"
-const BODY = "Inter, -apple-system, 'Helvetica Neue', sans-serif"
+// The app's own faces (_app-shell.scss). Archivo Black has a single weight, so HEAD is always 400
+const HEAD = "'Archivo Black', 'Arial Black', Impact, sans-serif"
+const BODY = "Manrope, -apple-system, 'Helvetica Neue', sans-serif"
 
 function tileColours(hc: boolean) {
 	return hc ? { g: '#f5793a', a: '#85c0f9', x: C.absent, hit: '#f5793a', miss: '#4a5550' } : { g: C.green, a: C.amber, x: C.absent, hit: C.green, miss: C.miss }
@@ -192,13 +193,13 @@ function drawBrand(ctx: CanvasRenderingContext2D, x: number, y: number, right: s
 	ctx.arc(x + 46, y + 46, 41, 0, Math.PI * 2)
 	ctx.stroke()
 	ctx.fillStyle = C.green
-	ctx.font = `800 52px ${HEAD}`
+	ctx.font = `400 52px ${HEAD}`
 	ctx.textAlign = 'center'
 	ctx.textBaseline = 'middle'
 	ctx.fillText('F', x + 46, y + 49)
 	ctx.fillStyle = C.text
 	ctx.textAlign = 'left'
-	ctx.font = `700 58px ${HEAD}`
+	ctx.font = `400 58px ${HEAD}`
 	ctx.fillText('Footballdle', x + 118, y + 48)
 	ctx.fillStyle = C.text2
 	ctx.textAlign = 'right'
@@ -224,12 +225,12 @@ function drawScore(ctx: CanvasRenderingContext2D, score: string, x: number, y: n
 	const [main = score, rest] = score.split('/')
 	ctx.textBaseline = 'alphabetic'
 	ctx.fillStyle = C.text
-	ctx.font = `800 ${size}px ${HEAD}`
+	ctx.font = `400 ${size}px ${HEAD}`
 	ctx.fillText(main, x, y)
 	if (rest !== undefined) {
 		const w = ctx.measureText(main).width
 		ctx.fillStyle = C.text2
-		ctx.font = `600 ${size * 0.5}px ${HEAD}`
+		ctx.font = `400 ${size * 0.5}px ${HEAD}`
 		ctx.fillText(`/${rest}`, x + w + size * 0.04, y)
 	}
 }
@@ -313,7 +314,7 @@ function drawMatchday(ctx: CanvasRenderingContext2D, d: ShareCardData) {
 	ctx.fillText(`MATCHDAY${d.number ? ` ${d.number}` : ''}`, X, 330)
 	ctx.letterSpacing = '0px'
 	ctx.fillStyle = C.text
-	ctx.font = `800 108px ${HEAD}`
+	ctx.font = `400 108px ${HEAD}`
 	ctx.fillText('All three done', X - 4, 438)
 
 	// Each game's panel: label and score on the left, its board on the right. Tiles shrink
@@ -363,7 +364,7 @@ function drawMatchday(ctx: CanvasRenderingContext2D, d: ShareCardData) {
 		ctx.arc(X + 60, y + 60, 53, 0, Math.PI * 2)
 		ctx.stroke()
 		ctx.fillStyle = C.text
-		ctx.font = `800 50px ${HEAD}`
+		ctx.font = `400 50px ${HEAD}`
 		ctx.textAlign = 'center'
 		ctx.textBaseline = 'middle'
 		ctx.fillText(String(d.streak), X + 60, y + 63)
@@ -376,10 +377,11 @@ function drawMatchday(ctx: CanvasRenderingContext2D, d: ShareCardData) {
 	}
 
 	ctx.fillStyle = C.text
-	ctx.font = `700 52px ${HEAD}`
+	// Archivo Black runs wide: 44px keeps the line inside the margins
+	ctx.font = `400 44px ${HEAD}`
 	ctx.textAlign = 'center'
 	ctx.textBaseline = 'alphabetic'
-	ctx.fillText('Think you know your footballers?', W / 2, 1512)
+	ctx.fillText('Think you know your footballers?', W / 2, 1516)
 	ctx.textAlign = 'left'
 	// Clear of Instagram's reply bar along the bottom
 	drawStorePill(ctx, 'footballdle.co.uk/app · Free on the App Store', X, 1546, 100, false, CW)
@@ -392,7 +394,7 @@ export async function drawShareCard(text: string): Promise<string | null> {
 	if (!data || typeof document === 'undefined') return null
 	try {
 		await Promise.race([
-			Promise.all([`800 100px Jost`, `700 50px Jost`, `700 40px Inter`, `500 40px Inter`].map(f => document.fonts.load(f))),
+			Promise.all([`400 100px 'Archivo Black'`, `800 40px Manrope`, `700 40px Manrope`, `600 40px Manrope`, `500 40px Manrope`].map(f => document.fonts.load(f))),
 			new Promise(r => setTimeout(r, 1500)),
 		])
 	} catch {}

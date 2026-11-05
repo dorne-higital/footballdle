@@ -61,7 +61,7 @@ export default defineNuxtConfig({
 		// every page; search plan L3)
 		families: [
 			{ name: 'Jost', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
-			// The old look's body font; now only the share-card images (utils/shareCard.ts) use it
+			// The old look's body font (_theme.scss); the share cards now use Manrope
 			{ name: 'Inter', provider: 'fontsource', weights: [200, 400, 500, 700], display: 'swap' },
 			// iOS app "Floodlights" look (assets/_app-shell.scss). Archivo Black is preloaded:
 			// it sets the big headings, the largest text on most screens
