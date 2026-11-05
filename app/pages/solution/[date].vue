@@ -30,6 +30,21 @@
 
 			<h1 class="solution-heading">Footballdle answer: {{ shortDate }}</h1>
 
+			<!-- Search visitors who haven't played this day: offer the game first. The answer
+				 below is never hidden. Worked out on the device, so the page itself stays the same -->
+			<div
+				v-if="peek"
+				class="peek"
+			>
+				<p><strong>Not played it yet?</strong> Have a go before you peek.</p>
+				<NuxtLink
+					:to="peek.to"
+					class="peek-btn"
+					@click="useAnalytics().trackAnswerPagePlay(peek.access)"
+					>{{ peek.cta }}</NuxtLink
+				>
+			</div>
+
 			<div class="answer-card">
 				<span
 					v-for="(letter, i) in answer.toUpperCase().split('')"
@@ -173,12 +188,29 @@
 </template>
 
 <script setup lang="ts">
+	import { onMounted, ref } from 'vue'
 	import { pageUrl } from '../../utils/siteUrl'
+	import { useArchiveStore } from '../../stores/archive'
+	import { useAnalytics } from '../../composables/useAnalytics'
 	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
 
 	const route = useRoute()
 	const dateParam = route.params.date as string
+
+	// "Play it before you peek": recent days open with a hint, older ones are Pro, which
+	// only the app sells, so the website sends those to the app page
+	const peek = ref<{ to: string; cta: string; access: string } | null>(null)
+	onMounted(() => {
+		const archive = useArchiveStore()
+		archive.load()
+		const d = archive.day(dateParam)
+		if (!d || d.game) return
+		if (d.access === 'open') peek.value = { to: `/archive/${d.iso}`, cta: 'Play it', access: d.access }
+		else if (d.access === 'hint') peek.value = { to: `/archive/${d.iso}`, cta: 'Play it · 1 hint', access: d.access }
+		else if (useRuntimeConfig().public.isApp) peek.value = { to: `/archive/${d.iso}`, cta: 'Play it with Pro', access: d.access }
+		else peek.value = { to: '/app', cta: 'Every past puzzle is in the app', access: d.access }
+	})
 
 	function parseISO(str: string): Date | null {
 		const match = str.match(/^(\d{4})-(\d{2})-(\d{2})$/)
@@ -408,6 +440,44 @@
 		line-height: 1.6;
 		margin-bottom: 1.5rem;
 		text-align: left;
+	}
+
+	.peek {
+		align-items: center;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border);
+		border-radius: var(--global-border-radius);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem 1rem;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+		padding: 0.75rem 1rem;
+		text-align: left;
+
+		p {
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			margin: 0;
+
+			strong {
+				color: var(--text-primary);
+			}
+		}
+	}
+
+	.peek-btn {
+		align-items: center;
+		background: var(--primary-color);
+		border-radius: 999px;
+		color: var(--on-primary);
+		display: inline-flex;
+		font-size: 0.88rem;
+		font-weight: 800;
+		min-height: 2.75rem;
+		padding: 0 1.1rem;
+		text-decoration: none;
+		white-space: nowrap;
 	}
 
 	.answer-card {

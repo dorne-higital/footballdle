@@ -155,7 +155,15 @@ export const useAnalytics = () => {
 		}
 	}
 
+	/** An answer page's "Play it before you peek" button: access is open, hint or pro */
+	const trackAnswerPagePlay = (access: string) => {
+		if (import.meta.client) {
+			event('answer_page_play', { event_category: 'engagement', event_label: access })
+		}
+	}
+
 	return {
+		trackAnswerPagePlay,
 		trackGetApp,
 		trackGameStart,
 		trackGameWin,
