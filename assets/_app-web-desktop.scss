@@ -43,16 +43,15 @@ $rail: 15.5rem;
 			align-items: start;
 			display: grid;
 			gap: 1.25rem;
+			// The Daily card runs the full height of the right column (rings, The Grid, the fact),
+			// with the countdown in its footer, so neither column leaves a gap
 			grid-template-areas:
 				'head head'
 				'daily rings'
 				'daily challenge'
-				'modes fact'
-				'kick fact';
+				'daily fact';
 			grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-			// The flexible third row soaks up the Daily card's extra height, so the rings and
-			// Challenge sit together at the top of the right column
-			grid-template-rows: auto auto 1fr auto auto;
+			grid-template-rows: auto auto auto 1fr;
 			max-width: 70rem;
 			padding: 1.5rem 1rem 3rem;
 		}
@@ -71,9 +70,17 @@ $rail: 15.5rem;
 			display: none;
 		}
 
+		// Stretched to the right column's height, with its content centred above the footer
 		.daily-hero {
+			align-self: stretch;
 			grid-area: daily;
+			justify-content: center;
 			min-height: 18rem;
+		}
+
+		// Room at the bottom of the card for the countdown footer
+		.app-home:has(.kickoff) .daily-hero {
+			padding-bottom: 4.5rem;
 		}
 
 		.rings-card {
@@ -84,17 +91,20 @@ $rail: 15.5rem;
 			grid-area: challenge;
 		}
 
-		.mode-grid {
-			grid-area: modes;
-		}
-
 		.fact-card {
 			align-self: stretch;
 			grid-area: fact;
 		}
 
+		// Sits in the Daily card's footer, above its bottom edge
 		.kickoff {
-			grid-area: kick;
+			align-self: end;
+			border-top: 1px solid var(--border);
+			grid-area: daily;
+			margin: 0 1.3rem 1.1rem;
+			padding: 0.85rem 0 0;
+			pointer-events: none;
+			position: relative;
 		}
 
 		// Tab screens: wider columns, and grids for the long lists
