@@ -98,10 +98,12 @@
 			<p>
 				The game is built with <a href="https://nuxt.com" target="_blank" rel="noopener noreferrer" title="Nuxt.js framework">Nuxt</a>
 				and <a href="https://vuejs.org" target="_blank" rel="noopener noreferrer" title="Vue.js framework">Vue</a>, deployed on
-				<a href="https://vercel.com" target="_blank" rel="noopener noreferrer" title="Vercel hosting">Vercel</a>. Player data
-				comes from the
+				<a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer" title="Netlify hosting">Netlify</a>. The player
+				list comes from the official
+				<a href="https://fantasy.premierleague.com" target="_blank" rel="noopener noreferrer" title="Fantasy Premier League">Fantasy Premier League</a>
+				data and the
 				<a href="https://www.football-data.org" target="_blank" rel="noopener noreferrer" title="football-data.org API">football-data.org</a>
-				API.
+				API, refreshed every week.
 			</p>
 
 			<h2>Inspiration and credit</h2>
