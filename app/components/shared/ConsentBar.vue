@@ -44,20 +44,24 @@
 </script>
 
 <style scoped lang="scss">
+	// White in every theme so it stands out against the dark game (Dan, 5 Nov): a plain
+	// card with a soft shadow, and the deeper Floodlights green for Accept
 	.consent-bar {
 		align-items: center;
-		background: var(--bg-secondary);
-		border: 1px solid var(--border);
+		background: #fff;
+		border: 0;
 		border-radius: var(--global-border-radius);
 		bottom: calc(0.75rem + env(safe-area-inset-bottom));
-		box-shadow: 0 8px 30px rgb(0 0 0 / 25%);
-		color: var(--text-primary);
+		box-shadow:
+			0 2px 6px rgb(0 0 0 / 20%),
+			0 18px 50px rgb(0 0 0 / 50%);
+		color: #10231a;
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem 1rem;
 		left: 50%;
 		max-width: min(40rem, calc(100% - 1.5rem));
-		padding: 0.85rem 1rem;
+		padding: 1rem 1.1rem;
 		position: fixed;
 		transform: translateX(-50%);
 		width: 100%;
@@ -65,15 +69,16 @@
 	}
 
 	.consent-text {
-		color: var(--text-secondary);
+		color: #2c3d34;
 		flex: 1 1 18rem;
-		font-size: 0.85rem;
+		font-size: 0.9rem;
+		font-weight: 500;
 		line-height: 1.5;
 		margin: 0;
 
 		a {
-			color: var(--primary-color);
-			font-weight: 600;
+			color: #0f7a45;
+			font-weight: 700;
 		}
 	}
 
@@ -85,24 +90,24 @@
 	}
 
 	.consent-btn {
-		background: transparent;
-		border: 1px solid var(--border);
+		background: #fff;
+		border: 1.5px solid #c9d6ce;
 		border-radius: 999px;
-		color: var(--text-primary);
+		color: #10231a;
 		cursor: pointer;
 		font: inherit;
-		font-size: 0.85rem;
-		font-weight: 700;
-		padding: 0.5rem 1rem;
+		font-size: 0.9rem;
+		font-weight: 800;
+		padding: 0.5rem 1.1rem;
 
 		&.primary {
-			background: var(--primary-color);
-			border-color: var(--primary-color);
-			color: var(--on-primary);
+			background: #128d53;
+			border-color: #128d53;
+			color: #fff;
 		}
 
 		&:focus-visible {
-			outline: 2px solid var(--primary-color);
+			outline: 3px solid #0f7a45;
 			outline-offset: 2px;
 		}
 	}
