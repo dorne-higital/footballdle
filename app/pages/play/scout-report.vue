@@ -186,6 +186,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent, watch } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
@@ -212,7 +213,7 @@
 
 	useHead({
 		title: 'Scout Report | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/scout-report' }],
+		link: [{ rel: 'canonical', href: pageUrl('/play/scout-report') }],
 		meta: [
 			{
 				name: 'description',
@@ -226,7 +227,7 @@
 				property: 'og:description',
 				content: 'Guess any Premier League player from attribute clues — club, nationality, position.',
 			},
-			{ property: 'og:url', content: 'https://footballdle.co.uk/play/scout-report' },
+			{ property: 'og:url', content: pageUrl('/play/scout-report') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 		],
 	})

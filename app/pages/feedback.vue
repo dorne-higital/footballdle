@@ -142,6 +142,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import { ref } from 'vue'
 	import { usePurchasesStore } from '../stores/purchases'
 
@@ -223,7 +224,7 @@
 
 	useHead({
 		title: 'Send Feedback | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/feedback' }],
+		link: [{ rel: 'canonical', href: pageUrl('/feedback') }],
 		meta: [
 			{
 				name: 'description',

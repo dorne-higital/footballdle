@@ -218,6 +218,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import playerMeta from '../data/meta.json'
 
 	// Season of the current player list (updated by yarn update-players)
@@ -225,7 +226,7 @@
 
 	useHead({
 		title: 'How to Play Footballdle | Rules, Tips & Game Modes',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/how-to-play' }],
+		link: [{ rel: 'canonical', href: pageUrl('/how-to-play') }],
 		meta: [
 			{
 				name: 'description',

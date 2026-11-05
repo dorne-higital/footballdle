@@ -136,6 +136,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import playerMeta from '../data/meta.json'
 
 	// Season of the current player list (updated by yarn update-players)
@@ -143,7 +144,7 @@
 
 	useHead({
 		title: 'About Footballdle | Daily Premier League Footballer Guessing Game',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/about' }],
+		link: [{ rel: 'canonical', href: pageUrl('/about') }],
 		meta: [
 			{
 				name: 'description',

@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import { onMounted, computed } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
 	import { useHead } from 'nuxt/app'
@@ -28,7 +29,7 @@
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Games',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk' }],
+		link: [{ rel: 'canonical', href: pageUrl('/') }],
 		meta: [
 			{
 				name: 'description',
@@ -49,7 +50,7 @@
 				content: 'Pick a mode, guess the footballer, build a streak — free daily Premier League football games.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
-			{ property: 'og:url', content: 'https://footballdle.co.uk' },
+			{ property: 'og:url', content: pageUrl('/') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 			{ name: 'twitter:card', content: 'summary_large_image' },
 			{ name: 'twitter:title', content: 'Footballdle | Daily Premier League Football Games' },
@@ -66,7 +67,7 @@
 					'@context': 'https://schema.org',
 					'@type': 'WebSite',
 					name: 'Footballdle',
-					url: 'https://footballdle.co.uk',
+					url: pageUrl('/'),
 					description: 'A collection of free daily Premier League football guessing games.',
 				}),
 			},

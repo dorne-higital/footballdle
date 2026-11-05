@@ -127,6 +127,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
 
@@ -208,7 +209,7 @@
 
 	useHead({
 		title: `Footballdle ${numberLabel}Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
-		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/solution/${dateParam}` }],
+		link: [{ rel: 'canonical', href: pageUrl(`/solution/${dateParam}`) }],
 		meta: [
 			{
 				name: 'description',
@@ -219,7 +220,7 @@
 				property: 'og:description',
 				content: `${displayNumber ? `Puzzle #${displayNumber}` : formattedDate} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
 			},
-			{ property: 'og:url', content: `https://footballdle.co.uk/solution/${dateParam}` },
+			{ property: 'og:url', content: pageUrl(`/solution/${dateParam}`) },
 			{ property: 'og:type', content: 'article' },
 			{ name: 'robots', content: 'index, follow' },
 		],

@@ -122,9 +122,10 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	useHead({
 		title: 'Privacy Policy | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/privacy-policy' }],
+		link: [{ rel: 'canonical', href: pageUrl('/privacy-policy') }],
 		meta: [
 			{
 				name: 'description',

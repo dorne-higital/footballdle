@@ -319,6 +319,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
@@ -355,7 +356,7 @@
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/daily' }],
+		link: [{ rel: 'canonical', href: pageUrl('/play/daily') }],
 		meta: [
 			{
 				name: 'description',
@@ -377,7 +378,7 @@
 					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new challenge every day.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
-			{ property: 'og:url', content: 'https://footballdle.co.uk/play/daily' },
+			{ property: 'og:url', content: pageUrl('/play/daily') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 			{ name: 'twitter:card', content: 'summary_large_image' },
 			{ name: 'twitter:title', content: 'Footballdle | Daily Premier League Football Wordle' },
@@ -394,7 +395,7 @@
 					'@context': 'https://schema.org',
 					'@type': 'WebApplication',
 					name: 'Footballdle',
-					url: 'https://footballdle.co.uk/play/daily',
+					url: pageUrl('/play/daily'),
 					description:
 						'Daily Premier League football wordle. Guess the footballer surname in 6 tries.',
 					applicationCategory: 'Game',
