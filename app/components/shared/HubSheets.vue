@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+	import { openBuyMeCoffee } from '../../utils/buyMeCoffee'
 	import { defineAsyncComponent } from 'vue'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
@@ -44,8 +45,7 @@
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
-		const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
-		btn?.click()
+		openBuyMeCoffee()
 	}
 </script>
 

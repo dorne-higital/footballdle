@@ -56,20 +56,26 @@ export default defineNuxtConfig({
 	},
 
 	fonts: {
+		// Fontsource, not the Google provider: the same Google fonts, but only as woff2 split
+		// by unicode-range. The Google provider also adds a full .woff copy of every face (for
+		// very old Safari), declared last, so browsers downloaded those (2 x 137 KB of Inter on
+		// every page; search plan L3)
 		families: [
-			{ name: 'Jost', provider: 'google', weights: [500, 600, 700, 800], display: 'swap', preload: true },
-			{ name: 'Inter', provider: 'google', weights: [200, 400, 500, 700], display: 'swap' },
+			{ name: 'Jost', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
+			{ name: 'Inter', provider: 'fontsource', weights: [200, 400, 500, 700], display: 'swap' },
 			// iOS app "Floodlights" look (assets/_app-shell.scss)
-			{ name: 'Archivo Black', provider: 'google', weights: [400], display: 'swap' },
-			{ name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800], display: 'swap' },
+			{ name: 'Archivo Black', provider: 'fontsource', weights: [400], display: 'swap' },
+			{ name: 'Manrope', provider: 'fontsource', weights: [500, 600, 700, 800], display: 'swap' },
 			// Theme Library headings (utils/themes.ts). Only set from script, so declared
 			// globally to be bundled; each file loads only when its theme is on
-			{ name: 'Bungee', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Permanent Marker', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Abril Fatface', provider: 'google', weights: [400], display: 'swap', global: true },
-			{ name: 'Alfa Slab One', provider: 'google', weights: [400], display: 'swap', global: true },
+			{ name: 'Bungee', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Permanent Marker', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Abril Fatface', provider: 'fontsource', weights: [400], display: 'swap', global: true },
+			{ name: 'Alfa Slab One', provider: 'fontsource', weights: [400], display: 'swap', global: true },
 		],
 		defaults: {
+			// English, plus accented names (latin-ext); italics stay (only fetched where used)
+			subsets: ['latin', 'latin-ext'],
 			fallbacks: { serif: ['Georgia'], 'sans-serif': ['Arial'] },
 		},
 	},
@@ -194,18 +200,6 @@ export default defineNuxtConfig({
 				// on an earlier visit (useAnalyticsConsent.ts keeps the choice)
 				{
 					innerHTML: analyticsBootScript,
-				},
-				{
-					src: 'https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js',
-					'data-name': 'BMC-Widget',
-					'data-cfasync': 'false',
-					'data-id': 'dhorne92E',
-					'data-description': 'Support me on Buy me a coffee!',
-					'data-color': '#FF5F5F',
-					'data-position': 'Right',
-					'data-x_margin': '18',
-					'data-y_margin': '18',
-					defer: true,
 				},
 			],
 		},

@@ -109,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+	import { openBuyMeCoffee } from '../../utils/buyMeCoffee'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useGameCenter } from '../../composables/useGameCenter'
@@ -123,10 +124,7 @@
 
 	function handleBuyCoffee() {
 		trackBuyMeCoffee('app_header')
-		if (import.meta.client) {
-			const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
-			btn?.click()
-		}
+		openBuyMeCoffee()
 	}
 
 	function handleSettings() {

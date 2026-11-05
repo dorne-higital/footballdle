@@ -186,6 +186,7 @@
 </template>
 
 <script setup lang="ts">
+	import { openBuyMeCoffee } from '../../utils/buyMeCoffee'
 	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent, watch } from 'vue'
@@ -254,10 +255,7 @@
 
 	function handleBuyMeCoffee(location: string) {
 		trackBuyMeCoffee(location)
-		if (import.meta.client) {
-			const btn = document.querySelector('#bmc-wbtn') as HTMLElement | null
-			btn?.click()
-		}
+		openBuyMeCoffee()
 	}
 
 	// ============================================================================
