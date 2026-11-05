@@ -229,7 +229,7 @@
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
 	import { useSpotTheBallerStore, SPOT_TIER_LABELS } from '../../stores/spotTheBaller'
 	import { useAccessibilityStore } from '../../stores/accessibility'
-	import { useModeStatsStore } from '../../stores/modeStats'
+	import { SKIP_INTRO_AFTER, useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
@@ -370,7 +370,9 @@
 		// iOS app: the Matchday home links straight into play, skipping the intro screen,
 		// and a finished game opens on its recap (result sheet too from "See result")
 		const start = useRoute().query.start
-		if (start === 'play' && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
+		// Regulars skip the intro however they arrive; new players still get it
+		const knowsGame = statsStore.stats.gamesPlayed >= SKIP_INTRO_AFTER
+		if ((start === 'play' || knowsGame) && spotStore.showIntro && !spotStore.gameOver) handleStartGame()
 		if (isAppBuild && spotStore.gameOver) {
 			spotStore.showIntro = false
 			if (start === 'result') spotStore.showGameOverModal = true

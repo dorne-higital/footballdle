@@ -20,6 +20,10 @@ export interface ModeStats {
 
 const RECENT_FORM_LIMIT = 10
 
+// After this many games in a mode the player knows it: opening the game skips its
+// intro screen and goes straight to the board (How to play still explains it)
+export const SKIP_INTRO_AFTER = 3
+
 function defaultStats(): ModeStats {
 	return {
 		gamesPlayed: 0,

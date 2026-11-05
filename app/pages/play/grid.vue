@@ -172,7 +172,7 @@
 				<button
 					v-if="!confirmFinish"
 					type="button"
-					class="text-btn"
+					class="finish-btn"
 					@click="confirmFinish = true"
 				>
 					Finish grid
@@ -707,6 +707,27 @@
 		margin: 0;
 		min-height: 1.3em;
 		text-align: center;
+	}
+
+	// An empty status line takes no room, so Finish grid sits right under the prompt.
+	// The live region stays in the page so results are still announced
+	.guess-msg:empty {
+		margin-top: -1rem;
+		min-height: 0;
+	}
+
+	// A secondary button, so ending early is easy to find but never mistaken for the main action
+	.finish-btn {
+		background: var(--bg-secondary);
+		border: 1px solid var(--tile-edge, var(--border));
+		border-radius: 999px;
+		color: var(--text-primary);
+		cursor: pointer;
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		font-weight: 800;
+		min-height: 2.75rem;
+		padding: 0 1.25rem;
 	}
 
 	.finish-row {

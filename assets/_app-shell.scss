@@ -33,6 +33,9 @@ html.app-shell {
 	--global-border-radius: 14px;
 	--border: rgb(255 255 255 / 8%);
 	--border-hover: #2fe08a;
+	// Empty board tiles: 38% of the text colour on the tile is 3.5:1, enough to see the grid
+	// before typing (WCAG 1.4.11). Mixed from the theme's own colours, so every theme follows
+	--tile-edge: color-mix(in srgb, var(--text-primary) 38%, var(--bg-secondary));
 
 	--turf-base: #0b1a12;
 	--turf-stripe: #0f2219;
@@ -219,45 +222,48 @@ html.app-shell {
 }
 
 // Light Floodlights (Settings → Appearance). Same layout, daylight colours: the bright
-// pitch green is kept for fills, with a deeper green wherever green is used as text.
+// pitch green is kept for tile fills; buttons, links and labels use a deeper green (5.3:1 on
+// the page, white text on it 5.8:1), so green text clears 4.5:1.
 html.app-shell.app-light {
-	--on-primary: #04130b;
+	--on-primary: #fff;
 	--text-primary: #10231a;
 	--text-secondary: #55695e;
 	--bg-primary: #f2f6f3;
 	--bg-secondary: #fff;
 	--bg-gradient: linear-gradient(160deg, #f2f6f3 0%, #e6efe9 100%);
-	--primary-color: #128d53;
+	--primary-color: #0e7542;
 	--secondary-color: #10231a;
-	--accent-color: #128d53;
+	--accent-color: #0e7542;
 	--tertiary-color: #b7790f;
 	--color-success: #22b36b;
 	--color-present: #e3a72f;
 	--color-absent: #7b8b82;
 	--on-success: #04130b;
 	--on-present: #1b1203;
-	--color-gradient: linear-gradient(135deg, #22b36b 0%, #128d53 100%);
+	--color-gradient: linear-gradient(135deg, #22b36b 0%, #0e7542 100%);
 	--subtle-gradient: linear-gradient(135deg, #e6efe9 0%, #fff 100%);
 	--border: rgb(16 35 26 / 11%);
-	--border-hover: #128d53;
+	--border-hover: #0e7542;
+	// Dark text on white needs a stronger mix for the same 3:1
+	--tile-edge: color-mix(in srgb, var(--text-primary) 52%, var(--bg-secondary));
 
 	--turf-base: #e6efe9;
 	--turf-stripe: #dde8e1;
 	--touchline-color: rgb(16 35 26 / 8%);
-	--pitchcard-accent-win: #128d53;
+	--pitchcard-accent-win: #0e7542;
 	--pitchcard-accent-loss: #c9483d;
 	--pitchcard-accent-neutral: #10231a;
 	--pitchcard-accent-info: #55695e;
 	--scoreboard-bg: #e6efe9;
 	--scoreboard-fg: #10231a;
-	--scoreboard-accent: #128d53;
+	--scoreboard-accent: #0e7542;
 
 	--fl-raised: #fff;
 	--fl-blue: #2f6fd6;
 	--fl-red: #c9483d;
 	--fl-glow: rgb(34 179 107 / 18%);
 
-	--game-daily: #128d53;
+	--game-daily: #0e7542;
 	--game-scout: #2f6fd6;
 	--game-spot: #6a4fd6;
 	--game-grid: #c0368f;
@@ -268,6 +274,15 @@ html.app-shell.app-light {
 	--fl-shadow: rgb(16 35 26 / 18%);
 
 	color-scheme: light;
+}
+
+// Static pages (About, How to play, Privacy, answers): headings in the display face, set tight.
+// Archivo Black has one weight, so no faux bold
+html.app-shell :is(.static-main, .solution-main, .answers-page) :is(h1, h2, h3) {
+	font-family: var(--font-display);
+	font-weight: 400;
+	line-height: 1.1;
+	text-wrap: balance;
 }
 
 // Page change: a short iOS-style slide

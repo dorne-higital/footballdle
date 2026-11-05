@@ -122,6 +122,12 @@
 			<span class="eyebrow">Matchday{{ puzzleNumber ? ` · #${puzzleNumber}` : '' }}</span>
 			<div class="hero-copy">
 				<h2>That's Matchday done</h2>
+				<p
+					v-if="commentary"
+					class="commentary"
+				>
+					{{ commentaryLine }}
+				</p>
 				<p>
 					All three played. New puzzles in
 					<strong class="countdown">{{ countdown }}</strong>
@@ -273,6 +279,7 @@
 	import { useShare } from '../../composables/useShare'
 	import { SPOT_ROUNDS_PER_MATCH } from '../../composables/useSpotFootballers'
 	import { useScoutReportStore } from '../../stores/scoutReport'
+	import { commentaryText, matchdayCommentary } from '../../utils/commentary'
 	import { useAccessibilityStore } from '../../stores/accessibility'
 	import { useHaptics } from '../../composables/useHaptics'
 
@@ -405,6 +412,19 @@
 				playing: `You're on ${daily.value.label.toLowerCase()}.`,
 			})[daily.value.status as 'new' | 'playing'],
 	)
+
+	// Once all three are played: a line of commentary on the day, from the scores alone
+	const commentary = computed(() => {
+		const played = (s: string) => s === 'won' || s === 'lost'
+		if (!played(daily.value.status) || !played(scout.value.status) || spot.value.status !== 'won') return null
+		const [scoutGuesses = 0, scoutMax = 6] = (scout.value.score ?? '').split('/').map(Number)
+		return matchdayCommentary({
+			daily: { isWin: daily.value.status === 'won', guesses: dailyGuesses.value.length },
+			scout: { isWin: scout.value.status === 'won', guesses: scoutGuesses || 0, maxGuesses: scoutMax || 6 },
+			spot: { score: spotResults.value.filter(Boolean).length, rounds: SPOT_ROUNDS_PER_MATCH },
+		})
+	})
+	const commentaryLine = computed(() => (commentary.value ? `${commentaryText(commentary.value)}.` : ''))
 
 	// Once all three daily games are done: one message with every result
 	const matchdayCopied = ref(false)
@@ -727,6 +747,11 @@
 
 	.done-hero .hero-copy {
 		margin-top: 0.25rem;
+
+		.commentary {
+			color: var(--text-primary);
+			font-weight: 700;
+		}
 	}
 
 	// Today's three games in one list: rings and count, then a row per game not in the big card

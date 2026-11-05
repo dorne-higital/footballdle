@@ -3,6 +3,7 @@ import { Share } from '@capacitor/share'
 import { Directory, Filesystem } from '@capacitor/filesystem'
 import { drawShareCard } from '../utils/shareCard'
 import type { ScoutGuessResult } from '../stores/scoutReport'
+import { commentaryText, matchdayCommentary } from '../utils/commentary'
 
 export type TileState = 'correct' | 'present' | 'absent'
 
@@ -73,8 +74,15 @@ export function useShare() {
 		const [hit, miss] = highContrast() ? ['🟠', '⚫'] : ['🟢', '🔴']
 		const dailyRows = m.daily.guesses.map(g => tileStates(g, m.daily.answer).map(emoji).join('')).join('\n')
 		const scoutRows = m.scout.results.map(scoutRow).join('\n')
+		const commentary = matchdayCommentary({
+			daily: { isWin: m.daily.isWin, guesses: m.daily.guesses.length },
+			scout: { isWin: m.scout.isWin, guesses: m.scout.results.length, maxGuesses: m.scout.maxGuesses },
+			spot: { score: m.spot.score, rounds: m.spot.rounds },
+		})
 		const lines = [
 			`Footballdle Matchday${m.puzzle ? ` #${m.puzzle}` : ''}${matchdayStreakLine(m.streak)}`,
+			'',
+			`📣 ${commentaryText(commentary)}`,
 			'',
 			`⚽ Daily ${m.daily.isWin ? m.daily.guesses.length : 'X'}/6`,
 			dailyRows,

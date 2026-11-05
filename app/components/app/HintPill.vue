@@ -75,8 +75,9 @@
 			opacity: 0.7;
 		}
 
+		// Tighter, so "Scout" still fits beside a two-digit bank on a 375pt screen
 		&.compact {
-			padding-right: 0.65rem;
+			padding: 0 0.5rem 0 0.6rem;
 		}
 
 		&.pulse {

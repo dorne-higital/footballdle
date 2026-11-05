@@ -74,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-	import { ref, computed, watch } from 'vue'
+	import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 	import { useScoutReportStore } from '../../stores/scoutReport'
 	import playerMeta from '../../data/meta.json'
 
@@ -116,6 +116,17 @@
 		const target = suggestions.value[highlightedIndex.value]?.name ?? query.value
 		select(target)
 	}
+
+	// On a computer, typing a name anywhere on the page goes straight into the search
+	function typeAnywhere(e: KeyboardEvent) {
+		if (props.disabled || e.metaKey || e.ctrlKey || e.altKey || !/^[a-zA-Z]$/.test(e.key)) return
+		if (!inputEl.value || (e.target instanceof Element && e.target.closest('input, textarea, select, [contenteditable="true"]'))) return
+		e.preventDefault()
+		query.value += e.key
+		inputEl.value.focus()
+	}
+	onMounted(() => window.addEventListener('keydown', typeAnywhere))
+	onUnmounted(() => window.removeEventListener('keydown', typeAnywhere))
 
 	function select(name: string) {
 		if (!name.trim()) return

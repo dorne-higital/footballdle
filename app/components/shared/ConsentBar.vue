@@ -1,6 +1,6 @@
 <template>
 	<div
-		v-if="choice === null"
+		v-if="choice === null && !welcomeOpen"
 		class="consent-bar"
 		role="region"
 		aria-label="Analytics choice"
@@ -38,8 +38,10 @@
 	import { useAnalyticsConsent } from '../../composables/useAnalyticsConsent'
 
 	// The website's analytics question (never in the iPhone app). Shown once, until the
-	// visitor picks; both buttons carry the same weight
+	// visitor picks; both buttons carry the same weight. Waits for the first-visit welcome
+	// sheet to close, so the two never stack
 	const { choice, load, set } = useAnalyticsConsent()
+	const welcomeOpen = useState('welcome-open', () => false)
 	onMounted(load)
 </script>
 

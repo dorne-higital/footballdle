@@ -19,6 +19,8 @@ describe('Share Matchday', () => {
 			[
 				'Footballdle Matchday #294 · 24 day Matchday streak',
 				'',
+				'📣 Clinical: 2/6 in the Daily',
+				'',
 				'⚽ Daily 2/6',
 				'⬛🟨⬛⬛🟨⬛',
 				'🟩🟩🟩🟩🟩🟩',

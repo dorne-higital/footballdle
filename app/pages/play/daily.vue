@@ -115,6 +115,12 @@
 				/>
 				{{ appHintLabel }}
 			</button>
+			<p
+				v-if="!gameStore.gameOver"
+				class="desktop-keys"
+			>
+				Type your guess, press Enter
+			</p>
 
 			<FullTimePanel
 				v-if="$config.public.appShell && gameStore.gameOver"
@@ -329,7 +335,7 @@
 	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
 	import { useGameStore } from '../../stores/game'
-	import { useModeStatsStore } from '../../stores/modeStats'
+	import { SKIP_INTRO_AFTER, useModeStatsStore } from '../../stores/modeStats'
 	import { useModalsStore } from '../../stores/modals'
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { tileStates, useShare } from '../../composables/useShare'
@@ -470,11 +476,6 @@
 		},
 	)
 
-	const appHintLabel = computed(() => {
-		if (purchases.isPro) return 'Reveal a hint'
-		if (purchases.hintBank > 0) return `Use a hint · ${purchases.hintBank} left`
-		return 'Get hints'
-	})
 
 	// A banked hint is paid for, so there's a short window to undo a mis-tap before it's
 	// spent and the clue shown. Pro hints are unlimited, so those reveal straight away.
@@ -483,6 +484,13 @@
 	const pendingHint = ref(false)
 	let pendingTimer: ReturnType<typeof setTimeout> | null = null
 	const nextClueName = computed(() => CLUE_NAMES[gameStore.purchasedHints] ?? 'next clue')
+
+	// Says what the hint will show, so it's an easy choice (the bank count is in the top bar)
+	const appHintLabel = computed(() => {
+		if (purchases.isPro) return `Reveal the ${nextClueName.value}`
+		if (purchases.hintBank > 0) return `Use a hint · next: ${nextClueName.value}`
+		return 'Get hints'
+	})
 
 	function handleAppHint() {
 		if (purchases.isPro) {
@@ -565,7 +573,9 @@
 			navigateTo('/play/grid', { replace: true })
 			return
 		}
-		if (gameStore.showIntro && start === 'play' && gameStore.canPlay) handleStartGame()
+		// Regulars skip the intro however they arrive; new players still get it
+		const knowsGame = statsStore.stats.gamesPlayed >= SKIP_INTRO_AFTER
+		if (gameStore.showIntro && (start === 'play' || knowsGame) && gameStore.canPlay) handleStartGame()
 		// iOS app: a finished Daily opens on its board (no web intro), with the result
 		// sheet straight away when coming from the Matchday "See result" card
 		if (isAppBuild && gameStore.gameOver) {
@@ -823,6 +833,20 @@
 
 	// iOS app: hints are how clues are revealed (and what the shop sells), so the
 	// button is a real, full-size control rather than a footnote
+	// Only where there's a real keyboard and mouse (the on-screen keyboard still works there too)
+	.desktop-keys {
+		display: none;
+
+		@media (hover: hover) and (pointer: fine) {
+			color: var(--text-secondary);
+			display: block;
+			font-size: 0.8rem;
+			font-weight: 600;
+			margin: 0.5rem 0 0;
+			text-align: center;
+		}
+	}
+
 	.app-hint-btn {
 		align-items: center;
 		background: color-mix(in srgb, var(--primary-color) 16%, var(--bg-secondary));

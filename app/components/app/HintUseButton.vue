@@ -88,7 +88,7 @@
 		gap: 0.3rem;
 		height: 2.5rem;
 		overflow: hidden;
-		padding: 0 0.8rem 0 0.65rem;
+		padding: 0 0.6rem 0 0.5rem;
 		position: relative;
 		white-space: nowrap;
 
