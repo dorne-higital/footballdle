@@ -243,6 +243,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue'
 	import { useSpotTheBallerStore, SPOT_TIER_LABELS } from '../../stores/spotTheBaller'
@@ -271,7 +272,7 @@
 
 	useHead({
 		title: 'Spot the Baller | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/spot-the-baller' }],
+		link: [{ rel: 'canonical', href: pageUrl('/play/spot-the-baller') }],
 		meta: [
 			{
 				name: 'description',
@@ -285,7 +286,7 @@
 				property: 'og:description',
 				content: '10 rapid-fire rounds. Pick the right name before the clock runs out.',
 			},
-			{ property: 'og:url', content: 'https://footballdle.co.uk/play/spot-the-baller' },
+			{ property: 'og:url', content: pageUrl('/play/spot-the-baller') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 		],
 	})

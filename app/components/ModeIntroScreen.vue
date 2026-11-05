@@ -115,6 +115,9 @@
 					</NuxtLink>
 				</div>
 			</div>
+
+			<!-- Website only: a few lines on what this game is, for search (pages pass SeoIntro) -->
+			<slot name="about" />
 		</div>
 	</div>
 </template>

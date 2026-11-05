@@ -3,7 +3,12 @@
 		<header class="home-header">
 			<div>
 				<p class="date">{{ todayLabel }}</p>
-				<h1>Matchday</h1>
+				<!-- The website's page heading is the SeoIntro under the Matchday (pages/index.vue) -->
+				<component
+					:is="$config.public.isApp ? 'h1' : 'h2'"
+					class="home-title"
+					>Matchday</component
+				>
 			</div>
 			<div class="header-pills">
 				<HintPill />
@@ -521,7 +526,7 @@
 			text-transform: uppercase;
 		}
 
-		h1 {
+		.home-title {
 			font-family: var(--font-display);
 			// Smaller on narrow phones (SE) so it never runs into the pills
 			font-size: clamp(1.9rem, 9.5vw, 2.4rem);

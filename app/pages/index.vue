@@ -1,6 +1,27 @@
 <template>
 	<div class="hub-page">
 		<AppHome v-if="$config.public.appShell" />
+		<SeoIntro
+			v-if="!$config.public.isApp"
+			level="h1"
+			heading="Footballdle: free daily Premier League football games"
+			:links="[
+				{ to: '/play/daily', label: 'Guess the footballer' },
+				{ to: '/play/scout-report', label: 'Scout Report' },
+				{ to: '/play/spot-the-baller', label: 'Spot the Baller' },
+				{ to: '/play/grid', label: 'The Grid' },
+				{ to: '/answers', label: 'Past answers' },
+				{ to: '/app', label: 'iPhone app' },
+			]"
+		>
+			<p>
+				Footballdle is a set of free football guessing games built on the current Premier League player list.
+				Guess today's hidden footballer in six tries, Wordle-style. Work out a player from his scouting report and
+				fantasy price, pick the right name against the clock in Spot the Baller, and fill five new football
+				grids every Saturday.
+			</p>
+			<p>New puzzles arrive at midnight UK time, the same for everyone. No account and no ads.</p>
+		</SeoIntro>
 		<template v-else>
 			<ModeSelectHub
 				:daily-streak="statsStore.stats.currentStreak"
@@ -16,6 +37,8 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
+	import SeoIntro from '../components/shared/SeoIntro.vue'
 	import { onMounted, computed } from 'vue'
 	import { useModeStatsStore } from '../stores/modeStats'
 	import { useHead } from 'nuxt/app'
@@ -28,7 +51,7 @@
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Games',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk' }],
+		link: [{ rel: 'canonical', href: pageUrl('/') }],
 		meta: [
 			{
 				name: 'description',
@@ -49,7 +72,7 @@
 				content: 'Pick a mode, guess the footballer, build a streak — free daily Premier League football games.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
-			{ property: 'og:url', content: 'https://footballdle.co.uk' },
+			{ property: 'og:url', content: pageUrl('/') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 			{ name: 'twitter:card', content: 'summary_large_image' },
 			{ name: 'twitter:title', content: 'Footballdle | Daily Premier League Football Games' },
@@ -62,12 +85,21 @@
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				// The game itself (the site-wide WebSite and Organization are in nuxt.config.ts)
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
-					'@type': 'WebSite',
+					'@type': 'VideoGame',
 					name: 'Footballdle',
-					url: 'https://footballdle.co.uk',
-					description: 'A collection of free daily Premier League football guessing games.',
+					url: pageUrl('/'),
+					description:
+						'Free daily Premier League football guessing games: guess the footballer, Scout Report, Spot the Baller and a weekly football grid.',
+					genre: ['Puzzle', 'Sports', 'Trivia'],
+					gamePlatform: ['Web browser', 'iOS'],
+					applicationCategory: 'Game',
+					inLanguage: 'en-GB',
+					image: 'https://footballdle.co.uk/og-image.png',
+					publisher: { '@id': 'https://footballdle.co.uk/#organization' },
+					offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP' },
 				}),
 			},
 		],

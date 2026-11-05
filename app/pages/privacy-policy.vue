@@ -16,7 +16,7 @@
 
 		<main class="static-main">
 			<h1>Privacy Policy</h1>
-			<p class="updated">Last updated: 6 October 2026</p>
+			<p class="updated">Last updated: 5 November 2026</p>
 
 			<p>
 				Footballdle ("we", "us", "our") operates the website footballdle.co.uk and the Footballdle iPhone app.
@@ -61,34 +61,27 @@
 
 			<h2>Analytics (website)</h2>
 			<p>
-				We use Google Analytics 4 to understand how visitors use the site. This service collects anonymised data
-				such as pages visited, time spent, and general location (country/region). No personally identifiable
-				information is collected. You can opt out using the
-				<a
-					href="https://tools.google.com/dlpage/gaoptout"
-					target="_blank"
-					rel="noopener noreferrer"
-					>Google Analytics opt-out browser add-on</a
-				>.
+				With your permission, we use Google Analytics 4 to understand how people find and use the website: pages
+				visited, time spent, games played and general location (country or region). It doesn't collect your name
+				or contact details. Google Analytics only runs if you tap Accept on the bar at the bottom of the website;
+				if you tap No thanks, or don't answer, it doesn't load at all. The iPhone app never uses Google
+				Analytics.
 			</p>
-
-			<h2>Advertising (website)</h2>
-			<p>
-				We use Google AdSense to display advertisements. Google may use cookies to serve ads based on your prior
-				visits to this website or other websites. You can opt out of personalised advertising by visiting
-				<a
-					href="https://www.google.com/settings/ads"
-					target="_blank"
-					rel="noopener noreferrer"
-					>Google Ads Settings</a
-				>. We also participate in the IAB Transparency and Consent Framework.
+			<p v-if="!$config.public.isApp">
+				<button
+					type="button"
+					class="consent-reset"
+					@click="resetConsent"
+				>
+					{{ consentChoice === null ? 'Choice cleared: answer the bar below' : 'Change your analytics choice' }}
+				</button>
 			</p>
 
 			<h2>Cookies</h2>
 			<p>
-				Cookies may be set by Google Analytics and Google AdSense as described above. We do not set any
-				first-party cookies ourselves. You can control cookies through your browser settings. Disabling cookies
-				will not affect your ability to play the game.
+				Google Analytics sets cookies (named _ga) only after you accept it. We don't set any cookies ourselves.
+				The game saves your progress, stats and settings in your browser's local storage, which stays on your
+				device; clearing your browser data removes it.
 			</p>
 
 			<h2>Third-party links</h2>
@@ -122,9 +115,17 @@
 </template>
 
 <script setup lang="ts">
+	import { onMounted } from 'vue'
+	import { pageUrl } from '../utils/siteUrl'
+	import { useAnalyticsConsent } from '../composables/useAnalyticsConsent'
+
+	// Lets a website visitor take back (or give) analytics consent: the bar shows again
+	const { choice: consentChoice, load: loadConsent, reset: resetConsent } = useAnalyticsConsent()
+	onMounted(loadConsent)
+
 	useHead({
 		title: 'Privacy Policy | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/privacy-policy' }],
+		link: [{ rel: 'canonical', href: pageUrl('/privacy-policy') }],
 		meta: [
 			{
 				name: 'description',
@@ -137,4 +138,15 @@
 
 <style scoped lang="scss">
 	@use '../../assets/static-page';
+
+	.consent-reset {
+		background: transparent;
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		color: var(--primary-color);
+		cursor: pointer;
+		font: inherit;
+		font-weight: 700;
+		padding: 0.45rem 1rem;
+	}
 </style>

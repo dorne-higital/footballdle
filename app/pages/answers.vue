@@ -61,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import { getAnswerForDay, getDisplayNumber, getPuzzleNumber } from '../composables/useFootballers'
 
 	// The archive behind the per-day answer pages (pages/solution/[date].vue): every day from
@@ -97,14 +98,14 @@
 
 	useHead({
 		title: 'Footballdle Answers: every past Daily puzzle | Footballdle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/answers' }],
+		link: [{ rel: 'canonical', href: pageUrl('/answers') }],
 		meta: [
 			{
 				name: 'description',
 				content: `Every past Footballdle answer, newest first${days[0] ? `, from yesterday's (${days[0].long})` : ''}. Today's stays hidden: play the daily Premier League footballer guessing game at footballdle.co.uk.`,
 			},
 			{ property: 'og:title', content: 'Footballdle Answers' },
-			{ property: 'og:url', content: 'https://footballdle.co.uk/answers' },
+			{ property: 'og:url', content: pageUrl('/answers') },
 			{ name: 'robots', content: 'index, follow' },
 		],
 	})

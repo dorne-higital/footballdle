@@ -93,30 +93,6 @@ export const useAnalytics = () => {
 		}
 	}
 
-	const trackThemeLight = () => {
-		if (import.meta.client) {
-			event('theme_set_light', { event_category: 'ui', event_label: 'light_theme' })
-		}
-	}
-
-	const trackThemeDark = () => {
-		if (import.meta.client) {
-			event('theme_set_dark', { event_category: 'ui', event_label: 'dark_theme' })
-		}
-	}
-
-	const trackThemeGreyscale = () => {
-		if (import.meta.client) {
-			event('theme_set_greyscale', { event_category: 'ui', event_label: 'greyscale_theme' })
-		}
-	}
-
-	const trackThemePastel = () => {
-		if (import.meta.client) {
-			event('theme_set_pastel', { event_category: 'ui', event_label: 'pastel_theme' })
-		}
-	}
-
 	const trackShare = (platform?: string) => {
 		if (import.meta.client) {
 			event('share', {
@@ -198,10 +174,6 @@ export const useAnalytics = () => {
 		trackIntroButtonClick,
 		trackStatsTabSwitch,
 		trackThemeChange,
-		trackThemeLight,
-		trackThemeDark,
-		trackThemeGreyscale,
-		trackThemePastel,
 		trackShare,
 		trackModalOpen,
 		trackInfoModal,

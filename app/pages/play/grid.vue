@@ -14,7 +14,8 @@
 		>
 			<header class="hub-head">
 				<p class="eyebrow">The Grid · from {{ niceDate(grid.weekStartLabel) }}</p>
-				<h1>Grid Week</h1>
+				<!-- The website's page heading is the SeoIntro below (search, plan H3) -->
+				<component :is="$config.public.isApp ? 'h1' : 'h2'">Grid Week</component>
 				<p class="lede">Five new grids every Saturday, the same for everyone. Name a player for each square: 100 points first time, 25 less for every miss.</p>
 			</header>
 
@@ -236,11 +237,31 @@
 				</div>
 			</div>
 		</section>
+
+		<SeoIntro
+			v-if="!$config.public.isApp && grid.active === null"
+			level="h1"
+			heading="The Grid: a football grid game, five new grids every Saturday"
+			:links="[
+				{ to: '/games/football-grid-game', label: 'How the Grid works' },
+				{ to: '/play/daily', label: 'Guess the footballer' },
+				{ to: '/app', label: 'Get the iPhone app' },
+			]"
+		>
+			<p>
+				Each grid has nine squares. Name a current Premier League player who fits both the row and the column for
+				every square: 100 points first time, 25 less for every miss. Five new grids arrive every Saturday, the same
+				for everyone, worth up to 4,500 points a week.
+			</p>
+			<p>Finished the week? Practice grids are unlimited.</p>
+		</SeoIntro>
 	</div>
 </template>
 
 <script setup lang="ts">
 	import { track, trackScreen } from '../../utils/appGlance'
+	import { pageUrl } from '../../utils/siteUrl'
+	import SeoIntro from '../../components/shared/SeoIntro.vue'
 	import { computed, onMounted, ref, watch } from 'vue'
 	import { roster } from '../../composables/useFootballers'
 	import GridBoard from '../../components/grid/GridBoard.vue'
@@ -254,8 +275,14 @@
 
 	definePageMeta({ layout: 'play' })
 	useHead({
-		title: 'The Grid | Footballdle',
-		meta: [{ name: 'description', content: 'Five new football grids every Saturday. Name a player for each club and country square: 100 points first time.' }],
+		title: 'The Grid: Football Grid Game, 5 New Grids Every Saturday | Footballdle',
+		link: [{ rel: 'canonical', href: pageUrl('/play/grid') }],
+		meta: [
+			{ name: 'description', content: 'A free football grid game. Name a Premier League player for every club and country square: five new grids every Saturday, 100 points first time.' },
+			{ property: 'og:title', content: 'The Grid | Footballdle' },
+			{ property: 'og:url', content: pageUrl('/play/grid') },
+			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
+		],
 	})
 
 	const grid = useGridStore()
@@ -414,7 +441,8 @@
 		gap: 1rem;
 	}
 
-	.hub-head h1 {
+	.hub-head h1,
+	.hub-head h2 {
 		font-family: var(--font-display);
 		font-size: 2.2rem;
 		line-height: 1;

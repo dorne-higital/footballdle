@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { APP_STORE_LIVE } from './app/utils/appStore'
+import { APP_STORE_LIVE, APP_STORE_URL } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
 // a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
@@ -13,6 +13,11 @@ const appShell = isApp || process.env.WEB_SHELL !== 'old'
 
 // Applies the saved theme before first paint to avoid a light-mode flash
 const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
+
+// Defines gtag with every consent type denied, then loads gtag.js only once analytics is
+// accepted, granting analytics before the config so the first page_view counts. window.footballdleLoadAnalytics is what the consent bar calls on Accept
+const GA_ID = process.env.GOOGLE_ANALYTICS_ID || ''
+const analyticsBootScript = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});gtag('js',new Date());window.footballdleLoadAnalytics=function(){if(window.__gaLoaded||!'${GA_ID}')return;window.__gaLoaded=1;gtag('consent','update',{analytics_storage:'granted'});gtag('config','${GA_ID}');var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=${GA_ID}';document.head.appendChild(s);};try{if(localStorage.getItem('footballdle-analytics-consent')==='granted')window.footballdleLoadAnalytics();}catch(e){}`
 
 // The game pages (pages/games/[mode].vue)
 const GAME_PAGES = ['guess-the-footballer', 'football-grid-game', 'guess-the-player-by-price', 'name-the-player']
@@ -72,6 +77,9 @@ export default defineNuxtConfig({
 	// Pre-render the sitemap so it works on static deployments too
 	routeRules: {
 		'/sitemap.xml': { prerender: true },
+		// The old World Cup page (gone, but still in Google with 181 impressions): send it home
+		'/worldcup': { redirect: { to: '/', statusCode: 301 } },
+		'/worldcup/': { redirect: { to: '/', statusCode: 301 } },
 	},
 
 	hooks: {
@@ -129,12 +137,11 @@ export default defineNuxtConfig({
 			// app-web: the app look on the website (a phone-width column on big screens)
 			...(appShell ? { htmlAttrs: { class: isApp ? 'app-shell' : 'app-shell app-web' } } : {}),
 			link: [
-				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
 			meta: [
-				{ name: 'theme-color', content: '#dc2626' },
+				{ name: 'theme-color', content: '#07130d' },
 				{ name: 'apple-mobile-web-app-capable', content: 'yes' },
 				{ name: 'apple-mobile-web-app-status-bar-style', content: 'default' },
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
@@ -150,22 +157,43 @@ export default defineNuxtConfig({
 			] : [
 				{
 					type: 'application/ld+json',
+					// Who Footballdle is, on every page, so Google can tell it from other games with a
+					// similar name: the site, the maker (with the App Store and social profiles) and the logo
 					innerHTML: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'WebSite',
-						name: 'Footballdle',
-						url: 'https://footballdle.co.uk',
+						'@graph': [
+							{
+								'@type': 'WebSite',
+								'@id': 'https://footballdle.co.uk/#website',
+								name: 'Footballdle',
+								alternateName: ['Football dle'],
+								url: 'https://footballdle.co.uk/',
+								inLanguage: 'en-GB',
+								publisher: { '@id': 'https://footballdle.co.uk/#organization' },
+							},
+							{
+								'@type': 'Organization',
+								'@id': 'https://footballdle.co.uk/#organization',
+								name: 'Footballdle',
+								url: 'https://footballdle.co.uk/',
+								logo: 'https://footballdle.co.uk/android-chrome-512x512.png',
+								sameAs: [
+									'https://www.tiktok.com/@_footballdle',
+									'https://www.instagram.com/_footballdle/',
+									...(APP_STORE_LIVE ? [APP_STORE_URL] : []),
+								],
+							},
+						],
 					}),
 				},
 				{
 					innerHTML: themeBootScript,
 				},
+				// Google Analytics only after consent (UK GDPR and PECR): gtag queues events, but
+				// gtag.js isn't fetched until the visitor taps Accept (ConsentBar.vue) or accepted
+				// on an earlier visit (useAnalyticsConsent.ts keeps the choice)
 				{
-					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
-					async: true,
-				},
-				{
-					innerHTML: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.GOOGLE_ANALYTICS_ID || ''}');`,
+					innerHTML: analyticsBootScript,
 				},
 				{
 					src: 'https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js',

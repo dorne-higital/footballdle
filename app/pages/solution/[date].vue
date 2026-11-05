@@ -77,6 +77,45 @@
 			</p>
 
 
+			<!-- The day before and after (never today or later), so every answer links on -->
+			<nav
+				class="day-nav"
+				aria-label="Other days"
+			>
+				<NuxtLink
+					v-if="prevDay"
+					:to="`/solution/${prevDay.iso}`"
+					:title="`Footballdle answer, ${prevDay.long}`"
+					class="day-link"
+					>← {{ prevDay.short }}</NuxtLink
+				>
+				<span v-else></span>
+				<NuxtLink
+					v-if="nextDay"
+					:to="`/solution/${nextDay.iso}`"
+					:title="`Footballdle answer, ${nextDay.long}`"
+					class="day-link"
+					>{{ nextDay.short }} →</NuxtLink
+				>
+			</nav>
+
+			<section
+				v-if="playerData"
+				class="clue-trail"
+			>
+				<h2>How the hints led to {{ answerUpper }}</h2>
+				<ol>
+					<li><strong>Club:</strong> {{ playerData.club }}</li>
+					<li><strong>Nationality:</strong> {{ playerData.nationality }}</li>
+					<li><strong>Position:</strong> {{ playerData.position }}</li>
+					<li><strong>Letters:</strong> a {{ answer.length }}-letter surname, starting with {{ answerUpper[0] }}</li>
+				</ol>
+				<p>
+					Each hint in the Daily reveals the next clue in this order. Every player comes from the current 2026/27
+					Premier League player list.
+				</p>
+			</section>
+
 			<div class="cta-section">
 				<p class="cta-text">Can you guess today's player?</p>
 				<NuxtLink
@@ -86,6 +125,13 @@
 				>
 					Play today's puzzle →
 				</NuxtLink>
+				<NuxtLink
+					v-if="!$config.public.isApp"
+					to="/app"
+					class="app-link"
+					title="Footballdle on iPhone"
+					>Or play on iPhone: get the app</NuxtLink
+				>
 			</div>
 
 			<div
@@ -127,6 +173,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { getAnswerForDay, getAnswerPlayerForDay, getDisplayNumber, getPuzzleNumber } from '../../composables/useFootballers'
 
 
@@ -196,6 +243,21 @@
 		.filter((p) => p.iso !== dateParam && getPuzzleNumber(toUKDateStr(parseISO(p.iso)!)) >= 1)
 		.slice(0, 5)
 
+	// Neighbouring days for the day nav: never today or later (that would give an answer away)
+	const dayInfo = (offset: number) => {
+		const d = new Date(parsedDate)
+		d.setDate(d.getDate() + offset)
+		if (d >= ukToday || getPuzzleNumber(toUKDateStr(d)) < 1) return null
+		const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+		return {
+			iso,
+			short: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'Europe/London' }),
+			long: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/London' }),
+		}
+	}
+	const prevDay = dayInfo(-1)
+	const nextDay = dayInfo(1)
+
 	const answerUpper = answer.toUpperCase()
 	// "Central Midfield" -> "a central midfielder", "Attacking Midfield" -> "an attacking midfielder"
 	const positionNoun = (playerData?.position ?? '').toLowerCase().replace(/midfield$/, 'midfielder')
@@ -208,7 +270,7 @@
 
 	useHead({
 		title: `Footballdle ${numberLabel}Answer (${formattedDate}) – ${answerUpper} | Footballdle`,
-		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/solution/${dateParam}` }],
+		link: [{ rel: 'canonical', href: pageUrl(`/solution/${dateParam}`) }],
 		meta: [
 			{
 				name: 'description',
@@ -219,14 +281,14 @@
 				property: 'og:description',
 				content: `${displayNumber ? `Puzzle #${displayNumber}` : formattedDate} answer: ${answerUpper}${playerDesc}. Daily Premier League footballer guessing game.`,
 			},
-			{ property: 'og:url', content: `https://footballdle.co.uk/solution/${dateParam}` },
+			{ property: 'og:url', content: pageUrl(`/solution/${dateParam}`) },
 			{ property: 'og:type', content: 'article' },
 			{ name: 'robots', content: 'index, follow' },
 		],
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
 					'@type': 'FAQPage',
 					mainEntity: [
@@ -385,6 +447,46 @@
 		}
 	}
 
+	.day-nav {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+
+		.day-link {
+			color: var(--primary-color);
+			font-size: 0.9rem;
+			font-weight: 700;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	.clue-trail {
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+		line-height: 1.6;
+		margin-bottom: 2rem;
+		text-align: left;
+
+		h2 {
+			color: var(--text-primary);
+			font-size: 1.05rem;
+			margin-bottom: 0.5rem;
+		}
+
+		ol {
+			margin: 0 0 0.5rem;
+			padding-left: 1.25rem;
+		}
+
+		strong {
+			color: var(--text-primary);
+		}
+	}
+
 	.cta-section {
 		background: var(--bg-gradient);
 		border: 1px solid var(--border);
@@ -412,6 +514,14 @@
 			&:hover {
 				opacity: 0.9;
 			}
+		}
+
+		.app-link {
+			color: var(--primary-color);
+			display: block;
+			font-size: 0.9rem;
+			font-weight: 600;
+			margin-top: 0.85rem;
 		}
 	}
 

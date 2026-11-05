@@ -15,7 +15,31 @@
 			:win-percentage="statsStore.winPercentage"
 			@start-game="handleStartGame"
 			@show-result="gameStore.showGameOverModal = true"
-		/>
+		>
+			<template
+				v-if="!$config.public.isApp"
+				#about
+			>
+				<SeoIntro
+					heading="Premier League Wordle: guess today's footballer"
+					:links="[
+						{ to: '/answers', label: 'Past answers' },
+						{ to: '/how-to-play', label: 'How to play' },
+						{ to: '/app', label: 'Get the iPhone app' },
+					]"
+				>
+					<p>
+						Footballdle's Daily is a Wordle for Premier League fans. There's one hidden footballer a day, the
+						same for everyone. Guess their surname in six tries: green letters are in the right place, yellow
+						ones are in the name somewhere else.
+					</p>
+					<p>
+						Every answer is a current 2026/27 Premier League player, and a new one drops at midnight UK
+						time. Stuck? Hints reveal their club, nationality and position.
+					</p>
+				</SeoIntro>
+			</template>
+		</ModeIntroScreen>
 
 		<!-- Game Screen -->
 		<div
@@ -319,6 +343,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	import { track, trackScreen } from '../../utils/appGlance'
 	import playerMeta from '../../data/meta.json'
 	import { ref, watch, onMounted, onUnmounted, onBeforeUnmount, computed, defineAsyncComponent } from 'vue'
@@ -333,6 +358,7 @@
 	import { useAnalytics } from '../../composables/useAnalytics'
 	import { useHead } from 'nuxt/app'
 	import ModeIntroScreen from '../../components/ModeIntroScreen.vue'
+	import SeoIntro from '../../components/shared/SeoIntro.vue'
 	import GameBoard from '../../components/GameBoard.vue'
 	import Keyboard from '../../components/Keyboard.vue'
 	import PlaySurfaceFrame from '../../components/shared/PlaySurfaceFrame.vue'
@@ -355,7 +381,7 @@
 
 	useHead({
 		title: 'Footballdle | Daily Premier League Football Wordle',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/play/daily' }],
+		link: [{ rel: 'canonical', href: pageUrl('/play/daily') }],
 		meta: [
 			{
 				name: 'description',
@@ -377,7 +403,7 @@
 					'Think you know your Premier League players? Guess the hidden footballer surname in 6 tries. A new challenge every day.',
 			},
 			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
-			{ property: 'og:url', content: 'https://footballdle.co.uk/play/daily' },
+			{ property: 'og:url', content: pageUrl('/play/daily') },
 			{ property: 'og:site_name', content: 'Footballdle' },
 			{ name: 'twitter:card', content: 'summary_large_image' },
 			{ name: 'twitter:title', content: 'Footballdle | Daily Premier League Football Wordle' },
@@ -390,11 +416,11 @@
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
 					'@type': 'WebApplication',
 					name: 'Footballdle',
-					url: 'https://footballdle.co.uk/play/daily',
+					url: pageUrl('/play/daily'),
 					description:
 						'Daily Premier League football wordle. Guess the footballer surname in 6 tries.',
 					applicationCategory: 'Game',

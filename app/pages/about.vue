@@ -136,20 +136,26 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../utils/siteUrl'
 	import playerMeta from '../data/meta.json'
 
 	// Season of the current player list (updated by yarn update-players)
 	const season = playerMeta.season
 
 	useHead({
-		title: 'About Footballdle | Daily Premier League Footballer Guessing Game',
-		link: [{ rel: 'canonical', href: 'https://footballdle.co.uk/about' }],
+		// Shows mostly as a second result under the homepage for 'footballdle' (Search Console,
+		// 5 Nov 2026), so the snippet says what the game is and invites a play
+		title: 'About Footballdle: the free daily Premier League football game',
+		link: [{ rel: 'canonical', href: pageUrl('/about') }],
 		meta: [
 			{
 				name: 'description',
 				content:
-					'Footballdle is a free daily Premier League footballer guessing game. Find out how it was built, how the player list is maintained, and how The Grid works.',
+					'Footballdle is a free daily football game: guess the hidden Premier League player in six tries, plus Scout Report, Spot the Baller and five new grids every Saturday. No ads, no account.',
 			},
+			{ property: 'og:title', content: 'About Footballdle' },
+			{ property: 'og:url', content: pageUrl('/about') },
+			{ property: 'og:image', content: 'https://footballdle.co.uk/og-image.png' },
 			{ name: 'robots', content: 'index, follow' },
 		],
 	})

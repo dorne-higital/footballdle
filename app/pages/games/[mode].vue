@@ -92,6 +92,7 @@
 </template>
 
 <script setup lang="ts">
+	import { pageUrl } from '../../utils/siteUrl'
 	// One plain page per game, written for people searching for that kind of game (growth
 	// review, 1.3). Facts match pages/how-to-play.vue; keep the two in step.
 	interface Game {
@@ -210,12 +211,12 @@
 
 	useHead({
 		title: game.title,
-		link: [{ rel: 'canonical', href: `https://footballdle.co.uk/games/${slug}` }],
+		link: [{ rel: 'canonical', href: pageUrl(`/games/${slug}`) }],
 		meta: [
 			{ name: 'description', content: game.description },
 			{ property: 'og:title', content: game.title },
 			{ property: 'og:description', content: game.description },
-			{ property: 'og:url', content: `https://footballdle.co.uk/games/${slug}` },
+			{ property: 'og:url', content: pageUrl(`/games/${slug}`) },
 			{ property: 'og:image', content: `https://footballdle.co.uk/games/${slug}.jpg` },
 			{ name: 'robots', content: 'index, follow' },
 		],
