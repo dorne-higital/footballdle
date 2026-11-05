@@ -147,6 +147,8 @@ export default defineNuxtConfig({
 				{ name: 'apple-mobile-web-app-title', content: 'Footballdle' },
 				// Website on iPhone Safari: Apple's "Open in the App Store" bar at the top
 				...(!isApp && APP_STORE_LIVE ? [{ name: 'apple-itunes-app', content: 'app-id=6819602707' }] : []),
+				// Bing Webmaster Tools ownership check (website only)
+				...(isApp ? [] : [{ name: 'msvalidate.01', content: '46088B915D6AB796C9B1497CDA5EB079' }]),
 			],
 			// iOS app: dark green from the very first paint, before the stylesheet applies
 			...(isApp ? { style: [{ innerHTML: 'html,body{background:#07130d}' }] } : {}),
