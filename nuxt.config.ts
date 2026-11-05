@@ -14,6 +14,11 @@ const appShell = isApp || process.env.WEB_SHELL !== 'old'
 // Applies the saved theme before first paint to avoid a light-mode flash
 const themeBootScript = `(function(){var t=localStorage.getItem('footballdle-theme');if(t==='dark')document.documentElement.classList.add('dark');else if(t==='greyscale')document.documentElement.classList.add('greyscale');else if(t==='pastel')document.documentElement.classList.add('theme-pastel');})();`
 
+// Defines gtag with every consent type denied, then loads gtag.js only once analytics is
+// accepted, granting analytics before the config so the first page_view counts. window.footballdleLoadAnalytics is what the consent bar calls on Accept
+const GA_ID = process.env.GOOGLE_ANALYTICS_ID || ''
+const analyticsBootScript = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});gtag('js',new Date());window.footballdleLoadAnalytics=function(){if(window.__gaLoaded||!'${GA_ID}')return;window.__gaLoaded=1;gtag('consent','update',{analytics_storage:'granted'});gtag('config','${GA_ID}');var s=document.createElement('script');s.async=1;s.src='https://www.googletagmanager.com/gtag/js?id=${GA_ID}';document.head.appendChild(s);};try{if(localStorage.getItem('footballdle-analytics-consent')==='granted')window.footballdleLoadAnalytics();}catch(e){}`
+
 // The game pages (pages/games/[mode].vue)
 const GAME_PAGES = ['guess-the-footballer', 'football-grid-game', 'guess-the-player-by-price', 'name-the-player']
 
@@ -129,7 +134,6 @@ export default defineNuxtConfig({
 			// app-web: the app look on the website (a phone-width column on big screens)
 			...(appShell ? { htmlAttrs: { class: isApp ? 'app-shell' : 'app-shell app-web' } } : {}),
 			link: [
-				...(isApp ? [] : [{ rel: 'preconnect', href: 'https://www.googletagmanager.com' }]),
 				{ rel: 'manifest', href: '/manifest.json' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 			],
@@ -160,12 +164,11 @@ export default defineNuxtConfig({
 				{
 					innerHTML: themeBootScript,
 				},
+				// Google Analytics only after consent (UK GDPR and PECR): gtag queues events, but
+				// gtag.js isn't fetched until the visitor taps Accept (ConsentBar.vue) or accepted
+				// on an earlier visit (useAnalyticsConsent.ts keeps the choice)
 				{
-					src: 'https://www.googletagmanager.com/gtag/js?id=' + (process.env.GOOGLE_ANALYTICS_ID || ''),
-					async: true,
-				},
-				{
-					innerHTML: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${process.env.GOOGLE_ANALYTICS_ID || ''}');`,
+					innerHTML: analyticsBootScript,
 				},
 				{
 					src: 'https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js',
