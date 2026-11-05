@@ -8,6 +8,12 @@
 	>
 		<template #body>
 			<div class="hint-shop">
+				<p
+					v-if="$config.public.isApp && purchases.offeringCopy.banner"
+					class="offer-banner"
+				>
+					{{ purchases.offeringCopy.banner }}
+				</p>
 				<ul
 					class="hint-games"
 					aria-label="What a hint shows"
@@ -160,6 +166,10 @@
 							v-if="saleOf(pack.product)"
 							class="sale-chip"
 						>Sale, ends soon</span>
+						<span
+							v-else-if="purchases.offeringCopy.badges[pack.id]"
+							class="sale-chip badge"
+						>{{ purchases.offeringCopy.badges[pack.id] }}</span>
 					</span>
 					<span class="pack-prices">
 						<s
@@ -174,14 +184,14 @@
 					type="button"
 					class="hint-pack pro"
 					:disabled="purchases.busy"
-					@click="buyPro"
+					@click="openPro"
 				>
 					<span class="pack-name">
 						<Icon
 							name="solar:crown-linear"
 							size="1rem"
 						/>
-						Pro: unlimited hints
+						Pro: unlimited hints, every theme
 						<span
 							v-if="saleOf(purchases.proProduct)"
 							class="sale-chip"
@@ -292,8 +302,14 @@
 		if (onHintGame.value) useHint()
 	}
 
-	async function buyPro() {
-		if ((await purchases.buyPro()) && onHintGame.value) useHint()
+	// What Pro includes lives on its own sheet (ProSheet.vue). Mid-game, buying it there
+	// brings you back here, where the hint is now free.
+	const proSheetOpen = useState('pro-sheet-open', () => false)
+	const proBackToHints = useState('pro-sheet-back-to-hints', () => false)
+	function openPro() {
+		proBackToHints.value = onHintGame.value
+		open.value = false
+		proSheetOpen.value = true
 	}
 
 	function playNext() {
@@ -304,6 +320,17 @@
 </script>
 
 <style scoped lang="scss">
+	.offer-banner {
+		background: var(--color-present);
+		border-radius: var(--global-border-radius);
+		color: var(--on-present, #1b1203);
+		font-size: 0.9rem;
+		font-weight: 700;
+		margin: 0;
+		padding: 0.55rem 0.8rem;
+		text-align: center;
+	}
+
 	.hint-earn {
 		display: flex;
 		flex-direction: column;
@@ -496,6 +523,11 @@
 			letter-spacing: 0.04em;
 			padding: 0.2rem 0.5rem;
 			white-space: nowrap;
+		}
+
+		.sale-chip.badge {
+			background: var(--primary-color);
+			color: var(--on-primary, #04130b);
 		}
 
 		.hint-shop-message {

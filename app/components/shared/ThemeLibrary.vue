@@ -119,7 +119,7 @@
 					type="button"
 					class="pro-link"
 					:disabled="purchases.busy"
-					@click="purchases.buyPro()"
+					@click="proSheetOpen = true"
 				>
 					Or get Pro · {{ purchases.proProduct.priceString }} for every theme and unlimited hints
 				</button>
@@ -153,6 +153,9 @@
 	import { usePurchasesStore } from '../../stores/purchases'
 	import { THEMES, getTheme, type Theme, type ThemeTier } from '../../utils/themes'
 	import { APP_STORE_LIVE, THEME_PRODUCT_IDS } from '../../utils/appStore'
+
+	// Pro is explained on its own sheet (ProSheet.vue); the try-on stays while it's open
+	const proSheetOpen = useState('pro-sheet-open', () => false)
 
 	// Not var(--font-display): that's the theme being tried on, not this card's
 	const DEFAULT_DISPLAY = "'Archivo Black', 'Arial Black', sans-serif"

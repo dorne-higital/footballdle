@@ -155,7 +155,7 @@
 						>Sale, ends soon</span>
 					</span>
 					<p>
-						Unlimited hints in the Daily and Scout Report, plus every theme, for good. One-off purchase, no subscription.
+						Unlimited hints in the Daily, Scout Report and The Grid, every theme and free card replays, for good. One-off purchase, no subscription.
 						<template v-if="purchases.hintBank > 0">
 							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
 						</template>
@@ -165,7 +165,7 @@
 						type="button"
 						class="store-button pro-button"
 						:disabled="purchases.busy"
-						@click="purchases.buyPro()"
+						@click="proSheetOpen = true"
 					>
 						Get Pro ·
 						<s
@@ -780,6 +780,7 @@
 
 	const appearance = useAppearanceStore()
 	const saleOf = useSale()
+	const proSheetOpen = useState('pro-sheet-open', () => false)
 	const themeSummary = computed(() =>
 		appearance.appearance === 'system' && !appearance.theme
 			? 'Match iPhone'
