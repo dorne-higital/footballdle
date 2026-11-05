@@ -2,11 +2,21 @@
 	<span
 		:class="['streak-pill', { cold: !playStreak.playedToday }]"
 		role="img"
-		:aria-label="matchdayStreakSpoken(playStreak.activeStreak, playStreak.playedToday)"
+		:aria-label="matchdayStreakSpoken(playStreak.activeStreak, playStreak.playedToday) + (playStreak.shields ? `, ${playStreak.shields} Streak ${playStreak.shields === 1 ? 'Shield' : 'Shields'}` : '')"
 	>
 		<MatchdayRingIcon size="1.05rem" />
 		<span class="num">{{ playStreak.activeStreak }}</span>
 		<span class="unit">{{ dayWord(playStreak.activeStreak) }}</span>
+		<!-- Streak Shields held (1.3): each covers one missed day -->
+		<span
+			v-if="playStreak.shields"
+			class="shields"
+		>
+			<Icon
+				name="solar:shield-check-bold"
+				size="0.85rem"
+			/>{{ playStreak.shields }}
+		</span>
 	</span>
 </template>
 
@@ -33,6 +43,16 @@
 		gap: 0.35rem;
 		height: 2.5rem;
 		padding: 0 0.8rem;
+	}
+
+	.shields {
+		align-items: center;
+		border-left: 1px solid color-mix(in srgb, var(--tertiary-color) 35%, transparent);
+		display: inline-flex;
+		font-size: 0.8rem;
+		gap: 0.15rem;
+		margin-left: 0.15rem;
+		padding-left: 0.4rem;
 	}
 
 	// "days" reads as a caption and keeps the pill narrow

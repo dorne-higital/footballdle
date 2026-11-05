@@ -11,6 +11,30 @@
 			</div>
 		</header>
 
+		<!-- A Streak Shield covered a missed day (1.3): said once, then dismissed -->
+		<div
+			v-if="playStreak.shieldedDate && !playStreak.shieldSeen"
+			class="shield-note"
+			role="status"
+		>
+			<Icon
+				name="solar:shield-check-bold"
+				size="1.4rem"
+				class="shield-icon"
+			/>
+			<p>
+				<strong>Streak saved.</strong> A Streak Shield covered {{ shieldedDayLabel }}.
+				{{ playStreak.shields ? `${playStreak.shields} left.` : 'You earn another every 7 days of your streak.' }}
+			</p>
+			<button
+				type="button"
+				class="shield-ok"
+				@click="playStreak.dismissShieldNote()"
+			>
+				Nice
+			</button>
+		</div>
+
 		<!-- The big card is always the next game to play: the Daily first, then Scout Report,
 		     then Spot the Baller (the same order as the full-time panel's next-game button) -->
 		<NuxtLink
@@ -253,6 +277,15 @@
 	const dailyStats = useModeStatsStore('daily')
 	// Days in a row with at least one game finished, win or lose
 	const playStreak = usePlayStreakStore()
+	// "yesterday", or the weekday when the note waited a while to be seen
+	const shieldedDayLabel = computed(() => {
+		const [d, m, y] = playStreak.shieldedDate.split('/').map(Number)
+		if (!d) return 'a missed day'
+		const day = new Date(y!, m! - 1, d)
+		const yest = new Date()
+		yest.setDate(yest.getDate() - 1)
+		return day.toDateString() === yest.toDateString() ? 'yesterday' : day.toLocaleDateString('en-GB', { weekday: 'long' })
+	})
 	const { daily, scout, spot, dailyLastGuess, dailyGuesses, dailyAnswer, scoutAnswer, spotResults, refresh } =
 		useTodayProgress()
 	const { onShare, getMatchdayShareText, shareText } = useShare()
@@ -428,6 +461,38 @@
 </script>
 
 <style scoped lang="scss">
+	.shield-note {
+		align-items: center;
+		background: color-mix(in srgb, var(--tertiary-color) 14%, var(--bg-secondary));
+		border: 1px solid color-mix(in srgb, var(--tertiary-color) 40%, transparent);
+		border-radius: 1rem;
+		display: grid;
+		gap: 0.75rem;
+		grid-template-columns: auto 1fr auto;
+		margin: 0 0 0.9rem;
+		padding: 0.75rem 0.9rem;
+
+		p {
+			font-size: 0.9rem;
+			margin: 0;
+		}
+	}
+
+	.shield-note :deep(.shield-icon) {
+		color: var(--tertiary-color);
+	}
+
+	.shield-ok {
+		background: var(--tertiary-color);
+		border: 0;
+		border-radius: 999px;
+		color: var(--on-present, #1b1203);
+		cursor: pointer;
+		font-weight: 800;
+		min-height: 36px;
+		padding: 0.35rem 0.9rem;
+	}
+
 	.app-home {
 		display: flex;
 		flex-direction: column;

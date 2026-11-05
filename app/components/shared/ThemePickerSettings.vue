@@ -155,7 +155,7 @@
 						>Sale, ends soon</span>
 					</span>
 					<p>
-						Unlimited hints in the Daily and Scout Report, plus every theme, for good. One-off purchase, no subscription.
+						Unlimited hints, every theme, the full puzzle archive and free card replays, for good. One-off purchase, no subscription.
 						<template v-if="purchases.hintBank > 0">
 							You have {{ purchases.hintBank }} {{ purchases.hintBank === 1 ? 'hint' : 'hints' }} in the bank.
 						</template>
@@ -165,7 +165,7 @@
 						type="button"
 						class="store-button pro-button"
 						:disabled="purchases.busy"
-						@click="purchases.buyPro()"
+						@click="proSheetOpen = true"
 					>
 						Get Pro ·
 						<s
@@ -256,6 +256,25 @@
 									@click="reminders.setHour(h)"
 								>
 									{{ formatHour(h) }}
+								</button>
+							</div>
+							<div
+								v-if="reminders.enabled"
+								class="row-main last-chance"
+							>
+								<span class="row-text">
+									<span class="row-label">Last-chance nudge</span>
+									<span class="row-hint">At 9:30pm if a streak of 3+ days hasn't been kept yet</span>
+								</span>
+								<button
+									type="button"
+									role="switch"
+									:aria-checked="reminders.lastChance"
+									aria-label="Last-chance nudge"
+									:class="['switch', { on: reminders.lastChance }]"
+									@click="reminders.setLastChance(!reminders.lastChance)"
+								>
+									<span class="knob"></span>
 								</button>
 							</div>
 							<p
@@ -780,6 +799,7 @@
 
 	const appearance = useAppearanceStore()
 	const saleOf = useSale()
+	const proSheetOpen = useState('pro-sheet-open', () => false)
 	const themeSummary = computed(() =>
 		appearance.appearance === 'system' && !appearance.theme
 			? 'Match iPhone'
@@ -836,6 +856,10 @@
 </script>
 
 <style scoped lang="scss">
+	.last-chance {
+		margin-top: 0.75rem;
+	}
+
 	.settings-section {
 		width: 100%;
 

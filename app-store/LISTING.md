@@ -3,6 +3,13 @@
 Copy-paste into App Store Connect → your app → the version page / App Information.
 Character counts are checked against Apple's limits.
 
+**For 1.3** (from the growth review, 29 Oct 2026). Paste these once the 1.3 version exists in App
+Store Connect; they all go through review with that version:
+- the new keyword field (below)
+- in-app purchase display names, and three promoted purchases (see In-app purchases)
+- an English (U.S.) localisation (see English (U.S.))
+- the app preview video and a 7th screenshot, the share card (see App preview and Screenshots)
+
 ## App name (30)
 
 ```
@@ -30,8 +37,11 @@ New: The Grid. Five fresh grids every Saturday, plus 16 themes to make Footballd
 Comma-separated, no spaces. Words already in the name and subtitle are indexed anyway, so they aren't repeated here.
 
 ```
-football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,scout,club,league,team,squad,brain
+football,soccer,quiz,trivia,player,puzzle,word,game,footy,streak,grid,cards,club,league,squad,scout
 ```
+
+1.3: "team" and "brain" out, "grid" and "cards" in (99 characters). "football" stays: Apple matches whole
+words, so "Footballdle" in the name doesn't cover it.
 
 ## Description (4000)
 
@@ -89,6 +99,71 @@ Also new:
 • Lots of polish and fixes
 ```
 
+## In-app purchases (1.3)
+
+App Store Connect → In-App Purchases → each one → App Store Localization. Display name 30, description 45.
+
+| Product | Display name | Description |
+|---|---|---|
+| footballdle_pro | Footballdle Pro | Unlimited hints, every theme and the archive |
+| footballdle_hint_1 | 1 Hint | One hint for any game mode |
+| footballdle_hint_5 | 5 Hints | Five hints to use whenever you like |
+| footballdle_hint_15 | 15 Hints | Fifteen hints to use whenever you like |
+
+Promote Footballdle Pro, 5 Hints and the tip jar (each one → Promotional image → "Promote in-app
+purchase"), so their names and prices show on the listing. Images (1024 × 1024): `promoted/`.
+
+## English (U.S.) (1.3)
+
+App Information → Localizable information → add English (U.S.). Name and description as above.
+
+- Subtitle (29): `Guess the soccer player daily`
+- Keywords (96): `sports,athlete,striker,goalkeeper,defender,midfielder,team,transfer,fantasy,brain,guesser,riddle`
+
+## App preview (1.3)
+
+`preview/app-preview-6.9.mp4`: 886 × 1920, under 30 seconds, real play only (a Daily won, the Grid
+filling, a round of Spot the Baller). Upload it in the iPhone 6.9" slot, before the screenshots.
+
+## Custom Product Pages (1.3, K10)
+
+App Store Connect › your app › Custom Product Pages › +. Each one is your listing with its
+own screenshots, preview and promotional text, for people arriving from a particular link.
+Once a page is approved it gets an ID: put it in `PRODUCT_PAGES` in `app/utils/appStore.ts`,
+and links like footballdle.co.uk/app?for=grid open it (the website's Grid page already
+uses that link).
+
+**Grid** (key `grid`), for people coming from Grid shares and the Grid page:
+- Screenshots in this order: `03-grid`, `01-guess`, `02-matchday`, `07-share`, `05-streak`, `06-trophies`
+- Promotional text (156):
+  `Five new Grids every Saturday, the same for everyone. Name a player for each club and country, 100 points a square. Plus a new footballer to find every day.`
+
+**Themes** (key `themes`), for theme-led posts:
+- Screenshots in this order: `04-themes`, `01-guess`, `02-matchday`, `03-grid`, `07-share`, `06-trophies`
+  (and `raw/10-themed-daily.png` if you add a captioned version)
+- Promotional text (151):
+  `Make Footballdle yours: 16 themes, from Retro 90s and Tactics Chalkboard to six bold colours. Try any of them on before you buy. Pro unlocks every one.`
+
+The subtitle can't be A/B tested (Product Page Optimization only tests the icon, screenshots
+and preview), so "Football quiz: daily & grid" stays an idea for a later version.
+
+## Promoted purchases and Pro offer codes (1.3, M8)
+
+1. **Promote** Pro, 5 Hints and the tip jar: each in-app purchase › App Store Promotion ›
+   upload the image from `promoted/` › tick "Promote". Then Featuring › Promoted In-App
+   Purchases to set the order (Pro first). They go live with the next approved version.
+2. **What happens when someone taps one on the App Store:** the app opens and RevenueCat
+   starts the purchase. Pro or the hints arrive through the same customer-info listener as
+   any purchase, so no extra code was needed. Test it on TestFlight before release:
+   Settings › Developer › promoted purchase testing, or the itms-services test URL in
+   Apple's "Testing promoted in-app purchases" guide.
+3. **Pro offer codes** (for podcasts, creators and press): In-App Purchases › Footballdle Pro
+   › Offer Codes › create an offer (free, or a lower price), then either one custom code
+   (like PRO-PODCAST, a set number of redemptions) or a batch of one-time codes. Players
+   redeem in Settings › Purchases & codes › Redeem a code, which is already in the app.
+   Apple allows one redemption per Apple Account per offer, so make a separate offer for
+   anything you want to count on its own.
+
 ## Other fields
 
 | Field | Value |
@@ -105,6 +180,7 @@ Also new:
 
 Version 1.2: six per display slot, in this order:
 `captioned/01-guess.png`, `02-matchday.png`, `03-grid.png`, `04-themes.png`, `05-streak.png`, `06-trophies.png`.
+1.3 adds `07-share.png`, the share card.
 
 | Slot | Folder | Size |
 |---|---|---|

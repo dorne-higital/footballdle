@@ -240,7 +240,9 @@ export function buildAchievementContext(stats: Pick<AchievementContext, 'daily' 
 	try {
 		spotPerfectGames = JSON.parse(localStorage.getItem('footballdle-spot-tiers') || 'null')?.['6'] ?? 0
 		hintUsed = localStorage.getItem('footballdle-hint-used') === '1'
-		matchdayBest = JSON.parse(localStorage.getItem('footballdle-play-streak') || 'null')?.best ?? 0
+		// Real days played in a row: a day covered by a Streak Shield doesn't count
+		const streakState = JSON.parse(localStorage.getItem('footballdle-play-streak') || 'null')
+		matchdayBest = streakState?.realBest ?? streakState?.best ?? 0
 	} catch {}
 	try {
 		const gridStats = JSON.parse(localStorage.getItem('footballdle-grid-stats') || 'null')

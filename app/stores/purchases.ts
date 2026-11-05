@@ -4,6 +4,7 @@ import { ref, computed, toRaw } from 'vue'
 import { Capacitor } from '@capacitor/core'
 import type { CustomerInfo, MakePurchaseResult, PurchasesStoreProduct } from '@revenuecat/purchases-capacitor'
 import { HINT_PACKS, PRO_ENTITLEMENT, PRODUCT_IDS, THEME_PRODUCT_IDS, TIP_PRODUCT_IDS } from '../utils/appStore'
+import { type OfferingCopy, readOfferingMeta, themesWorth } from '../utils/offering'
 
 // Cached so Pro perks still work offline / before RevenueCat answers
 const PRO_CACHE_KEY = 'footballdle-pro'
@@ -83,11 +84,15 @@ export const usePurchasesStore = defineStore('purchases', () => {
 	// Why products didn't load, in words a player understands (details go to the console)
 	const loadError = ref('')
 	const loadingProducts = ref(false)
+	// Shop copy from the RevenueCat Offering (utils/offering.ts); empty until it loads
+	const offeringCopy = ref<OfferingCopy>({ banner: '', badges: {} })
 
 	// ============================================================================
 	// COMPUTED PROPERTIES
 	// ============================================================================
 	const proProduct = computed(() => products.value.find(p => p.identifier === PRODUCT_IDS.pro))
+	/** Every paid theme bought one by one, for the Pro sheet; '' until all have prices */
+	const themesValue = computed(() => themesWorth(products.value, [...THEME_IDS]))
 
 	/** The App Store product for a theme (or the Colour Pack), once prices have loaded */
 	const themeProduct = (productId: string) => products.value.find(p => p.identifier === productId)
@@ -340,6 +345,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			)
 			products.value = result.products
 			isReady.value = result.products.length > 0
+			loadOfferingCopy()
 			const known = new Set<string>(Object.values(PRODUCT_IDS))
 			if (!result.products.some(p => known.has(p.identifier))) {
 				loadError.value = STORE_UNREACHABLE
@@ -351,6 +357,17 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		} finally {
 			loadingProducts.value = false
 		}
+	}
+
+	/** The current Offering's metadata from RevenueCat. Products still come from
+	 *  getProducts above, so a missing or broken Offering only loses the extra copy. */
+	async function loadOfferingCopy() {
+		try {
+			const { Purchases } = await getSdk()
+			const offerings = await withTimeout(Purchases.getOfferings(), 'loading offerings')
+			// A plain copy, never the plugin's own object
+			offeringCopy.value = readOfferingMeta(JSON.parse(JSON.stringify(offerings.current?.metadata ?? {})))
+		} catch {}
 	}
 
 	async function purchase(product: PurchasesStoreProduct): Promise<MakePurchaseResult | null> {
@@ -391,7 +408,7 @@ export const usePurchasesStore = defineStore('purchases', () => {
 			return false
 		}
 		const ok = !!(await purchase(proProduct.value))
-		if (ok) message.value = 'Pro unlocked. Unlimited hints, cheers!'
+		if (ok) message.value = 'Pro unlocked. Unlimited hints and every theme. Cheers!'
 		return ok
 	}
 
@@ -461,9 +478,11 @@ export const usePurchasesStore = defineStore('purchases', () => {
 		resetHintBank,
 		loadError,
 		loadingProducts,
+		offeringCopy,
 
 		// Computed
 		proProduct,
+		themesValue,
 		tipProducts,
 		hintPacks,
 		themeProduct,

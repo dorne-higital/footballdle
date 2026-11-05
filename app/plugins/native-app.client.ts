@@ -22,8 +22,8 @@ import { track } from '../utils/appGlance'
 // Progress already sent to Game Center, so only changes are reported
 const ACHIEVEMENTS_SENT_KEY = 'footballdle-achievements-sent'
 
-// App Store rating prompt: asked at good moments only (a Matchday streak of 3, 7 or 30,
-// a perfect grid, a finished card set, a new trophy), at most once every 30 days and never
+// App Store rating prompt: asked at good moments only (all three daily games done with
+// the Daily won, a Matchday streak of 3, 7 or 30, a finished card set), at most once every 30 days and never
 // just after a loss. Only Apple's own prompt, no gate in front of it and no reward; iOS
 // itself shows it at most 3 times a year.
 const REVIEW_STREAKS = [3, 7, 30]
@@ -89,6 +89,8 @@ export default defineNuxtPlugin((nuxtApp) => {
 				return
 			}
 			track('matchday.completed')
+			// The earliest good moment to ask for a rating, well before a 3-day streak
+			if (today.daily.value.status === 'won') askForReview()
 		},
 	)
 

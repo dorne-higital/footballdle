@@ -38,6 +38,8 @@ describe('AppGlance', () => {
 				'paywall.viewed',
 				'share',
 				'matchday.completed',
+				'reminder.answered',
+				'archive.finished',
 			]),
 		)
 	})
