@@ -72,7 +72,8 @@
 
 	const TITLES: Record<string, string> = {
 		'/play/daily': 'Daily',
-		'/play/scout-report': 'Scout Report',
+		// "Scout Report" won't fit beside the hint control on a 375pt screen
+		'/play/scout-report': 'Scout',
 		'/play/spot-the-baller': 'Spot the Baller',
 		'/play/grid': 'The Grid',
 		'/how-to-play': 'How to play',
@@ -119,8 +120,6 @@
 		if (path.startsWith('/cards/replay')) return 'Replay'
 		if (path.startsWith('/cards/')) return 'Cards'
 		if (path.startsWith('/archive')) return 'Archive'
-		// "Scout Report" won't fit beside the joined hint control on a 375pt screen
-		if (offersHint.value) return 'Scout'
 		return path.startsWith('/solution') ? answerTitle(path) : (TITLES[path] ?? 'Footballdle')
 	})
 
@@ -154,8 +153,10 @@
 		z-index: 2;
 
 		// Game pages: back, title, then the hint control and two buttons. The title takes what's left
-		// and truncates, so the buttons never spill off a 390pt screen
+		// and truncates, so the buttons never spill off a 375pt screen. Tight gaps leave room for 44pt
+		// buttons and a whole title
 		&.game {
+			gap: 0.375rem;
 			grid-template-columns: auto minmax(0, 1fr) auto;
 			padding-inline: 0.75rem;
 
@@ -166,7 +167,7 @@
 			}
 
 			.bar-actions {
-				gap: 0.4rem;
+				gap: 0.3rem;
 			}
 		}
 	}
