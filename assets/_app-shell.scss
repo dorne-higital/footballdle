@@ -33,6 +33,9 @@ html.app-shell {
 	--global-border-radius: 14px;
 	--border: rgb(255 255 255 / 8%);
 	--border-hover: #2fe08a;
+	// Empty board tiles: 38% of the text colour on the tile is 3.5:1, enough to see the grid
+	// before typing (WCAG 1.4.11). Mixed from the theme's own colours, so every theme follows
+	--tile-edge: color-mix(in srgb, var(--text-primary) 38%, var(--bg-secondary));
 
 	--turf-base: #0b1a12;
 	--turf-stripe: #0f2219;
@@ -241,6 +244,8 @@ html.app-shell.app-light {
 	--subtle-gradient: linear-gradient(135deg, #e6efe9 0%, #fff 100%);
 	--border: rgb(16 35 26 / 11%);
 	--border-hover: #0e7542;
+	// Dark text on white needs a stronger mix for the same 3:1
+	--tile-edge: color-mix(in srgb, var(--text-primary) 52%, var(--bg-secondary));
 
 	--turf-base: #e6efe9;
 	--turf-stripe: #dde8e1;

@@ -197,7 +197,7 @@
 			.letter {
 				align-items: center;
 				background: var(--bg-secondary);
-				border: 2px solid var(--border);
+				border: 2px solid var(--tile-edge, var(--border));
 				border-radius: var(--global-border-radius);
 				display: flex;
 				font-family: var(--font-display);
@@ -305,21 +305,21 @@
 	@keyframes flip-in {
 		0% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(0deg);
 		}
 
 		50% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(90deg);
 		}
 
 		100% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(0deg);
 		}
@@ -328,14 +328,14 @@
 	@keyframes correct-reveal {
 		0% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(0deg) scale(1);
 		}
 
 		50% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(90deg) scale(1.1);
 		}
@@ -351,14 +351,14 @@
 	@keyframes present-reveal {
 		0% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(0deg) scale(1);
 		}
 
 		50% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(90deg) scale(1.05);
 		}
@@ -385,14 +385,14 @@
 	@keyframes absent-reveal {
 		0% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(0deg) scale(1);
 		}
 
 		50% {
 			background: var(--bg-secondary);
-			border-color: var(--border);
+			border-color: var(--tile-edge, var(--border));
 			color: var(--text-primary);
 			transform: rotateX(90deg) scale(0.95);
 		}

@@ -200,7 +200,7 @@
 		align-items: center;
 		aspect-ratio: 1;
 		background: transparent;
-		border: 1.5px dashed color-mix(in srgb, var(--text-secondary) 45%, transparent);
+		border: 1.5px dashed var(--tile-edge, color-mix(in srgb, var(--text-secondary) 45%, transparent));
 		border-radius: 0.8rem;
 		color: var(--text-primary);
 		cursor: pointer;
