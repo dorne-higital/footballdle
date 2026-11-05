@@ -16,13 +16,24 @@
 			class="form-strip"
 		>
 			<p class="caption form-title">Recent form</p>
-			<div class="form-squares">
+			<!-- A mark in every square, so form reads without colour; VoiceOver hears the summary -->
+			<div
+				class="form-squares"
+				role="img"
+				:aria-label="formSummary"
+			>
 				<span
 					v-for="(win, i) in recentForm"
 					:key="i"
 					class="form-sq"
 					:class="win ? 'win' : 'loss'"
-				/>
+					aria-hidden="true"
+				>
+					<Icon
+						:name="win ? 'solar:check-bold' : 'solar:close-bold'"
+						size="0.85rem"
+					/>
+				</span>
 			</div>
 		</div>
 
@@ -84,6 +95,8 @@
 </template>
 
 <script setup lang="ts">
+	import { computed } from 'vue'
+
 	const props = withDefaults(
 		defineProps<{
 			primaryStats: { label: string; value: string | number }[]
@@ -99,6 +112,14 @@
 			highlightGuessCount: 0,
 		},
 	)
+
+	// "Last 10: 9 wins, 1 loss"
+	const formSummary = computed(() => {
+		const form = props.recentForm ?? []
+		const wins = form.filter(Boolean).length
+		const losses = form.length - wins
+		return `Last ${form.length}: ${wins} ${wins === 1 ? 'win' : 'wins'}, ${losses} ${losses === 1 ? 'loss' : 'losses'}`
+	})
 
 	function getBarWidth(n: number): string {
 		if (!props.distribution) return '1.5rem'
@@ -175,16 +196,21 @@
 			}
 
 			.form-sq {
+				align-items: center;
 				border-radius: 6px;
-				height: 20px;
-				width: 20px;
+				display: flex;
+				height: 22px;
+				justify-content: center;
+				width: 22px;
 
 				&.win {
 					background: var(--primary-color);
+					color: var(--on-primary);
 				}
 
 				&.loss {
 					background: var(--color-absent);
+					color: var(--on-absent, var(--text-primary));
 				}
 			}
 		}
