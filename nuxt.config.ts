@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { APP_STORE_LIVE } from './app/utils/appStore'
+import { APP_STORE_LIVE, APP_STORE_URL } from './app/utils/appStore'
 
 // APP_TARGET=ios builds the bundle that ships inside the Capacitor iOS app:
 // a client-only SPA with no AdSense, Buy Me a Coffee or Google Analytics
@@ -154,11 +154,33 @@ export default defineNuxtConfig({
 			] : [
 				{
 					type: 'application/ld+json',
+					// Who Footballdle is, on every page, so Google can tell it from other games with a
+					// similar name: the site, the maker (with the App Store and social profiles) and the logo
 					innerHTML: JSON.stringify({
 						'@context': 'https://schema.org',
-						'@type': 'WebSite',
-						name: 'Footballdle',
-						url: 'https://footballdle.co.uk',
+						'@graph': [
+							{
+								'@type': 'WebSite',
+								'@id': 'https://footballdle.co.uk/#website',
+								name: 'Footballdle',
+								alternateName: ['Football dle'],
+								url: 'https://footballdle.co.uk/',
+								inLanguage: 'en-GB',
+								publisher: { '@id': 'https://footballdle.co.uk/#organization' },
+							},
+							{
+								'@type': 'Organization',
+								'@id': 'https://footballdle.co.uk/#organization',
+								name: 'Footballdle',
+								url: 'https://footballdle.co.uk/',
+								logo: 'https://footballdle.co.uk/android-chrome-512x512.png',
+								sameAs: [
+									'https://www.tiktok.com/@_footballdle',
+									'https://www.instagram.com/_footballdle/',
+									...(APP_STORE_LIVE ? [APP_STORE_URL] : []),
+								],
+							},
+						],
 					}),
 				},
 				{

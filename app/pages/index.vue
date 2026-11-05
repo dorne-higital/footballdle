@@ -63,12 +63,21 @@
 		script: [
 			{
 				type: 'application/ld+json',
-				children: JSON.stringify({
+				// The game itself (the site-wide WebSite and Organization are in nuxt.config.ts)
+				innerHTML: JSON.stringify({
 					'@context': 'https://schema.org',
-					'@type': 'WebSite',
+					'@type': 'VideoGame',
 					name: 'Footballdle',
 					url: pageUrl('/'),
-					description: 'A collection of free daily Premier League football guessing games.',
+					description:
+						'Free daily Premier League football guessing games: guess the footballer, Scout Report, Spot the Baller and a weekly football grid.',
+					genre: ['Puzzle', 'Sports', 'Trivia'],
+					gamePlatform: ['Web browser', 'iOS'],
+					applicationCategory: 'Game',
+					inLanguage: 'en-GB',
+					image: 'https://footballdle.co.uk/og-image.png',
+					publisher: { '@id': 'https://footballdle.co.uk/#organization' },
+					offers: { '@type': 'Offer', price: '0', priceCurrency: 'GBP' },
 				}),
 			},
 		],
