@@ -67,6 +67,35 @@
 				{{ next.label }}
 			</NuxtLink>
 		</div>
+		<!-- Reminders, asked once after a finished game rather than before any play (1.3, K3) -->
+		<div
+			v-if="askReminder"
+			class="ft-remind"
+		>
+			<template v-if="!reminderSet">
+				<span>Want a nudge tomorrow so you don't lose your streak?</span>
+				<span class="ft-remind-actions">
+					<button
+						type="button"
+						class="ft-remind-yes"
+						@click="remindMe"
+					>
+						Remind me at {{ hourLabel(askHour) }}
+					</button>
+					<button
+						type="button"
+						class="ft-remind-no"
+						@click="noThanks"
+					>
+						No thanks
+					</button>
+				</span>
+			</template>
+			<span
+				v-else
+				role="status"
+			>{{ reminderSet }}</span>
+		</div>
 		<!-- Where hint codes get posted. Not a reward for following (App Review 3.2.2) -->
 		<a
 			href="https://www.instagram.com/_footballdle/"
@@ -91,6 +120,8 @@
 	import { useGridStore } from '../../stores/grid'
 	import { currentSeason, useCardsStore } from '../../stores/cards'
 	import { useReplayStore } from '../../stores/replay'
+	import { REMINDER_HOURS, useRemindersStore } from '../../stores/reminders'
+	import { track } from '../../utils/appGlance'
 
 	// The app and the website's app look: shown under a finished game's board in place of
 	// the controls, so a finished game opens on your own result rather than the intro page.
@@ -105,6 +136,25 @@
 	const emit = defineEmits<{ result: []; shared: [] }>()
 
 	const isApp = !!useRuntimeConfig().public.isApp
+
+	// Daily reminder offer: at the REMINDER_HOURS slot nearest to when they're playing now
+	const reminders = useRemindersStore()
+	reminders.load()
+	const askReminder = ref(reminders.shouldAsk())
+	const reminderSet = ref('')
+	const askHour = [...REMINDER_HOURS].sort((a, b) => Math.abs(a - new Date().getHours()) - Math.abs(b - new Date().getHours()))[0]!
+	const hourLabel = (h: number) => (h === 12 ? 'midday' : h < 12 ? `${h}am` : `${h - 12}pm`)
+	async function remindMe() {
+		reminders.markAsked()
+		const ok = await reminders.enable(askHour)
+		reminderSet.value = ok ? `Done. Reminders at ${hourLabel(askHour)}; change it in Settings.` : 'Notifications are off for Footballdle. You can turn them on in iPhone Settings.'
+		track('reminder.answered', { answer: ok ? 'yes' : 'denied' })
+	}
+	function noThanks() {
+		reminders.markAsked()
+		askReminder.value = false
+		track('reminder.answered', { answer: 'no' })
+	}
 	const { shareText: sendShare } = useShare()
 	const haptics = useHaptics()
 	const copied = ref(false)
@@ -155,6 +205,43 @@
 </script>
 
 <style scoped lang="scss">
+	.ft-remind {
+		background: var(--bg-primary);
+		border: 1px solid var(--border);
+		border-radius: 0.8rem;
+		display: grid;
+		font-size: 0.88rem;
+		gap: 0.55rem;
+		padding: 0.7rem 0.8rem;
+	}
+
+	.ft-remind-actions {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.ft-remind-yes {
+		background: var(--primary-color);
+		border: 0;
+		border-radius: 999px;
+		color: var(--on-primary, #04130b);
+		cursor: pointer;
+		font-weight: 700;
+		min-height: 36px;
+		padding: 0.4rem 0.9rem;
+	}
+
+	.ft-remind-no {
+		background: none;
+		border: 0;
+		color: var(--text-secondary);
+		cursor: pointer;
+		min-height: 36px;
+		text-decoration: underline;
+	}
+
 	.full-time-panel {
 		background: var(--bg-secondary);
 		border: 1px solid var(--border);

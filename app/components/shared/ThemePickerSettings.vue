@@ -258,6 +258,25 @@
 									{{ formatHour(h) }}
 								</button>
 							</div>
+							<div
+								v-if="reminders.enabled"
+								class="row-main last-chance"
+							>
+								<span class="row-text">
+									<span class="row-label">Last-chance nudge</span>
+									<span class="row-hint">At 9:30pm if a streak of 3+ days hasn't been kept yet</span>
+								</span>
+								<button
+									type="button"
+									role="switch"
+									:aria-checked="reminders.lastChance"
+									aria-label="Last-chance nudge"
+									:class="['switch', { on: reminders.lastChance }]"
+									@click="reminders.setLastChance(!reminders.lastChance)"
+								>
+									<span class="knob"></span>
+								</button>
+							</div>
 							<p
 								v-if="reminders.denied"
 								class="store-status"
@@ -837,6 +856,10 @@
 </script>
 
 <style scoped lang="scss">
+	.last-chance {
+		margin-top: 0.75rem;
+	}
+
 	.settings-section {
 		width: 100%;
 
