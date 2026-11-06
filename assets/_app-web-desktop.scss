@@ -38,22 +38,37 @@ $rail: 15.5rem;
 			padding-bottom: 2rem;
 		}
 
-		// Matchday: the Daily and the other games on the left, today's progress on the right
+		// Matchday: the big card (the Daily, Next up, or Matchday done) on the left, running the
+		// full height of the right column (today's games, The Grid, the fact), with the countdown
+		// in its footer, so neither column leaves a gap whichever card is showing
 		.app-home {
 			align-items: start;
 			display: grid;
 			gap: 1.25rem;
-			// The Daily card runs the full height of the right column (rings, The Grid, the fact),
-			// with the countdown in its footer, so neither column leaves a gap
 			grid-template-areas:
 				'head head'
-				'daily rings'
-				'daily challenge'
-				'daily fact';
+				'main today'
+				'main challenge'
+				'main fact';
 			grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
 			grid-template-rows: auto auto auto 1fr;
 			max-width: 70rem;
 			padding: 1.5rem 1rem 3rem;
+		}
+
+		// A Streak Shield note, when there is one, gets its own full-width row
+		.app-home:has(> .shield-note) {
+			grid-template-areas:
+				'head head'
+				'note note'
+				'main today'
+				'main challenge'
+				'main fact';
+			grid-template-rows: auto auto auto auto 1fr;
+		}
+
+		.shield-note {
+			grid-area: note;
 		}
 
 		.home-header {
@@ -70,21 +85,21 @@ $rail: 15.5rem;
 			display: none;
 		}
 
-		// Stretched to the right column's height, with its content centred above the footer
-		.daily-hero {
+		// Stretched to the right column's height, with its content centred
+		.app-home > .hero {
 			align-self: stretch;
-			grid-area: daily;
+			grid-area: main;
 			justify-content: center;
 			min-height: 18rem;
 		}
 
 		// Room at the bottom of the card for the countdown footer
-		.app-home:has(.kickoff) .daily-hero {
+		.app-home:has(> .kickoff) > .hero {
 			padding-bottom: 4.5rem;
 		}
 
-		.rings-card {
-			grid-area: rings;
+		.today-strip {
+			grid-area: today;
 		}
 
 		.challenge-row {
@@ -96,15 +111,35 @@ $rail: 15.5rem;
 			grid-area: fact;
 		}
 
-		// Sits in the Daily card's footer, above its bottom edge
+		// Sits in the big card's footer, above its bottom edge
 		.kickoff {
 			align-self: end;
 			border-top: 1px solid var(--border);
-			grid-area: daily;
+			grid-area: main;
 			margin: 0 1.3rem 1.1rem;
 			padding: 0.85rem 0 0;
 			pointer-events: none;
 			position: relative;
+		}
+
+		// Modals: a centred dialog, not a phone's full-width bottom sheet
+		.base-modal {
+			align-items: center;
+		}
+
+		.base-modal .modal.modal:not(.fullscreen) {
+			animation: app-fade-in 0.2s ease;
+			border: 1px solid var(--border);
+			border-radius: 24px;
+			max-height: 86dvh;
+			max-width: 34rem;
+			padding: 1.25rem 1rem 1rem;
+			width: calc(100% - 4rem);
+
+			// No grabber: there's nothing to drag on a computer
+			&::before {
+				display: none;
+			}
 		}
 
 		// Tab screens: wider columns, and grids for the long lists
