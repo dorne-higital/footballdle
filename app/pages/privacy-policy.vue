@@ -16,7 +16,7 @@
 
 		<main class="static-main">
 			<h1>Privacy Policy</h1>
-			<p class="updated">Last updated: 5 November 2026</p>
+			<p class="updated">Last updated: 7 November 2026</p>
 
 			<p>
 				Footballdle ("we", "us", "our") operates the website footballdle.co.uk and the Footballdle iPhone app.
@@ -32,8 +32,23 @@
 
 			<h2>The iPhone app</h2>
 			<p>
-				The app has no analytics, no advertising and no tracking. Your game state, statistics, trophies and hint
-				balance are stored on your device and are never sent to our servers.
+				The app has no advertising and no tracking. Your game state, statistics, trophies and hint balance are
+				stored on your device.
+			</p>
+			<p>
+				<strong>Analytics.</strong> From version 1.2.3 the app uses AppGlance, a privacy-first analytics
+				service, to count how the app is used: sessions, which screens are opened, games finished (the mode, win
+				or loss and score, including archive puzzles and card replays), hints used, shares, theme changes,
+				whether the Pro or hint shop is opened, your answer to the reminder prompt, which in-app purchases are
+				made and whether you have Pro. Each install is identified only by a random ID. No name, email, Apple ID,
+				advertising identifier or anything you type is sent, AppGlance doesn't store your IP address, and the
+				data is not linked to you or used for tracking or advertising. See
+				<a
+					href="https://appglance.app/privacy"
+					target="_blank"
+					rel="noopener noreferrer"
+					>AppGlance's privacy policy</a
+				>.
 			</p>
 			<p>
 				<strong>Game Center.</strong> If you are signed in to Apple Game Center, your best streaks, total wins
@@ -47,10 +62,9 @@
 				>, and you can turn Game Center off at any time in your iPhone's Settings.
 			</p>
 			<p>
-				<strong>In-app purchases.</strong> Purchases are processed by Apple; we never see your payment
-				details. We use RevenueCat to confirm purchases and restore Footballdle Pro. RevenueCat receives your
-				purchase history and a random, anonymous app user ID that is not linked to your name or Apple ID.
-				See
+				<strong>In-app purchases.</strong> Purchases are processed by Apple; we never see your payment details.
+				We use RevenueCat to confirm purchases and restore Footballdle Pro. RevenueCat receives your purchase
+				history and a random, anonymous app user ID that is not linked to your name or Apple ID. See
 				<a
 					href="https://www.revenuecat.com/privacy/"
 					target="_blank"
@@ -63,8 +77,8 @@
 			<p>
 				With your permission, we use Google Analytics 4 to understand how people find and use the website: pages
 				visited, time spent, games played and general location (country or region). It doesn't collect your name
-				or contact details. Google Analytics only runs if you tap Accept on the bar at the bottom of the website;
-				if you tap No thanks, or don't answer, it doesn't load at all. The iPhone app never uses Google
+				or contact details. Google Analytics only runs if you tap Accept on the bar at the bottom of the
+				website; if you tap No thanks, or don't answer, it doesn't load at all. The iPhone app never uses Google
 				Analytics.
 			</p>
 			<p v-if="!$config.public.isApp">
@@ -73,7 +87,9 @@
 					class="consent-reset"
 					@click="resetConsent"
 				>
-					{{ consentChoice === null ? 'Choice cleared: answer the bar below' : 'Change your analytics choice' }}
+					{{
+						consentChoice === null ? 'Choice cleared: answer the bar below' : 'Change your analytics choice'
+					}}
 				</button>
 			</p>
 
@@ -87,8 +103,9 @@
 			<h2>Your rights (UK GDPR)</h2>
 			<p>
 				As a UK resident you have the right to access, correct, or request deletion of any personal data held
-				about you. As we do not store personal data directly, any such requests relating to analytics data
-				should be directed to Google. For any other queries please contact us at the address below.
+				about you. As we do not store personal data directly, any such requests relating to website analytics
+				should be directed to Google; app analytics data isn't linked to you, so there is nothing to look up.
+				For any other queries please contact us at the address below.
 			</p>
 
 			<h2>Changes to this policy</h2>
@@ -100,7 +117,11 @@
 			<h2>Contact</h2>
 			<p>
 				If you have any questions about this privacy policy please contact us using the
-				<NuxtLink to="/feedback?topic=other" title="Contact Footballdle">feedback form</NuxtLink>.
+				<NuxtLink
+					to="/feedback?topic=other"
+					title="Contact Footballdle"
+					>feedback form</NuxtLink
+				>.
 			</p>
 		</main>
 
