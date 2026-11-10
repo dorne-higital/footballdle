@@ -16,6 +16,7 @@
     "postinstall": "nuxt prepare",
     "clean": "rm -rf .nuxt .output node_modules/.cache",
     "type-check": "nuxt typecheck",
+    "achievements-md": "vite-node scripts/achievements-md.ts",
     "update-players": "node --experimental-strip-types --no-warnings scripts/update-players.ts",
     "tiktok": "zsh scripts/tiktok/run.sh",
     "build:app": "APP_TARGET=ios nuxt generate",

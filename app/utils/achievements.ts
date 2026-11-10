@@ -4,7 +4,7 @@ import { gridPoints, type SquareState } from './grid'
 
 // Game Center achievements. Each `id` must exist with the same Achievement ID in
 // App Store Connect, along with the title, descriptions, points and badge
-// (badges: app-store/achievements/<id>.png).
+// (badges: app-store/achievements/<id>.jpg; list: app-store/ACHIEVEMENTS.md, from yarn achievements-md).
 
 export interface AchievementContext {
 	daily: ModeStats
